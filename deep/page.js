@@ -28,7 +28,9 @@
     var wsum = 0;
     props.forEach(function (p) {
       var r = D.rng("dp:" + p.id);
-      p._chg = rnd((r() - .5) * .36, 2);                         // 24h move of the forecast, in score points
+      r();                                                       // (slot kept so the seeded weights below stay the same)
+      var oi = M.outcomes.indexOf(outcomeOf[p.id]);              // 24h move of the forecast, in score points, from the
+      p._chg = rnd((outcomeOf[p.id].price - D.priceAgo(M.id, oi, DAY)) * 10, 2); // same series the App record reads
       p._w = .4 + r() + p.deep.up;                                // liquidity / volume weight
       wsum += p._w;
       p._up = outcomeOf[p.id].token;

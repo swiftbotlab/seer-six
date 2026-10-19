@@ -37,17 +37,7 @@
 
   /* Price history: the same smoothed series the App explorer draws for #2842 (so the two pages agree),
      mapped to chance of selection by shifting it in log-odds so it ends exactly on pSelect. */
-  var PH = {};
-  function priceHist(k) {
-    if (PH[k]) return PH[k];
-    var days = Math.max(2, M.ageDays || 30), n = Math.min(1441, Math.round(days * 24) + 1);
-    var raw = D.history(M.id, k, { days: days, points: n, vol: .05 * Math.sqrt(120 / n) }), out = [], W = 9;
-    for (var i = 0; i < raw.length; i++) {
-      var a = 0, c = 0; for (var j = Math.max(0, i - W); j <= Math.min(raw.length - 1, i + W); j++) { a += raw[j][1]; c++; }
-      var w = Math.exp(-(raw.length - 1 - i) / 5); out.push([raw[i][0], +(a / c * (1 - w) + raw[i][1] * w).toFixed(5)]);
-    }
-    return (PH[k] = out);
-  }
+  function priceHist(k) { return D.series(M.id, k); }
   function chanceHist(e) {
     if (e._h) return e._h;
     var ph = priceHist(e.oi), shift = logit(e.chance) - logit(ph[ph.length - 1][1]);

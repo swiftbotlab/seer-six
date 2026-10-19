@@ -74,13 +74,7 @@
       var fp = D.futarchy.filter(function (f) { return f.id === m.proposal; })[0], col = m.branch === "yes" ? 1 : 2, span = m.range.max - m.range.min;
       if (fp) return (HC[key] = fp.series.map(function (x) { var up = (x[col] - m.range.min) / span; return [x[0], +(k === 1 ? up : 1 - up).toFixed(5)]; }));
     }
-    var days = Math.max(2, m.ageDays || 30), n = Math.min(1441, Math.round(days * 24) + 1);
-    var raw = D.history(m.id, k, { days: days, points: n, vol: (m.type === "scalar" ? (m.set ? .02 : .03) : .05) * Math.sqrt(120 / n) }), out = [], W = 9;
-    for (var i = 0; i < raw.length; i++) { // centred moving average, easing back to the raw series at the end so it lands on the snapshot price
-      var a = 0, c = 0; for (var j = Math.max(0, i - W); j <= Math.min(raw.length - 1, i + W); j++) { a += raw[j][1]; c++; }
-      var w = Math.exp(-(raw.length - 1 - i) / 5); out.push([raw[i][0], +(a / c * (1 - w) + raw[i][1] * w).toFixed(5)]);
-    }
-    return (HC[key] = out);
+    return (HC[key] = D.series(m.id, k)); // the shared smoothed series: Deep and Opportunity read the same one
   }
   function priceAgo(m, k, ms) { var h = hist(m, k), t = NOW - ms; for (var i = h.length - 1; i >= 0; i--) if (h[i][0] <= t) return h[i][1]; return h[0][1]; }
   function delta24(m, k) { return m.outcomes[k].price - priceAgo(m, k, DAY); }

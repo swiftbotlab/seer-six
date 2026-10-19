@@ -400,6 +400,23 @@
     out[n - 1][1] = end;
     return out;
   }
+  // One smoothed hourly series per outcome over the market's whole life: a centred moving average that eases back to
+  // the raw series at the end so it lands on the snapshot price. The App, Deep and Opportunity all read charts and
+  // 24h moves from this one series, so a move reads the same in every interface.
+  var SERIES = {};
+  function series(marketId, outcomeIndex) {
+    var k = outcomeIndex || 0, key = marketId + ":" + k; if (SERIES[key]) return SERIES[key];
+    var m = byId[marketId]; if (!m) return [];
+    var days = Math.max(2, m.ageDays || 30), n = Math.min(1441, Math.round(days * 24) + 1);
+    var raw = history(marketId, k, { days: days, points: n, vol: (m.type === "scalar" ? (m.set ? .02 : .03) : .05) * Math.sqrt(120 / n) }), out = [], W = 9;
+    for (var i = 0; i < raw.length; i++) {
+      var a = 0, c = 0; for (var j = Math.max(0, i - W); j <= Math.min(raw.length - 1, i + W); j++) { a += raw[j][1]; c++; }
+      var w = Math.exp(-(raw.length - 1 - i) / 5); out.push([raw[i][0], +(a / c * (1 - w) + raw[i][1] * w).toFixed(5)]);
+    }
+    return (SERIES[key] = out);
+  }
+  // The outcome's price `ms` milliseconds before the snapshot, read from that series.
+  function priceAgo(marketId, outcomeIndex, ms) { var h = series(marketId, outcomeIndex), t = NOW - ms; for (var i = h.length - 1; i >= 0; i--) if (h[i][0] <= t) return h[i][1]; return h.length ? h[0][1] : 0; }
   var EVTS = ["Swap", "Swap", "Swap", "Split", "Merge", "Swap", "Add liquidity", "Swap", "Redeem"];
   function events(marketId, n) {
     var m = byId[marketId]; if (!m) return []; var r = rng("ev:" + marketId), out = [], t = NOW - Math.round(r() * 20) * 60e3;
@@ -450,7 +467,7 @@
     chain: function (id) { for (var i = 0; i < chains.length; i++) if (chains[i].id === id) return chains[i]; return null; },
     state: function (id) { for (var i = 0; i < states.length; i++) if (states[i].id === id) return states[i]; return null; },
     tierOf: tierOf, bandOf: bandOf, quarterly: quarterly, noToAll: noToAll,
-    history: history, events: events, holders: holders, lifecycleOf: lifecycleOf,
+    history: history, series: series, priceAgo: priceAgo, events: events, holders: holders, lifecycleOf: lifecycleOf,
     rng: rng, addr: addr
   };
 })();
