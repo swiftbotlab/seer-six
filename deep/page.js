@@ -217,7 +217,8 @@
     { key: "dist", label: "Distribution 0–10", class: "s-hide-sm", render: mini },
     { key: "chg", label: "24h", num: true, class: "s-hide-sm", sort: function (r) { return r._chg; }, render: function (r) { return signedPts(r._chg); } },
     { key: "fund", label: "P(funded)", num: true, class: "s-hide-sm", sort: function (r) { return r.opp.pSelect; }, render: function (r) { return el("a", { class: "dp-pfund", href: "../opportunity/#" + r.id, text: F.pct0(r.opp.pSelect), title: "Opportunity market #2842" }); } },
-    { key: "ask", label: "Ask", num: true, class: "s-hide-sm", sort: function (r) { return r.ask; }, render: function (r) { return el("span", { class: "t-2", text: F.compact(r.ask, 1) + " sDAI" }); } },
+    { key: "ask", label: "Grant ask", num: true, class: "s-hide-sm", sort: function (r) { return r.ask; }, render: function (r) { return el("span", { class: "t-2", text: F.compact(r.ask, 1) + " sDAI" }); } },
+    { key: "liq", label: "Depth", num: true, class: "s-hide-sm", sort: function (r) { return r._liq; }, render: function (r) { return el("span", { class: "t-2", title: "Liquidity in this proposal's UP/DOWN pool", text: F.compact(r._liq, 1) + " " + M.collateral }); } },
     { key: "trade", label: "Trade", class: "dp-c-trade", render: tradeBtns }
   ];
   var agentCols = [
@@ -456,7 +457,7 @@
     st.appendChild(S.ui.stat("Likely · 80%+", String(likely.length), { note: likely.length > R.slots ? "More than 8 slots" : "Within 8 slots" }));
     st.appendChild(S.ui.stat("Contested · 20–80%", String(cont.length), { note: "Worth a second read" }));
     var over = ask50 - R.budget;
-    st.appendChild(S.ui.stat("Ask at 50%+", F.compact(ask50, 1), { unit: "sDAI", note: n50 + " proposals · " + (over > 0 ? F.compact(over, 1) + " over budget" : F.compact(-over, 1) + " under budget") }));
+    st.appendChild(S.ui.stat("Grant asks at 50%+", F.compact(ask50, 1), { unit: "sDAI", note: n50 + " proposals · " + (over > 0 ? F.compact(over, 1) + " over budget" : F.compact(-over, 1) + " under budget") }));
     if (state.sigSort === "likely") rows.sort(function (a, b) { return b.v - a.v; });
     else rows.sort(function (a, b) { return Math.abs(a.v - .5) - Math.abs(b.v - .5); });
     var show = state.sigAll ? rows : rows.slice(0, 12);

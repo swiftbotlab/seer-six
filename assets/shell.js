@@ -135,11 +135,11 @@
 
   function stripHTML() {
     var apps = S.apps.map(function (a) {
-      return '<a class="s-strip__app" href="' + S.url(a.path) + '" title="' + esc(a.name) + '"' + (a.id === appId ? ' aria-current="page"' : "") + ">" + S.glyph(a.id) + '<span class="s-strip__name">' + esc(a.label) + "</span></a>";
+      return '<a class="s-strip__app" href="' + S.url(a.path) + '" title="' + esc(a.name) + '" aria-label="' + esc(a.name) + '"' + (a.id === appId ? ' aria-current="page"' : "") + ">" + S.glyph(a.id) + '<span class="s-strip__name">' + esc(a.label) + "</span></a>";
     }).join("");
     var theme = S.theme();
     return '<div class="s-strip" role="navigation" aria-label="Seer ecosystem"><div class="s-container s-strip__in">' +
-      '<a class="s-strip__label" href="' + S.url("") + '" title="About this concept">' + S.logo("mark") + "<span>Seer protocol</span></a>" +
+      '<a class="s-strip__label" href="' + S.url("") + '" title="Seer protocol · about this concept" aria-label="Seer protocol: about this concept">' + S.logo("mark") + "</a>" +
       '<div class="s-strip__apps">' + apps + "</div>" +
       '<div class="s-strip__end"><span class="s-sample" title="Every figure on these pages is sample data. Nothing is live."><span>Sample<span class="s-sample__mid"> data</span><span class="s-sample__long"> · illustrative, not live</span></span></span>' +
       '<button class="s-theme-btn" type="button" aria-label="' + (theme === "light" ? "Switch to dark theme" : "Switch to light theme") + '">' + S.icon(theme === "light" ? "moon" : "sun", 15) + "</button></div>" +
