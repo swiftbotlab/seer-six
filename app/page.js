@@ -1010,7 +1010,7 @@
   /* pool depth: the selected token's constant-product pool (x · y = k), sized from the market's liquidity figure.
      Seer trades outcome tokens in AMM pools, so depth is a curve, not a ladder of resting orders. Sample figures. */
   function poolPanel(m, coll) {
-    var L = Math.max(1, m.liquidity || 0), SIZES = [10, 50, 100, 500, 1000]; // the market's liquidity figure, read as this token's pool
+    var L = Math.max(1, m.liquidity || 0), SIZES = [10, 50, 100, 500, 1000], CAP = .99; // the market's liquidity figure, read as this token's pool
     var p = el("section", { class: "s-panel ap-pool", attrs: { "aria-label": "Pool depth" } });
     var title = el("h3", { class: "t-title ap-pool__t" });
     p.appendChild(el("div", { class: "s-panel__head" }, el("div", {}, el("span", { class: "s-spec", text: "Pool depth" }), title), el("span", { class: "t-meta ap-pool__n", text: F.usd(L) + " liquidity" })));
@@ -1019,7 +1019,7 @@
     ["Buy", "Avg price", "Price after", "Impact"].forEach(function (h) { hdr.appendChild(el("th", { text: h, attrs: { scope: "col" } })); });
     tbl.appendChild(el("thead", {}, hdr)); tbl.appendChild(tb);
     p.appendChild(bar); p.appendChild(legend); p.appendChild(tbl);
-    p.appendChild(el("p", { class: "t-meta", text: "Constant-product pool (sample): " + coll + " reserve × token reserve = k, so each trade moves the price along the curve. Reserves are sized from this market's liquidity figure; the +$ chips in the slip pick a row." }));
+    p.appendChild(el("p", { class: "t-meta", text: "Constant-product pool (sample): " + coll + " reserve × token reserve = k, so each trade moves the price along the curve. Reserves are sized from this market's liquidity figure; the +$ chips in the slip pick a row. No token costs more than $1: past $0.99 the rest fills by minting full sets (· mint)." }));
     function px(v) { return v >= 1 ? "≥ $1.00" : F.cents1(v); }
     function update(tile, amount, sell) {
       var price = Math.min(.999, Math.max(.001, tile.price)), x = L / 2, y = x / price, k = x * y; // at the spot price the pool holds equal value on each side
@@ -1033,12 +1033,17 @@
       hdr.firstChild.textContent = sell ? "Sell" : "Buy";
       S.clear(tb);
       SIZES.forEach(function (a) {
-        var avg, after, imp;
+        var avg, after, imp, minted = false;
         if (sell) { var tin = a / price, y1 = y + tin, x1 = k / y1; avg = (x - x1) / tin; after = x1 / y1; imp = after / price - 1; }
-        else { var x2 = x + a, y2 = k / x2, out = y - y2; avg = a / out; after = x2 / y2; imp = after / price - 1; }
+        else {
+          // arbitrage bound: once the pool price reaches CAP, minting a full set for $1 is cheaper, so the rest of the order fills by minting
+          var xc = Math.sqrt(CAP * k), room = Math.max(0, xc - x), viaPool = Math.min(a, room), x2 = x + viaPool, y2 = k / x2;
+          var out = (y - y2) + (a - viaPool); minted = a > room;
+          avg = a / out; after = minted ? CAP : x2 / y2; imp = after / price - 1;
+        }
         var mag = Math.abs(imp);
         tb.appendChild(el("tr", { class: amount === a ? "is-selected" : "", attrs: amount === a ? { "aria-current": "true" } : null },
-          el("td", { text: "$" + F.num(a, 0) }), el("td", { text: px(avg) }), el("td", { text: px(after) }),
+          el("td", { text: "$" + F.num(a, 0) }), el("td", { text: px(avg) }), el("td", { text: px(after) + (minted ? " · mint" : "") }),
           el("td", { class: mag > .05 ? "t-neg" : mag > .01 ? "t-warn" : "", text: (imp < 0 ? "−" : "+") + F.pct(mag, mag < .1 ? 1 : 0) })));
       });
     }
