@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seer App · Market explorer (concept)</title>
+<meta name="description" content="Find, inspect and trade every Seer market across market types and chains. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* page styles for /app/ — prefix .ap- (see SYSTEM.md) */
+.ap-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
+</style>
+</head>
+<body data-app="app">
+<script>window.SEER_PAGE = {"nav": [["Markets", "#markets"], ["Explorer", "#explorer"], ["Leaderboard", "#leaderboard"], ["Create market", "#create"]], "search": "Search markets, outcomes or 0x…", "cta": ["Create market", "", "plus-square"]};</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero">
+    <div class="s-container s-hero__grid">
+      <div>
+        <div class="s-hero__kicker s-specs"><span>02</span><span>app.seer.pm</span><span>Explorer</span></div>
+        <h1 class="s-hero__title">Every market, <span class="t-accent">in one place.</span></h1>
+        <p class="s-hero__lede t-lede">The explorer for the whole protocol: every market type, every chain, every outcome token, traceable from question to redemption.</p>
+      </div>
+      <div class="s-hero__art"><div class="ap-art" id="ap-art"></div></div>
+    </div>
+  </section>
+  <section class="s-section--tight">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
+      <div id="ap-preview"></div>
+    </div>
+  </section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var D = window.SEER_SAMPLE, S = window.Seer;
+  var art = document.getElementById("ap-art"), box = document.getElementById("ap-preview");
+  S.motif.dotgrid(art, { cols: 22, rows: 12, dissolve: .5 });
+  var g = S.el("div", { class: "s-grid s-grid--cards" });
+  ["2831", "2832", "2835", "2833"].forEach(function (id) { g.appendChild(S.ui.marketCard(D.market(id))); });
+  box.appendChild(g);
+})();
+</script>
+</body>
+</html>

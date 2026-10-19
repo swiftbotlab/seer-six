@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futarchy · Conditional markets (concept)</title>
+<meta name="description" content="Conditional markets forecast a success measure if a proposal passes versus if it does not. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* page styles for /futarchy/ — prefix .ft- (see SYSTEM.md) */
+.ft-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
+</style>
+</head>
+<body data-app="futarchy">
+<script>window.SEER_PAGE = {"nav": [["Proposals", "#proposals"], ["Organisations", "#orgs"], ["How it works", "#how"]], "search": "Search proposals"};</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero">
+    <div class="s-container s-hero__grid">
+      <div>
+        <div class="s-hero__kicker s-specs"><span>04</span><span>futarchy.seer.pm</span><span>Gnosis</span></div>
+        <h1 class="s-hero__title">Two futures, <span class="t-accent">priced side by side.</span></h1>
+        <p class="s-hero__lede t-lede">Conditional markets forecast a success measure if a proposal passes and if it does not. The gap is information for the DAO. The vote still decides.</p>
+      </div>
+      <div class="s-hero__art"><div class="ft-art" id="ft-art"></div></div>
+    </div>
+  </section>
+  <section class="s-section--tight">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
+      <div id="ft-preview"></div>
+    </div>
+  </section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var D = window.SEER_SAMPLE, S = window.Seer;
+  var art = document.getElementById("ft-art"), box = document.getElementById("ft-preview");
+  var f = D.futarchy[0];
+  S.motif.fork(art, { split: .36 });
+  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("div", { class: "s-row s-row--between" }, S.el("b", { class: "t-title", text: f.id + " · " + f.title }), S.el("span", { class: "s-tag s-tag--pos", text: "Impact " + S.fmt.signed(f.impact) }) ));
+  S.chart.line(card, { series: [{ name: "If approved (YES)", short: "If approved", values: f.series.map(function (r) { return [r[0], r[1]]; }), color: "var(--c-yes)" }, { name: "If rejected (NO)", short: "If rejected", values: f.series.map(function (r) { return [r[0], r[2]]; }), color: "var(--c-no)" }], y: { format: function (v) { return S.fmt.price(v, 3); } }, height: 220 });
+  box.appendChild(card);
+})();
+</script>
+</body>
+</html>

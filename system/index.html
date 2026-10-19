@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seer · Design system (concept)</title>
+<meta name="description" content="Tokens, type, components, charts and motifs shared by the six Seer interfaces. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* gallery page — prefix .sy- */
+.sy-sec { padding-block: 40px; border-top: 1px solid var(--line); }
+.sy-sec:first-of-type { border-top: 0; }
+.sy-sec > .s-container > h2 { margin-bottom: 6px; }
+.sy-sec > .s-container > p { margin-bottom: 24px; }
+.sy-sw { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.sy-sw div { background: var(--surface); border-radius: var(--r-card); overflow: hidden; font-size: 12px; font-weight: 500; }
+.sy-sw div i { display: block; height: 56px; box-shadow: inset 0 -1px 0 var(--line); }
+.sy-sw div span { display: block; padding: 8px 10px 2px; color: var(--text); }
+.sy-sw div code { display: block; padding: 0 10px 10px; font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.sy-type > div { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.sy-type > div > code { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.sy-demo { display: grid; grid-template-columns: repeat(var(--c, 3), minmax(0, 1fr)); gap: 16px; align-items: start; }
+.sy-box { background: var(--surface); border-radius: var(--r-card); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.sy-box > .s-spec { margin-bottom: 2px; }
+.sy-motif { height: 180px; border-radius: var(--r-card); background: var(--ink); color: var(--violet-2); overflow: hidden; position: relative; }
+.sy-motif > div { position: absolute; inset: 0; }
+@media (max-width: 960px) { .sy-demo { --c: 2 !important; } }
+@media (max-width: 640px) { .sy-demo { --c: 1 !important; } .sy-type > div { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body data-app="system">
+<script>window.SEER_PAGE = { product: "Design system", nav: [["Tokens", "#tokens"], ["Type", "#type"], ["Components", "#components"], ["Data viz", "#dataviz"], ["Motifs", "#motifs"], ["States", "#states"]], connect: false };</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero" style="padding-bottom:24px">
+    <div class="s-container">
+      <div class="s-hero__kicker s-specs"><span>assets/system.css</span><span>assets/ui.js</span><span>assets/sample-data.js</span></div>
+      <h1 class="s-hero__title" style="max-width:18ch">One system for <span class="t-accent">six interfaces.</span></h1>
+      <p class="s-hero__lede t-lede">Every token, component, chart and motif the six demos share. Switch the theme in the top strip to check both modes.</p>
+    </div>
+  </section>
+
+  <section class="sy-sec" id="tokens"><div class="s-container">
+    <h2 class="t-h3">Colour</h2><p class="t-body">Brand constants from the Brandbook, UI tokens from the Web palette frame, and the additions we made (semantic colours, risk bands, chart palette).</p>
+    <p class="s-spec u-mb-2">Brand</p><div class="sy-sw" data-sw="--violet-brand,--ink,--graphite,--graphite-2,--graphite-3,--fog,--lavender,--logo-on-violet"></div>
+    <p class="s-spec u-mb-2 u-mt-6">Surfaces and text (theme-aware)</p><div class="sy-sw" data-sw="--bg,--surface,--surface-2,--surface-3,--line,--text,--text-2,--text-3,--violet,--violet-2,--violet-3,--sec-bg,--sec-fg"></div>
+    <p class="s-spec u-mb-2 u-mt-6">Semantic and risk bands (meaning only, always with a label)</p><div class="sy-sw" data-sw="--pos,--neg,--warn,--live,--band-low,--band-mod,--band-high,--band-crit"></div>
+    <p class="s-spec u-mb-2 u-mt-6">Chart palette (fixed order) and sequential ramp</p><div class="sy-sw" data-sw="--c1,--c2,--c3,--c4,--c5,--c6,--c-other,--seq-1,--seq-3,--seq-5"></div>
+  </div></section>
+
+  <section class="sy-sec" id="type"><div class="s-container">
+    <h2 class="t-h3">Type</h2><p class="t-body">PP Neue Montreal, Suisse Int'l Mono and Reckless when installed; Geist, Geist Mono and Instrument Serif Italic otherwise.</p>
+    <div class="sy-type">
+      <div><code>.t-display</code><span class="t-display">seer</span></div>
+      <div><code>.t-h1 + .t-accent</code><span class="t-h1">See what the <span class="t-accent">markets</span> believe.</span></div>
+      <div><code>.t-caps</code><span class="t-caps" style="font-size:44px">Every opinion has a price</span></div>
+      <div><code>.t-h2</code><span class="t-h2">Interface heading</span></div>
+      <div><code>.t-h3</code><span class="t-h3">Section heading</span></div>
+      <div><code>.t-title (Bold 16/24)</code><span class="t-title">Will ETH close above $5,000 on 31 Dec 2026?</span></div>
+      <div><code>.t-amount (Bold 32, −2%)</code><span class="t-amount">$100.00</span></div>
+      <div><code>.t-body</code><span class="t-body">Conditional markets forecast a success measure if a proposal passes and if it does not.</span></div>
+      <div><code>.t-ui (Medium 13)</code><span class="t-ui">Markets · Create market · Leaderboard</span></div>
+      <div><code>.t-meta (Medium 12)</code><span class="t-meta">$170K Vol. · 4m ago · Crypto</span></div>
+      <div><code>.t-micro / .s-specs</code><span class="s-specs"><span>Est. on Gnosis Chain</span><span>Mkt <b>#2841</b></span><span>Status: open</span><span>0x5eed00</span></span></div>
+    </div>
+  </div></section>
+
+  <section class="sy-sec" id="components"><div class="s-container">
+    <h2 class="t-h3">Components</h2><p class="t-body">Kit components first: pill search, category row, outcome rows, Up/Down, three-way and the bet slip.</p>
+    <div class="sy-demo" style="--c:3">
+      <div class="sy-box"><span class="s-spec">Buttons</span>
+        <div class="s-row"><button class="s-btn" type="button">Primary</button><button class="s-btn s-btn--secondary" type="button">Secondary</button><button class="s-btn s-btn--ghost" type="button">Ghost</button></div>
+        <div class="s-row"><button class="s-btn s-btn--outline" type="button">Outline</button><button class="s-btn s-btn--quiet" type="button">Quiet</button><button class="s-btn s-btn--sm" type="button">Small</button><button class="s-btn s-btn--xs" type="button">Yes</button><button class="s-btn s-btn--xs s-btn--secondary" type="button">No</button></div>
+        <button class="s-btn s-btn--pill" type="button" id="sy-pill">Create market</button>
+        <div class="s-row"><button class="s-icon-btn" type="button" aria-label="Filter" data-i="filter"></button><button class="s-icon-btn" type="button" aria-label="Previous" data-i="chevron-left"></button><button class="s-icon-btn s-icon-btn--sm" type="button" aria-label="Copy" data-i="copy"></button></div>
+      </div>
+      <div class="sy-box"><span class="s-spec">Search, chips, segments, tabs</span>
+        <label class="s-search"><span data-i="search"></span><span class="s-sr">Search</span><input type="search" placeholder="Search markets..."></label>
+        <div id="sy-chips"></div><div id="sy-seg"></div><div id="sy-tabs"></div>
+      </div>
+      <div class="sy-box"><span class="s-spec">Tags, states, verification, chains</span>
+        <div class="s-row" id="sy-states" style="--gap:6px"></div>
+        <div class="s-row" id="sy-verify" style="--gap:14px"></div>
+        <div class="s-row" id="sy-chains" style="--gap:14px"></div>
+        <div class="s-row" style="--gap:6px"><span class="s-tag">Categorical</span><span class="s-tag s-tag--violet">Conditional</span><span class="s-tag s-tag--pos">+1.70%</span><span class="s-tag s-tag--neg">−0.70%</span><span class="s-tag s-tag--mono">sDAI</span><span class="s-live"><i class="s-dot"></i>LIVE</span><span class="s-sample">Sample data</span></div>
+        <div class="s-row" style="--gap:6px"><span class="s-band" data-band="low">Low</span><span class="s-band" data-band="mod">Moderate</span><span class="s-band" data-band="high">High</span><span class="s-band" data-band="crit">Critical</span></div>
+      </div>
+    </div>
+    <p class="s-spec u-mb-2 u-mt-8">Market cards (kit 328×210, radius 9)</p>
+    <div class="s-grid s-grid--cards" id="sy-cards"></div>
+    <div class="sy-demo u-mt-6" style="--c:3">
+      <div class="sy-box"><span class="s-spec">Outcome rows with probability wash</span><div class="s-orows" id="sy-orows"></div></div>
+      <div id="sy-ticket"></div>
+      <div class="sy-box"><span class="s-spec">Stats, address, timeline</span><div class="s-stats" style="--cols:2" id="sy-stats"></div><div id="sy-kv"></div></div>
+    </div>
+    <div class="sy-box u-mt-6"><span class="s-spec">Lifecycle timeline</span><div id="sy-tl"></div></div>
+    <p class="s-spec u-mb-2 u-mt-8">Table (sortable, tabular figures, scrolls inside its card on small screens)</p>
+    <div id="sy-table"></div>
+  </div></section>
+
+  <section class="sy-sec" id="dataviz"><div class="s-container">
+    <h2 class="t-h3">Data viz</h2><p class="t-body">2px lines, end dots with a surface ring, hairline grid, labels in text colours, a crosshair tooltip on hover and keyboard (arrow keys on a focused chart).</p>
+    <div class="sy-demo" style="--c:2">
+      <div class="sy-box"><span class="s-spec">Line, one series (area wash)</span><div id="sy-line1"></div></div>
+      <div class="sy-box"><span class="s-spec">Line, YES vs NO branch</span><div id="sy-line2"></div></div>
+      <div class="sy-box"><span class="s-spec">Forecast distribution (EF waves)</span><div id="sy-dist"></div></div>
+      <div class="sy-box"><span class="s-spec">Bars and 100% stack</span><div id="sy-bars"></div><div id="sy-stack" class="u-mt-4"></div><div class="s-row u-mt-2" id="sy-spark"></div></div>
+    </div>
+  </div></section>
+
+  <section class="sy-sec" id="motifs"><div class="s-container">
+    <h2 class="t-h3">Motifs that carry data</h2><p class="t-body">Each interface owns one Electric Foundation motif, and each motif encodes something real.</p>
+    <div class="sy-demo" style="--c:3" id="sy-motifs"></div>
+  </div></section>
+
+  <section class="sy-sec" id="states"><div class="s-container">
+    <h2 class="t-h3">States</h2><p class="t-body">Empty, loading, notice and toast.</p>
+    <div class="sy-demo" style="--c:3">
+      <div id="sy-empty"></div>
+      <div class="sy-box"><span class="s-spec">Loading</span><div id="sy-skel"></div><span class="s-loading" aria-label="Loading"><i></i><i></i><i></i></span></div>
+      <div class="sy-box"><span class="s-spec">Callouts and toast</span>
+        <div class="s-callout"><span data-i="info"></span><span><b>Information, not the decision.</b> The DAO vote decides; markets inform it.</span></div>
+        <div class="s-callout s-callout--warn"><span data-i="alert"></span><span><b>Thin pool.</b> A $500 trade moves this price by about 4%.</span></div>
+        <button class="s-btn s-btn--ghost" type="button" data-demo="Toasts confirm demo actions. Nothing is sent.">Show a toast</button>
+      </div>
+    </div>
+  </div></section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var S = window.Seer, D = window.SEER_SAMPLE, $ = S.$, $$ = S.$$, f = S.fmt;
+  $$("[data-i]").forEach(function (n) { n.innerHTML = S.icon(n.getAttribute("data-i"), 16); });
+  $("#sy-pill").insertAdjacentHTML("beforeend", S.icon("plus-square", 18));
+  // swatches (live values so theme switches update them)
+  function swatches() {
+    $$("[data-sw]").forEach(function (box) {
+      S.clear(box);
+      box.getAttribute("data-sw").split(",").forEach(function (v) {
+        var val = S.css(v);
+        box.appendChild(S.el("div", {}, S.el("i", { style: { background: "var(" + v + ")" } }), S.el("span", { text: v.replace("--", "") }), S.el("code", { text: val })));
+      });
+    });
+  }
+  swatches(); document.addEventListener("seer:theme", swatches);
+  $("#sy-chips").appendChild(S.ui.chipRow([["all", "All"], ["crypto", "Crypto"], ["gov", "Governance"], ["grants", "Grants"], ["risk", "Risk"], ["weather", "Weather"], ["seer", "Seer"]], "all"));
+  $("#sy-seg").appendChild(S.ui.seg([["1d", "1D"], ["1w", "1W"], ["1m", "1M"], ["all", "All"]], "1m"));
+  S.ui.tabs($("#sy-tabs"), [{ label: "Activity", count: 12 }, { label: "Top holders" }, { label: "Related conditional markets", count: 2 }, { label: "Comments" }]);
+  D.states.forEach(function (s) { $("#sy-states").appendChild(S.ui.stateBadge(s.id)); });
+  D.verification.forEach(function (v) { $("#sy-verify").appendChild(S.ui.verifyBadge(v.id)); });
+  D.chains.forEach(function (c) { $("#sy-chains").appendChild(S.ui.chainBadge(c.id)); });
+  ["2832", "2831", "2835", "2833"].forEach(function (id) { $("#sy-cards").appendChild(S.ui.marketCard(D.market(id))); });
+  var m = D.market("2832");
+  m.outcomes.forEach(function (o, i) { $("#sy-orows").appendChild(S.ui.orow(o, { rank: o.invalid ? null : i + 1, actions: i < 2 })); });
+  S.ui.ticket($("#sy-ticket"), { market: D.market("2831") });
+  var st = $("#sy-stats");
+  st.appendChild(S.ui.stat("Volume", f.usd(D.market("2831").volume), { delta: .042, deltaNote: "24h" }));
+  st.appendChild(S.ui.stat("Liquidity", f.usd(D.market("2831").liquidity), { unit: "sDAI" }));
+  var mk = D.market("2837");
+  $("#sy-kv").appendChild(S.ui.kv([
+    ["Market", S.ui.addr(mk.address, { what: "market address" })],
+    ["Condition ID", S.ui.addr(mk.conditionId, { chars: 6, what: "condition ID" })],
+    ["State", S.ui.stateBadge(mk.state)],
+    ["Chain", S.ui.chainBadge(mk.chain)]
+  ]));
+  $("#sy-tl").appendChild(S.ui.timeline(D.lifecycleOf(mk)));
+  S.ui.table($("#sy-table"), [
+    { key: "question", label: "Market", sort: true, render: function (r) { return S.el("span", { class: "s-row s-row--nowrap", style: { "--gap": "10px" } }, S.ui.avatar(r.appId === "app" ? "grid" : r.appId, "sm"), S.el("span", { class: "u-clamp-1", style: { maxWidth: "380px" }, text: r.question })); } },
+    { key: "type", label: "Type", sort: true, render: function (r) { return S.ui.typeTag(r); } },
+    { key: "chain", label: "Chain", sort: true, render: function (r) { return S.ui.chainBadge(r.chain); } },
+    { key: "state", label: "State", sort: true, render: function (r) { return S.ui.stateBadge(r.state); } },
+    { key: "liquidity", label: "Liquidity", num: true, sort: true, render: function (r) { return f.usd(r.liquidity); } },
+    { key: "volume", label: "Volume", num: true, sort: true, render: function (r) { return f.usd(r.volume); } },
+    { key: "address", label: "Contract", render: function (r) { return S.ui.addr(r.address); } }
+  ], { rows: D.markets.slice(0, 8), sortKey: "volume", caption: "Sample markets" });
+  // charts
+  S.chart.line($("#sy-line1"), { series: [{ name: "Yes", values: D.history("2831", 0, { days: 30 }) }], y: { min: 0, max: 1, ticks: [0, .25, .5, .75, 1] }, height: 220, ring: "var(--surface)" });
+  var fp = D.futarchy[0];
+  S.chart.line($("#sy-line2"), { series: [{ name: "If approved (YES)", short: "If approved", values: fp.series.map(function (r) { return [r[0], r[1]]; }), color: "var(--c-yes)" }, { name: "If rejected (NO)", short: "If rejected", values: fp.series.map(function (r) { return [r[0], r[2]]; }), color: "var(--c-no)" }], y: { format: function (v) { return f.price(v, 3); } }, height: 220 });
+  var p = D.proposal(D.featuredProposal);
+  S.chart.dist($("#sy-dist"), { curves: p.deep.forecasts.slice(0, 3).map(function (fc) { var a = D.agents.filter(function (x) { return x.id === fc.agent; })[0]; return { name: a.name, mean: fc.mean, sd: fc.sd }; }), domain: [0, 10], height: 200, markers: [{ x: p.deep.marketScore, label: "Market " + f.num(p.deep.marketScore, 2) }] });
+  S.chart.bars($("#sy-bars"), D.riskAssets.slice().sort(function (a, b) { return b.pdAnnual - a.pdAnnual; }).slice(0, 4).map(function (a) { return { label: a.symbol, value: a.pdAnnual, color: "var(--band-" + a.band + ")", note: "Yearly PD" }; }), { format: function (v) { return f.pct(v, 1); }, max: .15 });
+  S.chart.stack($("#sy-stack"), m.outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return { label: o.name, value: o.price }; }));
+  ["2831", "2832", "2840"].forEach(function (id, i) { var w = S.el("span", { class: "s-row t-meta", style: { "--gap": "8px" } }, "#" + id); w.appendChild(S.chart.spark(D.history(id, 0, { points: 30 }).map(function (x) { return x[1]; }), { color: S.chart.palette[i] })); $("#sy-spark").appendChild(w); });
+  // motifs
+  var mot = [
+    ["home", "Converging wedges", "Outcome shares converging on one price", function (n) { S.motif.wedges(n, { weights: m.outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 8, w: 600, h: 300, fade: true }); }],
+    ["app", "Dot grid to line grid", "Uncertainty becoming the explorer's structure", function (n) { S.motif.dotgrid(n, { cols: 20, rows: 6, cell: 30, dissolve: .5 }); }],
+    ["deep", "Stacked waves", "Forecast distributions for a field", function (n) { S.motif.waves(n, { count: 4, stroke: 18, w: 600, h: 300 }); }],
+    ["futarchy", "45° fork", "One proposal, two priced futures", function (n) { S.motif.fork(n, { w: 600, h: 300, ws: 5, wa: 5, wb: 5 }); }],
+    ["opportunity", "Data bars", "A field of entries, ranked by price", function (n) { var w = S.el("div", { style: { position: "absolute", inset: "24px" } }); n.appendChild(w); S.motif.barcode(w, { values: D.proposals.slice().sort(function (a, b) { return b.opp.pSelect - a.opp.pSelect; }).slice(0, 10).map(function (x) { return x.opp.pSelect; }), highlight: [0, 1, 2, 3, 4, 5, 6, 7], bar: 9, gap: 5 }); }],
+    ["risk", "45° stripes", "A caution field behind risk bands", function (n) { S.motif.stripes(n, { gap: 22, width: 2, w: 600, h: 300, opacity: .6 }); }]
+  ];
+  mot.forEach(function (x) {
+    var art = S.el("div", { class: "sy-motif" }), host = S.el("div"); art.appendChild(host);
+    $("#sy-motifs").appendChild(S.el("div", { class: "sy-box" }, art, S.el("div", { class: "s-row", style: { "--gap": "8px" } }, S.el("span", { html: S.glyph(x[0]), style: { color: "var(--violet-3)", display: "inline-flex" } }), S.el("b", { class: "t-ui", text: x[1] }), S.el("span", { class: "s-spec u-right", text: S.app(x[0]).label })), S.el("p", { class: "t-meta", text: x[2] })));
+    x[3](host);
+  });
+  $("#sy-empty").appendChild(S.ui.empty({ title: "No markets match", text: "Try another chain or clear the filters.", action: { label: "Clear filters", onClick: function () { S.toast("Filters cleared (demo).", "check"); } } }));
+  $("#sy-skel").appendChild(S.ui.skeleton("line", 3)); $("#sy-skel").appendChild(S.ui.skeleton("row", 2));
+})();
+</script>
+</body>
+</html>

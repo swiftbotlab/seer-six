@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seer · Decision infrastructure (concept)</title>
+<meta name="description" content="Seer is the protocol beneath six interfaces: one oracle, one outcome-token standard, one set of markets. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* page styles for /home/ — prefix .hm- (see SYSTEM.md) */
+.hm-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
+</style>
+</head>
+<body data-app="home">
+<script>window.SEER_PAGE = {"nav": [["Protocol", "#protocol"], ["Interfaces", "#interfaces"], ["Builders", "#builders"], ["Docs", "#docs"]], "cta": ["Open App", "../app/", "arrow-right"]};</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero">
+    <div class="s-container s-hero__grid">
+      <div>
+        <div class="s-hero__kicker s-specs"><span>01</span><span>seer.pm</span><span>Decision infrastructure</span></div>
+        <h1 class="s-hero__title">See what the <span class="t-accent">markets</span> believe.</h1>
+        <p class="s-hero__lede t-lede">Seer is the protocol beneath every interface on this site: one oracle, one outcome-token standard, one set of markets. Each app is a different way to read the same prices.</p>
+      </div>
+      <div class="s-hero__art"><div class="hm-art" id="hm-art"></div></div>
+    </div>
+  </section>
+  <section class="s-section--tight">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
+      <div id="hm-preview"></div>
+    </div>
+  </section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var D = window.SEER_SAMPLE, S = window.Seer;
+  var art = document.getElementById("hm-art"), box = document.getElementById("hm-preview");
+  S.motif.wedges(art, { weights: D.market("2832").outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 12, fade: true });
+  box.appendChild(S.ui.empty({ title: "The homepage is being built", text: "One protocol beneath six interfaces. This page will show how a price forms and how the apps fit together.", motif: "wedges", motifOpts: { weights: [.3, .2, .25, .1, .15], gap: 6, fade: true } }));
+})();
+</script>
+</body>
+</html>

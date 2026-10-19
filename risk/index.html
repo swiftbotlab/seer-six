@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Risk Pricing · Default estimates (concept)</title>
+<meta name="description" content="Market estimates of default risk across assets, to compare side by side. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* page styles for /risk/ — prefix .rk- (see SYSTEM.md) */
+.rk-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
+</style>
+</head>
+<body data-app="risk">
+<script>window.SEER_PAGE = {"nav": [["Board", "#board"], ["Over time", "#time"], ["Participate", "#participate"], ["Method", "#method"]], "search": "Search assets", "cta": ["Download CSV", "", "download"]};</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero">
+    <div class="s-container s-hero__grid">
+      <div>
+        <div class="s-hero__kicker s-specs"><span>06</span><span>risk.seer.pm</span><span>Ethereum</span></div>
+        <h1 class="s-hero__title">Risk, <span class="t-accent">as a range of prices.</span></h1>
+        <p class="s-hero__lede t-lede">Markets estimate the probability that each asset defaults this quarter, so you compare estimates across the board instead of reading a single yes or no.</p>
+      </div>
+      <div class="s-hero__art"><div class="rk-art" id="rk-art"></div></div>
+    </div>
+  </section>
+  <section class="s-section--tight">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
+      <div id="rk-preview"></div>
+    </div>
+  </section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var D = window.SEER_SAMPLE, S = window.Seer;
+  var art = document.getElementById("rk-art"), box = document.getElementById("rk-preview");
+  S.motif.stripes(art, { gap: 30, width: 2, opacity: .55 });
+  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("b", { class: "t-title", text: "Highest yearly default estimates (fictional assets)" }));
+  S.chart.bars(card, D.riskAssets.slice().sort(function (a, b) { return b.pdAnnual - a.pdAnnual; }).slice(0, 6).map(function (a) { return { label: a.symbol + " · " + a.name, value: a.pdAnnual, color: "var(--band-" + a.band + ")", note: "Yearly PD" }; }), { format: function (v) { return S.fmt.pct(v, 1); }, max: .15 });
+  box.appendChild(card);
+})();
+</script>
+</body>
+</html>

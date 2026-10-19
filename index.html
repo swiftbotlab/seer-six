@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seer · Six interfaces, one protocol (concept)</title>
+<meta name="description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="assets/system.css">
+<style>
+/* hub page — prefix .hb- */
+.hb-poster { margin-top: 28px; min-height: 560px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.hb-poster__copy { position: relative; z-index: 2; padding: 56px 48px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+.hb-poster__title { font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.04em; font-weight: 400; color: var(--lavender); max-width: 9ch; }
+.hb-poster__title .t-accent { color: #fff; }
+.hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 48ch; margin-top: 22px; }
+.hb-poster__art { position: relative; min-height: 320px; color: var(--violet); }
+.hb-poster__art .hb-wedges { position: absolute; inset: 0; }
+.hb-poster__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.hb-poster .s-btn--secondary { background: rgba(125, 51, 255, .18); color: #E0D2FF; }
+.hb-poster .s-btn--secondary:hover { background: rgba(125, 51, 255, .28); }
+.hb-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.hb-card { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-panel); overflow: hidden; transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.hb-card:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.hb-card:focus-within { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
+.hb-card__art { position: relative; height: 188px; background: var(--ink); color: var(--violet-2); overflow: hidden; }
+.hb-card__art > div { position: absolute; inset: 0; }
+.hb-card__art .hb-card__n { position: absolute; left: 12px; top: 10px; padding: 3px 6px; border-radius: 4px; background: rgba(12, 10, 22, .82); font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: rgba(224, 226, 245, .72); z-index: 2; }
+.hb-card__body { padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.hb-card__name { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
+.hb-card__name svg { width: 18px; height: 18px; color: var(--violet-3); }
+.hb-card__blurb { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; }
+.hb-card__foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.hb-card__url { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); overflow-wrap: anywhere; }
+.hb-card a.s-btn::after { content: ""; position: absolute; inset: 0; }
+.hb-card { position: relative; }
+.hb-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
+.hb-flow > div { background: var(--surface); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.hb-flow__step { display: flex; align-items: center; gap: 8px; }
+.hb-flow__step svg { width: 16px; height: 16px; color: var(--violet-3); }
+.hb-flow b.hb-big { font-size: 26px; font-weight: 600; letter-spacing: -.02em; }
+.hb-notes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.hb-notes ol { list-style: none; padding: 0; margin-top: 18px; counter-reset: d; display: flex; flex-direction: column; gap: 14px; }
+.hb-notes ol li { counter-increment: d; position: relative; padding-left: 34px; color: var(--text-2); font-size: 14px; line-height: 1.55; font-weight: 500; }
+.hb-notes ol li::before { content: counter(d, decimal-leading-zero); position: absolute; left: 0; top: 1px; font-family: var(--font-mono); font-size: 11px; color: var(--violet-3); }
+.hb-notes ol li b { color: var(--text); font-weight: 600; }
+@media (max-width: 1100px) { .hb-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hb-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 860px) {
+  .hb-poster { grid-template-columns: 1fr; min-height: 0; }
+  .hb-poster__copy { padding: 36px 24px 28px; }
+  .hb-poster__art { min-height: 240px; }
+  .hb-notes { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) { .hb-cards, .hb-flow { grid-template-columns: 1fr; } .hb-poster__copy { padding: 28px 20px 24px; } }
+</style>
+</head>
+<body data-app="index">
+<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Interfaces", "#interfaces"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
+<script src="assets/shell.js"></script>
+<main id="main" class="s-main">
+  <div class="s-container">
+    <section class="s-poster hb-poster" aria-labelledby="hb-title">
+      <div class="hb-poster__copy">
+        <div>
+          <div class="s-specs"><span>Concept</span><span>Electric Foundation identity</span><span><b>6</b> interfaces</span></div>
+          <h1 id="hb-title" class="hb-poster__title u-mt-6">Six interfaces. <span class="t-accent">One protocol.</span></h1>
+          <p class="hb-poster__lede">A connected redesign of Seer's homepage, explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. One shell, one set of tokens and one shared sample dataset, so a single market can be followed from one app to the next.</p>
+        </div>
+        <div class="hb-poster__foot">
+          <div class="s-row">
+            <a class="s-btn s-btn--lg" href="home/">Start at the homepage</a>
+            <a class="s-btn s-btn--lg s-btn--secondary" href="#interfaces">All six demos</a>
+          </div>
+        </div>
+      </div>
+      <div class="hb-poster__art" aria-hidden="true">
+        <div class="hb-wedges" id="hb-wedges"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="s-section" id="interfaces" aria-labelledby="hb-int">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Six labelled demos</span><h2 id="hb-int" class="t-h2">The interfaces</h2></div>
+        <span class="s-sample">Sample data in every demo</span>
+      </div>
+      <div class="hb-cards" id="hb-cards"></div>
+    </div>
+  </section>
+
+  <section class="s-section--tight" id="connect" aria-labelledby="hb-con">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">One market, followed across apps</span><h2 id="hb-con" class="t-h2">How they connect</h2></div>
+      </div>
+      <p class="t-body u-mb-6" style="max-width:70ch" id="hb-con-lede"></p>
+      <div class="hb-flow" id="hb-flow"></div>
+    </div>
+  </section>
+
+  <section class="s-section" id="notes" aria-labelledby="hb-notes">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Rationale</span><h2 id="hb-notes" class="t-h2">Design notes</h2></div>
+        <a class="s-btn s-btn--ghost" href="system/">Open the design system</a>
+      </div>
+      <div class="hb-notes">
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
+          <ol>
+            <li><b>The official mark and wordmark</b>, taken from the designer's own vector files and recoloured, never redrawn.</li>
+            <li><b>The UI tokens as specified:</b> page #101013 / #F7F7F9, card #1A1A1E / #FFFFFF, nested #1F1F24 / #F1F1F4, primary #7D33FF, secondary #241E33 / #EFE9FC, active chip #8F55F7.</li>
+            <li><b>The geometry:</b> radius 9 for cards, 22 for panels, 8 for buttons and chips; 12px card padding; 40px page gutter and 32px grid gap on desktop.</li>
+            <li><b>The type spec:</b> Medium 13 for UI, Medium 12 for meta, Bold 16/24 for market titles, Bold 32 at −2% for amounts.</li>
+            <li><b>The kit's components:</b> pill search, category row with arrows, Yes/No outcome rows, Up/Down and three-way buttons, and the bet slip with +$ chips.</li>
+            <li><b>The graphic language</b>: converging wedges, stacked waves, the dot grid that becomes a line grid, 45° construction lines, data bars and mono spec labels.</li>
+          </ol>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Deliberate departures</h3>
+          <ol>
+            <li><b>Motifs carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision, data bars are a field of entries.</li>
+            <li><b>Typefaces.</b> PP Neue Montreal, Suisse Int'l Mono and Reckless are used when installed. Everyone else gets licensed stand-ins: Geist, Geist Mono (it keeps the slashed zero) and Instrument Serif Italic.</li>
+            <li><b>Contrast.</b> Small muted text is lifted from #67676F to #8A8A94 in dark mode and from #8E8E99 to #6E6E79 in light mode, so 12px labels pass WCAG AA.</li>
+            <li><b>Semantic colour, used sparingly.</b> The kit has no green, amber or red. We add them only for price moves and risk bands, always next to a sign or a label.</li>
+            <li><b>A chart palette.</b> Six colours, violet first, checked for colour-vision deficiency in both themes. Anything past six becomes "Other".</li>
+            <li><b>Small kit fixes.</b> The kit's bet slip shows Yes 69¢ and No 37¢, which add up to 106; our binary prices add up to 100. "$100,00" is written "$100.00".</li>
+          </ol>
+        </div>
+      </div>
+      <div class="s-callout u-mt-6"><span data-icon="info"></span><span><b>About the data.</b> Every price, volume, address and name in these demos is sample data, made up to show the design. Organisations, proposals, agents and assets are fictional, and every address starts with 0x5eed. Nothing is live and nothing can be traded.</span></div>
+    </div>
+  </section>
+</main>
+<script src="assets/sample-data.js"></script>
+<script src="assets/ui.js"></script>
+<script>
+(function () {
+  var S = window.Seer, D = window.SEER_SAMPLE;
+  // poster: six interfaces as six wedges converging on one point (one protocol)
+  S.motif.wedges(document.getElementById("hb-wedges"), { weights: [1, 1, 1, 1, 1, 1], gap: 26, vp: [.98, .42], w: 800, h: 640, fade: true });
+
+  // six labelled demo cards
+  var cards = document.getElementById("hb-cards"), base = location.href.replace(/[#?].*$/, "").replace(/index\.html$/, "");
+  var MOTIF = {
+    home: function (n) { S.motif.wedges(n, { weights: D.market("2832").outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 10, w: 600, h: 300, vp: [.92, .5], fade: true }); },
+    app: function (n) { S.motif.dotgrid(n, { cols: 20, rows: 8, cell: 30, dissolve: .45 }); },
+    deep: function (n) { S.motif.waves(n, { count: 4, stroke: 20, w: 600, h: 330 }); },
+    futarchy: function (n) { S.motif.fork(n, { split: .4, w: 600, h: 300, ws: 5, wa: 5, wb: 5 }); },
+    opportunity: function (n) { var v = D.proposals.slice().sort(function (a, b) { return b.opp.pSelect - a.opp.pSelect; }).slice(0, 9).map(function (p) { return p.opp.pSelect; }); var w = S.el("div", { style: { position: "absolute", left: "16px", right: "16px", top: "42px", bottom: "18px" } }); n.appendChild(w); S.motif.barcode(w, { values: v, highlight: [0, 1, 2, 3, 4, 5, 6, 7], bar: 10, gap: 6 }); },
+    risk: function (n) { S.motif.stripes(n, { gap: 26, width: 2, w: 600, h: 300, opacity: .6 }); }
+  };
+  S.apps.forEach(function (a) {
+    var art = S.el("div", { class: "hb-card__art" }, S.el("span", { class: "hb-card__n", text: a.n + " · " + a.host }));
+    var host = S.el("div"); art.appendChild(host);
+    var url = base + a.path;
+    var card = S.el("article", { class: "hb-card" }, art, S.el("div", { class: "hb-card__body" },
+      S.el("h3", { class: "hb-card__name", html: S.glyph(a.id) }, a.name),
+      S.el("p", { class: "hb-card__blurb", text: a.blurb }),
+      S.el("div", { class: "hb-card__foot" },
+        S.el("a", { class: "s-btn s-btn--secondary", href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } }, "Open demo", S.el("span", { html: S.icon("arrow-right", 16) })),
+        S.el("span", { class: "hb-card__url", text: url }))));
+    cards.appendChild(card);
+    MOTIF[a.id](a.id === "opportunity" ? art : host);
+  });
+
+  // the connected thread (all numbers from the shared sample dataset)
+  var p = D.proposal(D.featuredProposal), f = D.futarchy[0], r4 = D.round4;
+  document.getElementById("hb-con-lede").textContent = r4.name + " is a fictional grants programme with " + D.proposals.length + " proposals, " + r4.slots + " funding slots and a five-person review panel. Follow one proposal, " + p.id + " (“" + p.title + "”), through four apps.";
+  var steps = [
+    ["deep", "Deep", "#2841", S.fmt.num(p.deep.marketScore, 2) + " / 10", "Agents forecast the panel's score. " + p.id + " ranks " + p.deep.rank + " of " + D.proposals.length + ", right on the funding line."],
+    ["opportunity", "Opportunity", "#2842", S.fmt.pct0(p.opp.pSelect), "Traders price its chance of being funded. Reviewers read the borderline entries first; the panel decides."],
+    ["futarchy", "Futarchy", "LIP-31", S.fmt.signed(f.impact), "Conditional markets compare LAT if the round's budget passes versus if it fails. That is information for the vote, not the vote itself."],
+    ["app", "App", "0x5eed…", D.markets.length + " markets", "The explorer lists every market above with its contract, condition ID, outcome tokens and event log."]
+  ];
+  var flow = document.getElementById("hb-flow");
+  steps.forEach(function (s) {
+    flow.appendChild(S.el("div", {},
+      S.el("div", { class: "hb-flow__step" }, S.el("span", { html: S.glyph(s[0]) }), S.el("a", { class: "t-ui", href: s[0] + "/", text: s[1] }), S.el("span", { class: "s-spec u-right", text: s[2] })),
+      S.el("b", { class: "hb-big t-num", text: s[3] }),
+      S.el("p", { class: "t-meta", style: { color: "var(--text-2)", lineHeight: "1.5" }, text: s[4] })));
+  });
+  document.querySelectorAll("[data-icon]").forEach(function (n) { n.outerHTML = S.icon(n.getAttribute("data-icon"), 16); });
+})();
+</script>
+</body>
+</html>

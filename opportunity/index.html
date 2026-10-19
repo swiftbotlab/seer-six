@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opportunity Markets · Triage by price (concept)</title>
+<meta name="description" content="Traders forecast which submissions are likely to be selected; reviewers keep the final say. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="../assets/system.css">
+<style>
+/* page styles for /opportunity/ — prefix .op- (see SYSTEM.md) */
+.op-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
+</style>
+</head>
+<body data-app="opportunity">
+<script>window.SEER_PAGE = {"nav": [["Live", "#live"], ["Archive", "#archive"], ["How it works", "#how"], ["For sponsors", "#sponsors"]], "search": "Search entries", "cta": ["Start a market", "", "plus-square"]};</script>
+<script src="../assets/shell.js"></script>
+<main id="main" class="s-main">
+  <section class="s-hero">
+    <div class="s-container s-hero__grid">
+      <div>
+        <div class="s-hero__kicker s-specs"><span>05</span><span>opportunity.seer.pm</span><span>Gnosis</span><span>sDAI</span></div>
+        <h1 class="s-hero__title">Let prices <span class="t-accent">read the pile first.</span></h1>
+        <p class="s-hero__lede t-lede">Traders forecast which submissions a sponsor is likely to select. The price is a triage signal for reviewers; the final choice stays with them.</p>
+      </div>
+      <div class="s-hero__art"><div class="op-art" id="op-art"></div></div>
+    </div>
+  </section>
+  <section class="s-section--tight">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
+      <div id="op-preview"></div>
+    </div>
+  </section>
+</main>
+<script src="../assets/sample-data.js"></script>
+<script src="../assets/ui.js"></script>
+<script>
+(function () {
+  var D = window.SEER_SAMPLE, S = window.Seer;
+  var art = document.getElementById("op-art"), box = document.getElementById("op-preview");
+  var props = D.proposals.slice().sort(function (a, b) { return b.opp.price - a.opp.price; });
+  S.motif.barcode(art, { values: props.slice(0, 18).map(function (p) { return p.opp.pSelect; }), highlight: [0, 1, 2, 3, 4, 5, 6, 7], bar: 12, gap: 7 });
+  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("b", { class: "t-title", text: D.round4.name + ": share of the market by proposal" }));
+  S.chart.stack(card, props.map(function (p) { return { label: p.id, value: p.opp.price }; }), { fold: 5, lg: true });
+  box.appendChild(card);
+})();
+</script>
+</body>
+</html>
