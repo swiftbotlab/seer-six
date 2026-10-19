@@ -59,8 +59,8 @@
   var marketTypes = [
     { id: "categorical", name: "Categorical", note: "One outcome wins. Prices sum to 1." },
     { id: "multi-categorical", name: "Multi-categorical", note: "Several outcomes can be true; the payout is split between them." },
-    { id: "scalar", name: "Scalar", note: "A number in a range, traded as DOWN/UP tokens." },
-    { id: "multi-scalar", name: "Multi-scalar", note: "Many related numbers at once (weights, scores, shares)." }
+    { id: "scalar", name: "Scalar", note: "A number in a range, traded as DOWN/UP tokens. A round can run one per item (Scalar × 40)." },
+    { id: "multi-scalar", name: "Multi-scalar", note: "One token per item; each redeems its number's share of the total." }
   ];
   var states = [
     { id: "not-open", label: "Reports not open yet", note: "Trading. The oracle has not opened for answers." },
@@ -158,12 +158,16 @@
     };
   });
   // Opportunity prices follow Deep's forecast: selection chance is a logistic around the funding cut-off.
+  // Exactly 8 proposals get funded, so the chances must add up to 8. The slope below the line is solved
+  // (bisection) so they do; above the line it stays 2.1, which keeps P-07 on the line at 50%.
+  // A funded share redeems 1/8 sDAI, so price = chance / 8 x (1 - Invalid).
   (function () {
     var sorted = proposals.slice().sort(function (a, b) { return b.deep.marketScore - a.deep.marketScore; });
-    var cut = (sorted[round4.slots - 1].deep.marketScore + sorted[round4.slots].deep.marketScore) / 2;
-    var tot = 0;
-    proposals.forEach(function (p) { p.opp.pSelect = round(clamp(sigm((p.deep.marketScore - cut) * 2.1), .015, .96), 3); tot += p.opp.pSelect; });
-    proposals.forEach(function (p) { p.opp.price = round(p.opp.pSelect / tot * .994, 4); });
+    var cut = (sorted[round4.slots - 1].deep.marketScore + sorted[round4.slots].deep.marketScore) / 2, INV = .006;
+    function chance(p, kb) { var d = p.deep.marketScore - cut; return clamp(d > 0 ? sigm(d * 2.1) : Math.max(sigm(d * kb), .004 + .03 * Math.exp(d)), .004, .96); } // long shots keep a small, falling tail
+    function total(kb) { return proposals.reduce(function (a, p) { return a + chance(p, kb); }, 0); }
+    var lo = 1, hi = 12; for (var it = 0; it < 60; it++) { var mid = (lo + hi) / 2; if (total(mid) > round4.slots) lo = mid; else hi = mid; }
+    proposals.forEach(function (p) { p.opp.pSelect = round(chance(p, (lo + hi) / 2), 3); p.opp.price = round(p.opp.pSelect / round4.slots * (1 - INV), 4); });
     sorted.forEach(function (p, k) { p.deep.rank = k + 1; });
   })();
   var featuredProposal = "P-07";
@@ -183,10 +187,20 @@
     out[out.length - 1][1] = yes; out[out.length - 1][2] = no;
     return out;
   }
+  // Shift each branch so its trailing 5-day mean equals the stated TWAP; the shift tapers to 0 over the
+  // last 12 hours so the last point is still the spot price.
+  function calibrate(series, yesTwap, noTwap) {
+    var n = series.length, w = Math.min(n, 5 * 24 + 1), sy = 0, sn = 0;
+    for (var i = n - w; i < n; i++) { sy += series[i][1]; sn += series[i][2]; }
+    var wt = function (i) { var left = n - 1 - i; return left >= 12 ? 1 : left / 12; }, sw = 0;
+    for (var j = n - w; j < n; j++) sw += wt(j);
+    var dy = (yesTwap * w - sy) / sw, dn = (noTwap * w - sn) / sw;
+    return series.map(function (x, k) { var q = wt(k); return [x[0], round(x[1] + dy * q, 4), round(x[2] + dn * q, 4)]; });
+  }
   function fprop(o) {
     o.impact = round((o.yesTwap - o.noTwap) / o.noTwap, 4);
     o.recommendation = o.impact > .01 ? "approve" : o.impact < -.01 ? "reject" : "neutral";
-    o.series = twapSeries(o.id, o.yesSpot, o.noSpot, 24 * 7);
+    o.series = calibrate(twapSeries(o.id, o.yesSpot, o.noSpot, 24 * 7), o.yesTwap, o.noTwap);
     return o;
   }
   var futarchyProposals = [
@@ -217,10 +231,10 @@
   var RISK = [
     ["ETH", "Halo staked ETH", "hlETH", .0062], ["ETH", "Quarry restaked ETH", "qrETH", .0418], ["ETH", "Ember ETH", "emETH", .0093],
     ["ETH", "Tidal staked ETH", "tsETH", .0141], ["ETH", "Vale liquid ETH", "vlETH", .0277], ["ETH", "Orbit restaking token", "obETH", .1062], ["ETH", "Pike wrapped ETH", "pkETH", .0035],
-    ["USD", "Harbor USD", "hbUSD", .0021], ["USD", "Lumen Dollar", "lmUSD", .0044], ["USD", "Ferrous USD", "feUSD", .0186], ["USD", "Plinth stable", "plUSD", .0007],
-    ["USD", "Arcade dollar", "acUSD", .0612], ["USD", "Moss synthetic USD", "msUSD", .0935], ["USD", "Keel USD", "klUSD", .0012], ["USD", "Saffron USD", "sfUSD", .0258],
-    ["USD", "Vantage yield USD", "vyUSD", .1384], ["USD", "Corral USD", "crUSD", .0049], ["USD", "Delta-neutral dollar", "dnUSD", .0471], ["USD", "Ostrich USD", "osUSD", .0096], ["USD", "Grove dollar", "grUSD", .0031],
-    ["BTC", "Anchor wrapped BTC", "anBTC", .0028], ["BTC", "Cobalt BTC", "cbXBT", .0074], ["BTC", "Thread BTC", "thBTC", .0165], ["BTC", "Loom staked BTC", "lmBTC", .0389], ["BTC", "Kiln BTC", "knBTC", .0057], ["BTC", "Spindle BTC", "spBTC", .0723],
+    ["USD", "Harbor USD", "hrbUSD", .0021], ["USD", "Lumen Dollar", "lmUSD", .0044], ["USD", "Ferrous USD", "frrUSD", .0186], ["USD", "Plinth stable", "plUSD", .0007],
+    ["USD", "Arcade dollar", "acUSD", .0612], ["USD", "Moss synthetic USD", "mosUSD", .0935], ["USD", "Keel USD", "klUSD", .0012], ["USD", "Saffron USD", "sfUSD", .0258],
+    ["USD", "Vantage yield USD", "vyUSD", .1384], ["USD", "Corral USD", "corUSD", .0049], ["USD", "Delta-neutral dollar", "dnUSD", .0471], ["USD", "Ostrich USD", "ostUSD", .0096], ["USD", "Grove dollar", "grUSD", .0031],
+    ["BTC", "Anchor wrapped BTC", "anBTC", .0028], ["BTC", "Cobalt BTC", "cobBTC", .0074], ["BTC", "Thread BTC", "thBTC", .0165], ["BTC", "Loom staked BTC", "lmBTC", .0389], ["BTC", "Kiln BTC", "knBTC", .0057], ["BTC", "Spindle BTC", "spBTC", .0723],
     ["Funds", "Meridian T-bill fund", "MTBF", .0011], ["Funds", "Cedar credit fund", "CCF-I", .0236], ["Funds", "Ridge treasury fund", "RTF", .0016], ["Funds", "Juniper loan fund", "JLF", .0542],
     ["Funds", "Atlas money market", "AMMF", .0019], ["Funds", "Basalt private credit", "BPC", .0811], ["Funds", "Willow short-duration", "WSD", .0064]
   ];
@@ -245,6 +259,9 @@
     note: "Asset names are fictional. Quarterly PD = 1 - (1 - annual PD)^(1/4)."
   };
 
+  var RISK_INV = .002, RISK_NONE = riskAssets.reduce(function (acc, a) { return acc * (1 - a.pdQuarterly); }, 1);
+  var RISK_SCALE = (1 - RISK_NONE - RISK_INV) / riskAssets.reduce(function (acc, a) { return acc + a.pdQuarterly; }, 0);
+
   /* ---------- markets (the App explorer's universe) ---------- */
   function mk(o) {
     var r = rng("mkt:" + o.id);
@@ -260,7 +277,7 @@
       q.symbol = q.symbol || (o.type === "scalar" ? (k === 0 ? "DOWN" : "UP") : q.name.replace(/[^A-Za-z0-9]/g, "").slice(0, 6).toUpperCase());
       return q;
     });
-    if (o.type === "categorical" || o.type === "multi-categorical") {
+    if ((o.type === "categorical" || o.type === "multi-categorical") && !o.noInvalid) {
       var inv = o.invalidPrice != null ? o.invalidPrice : .004;
       o.outcomes.push({ name: "Invalid", index: o.outcomes.length, token: addr("token:" + o.id + ":inv"), symbol: "INVALID", price: inv, invalid: true });
     }
@@ -274,32 +291,41 @@
     return o;
   }
   var markets = [
-    mk({ id: "2841", appId: "deep", type: "multi-scalar", chain: "optimism", collateral: "sUSDS", category: "Grants",
-      question: "Lattice Builders Grants R4: what will the panel score each proposal? (0-10)", short: "LBG R4 · panel score",
+    // A round of 40 scalar markets (one UP/DOWN pair per proposal, 0-10), listed as one record: "Scalar × 40".
+    // outcome.token = the proposal's UP token, outcome.down = its DOWN token; UP redeems score ÷ 10.
+    mk({ id: "2841", appId: "deep", type: "scalar", set: proposals.length, chain: "optimism", collateral: "sUSDS", category: "Grants",
+      question: "Lattice Builders Grants R4: what will the panel score each proposal? (0-10)", short: "LBG R4 · panel scores",
+      range: { min: 0, max: 10, unit: "/10" },
       state: "not-open", verify: "verified", liquidity: 18400, volume: 226900, ageDays: 12, opensInDays: 26, round: round4.id,
-      outcomes: proposals.map(function (p) { return { name: p.id + " · " + p.title, proposal: p.id, price: p.deep.up, symbol: p.id.replace("-", "") }; }) }),
+      outcomes: proposals.map(function (p) { var k = p.id.replace("-", ""); return { name: p.id + " · " + p.title, proposal: p.id, price: p.deep.up, value: p.deep.marketScore,
+        symbol: "UP_" + k, downSymbol: "DOWN_" + k, downPrice: p.deep.down, down: addr("down-token:2841:" + p.id),
+        conditionId: bytes32("condition:2841:" + p.id), questionId: bytes32("question:2841:" + p.id) }; }) }),
     mk({ id: "2842", appId: "opportunity", type: "multi-categorical", chain: "gnosis", collateral: "sDAI", category: "Grants",
       question: "Lattice Builders Grants R4: which proposals will the panel fund?", short: "LBG R4 · funded shortlist",
-      state: "not-open", verify: "verified", liquidity: 6120, volume: 41870, ageDays: 11, opensInDays: 26, round: round4.id, invalidPrice: .006,
-      outcomes: proposals.map(function (p) { return { name: p.id + " · " + p.title, proposal: p.id, price: p.opp.price, symbol: p.id.replace("-", "") }; }) }),
+      state: "not-open", verify: "verified", liquidity: 6120, volume: 41870, ageDays: 11, opensInDays: 26, round: round4.id, invalidPrice: .006, slots: round4.slots,
+      outcomes: proposals.map(function (p) { return { name: p.id + " · " + p.title, proposal: p.id, price: p.opp.price, chance: p.opp.pSelect, symbol: p.id.replace("-", "") }; }) }),
     mk({ id: "2843", appId: "futarchy", type: "categorical", chain: "gnosis", collateral: "sDAI", category: "Governance", futarchy: true,
       question: "Will Lattice DAO approve LIP-31 (fund Builders Grants Round 4 at 250,000 sDAI)?", short: "LIP-31 · decision",
-      state: "not-open", verify: "verified", liquidity: 9800, volume: 18350, ageDays: 9, opensInDays: 22, proposal: "LIP-31",
-      outcomes: [{ name: "Yes", price: .642 }, { name: "No", price: .354 }] }),
+      state: "not-open", verify: "verified", liquidity: 9800, volume: 18350, ageDays: 9, opensInDays: 22, proposal: "LIP-31", noInvalid: true, // futarchy: an invalid answer resolves as not approved
+      outcomes: [{ name: "Yes", price: .644, symbol: "YES_sDAI" }, { name: "No", price: .356, symbol: "NO_sDAI" }] }),
     mk({ id: "2844", appId: "futarchy", type: "scalar", chain: "gnosis", collateral: "sDAI", category: "Governance", futarchy: true, conditional: true,
-      parent: { id: "2843", outcome: "Yes" }, range: { min: 0, max: 3, unit: "sDAI" }, value: 1.2861,
-      question: "LAT price on 7 Nov 2026 if LIP-31 is approved (YES_LAT / YES_sDAI)", short: "LIP-31 · LAT if approved",
-      state: "not-open", verify: "verified", liquidity: 26100, volume: 15480, ageDays: 9, opensInDays: 19, proposal: "LIP-31",
+      parent: { id: "2843", outcome: "Yes" }, collSym: "YES_sDAI", range: { min: 0, max: 3, unit: "sDAI" }, value: 1.2861, branch: "yes",
+      question: "LAT price if LIP-31 is approved: 30-day TWAP to 10 Dec 2026", short: "LIP-31 · LAT if approved",
+      state: "not-open", verify: "verified", liquidity: 26100, volume: 15480, ageDays: 9, opensInDays: 52, proposal: "LIP-31",
       outcomes: [{ name: "DOWN", price: 1 - 1.2861 / 3 }, { name: "UP", price: 1.2861 / 3 }] }),
     mk({ id: "2845", appId: "futarchy", type: "scalar", chain: "gnosis", collateral: "sDAI", category: "Governance", futarchy: true, conditional: true,
-      parent: { id: "2843", outcome: "No" }, range: { min: 0, max: 3, unit: "sDAI" }, value: 1.2648,
-      question: "LAT price on 7 Nov 2026 if LIP-31 is not approved (NO_LAT / NO_sDAI)", short: "LIP-31 · LAT if rejected",
-      state: "not-open", verify: "verified", liquidity: 25240, volume: 14380, ageDays: 9, opensInDays: 19, proposal: "LIP-31",
+      parent: { id: "2843", outcome: "No" }, collSym: "NO_sDAI", range: { min: 0, max: 3, unit: "sDAI" }, value: 1.2648, branch: "no",
+      question: "LAT price if LIP-31 is not approved: 30-day TWAP to 10 Dec 2026", short: "LIP-31 · LAT if rejected",
+      state: "not-open", verify: "verified", liquidity: 25240, volume: 14380, ageDays: 9, opensInDays: 52, proposal: "LIP-31",
       outcomes: [{ name: "DOWN", price: 1 - 1.2648 / 3 }, { name: "UP", price: 1.2648 / 3 }] }),
-    mk({ id: "2850", appId: "risk", type: "multi-scalar", chain: "ethereum", collateral: "sDAI", category: "Risk",
-      question: "What is the yearly probability of default for each of 33 DeFi assets during Q4 2026?", short: "Q4 2026 · default board",
-      state: "not-open", verify: "verified", liquidity: 72400, volume: 318200, ageDays: 18, opensInDays: 74,
-      outcomes: riskAssets.map(function (a) { return { name: a.symbol + " · " + a.name, asset: a.id, price: a.pdAnnual, symbol: a.symbol.toUpperCase().slice(0, 6) }; }) }),
+    // Multi-categorical, 34 outcomes + Invalid: 1 sDAI is split equally between the assets that default in the
+    // quarter; No to All pays 1 sDAI if none do. A token is worth a little less than its quarterly PD because
+    // the payout is shared when several default: price = quarterly PD x riskScale, so all prices sum to 1.
+    mk({ id: "2850", appId: "risk", type: "multi-categorical", chain: "ethereum", collateral: "sDAI", category: "Risk",
+      question: "Which of these 33 DeFi assets will default during Q4 2026? No to All pays if none do", short: "Q4 2026 · default board",
+      state: "not-open", verify: "verified", liquidity: 72400, volume: 318200, ageDays: 18, opensInDays: 74, invalidPrice: RISK_INV, riskScale: RISK_SCALE,
+      outcomes: riskAssets.map(function (a) { return { name: a.symbol + " · " + a.name, asset: a.id, price: round(a.pdQuarterly * RISK_SCALE, 4), chance: a.pdQuarterly, pdAnnual: a.pdAnnual, symbol: a.symbol.toUpperCase().slice(0, 6) }; })
+        .concat([{ name: "No to All", noToAll: true, price: round(RISK_NONE, 4), chance: RISK_NONE, symbol: "NONE" }]) }),
     // general markets (App only)
     mk({ id: "2831", appId: "app", type: "categorical", chain: "ethereum", collateral: "sDAI", category: "Crypto", display: "binary",
       question: "Will ETH close above $5,000 on 31 Dec 2026?", state: "not-open", verify: "verified", liquidity: 54200, volume: 1284000, ageDays: 60, opensInDays: 73,

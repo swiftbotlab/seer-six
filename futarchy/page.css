@@ -309,3 +309,7 @@
   .ft-signal__grid .ft-cell:last-child .ft-cell__label { grid-column: 1 / -1; }
   .ft-signal__grid .ft-cell:last-child .ft-cell__sub { justify-self: end; }
 }
+
+/* ---- finisher additions ---- */
+.ft-rec--prov { color: var(--text-2); }
+.ft-prov { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }

@@ -49,6 +49,10 @@
     };
   }
   function centsF(p) { return F.num(p * 100, 2) + "¢"; }
+  // #2850 is multi-categorical: 1 sDAI is split between the assets that default, so a token trades a little under
+  // its quarterly PD. tokP(q) = q x riskScale (the same prices the App shows for #2850).
+  var SCALE = MKT.riskScale || 1;
+  function tokP(q) { return q * SCALE; }
   function hWord(h) { return h === "q" ? "per quarter" : "per year"; }
   function hShort(h) { return h === "q" ? "/ qtr" : "/ yr"; }
   function times(x) { return (x >= 10 ? F.num(x, 0) : F.num(x, 1)) + "×"; }
@@ -78,7 +82,7 @@
   };
   ["hlETH", "qrETH", "obETH"].forEach(function (id, i) { st.cmp.push(id); st.cmpColor[id] = i; });
   A.forEach(function (a) { st.basket[a.id] = true; });
-  var PAL = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)"];
+  var PAL = ["var(--c1)", "var(--c5)", "var(--c-no)", "var(--c4)"]; // entity colours: never a band colour (amber/red/green mean risk bands here)
   function est(a) { return st.mine[a.id] != null ? st.mine[a.id] : a.y; }
   function edited(a) { return st.mine[a.id] != null; }
   function editedList() { return A.filter(edited); }
@@ -241,7 +245,7 @@
   }
 
   /* ======================= 2. board ======================= */
-  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, "Ethereum", "sDAI", { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "Status: <b>trading</b>" }]));
+  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, "Ethereum", "sDAI", { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "Status: <b>reports not open yet · trading</b>" }]));
   (function () { var lg = $("#rk-plotlegend"); BANDS.forEach(function (b) { lg.appendChild(bandChip(b.id)); }); })();
   function renderStats() {
     var box = $("#rk-stats"), h = st.h; S.clear(box);
@@ -300,9 +304,9 @@
       body.appendChild(S.ui.empty({ title: "No assets match", text: "Try another group, turn a band back on, or clear the filter.", motif: "stripes", motifOpts: { gap: 12, width: 2, w: 120, h: 72 }, action: { label: "Show the whole board", onClick: resetFilters } }));
       key.textContent = ""; return;
     }
-    if (st.view === "bars") { body.appendChild(barsView(list)); key.textContent = "Dot: market estimate. Line: traders' range, the 10th to 90th percentile of positions by size. Ring: your estimate. Log scale, so each step to the right is the same multiple of risk; dashed lines are band edges."; }
+    if (st.view === "bars") { body.appendChild(barsView(list)); key.textContent = "Dot: market estimate. Line: traders' range, the spread of estimates traders set when they trade (10th to 90th percentile, size-weighted, from the Participate sliders). Ring: your estimate. Log scale, so each step to the right is the same multiple of risk; dashed lines are band edges."; }
     else if (st.view === "time") { body.appendChild(timeView(list)); key.textContent = "Weekly closing estimate over 12 weeks. Each card has its own scale to show the trend; use Compare to put assets on one scale."; }
-    else { tableView(body, list); key.textContent = "Select a column to sort. Token price is the quarterly chance of a default, in cents of sDAI."; }
+    else { tableView(body, list); key.textContent = "Select a column to sort. Token price is a little under the quarterly chance of a default (× " + F.num(SCALE, 2) + "), because 1 sDAI is split when several assets default."; }
   }
   function resetFilters() {
     st.group = "all"; st.q = ""; qIn.value = ""; BANDS.forEach(function (b) { st.bands[b.id] = true; });
@@ -408,7 +412,7 @@
       { key: "group", label: "Group", sort: function (a) { return GORD[a.group]; }, render: function (a) { return GLABEL[a.group]; }, class: "s-hide-sm" },
       { key: "y", label: "PD / yr", num: true, sort: true, render: function (a) { return el("b", { text: pdF(a.y) }); } },
       { key: "qq", label: "PD / qtr", num: true, sort: function (a) { return a.y; }, render: function (a) { return pdF(D.quarterly(a.y)); } },
-      { key: "tok", label: "Token", num: true, sort: function (a) { return a.y; }, render: function (a) { return centsF(D.quarterly(a.y)); }, class: "s-hide-sm" },
+      { key: "tok", label: "Token", num: true, sort: function (a) { return a.y; }, render: function (a) { return centsF(tokP(D.quarterly(a.y))); }, class: "s-hide-sm" },
       { key: "band", label: "Band", sort: function (a) { return a.y; }, render: function (a) { return bandChip(a.band); } },
       { key: "sd", label: "Traders' range", num: true, sort: true, render: function (a) { return pdF(hv(a.p10, h)) + "–" + pdF(hv(a.p90, h)); } },
       { key: "agree", label: "Agreement", sort: function (a) { return a.sd; }, render: function (a) { return a.agree; }, class: "s-hide-sm" },
@@ -429,8 +433,8 @@
   /* ======================= 3. compare ======================= */
   var PRESETS = [
     ["Staked vs restaked ETH", ["hlETH", "tsETH", "qrETH", "obETH"]],
-    ["Backed vs synthetic dollars", ["plUSD", "hbUSD", "msUSD", "vyUSD"]],
-    ["BTC wrappers", ["anBTC", "cbXBT", "lmBTC", "spBTC"]],
+    ["Backed vs synthetic dollars", ["plUSD", "hrbUSD", "mosUSD", "vyUSD"]],
+    ["BTC wrappers", ["anBTC", "cobBTC", "lmBTC", "spBTC"]],
     ["Treasury vs credit funds", ["MTBF", "RTF", "CCF-I", "BPC"]],
     ["Closest to a band edge", A.slice().sort(function (a, b) { return edgeDist(a) - edgeDist(b); }).slice(0, 4).map(function (a) { return a.id; })]
   ];
@@ -505,7 +509,7 @@
     var rows = [
       ["Per year", function (a) { return el("b", { text: pdF(a.y) }); }],
       ["Per quarter", function (a) { return pdF(D.quarterly(a.y)); }],
-      ["Token price", function (a) { return centsF(D.quarterly(a.y)); }],
+      ["Token price", function (a) { return centsF(tokP(D.quarterly(a.y))); }],
       ["Band", function (a) { return bandChip(a.band); }],
       ["Relative to the lowest here", function (a) { return times(a.y / minP); }],
       ["Traders' range " + hShort(h), function (a) { return pdF(hv(a.p10, h)) + "–" + pdF(hv(a.p90, h)); }],
@@ -663,7 +667,7 @@
     if (!n) { stack.appendChild(el("p", { class: "t-meta", text: "The basket is empty. Pick a preset or tick a group." })); return; }
     var items = BANDS.map(function (b) {
       var inB = list.filter(function (a) { return a.band === b.id; });
-      return { band: b.id, label: b.label + " · " + inB.length, value: inB.reduce(function (s, a) { return s + hazard(hv(a.y, h)); }, 0), color: "var(--band-" + b.id + ")" };
+      return { band: b.id, label: b.label + " · " + inB.length, value: inB.reduce(function (s, a) { return s + hazard(hv(a.y, h)); }, 0), color: "color-mix(in srgb, var(--band-" + b.id + ") 55%, var(--surface))" };
     }).filter(function (x) { return x.value > 0; });
     bandStack(stack, items);
   }
@@ -820,7 +824,7 @@
       legs.appendChild(el("div", { class: "rk-legs__head" }, el("span", { class: "s-spec", text: "Legs" }), el("span", { class: "s-spec", text: "Token price, now → yours" })));
       list.slice(0, 6).forEach(function (a) {
         var buy = est(a) > a.y;
-        legs.appendChild(el("div", { class: "rk-leg" }, el("span", { class: "s-tag s-tag--mono " + (buy ? "s-tag--violet" : "rk-tag-sell"), text: buy ? "Buy" : "Sell" }), el("b", { text: a.sym }), el("span", { class: "rk-leg__px", text: centsF(D.quarterly(a.y)) + " → " + centsF(D.quarterly(est(a))) })));
+        legs.appendChild(el("div", { class: "rk-leg" }, el("span", { class: "s-tag s-tag--mono " + (buy ? "s-tag--violet" : "rk-tag-sell"), text: buy ? "Buy" : "Sell" }), el("b", { text: a.sym }), el("span", { class: "rk-leg__px", text: centsF(tokP(D.quarterly(a.y))) + " → " + centsF(tokP(D.quarterly(est(a)))) })));
       });
       if (list.length > 6) legs.appendChild(el("p", { class: "t-meta", text: "and " + (list.length - 6) + " more" }));
     }
@@ -878,7 +882,7 @@
     var a = AM[st.active], box = $("#rk-formula"); if (!a || !box) return; var q = D.quarterly(a.y);
     S.clear(box);
     box.appendChild(el("div", { class: "rk-formula__head" }, el("span", { class: "s-spec", text: "Worked example" }), el("span", { class: "s-spec" }, el("b", { text: a.sym }), " · follows the board")));
-    box.appendChild(el("div", { class: "rk-formula__row" }, el("span", { text: "Token price" }), el("code", { text: centsF(q) }), el("span", { class: "t-meta", text: "= " + pdF(q) + " chance this quarter" })));
+    box.appendChild(el("div", { class: "rk-formula__row" }, el("span", { text: "Token price" }), el("code", { text: centsF(tokP(q)) }), el("span", { class: "t-meta", text: "= " + pdF(q) + " this quarter × " + F.num(SCALE, 2) + " (shared payout)" })));
     box.appendChild(el("div", { class: "rk-formula__row" }, el("span", { text: "Per year" }), el("code", { text: "1 − (1 − " + F.num(q, 4) + ")⁴" }), el("span", { class: "t-meta", text: "= " + pdF(a.y) })));
     box.appendChild(el("div", { class: "rk-formula__row" }, el("span", { text: "Back again" }), el("code", { text: "1 − (1 − " + F.num(a.y, 4) + ")^¼" }), el("span", { class: "t-meta", text: "= " + pdF(q) })));
   }
@@ -942,11 +946,11 @@
     var stats = el("div", { class: "s-stats", style: { "--cols": "3" } });
     stats.appendChild(S.ui.stat("Per year", pdF(a.y), { note: BAND[a.band].label + " band" }));
     stats.appendChild(S.ui.stat("Per quarter", pdF(q), { note: "Q4 2026" }));
-    stats.appendChild(S.ui.stat("Token price", centsF(q), { note: "pays 1 sDAI on default" }));
+    stats.appendChild(S.ui.stat("Token price", centsF(tokP(q)), { note: "1 sDAI, split if several default" }));
     panel.appendChild(stats);
     var dc = el("div", { class: "s-card s-card--pad rk-dr__card" }, el("div", { class: "rk-cardhead" }, el("b", { class: "t-title", text: "Traders' estimates" }), bandChip(a.band)));
     var dbox = el("div"); dc.appendChild(dbox);
-    dc.appendChild(el("p", { class: "t-meta", text: "80% of positions sit between " + pdF(hv(a.p10, h)) + " and " + pdF(hv(a.p90, h)) + " " + hWord(h) + ". Agreement: " + a.agree.toLowerCase() + "." }));
+    dc.appendChild(el("p", { class: "t-meta", text: "80% of traders' estimates (by size) sit between " + pdF(hv(a.p10, h)) + " and " + pdF(hv(a.p90, h)) + " " + hWord(h) + ". Agreement: " + a.agree.toLowerCase() + "." }));
     panel.appendChild(dc);
     var lc = el("div", { class: "s-card s-card--pad rk-dr__card" }, el("div", { class: "rk-cardhead" }, el("b", { class: "t-title", text: "Last 12 weeks" }), changeEl(a.change)));
     var lbox = el("div"); lc.appendChild(lbox); panel.appendChild(lc);

@@ -133,7 +133,7 @@
   --c1: #8F55F7; --c2: #1D9C8C; --c3: #BF7E1E; --c4: #D5598F; --c5: #3F80D9; --c6: #6E9B2C;
   --c-other: #4A4660;       /* graphite tint, "rest of field" */
   --c-yes: var(--c1);       /* binary / futarchy YES branch */
-  --c-no: var(--c2);        /* binary / futarchy NO branch */
+  --c-no: #BFBFE6;          /* futarchy NO branch: kit lavender, so "rejected" never reads as a positive colour */
   --grid: #26262C;
   --axis: #34343C;
   /* Sequential violet ramp (magnitude): 1 light -> 6 dark-strong */
@@ -174,6 +174,7 @@
 
   --c1: #7D33FF; --c2: #0E8C7B; --c3: #C97C10; --c4: #D84F8C; --c5: #2F74D0; --c6: #5E8E1E;
   --c-other: #C9C7D6;
+  --c-no: #8A84B4;
   --grid: #EDEDF1;
   --axis: #D6D6DE;
   --seq-1: #EFE9FC; --seq-2: #D9C9FB; --seq-3: #B996F9; --seq-4: #9461F8; --seq-5: #7D33FF; --seq-6: #5A1ED0;
@@ -285,19 +286,32 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-lockup__logo--mark { height: 26px; }
 .s-lockup__sep { width: 1px; height: 18px; background: var(--line-strong); }
 .s-lockup__product { font-size: 16px; font-weight: 500; letter-spacing: -.01em; color: var(--text); white-space: nowrap; }
-.s-nav { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.s-nav { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 0 1 auto; overflow-x: auto; scrollbar-width: none; }
+.s-nav::-webkit-scrollbar { display: none; }
+.s-nav.is-clipped { mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+.s-nav.is-clipped.is-end { mask-image: linear-gradient(90deg, transparent, #000 44px); -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px); }
 .s-nav a { display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: var(--r-control); font-size: var(--fs-ui); font-weight: 500; color: var(--text-2); white-space: nowrap; transition: color var(--dur) var(--ease), background var(--dur) var(--ease); }
 .s-nav a:hover { color: var(--text); background: var(--surface-2); }
 .s-nav a[aria-current="true"], .s-nav a.is-active { color: var(--text); }
 .s-header__end { margin-left: auto; display: flex; align-items: center; gap: 10px; flex: none; }
-.s-header .s-search { width: clamp(180px, 22vw, 320px); }
-@media (max-width: 1180px) { .s-header .s-search { width: 200px; } .s-header__in { gap: 18px; } }
+.s-header .s-search { width: clamp(180px, 22vw, 320px); flex: 0 1 auto; transition: width var(--dur) var(--ease); }
+@media (max-width: 1320px) { .s-header .s-search { width: 220px; min-width: 150px; } .s-header__in { gap: 20px; } }
+@media (max-width: 1200px) and (min-width: 961px) {
+  /* laptops: search collapses to an icon that opens on focus; wallet keeps only its icon */
+  .s-header .s-search { width: 40px; min-width: 40px; cursor: pointer; }
+  .s-header .s-search input { padding-right: 0; }
+  .s-header .s-search input::placeholder { color: transparent; }
+  .s-header .s-search:focus-within { width: 230px; }
+  .s-header .s-search:focus-within input::placeholder { color: var(--text-3); }
+  .s-header .s-search svg { left: 12px; }
+  .s-header__end .s-btn--ghost .s-btn__txt { display: none; }
+  .s-header__end .s-btn--ghost { padding: 0 11px; }
+}
 @media (max-width: 960px) {
   .s-header { height: auto; }
   .s-header__in { flex-wrap: wrap; height: auto; padding-block: 12px 0; row-gap: 6px; }
   .s-header .s-search { display: none; }
-  .s-nav { order: 3; width: calc(100% + var(--gutter) * 2); overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: calc(var(--gutter) - 12px); padding-bottom: 6px; mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
-  .s-nav::-webkit-scrollbar { display: none; }
+  .s-nav { order: 3; width: calc(100% + var(--gutter) * 2); flex: none; margin-inline: calc(var(--gutter) * -1); padding-inline: calc(var(--gutter) - 12px); padding-bottom: 6px; }
 }
 @media (max-width: 380px) { .s-strip .s-sample__mid { display: none; } }
 @media (max-width: 640px) {
@@ -307,6 +321,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
   .s-strip__apps { mask-image: none; -webkit-mask-image: none; }
   .s-strip__app { width: 30px; justify-content: center; padding: 0; }
   .s-strip__app .s-strip__name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .s-strip__app[aria-current="page"] { width: auto; padding: 0 9px 0 8px; gap: 6px; }
+  .s-strip__app[aria-current="page"] .s-strip__name { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: 11.5px; }
   .s-strip__app svg { width: 15px; height: 15px; }
   .s-strip .s-sample { padding: 0 7px; }
   .s-lockup__product { font-size: 15px; }
@@ -335,6 +351,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-hero__title { font-size: var(--fs-h1); line-height: 1.02; font-weight: 500; letter-spacing: -.03em; max-width: 14ch; }
 .s-hero__lede { margin-top: var(--s-5); }
 .s-hero__actions { margin-top: var(--s-8); display: flex; gap: 10px; flex-wrap: wrap; }
+.s-hero__actions .s-btn { --h: 48px; font-size: 14px; padding: 0 20px; } /* one hero CTA size across the five apps */
 .s-hero__art { position: relative; min-height: 320px; color: var(--violet-2); }
 @media (max-width: 960px) { .s-hero__grid { grid-template-columns: 1fr; } .s-hero__art { min-height: 220px; } .s-hero { padding-block: var(--s-10) var(--s-8); } }
 
@@ -438,8 +455,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-chain { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
 .s-chain i { width: 16px; height: 16px; border-radius: 5px; display: inline-grid; place-items: center; font-style: normal; font-family: var(--font-mono); font-size: 8.5px; font-weight: 600; letter-spacing: 0; background: var(--surface-3); color: var(--text); flex: none; }
 /* Mono "spec sheet" label run: EST. ON GNOSIS CHAIN · MKT #2841 · STATUS: OPEN [kit Page 4] */
-.s-specs { display: flex; flex-wrap: wrap; gap: 4px 0; font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
-.s-specs > * + *::before { content: "·"; margin: 0 .7em; color: var(--text-3); opacity: .7; }
+/* separators never start a line: each item carries its "·" in its left margin; the box is shifted left by
+   that margin and clipped there, so the separator of an item that wraps to a new line is cut off */
+.s-specs { --spec-sep: 1.9em; display: flex; flex-wrap: wrap; gap: 4px 0; margin-left: calc(var(--spec-sep) * -1); clip-path: inset(-12px -12px -12px var(--spec-sep)); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.s-specs > * { position: relative; margin-left: var(--spec-sep); }
+.s-specs > *::before { content: "·"; position: absolute; left: calc(var(--spec-sep) * -1); width: var(--spec-sep); text-align: center; color: var(--text-3); opacity: .7; }
 .s-specs b, .s-spec b { color: var(--text); font-weight: 400; }
 /* Sample-data badge: persistent honesty label */
 .s-sample { display: inline-flex; align-items: center; gap: 7px; height: 22px; padding: 0 9px; border-radius: var(--r-sm); border: 1px solid color-mix(in srgb, var(--violet-3) 40%, transparent); background: var(--violet-wash); color: var(--violet-3); font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; }
@@ -483,6 +503,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-orow__label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
 .s-orow__label .s-rank { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); width: 18px; flex: none; }
 .s-orow__pct { font-variant-numeric: tabular-nums; color: var(--text); min-width: 44px; text-align: right; }
+.s-orow__sub { display: block; font-size: 10.5px; line-height: 1.2; font-weight: 500; color: var(--text-3); letter-spacing: 0; white-space: nowrap; }
 .s-orow__delta { font-size: 11px; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
 .s-orow__actions { display: flex; gap: 6px; flex: none; }
 .s-orow__actions .s-btn { min-width: 42px; }
@@ -716,7 +737,7 @@ button.s-orow:hover { background: var(--surface-hover); }
    barcode = a field of entries · stripes = risk / caution field. */
 .s-motif { position: relative; width: 100%; height: 100%; color: var(--violet-2); }
 .s-motif svg { width: 100%; height: 100%; }
-.s-poster { position: relative; overflow: hidden; border-radius: var(--r-panel); background: var(--ink); color: var(--lavender); isolation: isolate; }
+.s-poster { position: relative; overflow: hidden; border-radius: var(--r-panel); background: var(--ink); color: var(--lavender); isolation: isolate; --c-no: #BFBFE6; }
 .s-poster--violet { background: var(--violet); color: var(--logo-on-violet); }
 .s-poster .s-specs, .s-poster .s-spec { color: rgba(224, 226, 245, .66); }
 .s-poster .s-specs b { color: #fff; }

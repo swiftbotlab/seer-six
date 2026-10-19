@@ -6,6 +6,24 @@
 <title>Risk Pricing · Default estimates, side by side (concept)</title>
 <meta name="description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read side by side as ranges instead of one yes or no. Concept by Swift Bot Labs; sample data with fictional assets, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+<link rel="preload" href="../assets/sample-data.js" as="script">
+<link rel="preload" href="../assets/ui.js" as="script">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Seer concept by Swift Bot Labs">
+<meta property="og:title" content="Risk Pricing · Default estimates, side by side (concept)">
+<meta property="og:description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read side by side as ranges instead of one yes or no. Concept by Swift Bot Labs; sample data with fictional assets, not affiliated with Seer.">
+<meta property="og:url" content="https://swiftbotlab.github.io/seer-six/risk/">
+<meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/risk.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Risk Pricing · Default estimates, side by side (concept): Electric Foundation poster with sample data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@swiftbotlab">
+<meta name="twitter:title" content="Risk Pricing · Default estimates, side by side (concept)">
+<meta name="twitter:description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read side by side as ranges instead of one yes or no. Concept by Swift Bot Labs; sample data with fictional assets, not affiliated with Seer.">
+<meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/risk.png">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
@@ -98,7 +116,7 @@
   <section class="s-section rk-cmpsec" id="compare">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Compare · up to four assets</span><h2 class="t-h2">Ranges, <span class="t-accent">not verdicts.</span></h2></div>
+        <div><span class="s-spec">Compare · up to four assets</span><h2 class="t-h2">Ranges, not verdicts.</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div class="rk-cmpbar">
@@ -108,7 +126,7 @@
       <div class="rk-presets" id="rk-presets"></div>
       <div class="rk-cmpgrid">
         <div class="s-card s-card--pad rk-cmpcard">
-          <div class="rk-cardhead"><div><b class="t-title">Where traders' estimates sit</b><p class="t-meta">Each curve is the spread of positions on one asset, weighted by size. The peak is the market price.</p></div></div>
+          <div class="rk-cardhead"><div><b class="t-title">Where traders' estimates sit</b><p class="t-meta">Each curve is the spread of estimates traders set on one asset when they trade, weighted by size. The peak is the market price.</p></div></div>
           <div id="rk-cmp-dist" class="rk-dist"></div>
         </div>
         <div class="s-card s-card--pad rk-cmpcard">
@@ -124,7 +142,7 @@
   <section class="s-section rk-ntasec" id="exposure">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">No to All · the whole board in one number</span><h2 class="t-h2">The chance that <span class="t-accent">nothing defaults.</span></h2></div>
+        <div><span class="s-spec">No to All · the whole board in one number</span><h2 class="t-h2">The chance that nothing defaults.</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div class="rk-ntagrid">
@@ -158,7 +176,7 @@
   <section class="s-section rk-partsec" id="participate">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Participate · Q4 2026</span><h2 class="t-h2">Set your <span class="t-accent">own estimates.</span></h2></div>
+        <div><span class="s-spec">Participate · Q4 2026</span><h2 class="t-h2">Set your own estimates.</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div class="s-split s-split--wide rk-part">
@@ -187,7 +205,7 @@
   <section class="s-section rk-methsec" id="method">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Method</span><h2 class="t-h2">How to <span class="t-accent">read the board.</span></h2></div>
+        <div><span class="s-spec">Method</span><h2 class="t-h2">How to read the board.</h2></div>
       </div>
       <div class="rk-meth">
         <article class="s-card s-card--pad rk-mcard">
@@ -204,7 +222,7 @@
         <article class="s-card s-card--pad rk-mcard">
           <span class="rk-mcard__n">02</span>
           <h3 class="t-h3">From token price to yearly PD</h3>
-          <p class="t-body">Each asset has a token in market #2850, and so does No to All. At resolution the sDAI is split between the assets that defaulted; if none did, No to All takes it. So a token's price is the market's chance of a default this quarter. The board shows it per year.</p>
+          <p class="t-body">Each asset has a token in market #2850, and so does No to All. At resolution the sDAI is split between the assets that defaulted; if none did, No to All takes it. So a token's price is close to the market's chance of a default this quarter, a little under it because the payout is shared when several assets default (here × 0.89, the factor that makes all 34 prices add up to 1 sDAI). The board shows the chance per year.</p>
           <div class="rk-formula" id="rk-formula"></div>
         </article>
         <article class="s-card s-card--pad rk-mcard">
@@ -244,7 +262,7 @@
             <ol class="rk-notes__list rk-notes__list--n">
               <li><b>Stripes carry data.</b> The EF 45° line field is the risk motif. In the hero its density rises with each band; in No to All each stripe is one asset, as wide as its share of the board's risk.</li>
               <li><b>A log scale, not bars from zero.</b> Estimates run from 0.07% to 14%. On a linear axis most of the board sits in one pixel; on a log scale twice as risky is always the same step.</li>
-              <li><b>Ranges next to every price.</b> Each estimate carries the 10th–90th percentile of traders' positions, so a 10% asset with a wide range reads differently from a tight one.</li>
+              <li><b>Ranges next to every price.</b> Each estimate carries the 10th–90th percentile of the estimates traders set when they trade (size-weighted), so a 10% asset with a wide range reads differently from a tight one.</li>
               <li><b>Band colours, used once.</b> The kit has no status colours. Green to red marks the four bands only, always beside a label and a distinct shape. Prices stay violet.</li>
               <li><b>Fictional assets.</b> No real protocol is paired with an invented default estimate. Seer's own default definition and pricing mechanics are kept as published.</li>
             </ol>

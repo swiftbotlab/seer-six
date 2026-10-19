@@ -6,6 +6,24 @@
 <title>Opportunity Markets · Triage by price (concept)</title>
 <meta name="description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+<link rel="preload" href="../assets/sample-data.js" as="script">
+<link rel="preload" href="../assets/ui.js" as="script">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Seer concept by Swift Bot Labs">
+<meta property="og:title" content="Opportunity Markets · Triage by price (concept)">
+<meta property="og:description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:url" content="https://swiftbotlab.github.io/seer-six/opportunity/">
+<meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Opportunity Markets · Triage by price (concept): Electric Foundation poster with sample data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@swiftbotlab">
+<meta name="twitter:title" content="Opportunity Markets · Triage by price (concept)">
+<meta name="twitter:description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
@@ -32,10 +50,10 @@
         <figure class="s-poster op-poster" id="op-poster">
           <div class="op-poster__top">
             <div class="s-specs"><span>Mkt <b>#2842</b></span><span>Multi-categorical</span><span><b>40</b> entries</span></div>
-            <div class="s-specs op-hide-xs"><span>Status: <b>trading</b></span></div>
+            <div class="s-specs op-hide-xs"><span>Status: <b>reports not open yet · trading</b></span></div>
           </div>
           <div class="op-board" id="op-board" tabindex="0" role="group" aria-roledescription="chart" aria-label="All 40 entries ranked by chance of selection, one bar each. Violet bars are inside the eight funding slots. Use the up and down arrow keys to read each entry; press Enter to open it." aria-describedby="op-cap"></div>
-          <div class="op-axis" aria-hidden="true"><span>0</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+          <div class="op-axis" aria-hidden="true"><span style="left:0">0</span><span style="left:22.36%">5%</span><span style="left:50%">25%</span><span style="left:70.71%">50%</span><span style="left:100%">100%</span></div>
           <figcaption class="op-poster__cap" id="op-cap" aria-live="polite"></figcaption>
         </figure>
       </div>
@@ -65,7 +83,7 @@
   <section class="s-section--tight" id="field" aria-labelledby="op-field-h">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">The field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its <span class="t-accent">chance of selection</span></h2></div>
+        <div><span class="s-spec">The field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its chance of selection</h2></div>
         <div class="s-row" style="--gap:10px" id="op-view"></div>
       </div>
       <div class="op-tools">
@@ -93,7 +111,7 @@
   <section class="s-section--tight" id="queue" aria-labelledby="op-queue-h">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">For the sponsor's reviewers</span><h2 class="t-h2" id="op-queue-h">Read the close calls <span class="t-accent">first</span></h2></div>
+        <div><span class="s-spec">For the sponsor's reviewers</span><h2 class="t-h2" id="op-queue-h">Read the close calls first</h2></div>
         <div class="s-row" style="--gap:8px">
           <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-export">Export queue (CSV)</button>
           <span class="s-sample">Sample data</span>
@@ -139,7 +157,7 @@
   <section class="s-section--tight" id="markets" aria-labelledby="op-markets-h">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Opportunity markets</span><h2 class="t-h2" id="op-markets-h">Live, upcoming and <span class="t-accent">settled</span></h2></div>
+        <div><span class="s-spec">Opportunity markets</span><h2 class="t-h2" id="op-markets-h">Live, upcoming and settled</h2></div>
       </div>
       <div class="op-markets" id="op-markets"></div>
     </div>
@@ -149,7 +167,7 @@
   <section class="s-section--tight" id="how" aria-labelledby="op-how-h">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">How it works · Mkt #2842</span><h2 class="t-h2" id="op-how-h">One pool, <span class="t-accent">several winners</span></h2></div>
+        <div><span class="s-spec">How it works · Mkt #2842</span><h2 class="t-h2" id="op-how-h">One pool, several winners</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div class="op-how">
@@ -200,7 +218,7 @@
   <!-- 7. Design notes -->
   <section class="s-section--tight" id="notes" aria-labelledby="op-notes-h">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Design notes · 05 Opportunity</span><h2 class="t-h2" id="op-notes-h">What we kept, <span class="t-accent">what we changed</span></h2></div></div>
+      <div class="s-section-head"><div><span class="s-spec">Design notes · 05 Opportunity</span><h2 class="t-h2" id="op-notes-h">What we kept, what we changed</h2></div></div>
       <div class="op-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-title">Kept from the Electric Foundation kit</h3>
@@ -214,7 +232,7 @@
         <div class="s-card s-card--pad">
           <h3 class="t-title">Departures on this page, and why</h3>
           <ol class="op-notelist op-notelist--num">
-            <li><b>The barcode carries data.</b> Each bar in the hero is one entry; its length is the chance of selection. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
+            <li><b>The barcode carries data.</b> Each bar in the hero is one entry; its length is the chance of selection, on a square-root scale so the long tail stays visible. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
             <li><b>Two numbers per entry.</b> In a market with several winners, price and probability differ, so each card shows the chance of selection first and the share price second.</li>
             <li><b>Buy and Sell replace Yes and No.</b> Each entry is one outcome token, as in Seer's live Opportunity ticket. The +1 / +5 / +10 / +100 chips and 0.5% slippage come from that ticket too.</li>
             <li><b>Payout math for split winners.</b> The ticket prices a funded share at 1/8 sDAI, not 1 sDAI, and warns when a thin pool would push an order past its slippage.</li>

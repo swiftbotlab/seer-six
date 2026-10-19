@@ -269,3 +269,6 @@ ol.dp-notelist { list-style: decimal; }
   .dp-strat__go .s-btn { width: 100%; }
   .dp-scorecell .s-pbar { width: 48px; }
 }
+
+/* ---- finisher additions ---- */
+.dp-tlink { display: inline-flex; margin-top: 10px; }

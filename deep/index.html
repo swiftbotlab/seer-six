@@ -6,6 +6,24 @@
 <title>Deep · Many-outcome markets (concept)</title>
 <meta name="description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+<link rel="preload" href="../assets/sample-data.js" as="script">
+<link rel="preload" href="../assets/ui.js" as="script">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Seer concept by Swift Bot Labs">
+<meta property="og:title" content="Deep · Many-outcome markets (concept)">
+<meta property="og:description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:url" content="https://swiftbotlab.github.io/seer-six/deep/">
+<meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Deep · Many-outcome markets (concept): Electric Foundation poster with sample data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@swiftbotlab">
+<meta name="twitter:title" content="Deep · Many-outcome markets (concept)">
+<meta name="twitter:description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
@@ -31,8 +49,8 @@
       <div class="s-hero__art dp-hero__art">
         <figure class="s-poster dp-poster" id="dp-poster">
           <div class="dp-poster__top">
-            <div class="s-specs"><span>Mkt <b>#2841</b></span><span>Multi-scalar</span><span><b>40</b> outcomes</span></div>
-            <div class="s-specs dp-hide-xs"><span>Status: <b>trading</b></span></div>
+            <div class="s-specs"><span>Mkt <b>#2841</b></span><span>Scalar × 40</span><span><b>80</b> UP/DOWN tokens</span></div>
+            <div class="s-specs dp-hide-xs"><span>Status: <b>reports not open yet · trading</b></span></div>
           </div>
           <div class="dp-ridge" id="dp-ridge" tabindex="0" role="img" aria-label="Forecast distributions of all 40 proposals, one wave each, ranked from the top. Use the up and down arrow keys to read each one; press Enter to open it."></div>
           <figcaption class="dp-poster__cap" id="dp-ridge-cap" aria-live="polite"></figcaption>
@@ -68,7 +86,7 @@
   <section class="s-section--tight" id="field">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">The field · 40 outcomes</span><h2 class="t-h2">Every proposal, <span class="t-accent">one market</span></h2></div>
+        <div><span class="s-spec">The field · 40 outcomes</span><h2 class="t-h2">Every proposal, one market</h2></div>
         <div class="s-row" style="--gap:10px" id="dp-view"></div>
       </div>
       <div class="dp-filters">
@@ -123,23 +141,23 @@
   <section class="s-section--tight" id="signal">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">For the funding team</span><h2 class="t-h2">Where the panel's time <span class="t-accent">matters most</span></h2></div>
+        <div><span class="s-spec">For the funding team</span><h2 class="t-h2">Where the panel's time matters most</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div class="dp-signal">
         <div class="s-col" style="--gap:16px">
           <div class="s-panel dp-signal__ctl">
             <div class="s-row s-row--between"><label class="t-title" for="dp-thr">Score needed to fund</label><b class="t-amount dp-thr-val" id="dp-thr-val">8.00</b></div>
-            <input class="s-range" type="range" id="dp-thr" min="6" max="9.5" step="0.05" value="8" aria-describedby="dp-thr-help">
+            <input class="s-range" type="range" id="dp-thr" min="6" max="9.5" step="0.005" value="8.135" aria-describedby="dp-thr-help">
             <div class="dp-rangeaxis t-meta" aria-hidden="true"><span>6.0</span><span>9.5</span></div>
-            <p class="t-meta" id="dp-thr-help">Move the bar to see how likely each proposal is to reach it, from its market distribution.</p>
+            <p class="t-meta" id="dp-thr-help">Move the bar to see how likely each proposal is to reach it. It starts at the funding line, 8.135. Spread comes from forecasters (σ of the 8 agents' submitted forecasts); a UP/DOWN pair prices only the mean.</p>
             <div class="s-stats dp-sigstats" id="dp-sig-stats" style="--cols:2"></div>
           </div>
           <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> The panel still scores every proposal. Prices show where reviewers agree with the field, and where a careful second read is worth the most.</span></div>
         </div>
         <div class="s-card s-card--pad">
           <div class="s-row s-row--between">
-            <div><h3 class="t-title" id="dp-sig-title">Chance of scoring 8.00 or more</h3><p class="t-meta">From each proposal's market distribution. Sorted by the view you pick.</p></div>
+            <div><h3 class="t-title" id="dp-sig-title">Chance of scoring 8.135 or more</h3><p class="t-meta">Market forecast as the centre, forecasters' spread as the width. Sorted by the view you pick.</p></div>
             <div id="dp-sig-seg"></div>
           </div>
           <div class="s-legend" id="dp-sig-legend"></div>
@@ -157,7 +175,7 @@
   <section class="s-section--tight" id="strategy">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">For agents and their operators</span><h2 class="t-h2">Trade the whole field <span class="t-accent">in one transaction</span></h2></div>
+        <div><span class="s-spec">For agents and their operators</span><h2 class="t-h2">Trade the whole field in one transaction</h2></div>
         <div class="s-row" style="--gap:8px">
           <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-template">Download template</button>
           <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-export">Export market weights</button>
@@ -196,7 +214,7 @@
   <section class="s-section--tight" id="leaderboard">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Leaderboard · Round 4</span><h2 class="t-h2">Who forecasts <span class="t-accent">the panel</span> best</h2></div>
+        <div><span class="s-spec">Leaderboard · Round 4</span><h2 class="t-h2">Who forecasts the panel best</h2></div>
         <span class="s-sample">Sample data</span>
       </div>
       <div id="dp-lb-tabs"></div>
@@ -209,7 +227,7 @@
   <section class="s-section--tight" id="resolve">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">Guide · Resolution</span><h2 class="t-h2">From forecast <span class="t-accent">to payout</span></h2></div>
+        <div><span class="s-spec">Guide · Resolution</span><h2 class="t-h2">From forecast to payout</h2></div>
       </div>
       <div class="s-card s-card--pad dp-tl"><div id="dp-timeline"></div></div>
       <div class="dp-resolve u-mt-4">
@@ -222,7 +240,7 @@
   <!-- 9. Design notes -->
   <section class="s-section--tight" id="notes">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Design notes · Deep</span><h2 class="t-h2">What we kept, <span class="t-accent">what we changed</span></h2></div></div>
+      <div class="s-section-head"><div><span class="s-spec">Design notes · Deep</span><h2 class="t-h2">What we kept, what we changed</h2></div></div>
       <div class="dp-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-title">Kept from the Electric Foundation kit</h3>

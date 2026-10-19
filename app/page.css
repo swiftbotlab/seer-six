@@ -272,3 +272,15 @@
 
 /* the mobile header wraps to two rows; keep scrolled-to sections and the record tabs clear of it */
 @media (max-width: 960px) { .ap-section, .ap-tabscard { scroll-margin-top: 52px; } }
+
+/* ---- finisher additions ---- */
+.ap-spec-card .s-row > div { display: grid; gap: 2px; }
+.ap-dateread { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); margin-top: 6px; }
+.ap-showall-row { display: flex; justify-content: center; margin-top: 20px; }
+.ap-tokcell { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.ap-json { margin-top: 14px; max-height: 420px; overflow: auto; padding: 16px; border-radius: var(--r-card); background: var(--surface-2); font-family: var(--font-mono); font-size: 12px; line-height: 1.55; color: var(--text-2); white-space: pre; }
+.ap-twarn { font-size: var(--fs-meta); line-height: 1.45; }
+.ap-tlink { display: inline-flex; align-items: center; gap: 6px; }
+[data-shell-search].is-tucked { visibility: hidden; opacity: 0; transition: opacity var(--dur) var(--ease), visibility 0s linear var(--dur); }
+[data-shell-search] { transition: opacity var(--dur) var(--ease); }
+.ap-twarn svg { color: var(--warn); }

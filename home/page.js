@@ -17,6 +17,7 @@
   }
   function pctSmart(p) { return f.pct(p, p < .1 ? 1 : 0); }
   var TYPE = { "categorical": "Categorical", "multi-categorical": "Multi-categorical", "scalar": "Scalar", "multi-scalar": "Multi-scalar" };
+  function tname(m) { return S.ui.typeName ? S.ui.typeName(m) : TYPE[m.type]; }
   var APPS = S.apps.filter(function (a) { return a.id !== "home"; });
   function appLink(id, label) {
     var a = S.app(id);
@@ -29,7 +30,7 @@
   var HERO = [
     ["2832", "Categorical", 0, "Each band's width is an outcome's price. A full set of outcome tokens is always worth 1 sDAI, so the prices add up to 1 and every band meets in one point."],
     ["2843", "Yes / No", 0, "A yes/no question is a categorical market with two answers, plus Invalid in case the question cannot be answered as posed."],
-    ["2842", "Multi-categorical", "P-07", "Several proposals will be funded and split the payout, so each price is a share of 1 sDAI, not a chance of selection. 41 bands, one point."]
+    ["2842", "Multi-categorical", "P-07", "Eight proposals will be funded and split the payout, so each price is a share of 1 sDAI, not a chance: chance ≈ price × 8. 41 bands, one point."]
   ];
   function heroPrice() {
     var art = $("hm-price-art"), legend = $("hm-price-legend");
@@ -62,7 +63,7 @@
       st.hover = null;
       // spec line + question + caption
       var sp = $("hm-price-specs"); S.clear(sp);
-      ["Mkt #" + m.id, TYPE[m.type], D.chain(m.chain).name, D.state(m.state).label].forEach(function (x, k) { sp.appendChild(el("span", { text: x, class: k >= 2 ? "s-hide-sm" : null })); });
+      ["Mkt #" + m.id, tname(m), D.chain(m.chain).name, D.state(m.state).label].forEach(function (x, k) { sp.appendChild(el("span", { text: x, class: k >= 2 ? "s-hide-sm" : null })); });
       $("hm-price-q").textContent = m.question;
       var cap = $("hm-price-cap"); S.clear(cap);
       var sum = st.items.reduce(function (a, o) { return a + o.price; }, 0);
@@ -93,7 +94,7 @@
         var b = el("button", { class: "hm-lg", attrs: { type: "button", "aria-pressed": String(k === st.pin) } },
           el("span", { class: "hm-lg__r", text: e.rank ? pad2(e.rank) : "—" }),
           el("span", { class: "hm-lg__n", text: e.label, title: e.label }),
-          el("span", { class: "hm-lg__v", text: pctSmart(e.value) }));
+          el("span", { class: "hm-lg__v", text: st.m && st.m.type === "multi-categorical" ? f.num(e.value * 100, 1) + "¢" : pctSmart(e.value) }));
         b.addEventListener("click", function () { st.pin = k; st.hover = null; S.$$(".hm-lg", legend).forEach(function (x, j) { x.setAttribute("aria-pressed", String(j === k)); }); focus(); });
         b.addEventListener("pointerenter", function () { st.hover = { idx: e.idx, entry: k }; focus(); });
         b.addEventListener("pointerleave", function () { st.hover = null; focus(); });
@@ -118,11 +119,11 @@
       var v, name, sub;
       if (a.one != null || a.idx.length === 1) {
         var i = a.one != null ? a.one : a.idx[0], o = st.items[i];
-        v = o.price; name = o.name; sub = (o.invalid ? "Invalid" : "Rank " + pad2(i + 1)) + " · " + f.num(o.price * 100, 1) + "¢";
+        v = o.price; name = o.name; sub = (o.invalid ? "Invalid" : "Rank " + pad2(i + 1)) + " · " + (o.chance != null && !o.invalid ? "≈" + f.pct0(o.chance) + " chance" : f.num(o.price * 100, 1) + "¢");
       } else {
         var e = st.entries[a.entry]; v = e.value; name = e.label; sub = e.idx.length + " outcomes";
       }
-      rv.textContent = pctSmart(v); rn.textContent = name; rn.title = name; rp.textContent = sub;
+      rv.textContent = st.m && st.m.type === "multi-categorical" ? f.num(v * 100, 1) + "¢" : pctSmart(v); rn.textContent = name; rn.title = name; rp.textContent = sub;
     }
     function draw() {
       var W = art.clientWidth, H = art.clientHeight; if (!W || !H) return;
@@ -176,8 +177,8 @@
   var PRIMS = [
     ["markets", "categorical", "Categorical", "One outcome wins. Each outcome has a token, and the prices add up to 1."],
     ["markets", "multi-categorical", "Multi-categorical", "Several outcomes can be true at once. The payout is split between them."],
-    ["markets", "scalar", "Scalar", "A number inside a range, traded as a pair of DOWN and UP tokens."],
-    ["markets", "multi-scalar", "Multi-scalar", "Many related numbers in one market: a score per proposal, a rate per asset."],
+    ["markets", "scalar", "Scalar", "A number inside a range, traded as a pair of DOWN and UP tokens. Deep runs one per proposal: a score for every entry."],
+    ["markets", "multi-scalar", "Multi-scalar", "One token per item, and each redeems its number's share of the total: a share per chain, a weight per dependency."],
     ["markets", "conditional", "Conditional markets", "A market collateralised by another market's outcome token, so it only pays out if that outcome happens. Futarchy is built from these."],
     ["tokens", "ctf", "Conditional Tokens", "Gnosis Conditional Tokens: every outcome is an ERC-1155 position, backed one to one by collateral."],
     ["tokens", "erc20", "ERC-20 wrapping", "Each position is wrapped as an ERC-20, so it trades on ordinary pools and shows up in any wallet."],
@@ -195,17 +196,17 @@
   var ALL = PRIMS.map(function (p) { return p[1]; });
   var USES = {
     app: ALL,
-    deep: ["multi-scalar", "ctf", "erc20", "reality", "kleros", "sUSDS", "optimism"],
+    deep: ["scalar", "ctf", "erc20", "reality", "kleros", "sUSDS", "optimism"],
     futarchy: ["categorical", "scalar", "conditional", "ctf", "erc20", "reality", "kleros", "sDAI", "gnosis", "ethereum"],
     opportunity: ["multi-categorical", "ctf", "erc20", "reality", "kleros", "curate", "sDAI", "gnosis"],
-    risk: ["multi-scalar", "ctf", "erc20", "reality", "kleros", "sDAI", "ethereum"]
+    risk: ["multi-categorical", "ctf", "erc20", "reality", "kleros", "sDAI", "ethereum"]
   };
   var APP_LINE = {
     app: ["The explorer for every market", "Every market on every chain, in every type and state, with its contracts, answer, events and holders. A block explorer for questions.", "2832"],
-    deep: ["Many outcomes, priced at once", "Multi-scalar markets on OP Mainnet in sUSDS. One market prices a score for every entry in a large field, so forecasting agents can trade hundreds of outcomes in a round.", "2841"],
+    deep: ["Many outcomes, priced at once", "Rounds of scalar markets on OP Mainnet in sUSDS: one UP/DOWN pair per entry prices a score for every entry in a large field, so forecasting agents can trade hundreds of outcomes in one batch.", "2841"],
     futarchy: ["What a decision would do", "A decision market plus two conditional price markets: the token price if a proposal passes, and if it does not. The gap informs the DAO; the vote still decides.", "2843"],
     opportunity: ["Which entries will be selected", "Multi-categorical markets on which submissions a sponsor will pick. Prices become a triage signal for reviewers, who keep the final say.", "2842"],
-    risk: ["Risk you can compare", "Multi-scalar markets on the yearly probability of default for a whole board of assets, so estimates can be compared side by side instead of read as one yes/no price.", "2850"]
+    risk: ["Risk you can compare", "A multi-categorical market on which assets of a whole board default this quarter, plus No to All. One deposit prices every asset, so estimates can be compared side by side instead of read as one yes/no price.", "2850"]
   };
   function ecosystem() {
     var appsBox = $("hm-map-apps"), groupsBox = $("hm-layer-groups"), read = $("hm-layer-read");
@@ -264,7 +265,7 @@
         var a = S.app(appId), L = APP_LINE[appId], m = D.market(L[2]);
         read.appendChild(el("div", {}, el("span", { class: "s-spec", text: a.n + " · " + a.host + " · uses " + USES[appId].length + " of " + ALL.length + " building blocks" }), el("h3", { class: "u-mt-2", text: a.name + ": " + L[0] }), el("p", { text: L[1] })));
         read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Example market · sample" }),
-          el("div", {}, el("a", { class: "hm-pill", href: "../app/#m=" + m.id }, el("span", { html: S.icon("search", 14), style: { display: "inline-flex" } }), "#" + m.id + " · " + (m.short || TYPE[m.type])), appLink(appId, "Open " + a.name))));
+          el("div", {}, el("a", { class: "hm-pill", href: "../app/#m=" + m.id }, el("span", { html: S.icon("search", 14), style: { display: "inline-flex" } }), "#" + m.id + " · " + (m.short || tname(m))), appLink(appId, "Open " + a.name))));
       } else if (primId) {
         var p = prims[primId].p, users = APPS.filter(function (x) { return USES[x.id].indexOf(primId) > -1; });
         read.appendChild(el("div", {}, el("span", { class: "s-spec", text: GROUPS.filter(function (g) { return g[0] === p[0]; })[0][1] }), el("h3", { class: "u-mt-2", text: p[2] }), el("p", { text: p[3] })));
@@ -287,7 +288,7 @@
     var mDeep = D.market("2841"), mOpp = D.market("2842"), mFut = D.market("2843");
     function head(m, title, extra) {
       return el("div", { class: "hm-stage__head" },
-        el("div", {}, S.ui.specs(["Mkt #" + m.id, TYPE[m.type], D.chain(m.chain).name]), el("h3", { class: "hm-stage__title", text: title })),
+        el("div", {}, S.ui.specs(["Mkt #" + m.id, tname(m), D.chain(m.chain).name]), el("h3", { class: "hm-stage__title", text: title })),
         el("div", { class: "s-row", style: { "--gap": "8px" } }, extra || null, S.ui.stateBadge(m.state)));
     }
     function foot(text, href, label) {
@@ -304,8 +305,8 @@
           S.chart.dist(chartBox, {
             curves: [
               { name: P.id + " · rank " + P.deep.rank, mean: P.deep.marketScore, sd: P.deep.consensusSd, color: "var(--c1)" },
-              { name: r7.id + " · rank " + r7.deep.rank, mean: r7.deep.marketScore, sd: r7.deep.consensusSd, color: "var(--c2)" },
-              { name: r9.id + " · rank " + r9.deep.rank, mean: r9.deep.marketScore, sd: r9.deep.consensusSd, color: "var(--c3)" }
+              { name: r7.id + " · rank " + r7.deep.rank, mean: r7.deep.marketScore, sd: r7.deep.consensusSd, color: "var(--c-no)" },
+              { name: r9.id + " · rank " + r9.deep.rank, mean: r9.deep.marketScore, sd: r9.deep.consensusSd, color: "var(--c5)" }
             ], domain: [5, 10], height: 200, xName: "Panel score", markers: [{ x: cut, label: "Funding line ≈ " + f.num(cut, 3) }], label: "Forecast distributions of panel scores"
           });
           var stats = el("div", { class: "s-stats" });
@@ -351,10 +352,10 @@
             ], height: 190, y: { format: function (v) { return f.price(v, 3); } }, label: "Conditional LAT prices, last 7 days"
           });
           body.appendChild(el("div", { class: "hm-pricepair" },
-            el("div", { class: "hm-pp" }, el("small", {}, el("i", { style: { background: "var(--c-yes)" } }), "Time-weighted · if approved"), el("b", {}, f.price(F.yesTwap, 4), el("small", { text: "sDAI" }))),
-            el("div", { class: "hm-pp" }, el("small", {}, el("i", { style: { background: "var(--c-no)" } }), "Time-weighted · if rejected"), el("b", {}, f.price(F.noTwap, 4), el("small", { text: "sDAI" })))));
+            el("div", { class: "hm-pp" }, el("small", {}, el("i", { style: { background: "var(--c-yes)" } }), "5-day TWAP so far · if approved"), el("b", {}, f.price(F.yesTwap, 4), el("small", { text: "YES_sDAI" }))),
+            el("div", { class: "hm-pp" }, el("small", {}, el("i", { style: { background: "var(--c-no)" } }), "5-day TWAP so far · if rejected"), el("b", {}, f.price(F.noTwap, 4), el("small", { text: "NO_sDAI" })))));
           body.appendChild(el("div", { class: "hm-signal" }, el("span", { class: "hm-signal__v", text: f.signed(impact, 2) }),
-            el("span", { class: "s-grow" }, el("b", { text: "Above the +1% line: the markets lean approve. " }), "Information for the DAO, not the decision. The Snapshot vote runs " + f.dayMon(F.vote.opens) + "–" + f.dayMon(F.vote.closes) + ".")));
+            el("span", { class: "s-grow" }, el("b", { text: "Leaning approve, so far. " }), "Trailing 5 days, before the official window (" + f.dayMon(F.twapWindow.start) + "–" + f.dayMon(F.twapWindow.end) + ") opens. Information for the DAO, not the decision. The Snapshot vote runs " + f.dayMon(F.vote.opens) + "–" + f.dayMon(F.vote.closes) + ".")));
           stage.appendChild(foot("Rule: compare the 5-day TWAPs (" + f.dayMon(F.twapWindow.start) + "–" + f.dayMon(F.twapWindow.end) + "). Above +1% approve, below −1% reject, otherwise neutral.", "../futarchy/#" + F.id, "Open " + F.id + " in Futarchy"));
         } },
       { app: "app", q: "What exactly is on-chain?", fig: "5 markets",
@@ -407,9 +408,9 @@
   function types() {
     var TYPES = [
       { id: "categorical", label: "Categorical", text: "One outcome wins. Each outcome has its own token, and the prices of all tokens add up to 1 sDAI. A yes/no question is the two-answer case.", used: ["app", "futarchy"], cards: ["2832", "2835", "2831"] },
-      { id: "multi-categorical", label: "Multi-categorical", text: "Several outcomes can be true at once, and the payout is split between them. Made for shortlists: which 8 of 40 proposals get funded.", used: ["opportunity", "app"], cards: ["2842"], split: true },
-      { id: "scalar", label: "Scalar", text: "A number inside a range, traded as two tokens, DOWN and UP. If the answer lands 37% of the way up the range, UP redeems for 0.37 and DOWN for 0.63.", used: ["app", "futarchy"], cards: ["2833", "2838", "2844"] },
-      { id: "multi-scalar", label: "Multi-scalar", text: "Many related numbers in one market, each with its own DOWN/UP pair: a score for every proposal, a default rate for every asset, a share for every chain.", used: ["deep", "risk", "app"], cards: ["2841", "2850", "2834"] },
+      { id: "multi-categorical", label: "Multi-categorical", text: "Several outcomes can be true at once, and the payout is split between them. Made for shortlists (which 8 of 40 proposals get funded) and for risk boards (which assets default, or No to All).", used: ["opportunity", "risk", "app"], cards: ["2842", "2850"], split: true },
+      { id: "scalar", label: "Scalar", text: "A number inside a range, traded as two tokens, DOWN and UP. If the answer lands 37% of the way up the range, UP redeems for 0.37 and DOWN for 0.63. Deep runs a round of them, one per proposal.", used: ["deep", "app", "futarchy"], cards: ["2841", "2833", "2844"] },
+      { id: "multi-scalar", label: "Multi-scalar", text: "One token per item, and each redeems its number's share of the answered total, so the tokens always add up to 1. Here: how Seer's new markets split across four chains.", used: ["app"], cards: ["2834"] },
       { id: "conditional", label: "Conditional", text: "Any outcome can be the collateral for a new market, so the new market only pays out if that outcome happens. Futarchy pairs two of them.", used: ["futarchy", "app"], cards: ["2836", "2844", "2845"], cond: true }
     ];
     var count = function (t) { return D.markets.filter(function (m) { return t.cond ? m.conditional : m.type === t.id; }).length; };
@@ -424,8 +425,9 @@
       copy.appendChild(el("h3", { text: t.label }));
       copy.appendChild(el("p", { text: t.text }));
       copy.appendChild(el("div", { class: "s-col", style: { "--gap": "8px" } }, el("span", { class: "s-spec", text: "Outcome tokens · #" + first.id }),
-        el("div", { class: "hm-types__tokens" }, first.outcomes.slice(0, 7).map(function (o) { return el("span", { class: "s-tag s-tag--mono" + (o.invalid ? "" : " s-tag--violet"), text: o.symbol }); }),
-          first.outcomes.length > 7 ? el("span", { class: "s-tag s-tag--mono", text: "+" + (first.outcomes.length - 7) }) : null)));
+        el("div", { class: "hm-types__tokens" }, (first.set ? [].concat.apply([], first.outcomes.slice(0, 3).map(function (o) { return [o.symbol, o.downSymbol]; })).map(function (sym) { return el("span", { class: "s-tag s-tag--mono s-tag--violet", text: sym }); })
+            : first.outcomes.slice(0, 7).map(function (o) { return el("span", { class: "s-tag s-tag--mono" + (o.invalid ? "" : " s-tag--violet"), text: o.symbol }); })),
+          first.set ? el("span", { class: "s-tag s-tag--mono", text: "+" + (first.set * 2 - 6) }) : first.outcomes.length > 7 ? el("span", { class: "s-tag s-tag--mono", text: "+" + (first.outcomes.length - 7) }) : null)));
       if (t.split) {
         var P = D.proposal(D.featuredProposal), R = D.round4;
         copy.appendChild(el("div", { class: "hm-split" },

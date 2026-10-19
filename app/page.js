@@ -12,7 +12,7 @@
   var NOW = D.now, HR = 36e5, DAY = 864e5;
   var PAL = S.chart.palette;
   var STAGE = { "not-open": 1, open: 2, waiting: 3, dispute: 4, pending: 5, closed: 6 };
-  var SHORT_STATE = { "not-open": "trading", open: "reports open", waiting: "waiting", dispute: "in dispute", pending: "pending", closed: "closed" };
+  var SHORT_STATE = { "not-open": "reports not open yet", open: "reports open", waiting: "waiting for answer", dispute: "in dispute", pending: "pending execution", closed: "closed" };
   var TYPES = {}; D.marketTypes.forEach(function (t) { TYPES[t.id] = t; });
   var VERIFY = {}; D.verification.forEach(function (v) { VERIFY[v.id] = v; });
   var COLL = {}; D.collateral.forEach(function (c) { COLL[c.id] = c; });
@@ -23,20 +23,32 @@
   /* ======================= helpers ======================= */
   function real(m) { return m.outcomes.filter(function (o) { return !o.invalid; }); }
   function isYesNo(m) { var r = real(m); return m.type === "categorical" && r.length === 2 && /^yes$/i.test(r[0].name) && /^no$/i.test(r[1].name); }
-  function leader(m) { return real(m).slice().sort(function (a, b) { return b.price - a.price; })[0]; }
+  function leader(m) { return real(m).filter(function (o) { return !o.noToAll; }).sort(function (a, b) { return b.price - a.price; })[0]; }
+  // market kinds: one scalar pair, a round of scalar pairs (#2841, "Scalar × 40"), multi-winner categorical
+  function sc(m) { return m.type === "scalar" && !m.set; }
+  function isSet(m) { return !!m.set; }
+  function multiCat(m) { return m.type === "multi-categorical"; }
+  function isRisk(m) { return multiCat(m) && m.riskScale != null; }
+  function cs(m) { return m.collSym || m.collateral; } // conditional markets are collateralised by their parent's outcome token
+  function tname(m) { return U.typeName(m); }
+  function invP(m) { var i = m.outcomes.filter(function (o) { return o.invalid; })[0]; return i ? i.price : 0; }
+  function words(m, o) { return U.priceWords(m, o); }
+  function wtext(m, o) { var w = words(m, o); return w.value + (w.sub && w.unit !== "share" ? (w.sub.charAt(0) === "/" ? "" : " · ") + w.sub : ""); }
+  function shortName(o) { return o.proposal || (o.asset ? o.asset : o.name); }
+  function leadLabel(m) { return isSet(m) ? "Top score" : isRisk(m) ? "Highest PD" : multiCat(m) ? "Most likely" : m.type === "multi-scalar" ? "Largest share" : sc(m) ? "Forecast" : "Leading"; }
   function stage(m) { return STAGE[m.state] || 1; }
   function chainName(id) { var c = D.chain(id); return c ? c.name : id; }
   function appOf(m) { return S.app(m.appId) || S.app("app"); }
   function clip(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s; }
   function tradable(m) { return m.state !== "pending" && m.state !== "closed"; }
-  function smallP(m) { return m.type === "multi-scalar" && Math.max.apply(null, real(m).map(function (o) { return o.price; })) < .2; }
-  function pfmt(m, p) { return smallP(m) ? F.pct(p, 1) : F.pct0(p); }
   function scalarValue(m) { var r = m.range || { min: 0, max: 1 }; return m.value != null ? m.value : r.min + (r.max - r.min) * m.outcomes[1].price; }
   function fmtNum(v) { return Math.abs(v) >= 10000 ? F.compact(v, 1) : Number.isInteger(v) ? F.num(v, 0) : Math.abs(v) < 10 ? F.num(v, 4) : F.num(v, 1); }
   function fmtUnit(m, v) { var u = (m.range && m.range.unit) || ""; return fmtNum(v) + (u ? " " + u : ""); }
   function leadText(m) {
-    if (m.type === "scalar") return fmtUnit(m, scalarValue(m));
-    var l = leader(m); return (isYesNo(m) ? l.name : clip(l.name, 26)) + " " + pfmt(m, l.price);
+    if (sc(m)) return fmtUnit(m, scalarValue(m));
+    var l = leader(m);
+    if (isSet(m) || multiCat(m)) return shortName(l) + " " + wtext(m, l);
+    return (isYesNo(m) ? l.name : clip(l.name, 26)) + " " + words(m, l).value;
   }
   function sep() { return el("i", { text: "/", attrs: { "aria-hidden": "true" } }); }
   function avatarSm(m) { var ink = m.appId !== "app"; return el("span", { class: "s-avatar s-avatar--sm" + (ink ? " s-avatar--ink" : ""), html: S.glyph(ink ? m.appId : "grid"), attrs: { "aria-hidden": "true" } }); }
@@ -58,8 +70,12 @@
   var HC = {};
   function hist(m, k) {
     var key = m.id + ":" + k; if (HC[key]) return HC[key];
+    if (m.branch && m.range) { // #2844/#2845: the same calibrated hourly series the Futarchy page draws
+      var fp = D.futarchy.filter(function (f) { return f.id === m.proposal; })[0], col = m.branch === "yes" ? 1 : 2, span = m.range.max - m.range.min;
+      if (fp) return (HC[key] = fp.series.map(function (x) { var up = (x[col] - m.range.min) / span; return [x[0], +(k === 1 ? up : 1 - up).toFixed(5)]; }));
+    }
     var days = Math.max(2, m.ageDays || 30), n = Math.min(1441, Math.round(days * 24) + 1);
-    var raw = D.history(m.id, k, { days: days, points: n, vol: (m.type === "scalar" ? .03 : .05) * Math.sqrt(120 / n) }), out = [], W = 9;
+    var raw = D.history(m.id, k, { days: days, points: n, vol: (m.type === "scalar" ? (m.set ? .02 : .03) : .05) * Math.sqrt(120 / n) }), out = [], W = 9;
     for (var i = 0; i < raw.length; i++) { // centred moving average, easing back to the raw series at the end so it lands on the snapshot price
       var a = 0, c = 0; for (var j = Math.max(0, i - W); j <= Math.min(raw.length - 1, i + W); j++) { a += raw[j][1]; c++; }
       var w = Math.exp(-(raw.length - 1 - i) / 5); out.push([raw[i][0], +(a / c * (1 - w) + raw[i][1] * w).toFixed(5)]);
@@ -103,13 +119,13 @@
 
   /* ======================= search index ======================= */
   MARKETS.forEach(function (m) {
-    m._text = [m.id, "#" + m.id, m.question, m.short || "", m.category, TYPES[m.type].name, chainName(m.chain), m.collateral,
+    m._text = [m.id, "#" + m.id, m.question, m.short || "", m.category, tname(m), chainName(m.chain), cs(m),
       D.state(m.state).label, VERIFY[m.verify].label, appOf(m).name, m.conditional ? "conditional" : "", m.futarchy ? "futarchy" : ""]
-      .concat(m.outcomes.map(function (o) { return o.name + " " + o.symbol; })).join(" · ").toLowerCase();
-    m._addr = [m.address, m.conditionId, m.questionId, m.creator].concat(m.outcomes.map(function (o) { return o.token; }), m._holders.map(function (h) { return h.address; })).join(" ").toLowerCase();
+      .concat(m.outcomes.map(function (o) { return o.name + " " + o.symbol + (o.downSymbol ? " " + o.downSymbol : ""); })).join(" · ").toLowerCase();
+    m._addr = [m.address, m.conditionId, m.questionId, m.creator].concat(m.outcomes.map(function (o) { return o.token + " " + (o.down || "") + " " + (o.conditionId || ""); }), m._holders.map(function (h) { return h.address; })).join(" ").toLowerCase();
   });
   function has(v, q) { return v && v.toLowerCase().indexOf(q) > -1; }
-  function mItem(m) { return { kind: "Market", label: m.question, sub: "#" + m.id + " · " + TYPES[m.type].name + " · " + chainName(m.chain), val: leadText(m), href: "m=" + m.id }; }
+  function mItem(m) { return { kind: "Market", label: m.question, sub: "#" + m.id + " · " + tname(m) + " · " + chainName(m.chain), val: leadText(m), href: "m=" + m.id }; }
   function aItem(e) { var n = e.positions.length; return { kind: addrKind(e), label: addrLabel(e), sub: n + " position" + (n === 1 ? "" : "s") + (e.agent ? " · " + e.agent.operator : ""), val: F.addr(e.address, 4), href: "a=" + e.address }; }
   function suggest(raw) {
     var q = String(raw || "").trim().toLowerCase().slice(0, 80), out = [], seen = {};
@@ -124,7 +140,11 @@
         if (has(m.conditionId, q)) push({ kind: "Condition ID", label: m.question, sub: "#" + m.id + " · Conditional Tokens", val: F.addr(m.conditionId, 4), href: "m=" + m.id + "&tab=details" });
         if (has(m.questionId, q)) push({ kind: "Reality.eth", label: m.question, sub: "#" + m.id + " · question ID", val: F.addr(m.questionId, 4), href: "m=" + m.id + "&tab=resolution" });
       });
-      MARKETS.forEach(function (m) { m.outcomes.forEach(function (o, k) { if (has(o.token, q)) push({ kind: "Outcome token", label: o.symbol + " · " + o.name, sub: "#" + m.id + " · ERC-20", val: F.addr(o.token, 4), href: "m=" + m.id + "&o=" + k + "&tab=details" }); }); });
+      MARKETS.forEach(function (m) { m.outcomes.forEach(function (o, k) {
+        if (has(o.token, q)) push({ kind: "Outcome token", label: o.symbol + " · " + o.name, sub: "#" + m.id + " · ERC-20", val: F.addr(o.token, 4), href: "m=" + m.id + "&o=" + k + "&tab=details" });
+        if (o.down && has(o.down, q)) push({ kind: "Outcome token", label: o.downSymbol + " · " + o.name, sub: "#" + m.id + " · ERC-20", val: F.addr(o.down, 4), href: "m=" + m.id + "&o=" + k + "&side=1&tab=details" });
+        if (o.conditionId && has(o.conditionId, q)) push({ kind: "Condition ID", label: o.name, sub: "#" + m.id + " · Conditional Tokens", val: F.addr(o.conditionId, 4), href: "m=" + m.id + "&o=" + k + "&tab=details" });
+      }); });
       var ents = Object.keys(ADDR).map(function (k) { return ADDR[k]; }).filter(function (e) { return has(e.address, q); });
       ents.sort(function (a, b) { return (b.agent || b.trader ? 1 : 0) - (a.agent || a.trader ? 1 : 0) || b.positions.length - a.positions.length; });
       ents.forEach(function (e) { push(aItem(e)); });
@@ -136,8 +156,8 @@
       });
       MARKETS.forEach(function (m) { if (m._text.indexOf(q) > -1) push(mItem(m)); });
       if (q.length >= 2) MARKETS.forEach(function (m) {
-        if (isYesNo(m) || m.type === "scalar" || m.id === "2841" || m.id === "2842") return;
-        m.outcomes.forEach(function (o, k) { if (!o.invalid && has(o.name, q)) push({ kind: "Outcome", label: o.name, sub: "#" + m.id + " · " + clip(m.question, 52), val: pfmt(m, o.price), href: "m=" + m.id + "&o=" + k }); });
+        if (isYesNo(m) || sc(m) || m.id === "2841" || m.id === "2842") return;
+        m.outcomes.forEach(function (o, k) { if (!o.invalid && has(o.name, q)) push({ kind: "Outcome", label: o.name, sub: "#" + m.id + " · " + clip(m.question, 52), val: words(m, o).value, href: "m=" + m.id + "&o=" + k }); });
       });
       D.agents.forEach(function (a) { if (has(a.name, q) || has(a.operator, q)) push(aItem(reg(a.address))); });
       D.traders.forEach(function (t) { if (has(t.handle, q)) push(aItem(reg(t.address))); });
@@ -206,7 +226,7 @@
         band.setAttribute("x", cx - cell / 2); band.setAttribute("visibility", "visible");
         var bb = hit.getBoundingClientRect();
         S.tip.show(e && e.clientX ? e.clientX : bb.right, e && e.clientY ? e.clientY : bb.top + 24, "#" + m.id + " · step " + (idx + 1) + " of " + R, [
-          { label: clip(m.question, 58), value: "" }, { label: "State", value: D.state(m.state).label }, { label: m.type === "scalar" ? "Forecast" : "Leading", value: leadText(m) }]);
+          { label: clip(m.question, 58), value: "" }, { label: "State", value: D.state(m.state).label }, { label: leadLabel(m), value: leadText(m) }]);
       };
       var hide = function () { band.setAttribute("visibility", "hidden"); S.tip.hide(); };
       hit.addEventListener("pointermove", show); hit.addEventListener("focus", function () { show(); });
@@ -279,7 +299,7 @@
   function closeSuggest() { if (!sugBox) return; sugBox.hidden = true; qInput.setAttribute("aria-expanded", "false"); qInput.removeAttribute("aria-activedescendant"); }
 
   /* ======================= explorer ======================= */
-  var FS = { q: "", cat: "all", type: "all", state: "all", chain: "all", verify: "all", coll: "all", sort: "volume", cond: false, fut: false, live: false, view: "cards" };
+  var FS = { q: "", cat: "all", type: "all", state: "all", chain: "all", verify: "all", coll: "all", sort: "volume", cond: false, fut: false, live: false, view: "cards", all: false };
   try { var sv = localStorage.getItem("ap-view"); if (sv === "table" || sv === "cards") FS.view = sv; } catch (e) { /* fine */ }
   var SORTS = [["volume", "Volume"], ["liquidity", "Liquidity"], ["openInterest", "Open interest"], ["opening", "Opening date"], ["created", "Creation date"], ["move", "24h move"]];
   var filterEls = {};
@@ -395,9 +415,14 @@
       return;
     }
     if (FS.view === "table") return renderTable(res, list);
-    var g = el("div", { class: "s-grid s-grid--cards ap-cards" });
-    list.forEach(function (m) { g.appendChild(card(m)); });
+    var g = el("div", { class: "s-grid s-grid--cards ap-cards" }), cut = !FS.all && !act.length && list.length > 8;
+    (cut ? list.slice(0, 8) : list).forEach(function (m) { g.appendChild(card(m)); });
     res.appendChild(g);
+    if (cut) {
+      var more = el("button", { class: "s-btn s-btn--ghost ap-showall", attrs: { type: "button" } }, "Show all " + list.length + " markets", el("span", { html: S.icon("chevron-down", 16), style: { display: "inline-flex" } }));
+      more.addEventListener("click", function () { FS.all = true; renderExplorer(); });
+      res.appendChild(el("div", { class: "ap-showall-row" }, more));
+    }
   }
   function clearAll() { ["q", "cat", "type", "state", "chain", "verify", "coll", "cond", "fut", "live"].forEach(resetFilter); renderExplorer(); }
   function card(m) {
@@ -407,16 +432,11 @@
     if (app.id !== "app") row.appendChild(el("span", { class: "s-tag s-tag--outline", html: S.glyph(app.id), title: "Lives in " + app.name }, app.label));
     if (m.conditional) row.appendChild(el("span", { class: "s-tag s-tag--violet", text: "Conditional" }));
     if (m.verify === "challenged" || m.verify === "verifying") row.appendChild(U.verifyBadge(m.verify));
-    var spec = el("div", { class: "s-specs ap-cspec" }, el("span", { text: TYPES[m.type].name }), el("span", { text: chainName(m.chain) }), el("span", { class: "ap-nc", text: m.collateral }));
+    var spec = el("div", { class: "s-specs ap-cspec" }, el("span", { text: tname(m) }), el("span", { text: chainName(m.chain) }), el("span", { class: "ap-nc", text: cs(m) }));
     var foot = $(".s-card__foot", c), bot = el("div", { class: "ap-cbot" });
     c.insertBefore(bot, foot);
     if (row.childNodes.length) bot.appendChild(row);
     bot.appendChild(spec); bot.appendChild(foot);
-    if (m.type === "multi-scalar") $$(".s-orow__actions", c).forEach(function (a) { // multi-scalar items trade as UP/DOWN
-      var b = a.children, nm = (a.parentElement.querySelector(".s-orow__label .u-clamp-1") || {}).textContent || "";
-      if (b[0]) { b[0].textContent = "Up"; b[0].setAttribute("aria-label", "Up on " + nm); }
-      if (b[1]) { b[1].textContent = "Down"; b[1].setAttribute("aria-label", "Down on " + nm); }
-    });
     // the kit's Yes/No/Up/Down buttons open the record with that side preselected in the ticket
     $$("button", c).forEach(function (b) { if (!b.closest(".s-card__icons")) b.removeAttribute("data-demo"); });
     if (!tradable(m)) { // resolved or awaiting execution: no trade buttons, the card just opens the record
@@ -451,7 +471,7 @@
     var key = { volume: "volume", liquidity: "liquidity", openInterest: "openInterest", opening: "openingDate" }[FS.sort] || null;
     U.table(box, [
       { key: "id", label: "Market", sort: function (m) { return m.question.toLowerCase(); }, class: "ap-wrap", render: marketCell },
-      { key: "type", label: "Type", sort: true, render: function (m) { return el("span", { class: "s-tag", text: TYPES[m.type].name }); } },
+      { key: "type", label: "Type", sort: function (m) { return tname(m); }, render: function (m) { return el("span", { class: "s-tag", text: tname(m) }); } },
       { key: "state", label: "State", sort: function (m) { return stage(m); }, render: function (m) { return U.stateBadge(m.state); } },
       { key: "chain", label: "Chain", sort: true, render: function (m) { return U.chainBadge(m.chain); } },
       { key: "lead", label: "Leading", render: function (m) { return leadText(m); } },
@@ -508,7 +528,7 @@
     var cls = t === "Dispute" ? "s-tag s-tag--neg" : t === "Answer" ? "s-tag s-tag--warn" : t === "Redeem" ? "s-tag s-tag--violet" : "s-tag";
     return el("span", { class: cls + " s-tag--mono", text: t });
   }
-  function answerOf(m) { return m.type === "scalar" ? fmtUnit(m, m.answer != null ? m.answer : scalarValue(m)) : (m.answer || leader(m).name); }
+  function answerOf(m) { return sc(m) ? fmtUnit(m, m.answer != null ? m.answer : scalarValue(m)) : (m.answer || leader(m).name); }
   function queueLine(m) {
     var ans = NOW - 26 * HR, final = ans + 84 * HR;
     if (m.state === "open") return { text: "Anyone can answer on Reality.eth by posting a bond of at least 10 xDAI." + (m.verify === "challenged" ? " Its Kleros Curate listing is also being challenged." : ""), action: "Submit answer", primary: true, demo: "Opens the Reality.eth answer form (not wired in this concept)." };
@@ -610,7 +630,7 @@
   function drawCreate() {
     var v = readCreate(), sc = v.type === "scalar";
     $("#ap-f-range").hidden = !sc; $("#ap-f-outs-wrap").hidden = sc;
-    $("#ap-f-outs-hint").textContent = v.type === "multi-scalar" ? "Comma-separated items, each gets its own number" : v.type === "multi-categorical" ? "Comma-separated; several can be true" : "Comma-separated, 2 to 12";
+    $("#ap-f-outs-hint").textContent = v.type === "multi-scalar" ? "Comma-separated items; each token redeems its number's share of the total" : v.type === "multi-categorical" ? "Comma-separated; several can be true" : "Comma-separated, 2 to 12";
     var names = sc ? ["DOWN", "UP"] : (v.outs.length >= 2 ? v.outs : (v.outs.concat(["Yes", "No"])).slice(0, 2));
     var p = 1 / names.length;
     var m = { id: "new", appId: "app", type: v.type, question: v.q || "Your question appears here, in full, as traders will read it.", category: v.cat, state: "not-open", volume: 0, openingDate: v.opens,
@@ -630,10 +650,11 @@
     if (v.curate) list.appendChild(el("li", {}, el("b", { text: "A Kleros Curate submission" }), ", so the market can show as Verified after its challenge period."));
     list.appendChild(el("li", {}, "Prices start equal. ", el("b", { text: "Add liquidity" }), " after creation so the market can trade."));
     if (!v.error) $("#ap-f-err").textContent = "";
+    var dr = $("#ap-f-date-read"); if (dr) dr.textContent = F.date(v.opens) + " · 00:00 UTC";
   }
 
   /* ======================= market record (detail) ======================= */
-  function defaultOutcome(m) { return m.type === "scalar" ? 1 : leader(m).index; }
+  function defaultOutcome(m) { return sc(m) ? 1 : leader(m).index; }
   function showMarket(m, p) {
     enterView();
     var o = p.o != null && m.outcomes[+p.o] ? +p.o : defaultOutcome(m);
@@ -654,7 +675,7 @@
     grid.appendChild(head); grid.appendChild(A); grid.appendChild(rail); grid.appendChild(B);
 
     // ---- head
-    var badges = el("div", { class: "ap-badges" }, U.stateBadge(m.state), U.verifyBadge(m.verify), U.typeTag(m), U.chainBadge(m.chain), el("span", { class: "s-tag", text: m.collateral }));
+    var badges = el("div", { class: "ap-badges" }, U.stateBadge(m.state), U.verifyBadge(m.verify), U.typeTag(m), U.chainBadge(m.chain), el("span", { class: "s-tag", text: cs(m) }));
     if (app.id !== "app") badges.appendChild(el("a", { class: "s-tag s-tag--outline ap-apptag", href: specialistHref(m, cur.o), html: S.glyph(app.id) }, "Lives in " + app.name));
     var links = el("div", { class: "ap-dlinks" },
       el("button", { attrs: { type: "button", "data-demo": "Opens Reality.eth question " + F.addr(m.questionId, 6) + " (not wired in this concept)." }, html: S.icon("external", 14) }, "Answer on Reality.eth"),
@@ -670,54 +691,65 @@
     if (m.parent) {
       var par = D.market(m.parent.id);
       head.appendChild(el("div", { class: "s-callout s-callout--violet" }, el("span", { html: S.icon("layers", 16), style: { display: "inline-flex" } }),
-        el("span", {}, el("b", { text: "Conditional market. " }), "Its collateral is the “" + m.parent.outcome + "” token of ", mlink(par), ", so it only pays out if that market resolves " + m.parent.outcome + "." + (m.futarchy ? " Prices inform the DAO's vote; they don't decide it." : ""))));
+        el("span", {}, el("b", { text: "Conditional market. " }), "Its collateral is " + (m.collSym ? m.collSym + ", the “" + m.parent.outcome + "” token of " : "the “" + m.parent.outcome + "” token of "), mlink(par),
+          m.collSym ? ". Split " + m.collateral + " on #" + par.id + " first (1 " + m.collateral + " → 1 YES_sDAI + 1 NO_sDAI). It pays out in " + m.collSym + ", which is void unless #" + par.id + " resolves " + m.parent.outcome + "."
+            : ", so it only pays out if that market resolves " + m.parent.outcome + ".",
+          m.futarchy ? " It settles on LAT's 30-day TWAP to 10 Dec, after the 7–10 Nov vote. Prices inform the DAO's vote; they don't decide it." : "")));
     } else if (m.futarchy) {
       head.appendChild(el("div", { class: "s-callout s-callout--violet" }, el("span", { html: S.glyph("futarchy"), style: { display: "inline-flex", color: "var(--violet-3)" } }),
-        el("span", {}, el("b", { text: "Futarchy decision market. " }), "Its two conditional markets forecast LAT if " + m.proposal + " passes and if it doesn't. The result is information for Lattice DAO; the Snapshot vote decides.")));
+        el("span", {}, el("b", { text: "Futarchy decision market. " }), "Its Yes and No tokens are YES_sDAI and NO_sDAI, the collateral of the two conditional markets that forecast LAT if " + m.proposal + " passes and if it doesn't. No Invalid outcome: an invalid answer counts as not approved. The result is information for Lattice DAO; the Snapshot vote decides.")));
+    } else if (isSet(m)) {
+      head.appendChild(el("div", { class: "s-callout s-callout--violet" }, el("span", { html: S.icon("sliders", 16), style: { display: "inline-flex" } }),
+        el("span", {}, el("b", { text: "A round of " + m.set + " scalar markets. " }), "Each proposal has its own condition and its own UP/DOWN pair on a 0–10 scale. UP redeems the panel's score ÷ 10 and DOWN the rest, so the UP price is the expected score: P-07's UP at " + F.cents(m.outcomes[6].price) + " means 8.14/10.")));
+    } else if (multiCat(m)) {
+      head.appendChild(el("div", { class: "s-callout s-callout--violet" }, el("span", { html: S.icon("layers", 16), style: { display: "inline-flex" } }),
+        el("span", {}, el("b", { text: "Several outcomes win. " }), isRisk(m) ? "1 sDAI is split equally between the assets that default this quarter, and No to All pays 1 sDAI if none do. A token trades a little under its quarterly default chance, because the payout is shared when several default."
+          : "The panel funds " + m.slots + " proposals and each funded token redeems 1/" + m.slots + " sDAI, so a price is not a chance: chance ≈ price × " + m.slots + ". " + shortName(m.outcomes[6]) + " at " + F.cents1(m.outcomes[6].price) + " is about a " + F.pct0(m.outcomes[6].chance) + " chance.")));
     }
 
     // ---- A: stats, chart, outcomes
-    var l = leader(m), d24 = m.type === "scalar" ? null : delta24(m, l.index);
+    var l = leader(m), uf = unitFn(m);
     var last;
-    if (m.type === "scalar") { var r = m.range, v0 = r.min + (r.max - r.min) * priceAgo(m, 1, DAY), v1 = scalarValue(m); var wd = r.max - r.min, dv = Math.abs(v1 - v0); last = U.stat("Forecast · 24h", fmtUnit(m, v1), { delta: v1 - v0, deltaText: (v1 >= v0 ? "+" : "−") + (wd >= 10000 ? F.compact(dv, 1) : F.num(dv, wd >= 10 ? 1 : 3)) + (r.unit ? " " + r.unit : "") }); }
-    else last = U.stat("Leading · 24h", clip(isYesNo(m) ? l.name : l.symbol, 10) + " " + pfmt(m, l.price), { delta: d24, deltaText: F.signed(d24, 1) });
+    if (sc(m)) { var r = m.range, v0 = r.min + (r.max - r.min) * priceAgo(m, 1, DAY), v1 = scalarValue(m); var wd = r.max - r.min, dv = Math.abs(v1 - v0); last = U.stat("Forecast · 24h", fmtUnit(m, v1), { delta: v1 - v0, deltaText: (v1 >= v0 ? "+" : "−") + (wd >= 10000 ? F.compact(dv, 1) : F.num(dv, wd >= 10 ? 1 : 3)) + (r.unit ? " " + r.unit : "") }); }
+    else { var du = uf.conv(l.price, l) - uf.conv(priceAgo(m, l.index, DAY), l); last = U.stat(leadLabel(m) + " · 24h", (isYesNo(m) ? l.name : clip(shortName(l), 10)) + " " + words(m, l).value + (isRisk(m) ? "/yr" : ""), { delta: du, deltaText: uf.delta(du) }); }
     A.appendChild(el("div", { class: "s-stats ap-dstats" },
-      U.stat("Liquidity", F.usd(m.liquidity), { note: m.liquidity ? "in " + real(m).length + " pools" : "pools closed" }),
+      U.stat("Liquidity", F.usd(m.liquidity), { note: m.liquidity ? "in " + (isSet(m) ? m.set * 2 + " UP/DOWN" : real(m).length) + " pools" : "pools closed" }),
       U.stat("Volume", F.usd(m.volume), { note: "all time" }),
-      U.stat("Open interest", F.usd(m.openInterest), { note: m.collateral + " locked" }),
+      U.stat("Open interest", F.usd(m.openInterest), { note: cs(m) + " locked" }),
       U.stat("Holders", F.num(m.holders), { note: "addresses" }), last));
 
     // scalar forecast block
     var chartCard = el("section", { class: "s-card s-card--pad ap-chartcard", attrs: { "aria-label": "Price history" } });
-    if (m.type === "scalar") {
+    if (sc(m)) {
       var rg = m.range, val = scalarValue(m), pos = (val - rg.min) / (rg.max - rg.min);
       chartCard.appendChild(el("div", { class: "ap-scalar" },
         el("div", { class: "ap-scalar__v" }, el("span", { class: "t-meta", text: m.state === "pending" ? "Final answer" : "Market forecast" }), el("b", { text: fmtUnit(m, val) })),
         el("div", { class: "ap-scalar__track", attrs: { role: "img", "aria-label": "Forecast " + fmtUnit(m, val) + " in a range of " + fmtUnit(m, rg.min) + " to " + fmtUnit(m, rg.max) } }, el("span", { class: "ap-scalar__mark", style: { left: (pos * 100).toFixed(2) + "%" } })),
         el("div", { class: "s-row s-row--between t-meta" }, el("span", { text: fmtUnit(m, rg.min) }), el("span", { text: "UP " + F.cents(m.outcomes[1].price) + " · DOWN " + F.cents(m.outcomes[0].price) }), el("span", { text: fmtUnit(m, rg.max) })),
-        el("p", { class: "t-meta", text: "UP pays (answer − " + fmtNum(rg.min) + ") ÷ (" + fmtNum(rg.max) + " − " + fmtNum(rg.min) + ") per token, clamped to the range; DOWN pays the rest. Together they always redeem for 1 " + m.collateral + "." })));
+        el("p", { class: "t-meta", text: "UP pays (answer − " + fmtNum(rg.min) + ") ÷ (" + fmtNum(rg.max) + " − " + fmtNum(rg.min) + ") per token, clamped to the range; DOWN pays the rest. Together they always redeem for 1 " + cs(m) + "." })));
     }
-    var ms = m.type === "multi-scalar", series = seriesFor(m), range = "all";
+    var series = seriesFor(m, uf), range = "all";
     var segEl = U.seg([["1d", "1D"], ["1w", "1W"], ["1m", "1M"], ["all", "All"]], "all", function (vv) { range = vv; chart.update({ series: slice(series, range), x: { format: range === "1d" ? F.time : F.dayMon } }); }, "Chart range");
-    var chartTitle = isYesNo(m) ? "Chance of Yes" : m.type === "scalar" ? "Implied " + (m.range.unit || "value") : "Top " + series.length + " of " + real(m).length + " outcomes";
-    chartCard.appendChild(el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: m.type === "scalar" ? "Forecast history" : "Price history" }), el("h2", { class: "t-h3", text: chartTitle })), segEl));
+    var chartTitle = uf.title(series);
+    chartCard.appendChild(el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: uf.spec }), el("h2", { class: "t-h3", text: chartTitle })), segEl));
     var chartBox = el("div"); chartCard.appendChild(chartBox);
-    chartCard.appendChild(el("p", { class: "t-meta ap-chartnote", text: (m.type === "scalar" ? "The forecast is the UP price mapped onto the range." : "A price is the market's probability for that outcome.") + " Sample history, generated to end at the snapshot price." }));
+    chartCard.appendChild(el("p", { class: "t-meta ap-chartnote", text: uf.caption + (m.branch ? " Same hourly series as the Futarchy page (sample)." : " Sample history, generated to end at the snapshot price.") }));
     A.appendChild(chartCard);
     var span = m.range ? m.range.max - m.range.min : 1, dd = span <= 5 ? 2 : span <= 200 ? 1 : 0;
-    var yf = m.type === "scalar" ? function (x) { return (dd ? F.num(x, dd) : F.compact(x, 1)) + (m.range.unit ? " " + m.range.unit : ""); } : smallP(m) ? function (x) { return F.pct(x, 1); } : F.pct0;
-    var maxv = Math.max.apply(null, [].concat.apply([], series.map(function (s) { return s.values.map(function (q) { return q[1]; }); })));
-    var minv = Math.min.apply(null, [].concat.apply([], series.map(function (s) { return s.values.map(function (q) { return q[1]; }); })));
-    var yopt = m.type === "scalar" ? { format: yf } : isYesNo(m) ? { min: 0, max: 1, format: yf }
-      : ms && minv > .3 ? { min: Math.floor(minv * 10 - .5) / 10, max: Math.min(1, Math.ceil(maxv * 10 + .5) / 10), format: yf }
+    var yf = sc(m) ? function (x) { return (dd ? F.num(x, dd) : F.compact(x, 1)) + (m.range.unit ? " " + m.range.unit : ""); } : uf.fmt;
+    var allv = [].concat.apply([], series.map(function (s) { return s.values.map(function (q) { return q[1]; }); }));
+    var maxv = Math.max.apply(null, allv), minv = Math.min.apply(null, allv);
+    var yopt = sc(m) ? { format: yf } : isYesNo(m) ? { min: 0, max: 1, format: yf }
+      : isSet(m) ? { min: Math.max(0, Math.floor(minv * 2 - .5) / 2), max: Math.min(10, Math.ceil(maxv * 2 + .5) / 2), format: yf }
       : { min: 0, max: Math.min(1, Math.ceil(maxv * 1.12 * 20) / 20), format: yf };
     var chart = S.chart.line(chartBox, { series: series, y: yopt, x: { format: F.dayMon }, height: 260, label: chartTitle, endLabels: true });
 
     // outcomes
-    var colorOf = {}; if (!isYesNo(m) && m.type !== "scalar") series.forEach(function (s) { colorOf[s.k] = s.color; });
+    var colorOf = {}; if (!isYesNo(m) && !sc(m)) series.forEach(function (s) { colorOf[s.k] = s.color; });
     var outCard = el("section", { class: "s-card s-card--pad", attrs: { "aria-labelledby": "ap-outs-h" } });
     var many = m.outcomes.length > 10, showAll = false, oq = "";
-    var ohead = el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: TYPES[m.type].name + (m.outcomes.some(function (x) { return x.invalid; }) ? " · incl. Invalid" : "") }), el("h2", { id: "ap-outs-h", class: "t-h3", text: "Outcomes · " + m.outcomes.length })));
+    var ohead = el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: tname(m) + (m.outcomes.some(function (x) { return x.invalid; }) ? " · incl. Invalid" : "") }),
+      el("h2", { id: "ap-outs-h", class: "t-h3", text: isSet(m) ? "Proposals · " + m.set + " UP/DOWN pairs" : "Outcomes · " + m.outcomes.length })));
     if (many) {
       var oin = el("input", { attrs: { type: "search", placeholder: "Filter outcomes", "aria-label": "Filter outcomes", maxlength: "40" } });
       oin.addEventListener("input", function () { oq = oin.value.slice(0, 40); drawOuts(); });
@@ -729,28 +761,31 @@
     moreBtn.addEventListener("click", function () { showAll = !showAll; drawOuts(); });
     if (many) outCard.appendChild(moreBtn);
     A.appendChild(outCard);
-    var ranked = m.outcomes.slice().sort(function (a, b) { return (a.invalid ? 1 : 0) - (b.invalid ? 1 : 0) || b.price - a.price; });
+    var ranked = m.outcomes.slice().sort(function (a, b) { return (a.invalid ? 1 : 0) - (b.invalid ? 1 : 0) || (a.noToAll ? 1 : 0) - (b.noToAll ? 1 : 0) || b.price - a.price; });
     var rankOf = {}; ranked.forEach(function (x, i) { rankOf[x.index] = i + 1; });
-    var multi = !isYesNo(m) && m.type !== "scalar";
+    var multi = !isYesNo(m) && !sc(m);
     function drawOuts() {
       var list = ranked, q = oq.trim().toLowerCase();
-      if (q) list = list.filter(function (x) { return (x.name + " " + x.symbol).toLowerCase().indexOf(q) > -1; });
+      if (q) list = list.filter(function (x) { return (x.name + " " + x.symbol + " " + (x.downSymbol || "")).toLowerCase().indexOf(q) > -1; });
       var total = list.length; if (many && !showAll && !q) list = list.slice(0, 8);
       S.clear(outBox);
       if (!list.length) outBox.appendChild(el("p", { class: "t-meta", text: "No outcome matches “" + clip(oq, 30) + "”." }));
       list.forEach(function (x) {
-        var row = U.orow(x, { rank: x.invalid ? null : rankOf[x.index], delta: x.invalid ? null : delta24(m, x.index), value: m.type === "scalar" ? F.cents(x.price) : pfmt(m, x.price),
-          actions: multi && tradable(m), yes: ms ? "Up" : "Yes", no: ms ? "Down" : "No", swatch: colorOf[x.index],
+        var w = words(m, x), d = x.invalid || sc(m) ? null : uf.conv(x.price, x) - uf.conv(priceAgo(m, x.index, DAY), x);
+        var row = U.orow(x, { rank: x.invalid || x.noToAll ? null : rankOf[x.index], delta: x.invalid ? null : sc(m) ? delta24(m, x.index) : d, deltaText: d == null ? null : uf.delta(d),
+          value: sc(m) ? F.cents(x.price) : w.value, sub: sc(m) ? null : w.sub, p: w.p,
+          actions: multi && tradable(m), yes: w.yes || "Yes", no: w.no || "No", swatch: colorOf[x.index],
           onYes: function () { select(x.index, 0, true); }, onNo: function () { select(x.index, 1, true); } });
         if (x.index === cur.o) row.classList.add("is-selected");
         row.dataset.k = String(x.index);
         if (!x.invalid) row.addEventListener("click", function () { select(x.index, cur.side, false); });
         var meta = el("div", { class: "ap-out__meta" }, el("span", { class: "t-mono", text: x.symbol }), U.addr(x.token, { what: x.symbol + " token address" }));
+        if (x.down) { meta.appendChild(el("span", { class: "t-mono", text: x.downSymbol })); meta.appendChild(U.addr(x.down, { what: x.downSymbol + " token address" })); }
         if (x.invalid) meta.appendChild(el("span", { text: "Redeems at 1 if Reality.eth answers Invalid." }));
         else if (tradable(m)) {
-          meta.appendChild(demoLink("Add liquidity", "Adds liquidity to the " + x.symbol + "/" + m.collateral + " pool (not wired in this concept)."));
-          meta.appendChild(demoLink("View pool", "Opens the " + x.symbol + "/" + m.collateral + " pool (not wired in this concept)."));
-          meta.appendChild(demoLink("New conditional market", "Starts a market whose collateral is the " + x.symbol + " token, so it pays out only if “" + clip(x.name, 40) + "” wins (not wired in this concept)."));
+          meta.appendChild(demoLink("Add liquidity", "Adds liquidity to the " + x.symbol + "/" + cs(m) + " pool (not wired in this concept)."));
+          meta.appendChild(demoLink("View pool", "Opens the " + x.symbol + "/" + cs(m) + " pool (not wired in this concept)."));
+          meta.appendChild(demoLink("New conditional market", "Starts a market whose collateral is the " + x.symbol + " token, so it pays out only if “" + clip(x.name, 40) + "” " + (isSet(m) ? "scores high" : "wins") + " (not wired in this concept)."));
         }
         outBox.appendChild(el("div", { class: "ap-out" }, row, meta));
       });
@@ -765,32 +800,19 @@
     function drawTicket() {
       S.clear(tbox);
       if (!tradable(m)) { tbox.appendChild(resolvedPanel(m)); return; }
-      var opt = { chips: [1, 5, 20, 100], slippage: .01 };
-      if (isYesNo(m)) { opt.market = m; opt.outcomes = [0, 1]; opt.selected = cur.o === 1 ? 1 : 0; }
-      else if (m.type === "scalar") { opt.market = m; opt.outcomes = [1, 0]; opt.selected = cur.o === 0 ? 1 : 0; }
-      else {
-        var x = m.outcomes[cur.o], nm = x.name.length <= 14 ? x.name : x.symbol;
-        opt.market = { id: m.id, appId: m.appId, volume: m.volume, liquidity: m.liquidity, collateral: m.collateral, question: x.name,
-          outcomes: [{ name: (ms ? "Up · " : "Yes · ") + nm, price: x.price }, { name: (ms ? "Down · " : "No · ") + nm, price: Math.max(.001, 1 - x.price) }] };
-        opt.outcomes = [0, 1]; opt.selected = cur.side; opt.title = x.name;
-      }
-      var tk = U.ticket(tbox, opt);
-      var note = isYesNo(m) ? "Yes and No add up to 100¢ with Invalid taking the rest. Buying swaps " + m.collateral + " for the outcome token in its pool."
-        : m.type === "scalar" ? "UP gains as the forecast rises toward " + fmtUnit(m, m.range.max) + "; DOWN gains as it falls."
-        : ms ? "Up and Down on one item always add up to 1 " + m.collateral + " at resolution."
-        : "Yes buys " + m.outcomes[cur.o].symbol + ". No buys every other outcome as one basket, so it pays if this outcome loses.";
-      tk.appendChild(el("p", { class: "t-meta ap-ticket-note", text: note }));
+      tradeTicket(tbox, m, cur);
     }
+    var mmr = mmrPanel(m, cur);
     function select(k, side, fromButton) {
       if (m.outcomes[k].invalid) return;
       cur.o = k; cur.side = side;
       $$(".ap-out .s-orow", outBox).forEach(function (r) { r.classList.toggle("is-selected", r.dataset.k === String(k)); });
-      drawTicket();
+      drawTicket(); mmr.redraw();
       try { history.replaceState(null, "", "#m=" + m.id + "&o=" + k + (side ? "&side=1" : "")); } catch (e) { /* file:// fine */ }
       if (fromButton && window.innerWidth <= 960) tbox.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     }
     drawTicket();
-    rail.appendChild(mmrPanel(m));
+    rail.appendChild(mmr.el);
     if (app.id !== "app") {
       rail.appendChild(el("section", { class: "s-card s-card--pad ap-spec-card" },
         el("div", { class: "s-row" }, U.avatar(app.id, "ink"), el("div", {}, el("span", { class: "s-spec", text: "Specialist app" }), el("b", { text: app.name }))),
@@ -811,7 +833,7 @@
       U.timeline(steps), el("p", { class: "t-meta ap-tnote", text: st.note + " " + nextStep(m) })));
 
     var ev = m._events, rel = related(m);
-    var TABS = [{ id: "details", label: "Contract" }, { id: "activity", label: "Activity", count: ev.length }, { id: "positions", label: "Positions", count: m._holders.length }, { id: "resolution", label: "Resolution" }, { id: "related", label: "Related", count: rel.length }];
+    var TABS = [{ id: "details", label: "Contract" }, { id: "activity", label: "Activity", count: ev.length }, { id: "positions", label: "Positions", count: m._holders.length }, { id: "resolution", label: "Resolution" }, { id: "related", label: "Related", count: rel.length }, { id: "json", label: "JSON" }];
     var ai = 0; TABS.forEach(function (t, i) { if (t.id === p.tab) ai = i; });
     var tabsCard = el("section", { class: "s-card ap-tabscard", attrs: { "aria-label": "Market record" } });
     var panel = el("div", { class: "ap-tabpanel", attrs: { role: "tabpanel" } });
@@ -823,16 +845,45 @@
       if (id === "activity") return tabActivity(panel, m, ev);
       if (id === "positions") return tabPositions(panel, m);
       if (id === "resolution") return tabResolution(panel, m);
+      if (id === "json") return tabJson(panel, m, cur);
       return tabRelated(panel, m, rel);
     }
     drawTab(TABS[ai].id);
     if (p.tab) setTimeout(function () { tabsCard.scrollIntoView({ block: "start" }); }, 0);
   }
-  function seriesFor(m) {
+  /* units: what a price means for each market type (charts, 24h moves, the LEADING stat) */
+  // price -> chance for multi-winner outcomes: shift in log-odds so the series ends exactly on the outcome's chance
+  // (the mapping Opportunity uses, so both pages show the same history and 24h moves)
+  function lg(p) { p = Math.min(.9999, Math.max(1e-4, p)); return Math.log(p / (1 - p)); }
+  function toChance(p, o) { return o && o.chance != null ? 1 / (1 + Math.exp(-(lg(p) + lg(o.chance) - lg(o.price)))) : p; }
+  function pts(d) { return (d > 0 ? "+" : d < 0 ? "−" : "±") + F.num(Math.abs(d * 100), 1) + " pts"; }
+  function unitFn(m) {
+    var top = function (series, of, what) { return what + " · top " + series.length + " of " + of; };
+    if (sc(m)) { var r0 = m.range; return { conv: function (p) { return r0.min + (r0.max - r0.min) * p; }, fmt: function (v) { return fmtUnit(m, v); }, delta: function (d) { return F.signedNum(d, 2); },
+      spec: "Forecast history", title: function () { return "Implied " + (m.range.unit || "value"); }, caption: "The forecast is the UP price mapped onto the range." }; }
+    if (isSet(m)) { var r = m.range; return { conv: function (p) { return r.min + (r.max - r.min) * p; }, fmt: function (v) { return F.num(v, 2); }, delta: function (d) { return F.signedNum(d, 2); },
+      spec: "Score history", title: function (s) { return top(s, m.set, "Expected panel score"); },
+      caption: "UP price = expected score ÷ 10; UP + DOWN = 1 " + m.collateral + "." }; }
+    if (isRisk(m)) { var k = m.riskScale; return { conv: function (p, o) { return o && o.noToAll ? p : 1 - Math.pow(1 - toChance(p, o), 4); }, fmt: function (v) { return F.pct(v, 1); }, delta: pts,
+      spec: "Default chance history", title: function (s) { return top(s, real(m).length - 1, "Default chance per year"); },
+      caption: "1 sDAI is split between the assets that default, so a token trades a little under its quarterly default chance (here × " + F.num(k, 2) + "). Per year = 1 − (1 − quarterly)⁴." }; }
+    if (multiCat(m)) { var n = m.slots || 1, inv = invP(m), f = m.outcomes[6] || leader(m);
+      return { conv: function (p, o) { return toChance(p, o); }, fmt: F.pct0, delta: pts,
+        spec: "Chance history", title: function (s) { return top(s, real(m).length, "Chance of selection"); },
+        caption: "A funded share redeems 1/" + n + " sDAI, so chance ≈ price × " + n + ": " + shortName(f) + " at " + F.cents1(f.price) + " is about " + F.pct0(f.chance) + "." }; }
+    if (m.type === "multi-scalar") return { conv: function (p) { return p; }, fmt: F.pct0, delta: pts, spec: "Price history",
+      title: function (s) { return "Expected share · " + (s.length < real(m).length ? "top " + s.length + " of " : "all ") + real(m).length; },
+      caption: "Each token redeems its item's share of the answered total, so a price is the expected share." };
+    return { conv: function (p) { return p; }, fmt: F.pct0, delta: function (d) { return F.signed(d, 1); }, spec: "Price history",
+      title: function (s) { return isYesNo(m) ? "Chance of Yes" : "Top " + s.length + " of " + real(m).length + " outcomes"; },
+      caption: "A price is the market's probability for that outcome." };
+  }
+  function seriesFor(m, uf) {
+    uf = uf || unitFn(m);
     if (isYesNo(m)) return [{ name: "Yes", values: hist(m, 0), color: "var(--c-yes)", k: 0 }];
-    if (m.type === "scalar") { var r = m.range; return [{ name: "Forecast", values: hist(m, 1).map(function (q) { return [q[0], r.min + (r.max - r.min) * q[1]]; }), color: "var(--c1)", k: 1 }]; }
-    return real(m).slice().sort(function (a, b) { return b.price - a.price; }).slice(0, 4).map(function (o, i) {
-      return { name: clip(o.name, 34), short: o.symbol, values: hist(m, o.index), color: PAL[i], k: o.index };
+    if (sc(m)) { var r = m.range; return [{ name: "Forecast", values: hist(m, 1).map(function (q) { return [q[0], r.min + (r.max - r.min) * q[1]]; }), color: "var(--c1)", k: 1 }]; }
+    return real(m).filter(function (o) { return !o.noToAll; }).sort(function (a, b) { return b.price - a.price; }).slice(0, 4).map(function (o, i) {
+      return { name: clip(o.name, 34), short: o.proposal || o.symbol, values: hist(m, o.index).map(function (q) { return [q[0], +uf.conv(q[1], o).toFixed(5)]; }), color: PAL[i], k: o.index };
     });
   }
   function slice(series, range) {
@@ -863,29 +914,113 @@
     }
     return p;
   }
-  function mmrPanel(m) {
-    var mode = m.state === "closed" ? "redeem" : "mint", amt = 100, c = m.collateral, toks = m.outcomes.map(function (o) { return o.symbol; });
+  /* ======================= trade ticket (payout follows the market type) ======================= */
+  // binary/categorical: a share redeems 1 · scalar: UP redeems the answer's position in the range ·
+  // multi-categorical: 1/k (k = slots, or the number of assets that default) · multi-scalar: the item's share
+  function tradeTicket(host, m, cur) {
+    var o = m.outcomes[cur.o], coll = cs(m), SLIP = .01, amount = 0;
+    var kind = isYesNo(m) ? "binary" : sc(m) ? "scalar" : isSet(m) ? "set" : multiCat(m) ? "multi" : m.type === "multi-scalar" ? "mscalar" : "cat";
+    var tiles, side = cur.side ? 1 : 0, title = o.name, r = m.range;
+    if (kind === "binary") { tiles = [{ label: "Yes", price: m.outcomes[0].price, k: 0 }, { label: "No", price: m.outcomes[1].price, k: 1 }]; side = cur.o === 1 ? 1 : 0; title = m.question; }
+    else if (kind === "scalar") { tiles = [{ label: "UP", price: m.outcomes[1].price, k: 1 }, { label: "DOWN", price: m.outcomes[0].price, k: 0 }]; side = cur.o === 0 ? 1 : 0; title = m.question; }
+    else if (kind === "set") tiles = [{ label: "UP · " + o.proposal, price: o.price }, { label: "DOWN · " + o.proposal, price: o.downPrice }];
+    else if (kind === "cat") tiles = [{ label: "Yes · " + clip(o.name, 12), price: o.price }, { label: "No · " + clip(o.name, 12), price: Math.max(.001, 1 - o.price - invP(m)) }];
+    else tiles = [{ label: "Buy · ask", price: o.price }, { label: "Sell · bid", price: o.price * (1 - .012) }];
+    var sellMode = function () { return (kind === "multi" || kind === "mscalar") && side === 1; };
+    var panel = el("section", { class: "s-panel s-ticket", attrs: { "aria-label": "Trade ticket" } });
+    panel.appendChild(el("div", { class: "s-panel__head" }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { html: S.glyph(m.appId === "app" ? "grid" : m.appId), style: { color: "var(--violet-2)", display: "inline-flex" } }), el("span", { class: "t-meta", text: F.usd(m.volume) + " Vol." })), el("span", { class: "t-meta", text: "#" + m.id + (kind === "set" || kind === "multi" || kind === "mscalar" || kind === "cat" ? " · outcome " + String(o.index + 1).padStart(2, "0") : "") })));
+    panel.appendChild(el("h3", { class: "t-title", text: title }));
+    var tbox = el("div", { class: "s-pricetiles" }), tEls = tiles.map(function (t, i) {
+      var b = el("button", { class: "s-pricetile", attrs: { type: "button", "aria-pressed": String(i === side) } }, el("small", { text: t.label }), el("b", { text: F.cents1(t.price) }));
+      b.addEventListener("click", function () { side = i; tEls.forEach(function (x, j) { x.setAttribute("aria-pressed", String(j === i)); }); calc(); });
+      tbox.appendChild(b); return b;
+    });
+    panel.appendChild(tbox);
+    var input = el("input", { attrs: { type: "text", inputmode: "decimal", placeholder: "$0", "aria-label": "Amount in " + coll, maxlength: "12" } });
+    var chips = el("div", { class: "s-amountchips" }, [1, 5, 20, 100].map(function (c) {
+      var b = el("button", { attrs: { type: "button" }, text: "+$" + c });
+      b.addEventListener("click", function () { amount = Math.min(1e6, Math.round((amount + c) * 100) / 100); input.value = "$" + F.num(amount, 2); calc(); });
+      return b;
+    }));
+    var rows = el("div", { class: "s-ticket__rows" }), warn = el("div", { class: "s-callout s-callout--warn ap-twarn", attrs: { hidden: true } });
+    var conf = el("button", { class: "s-btn s-btn--lg", attrs: { type: "button" }, text: "Confirm" });
+    var reset = el("button", { class: "s-icon-btn", attrs: { type: "button", "aria-label": "Clear amount" }, html: S.icon("close", 20) });
+    input.addEventListener("input", function () { var v = parseFloat(input.value.replace(/[^0-9.]/g, "")); amount = isFinite(v) ? Math.min(1e6, v) : 0; calc(); });
+    input.addEventListener("blur", function () { input.value = amount ? "$" + F.num(amount, 2) : ""; });
+    reset.addEventListener("click", function () { amount = 0; input.value = ""; calc(); input.focus(); });
+    conf.addEventListener("click", function () { S.toast(amount ? "Sample only: no transaction sent (" + conf.textContent.toLowerCase() + ", " + F.tok(amount, coll) + ")." : "Enter an amount first.", amount ? "info" : "alert"); });
+    function line(k, v) { return el("div", {}, el("span", { text: k }), el("b", { text: v })); }
+    function ret(pay) { return F.tok(pay, coll) + " (" + F.signed(pay / amount - 1, 0) + ")"; }
+    function calc() {
+      var t = tiles[side], raw = amount / Math.max(m.liquidity, 1) * .25, imp = Math.min(raw, SLIP), sell = sellMode();
+      var avg = sell ? t.price * (1 - imp) : Math.min(.999, t.price * (1 + imp)), sh = amount ? amount / avg : 0, a = !!amount;
+      S.clear(rows);
+      rows.appendChild(line("Average price", F.cents1(avg)));
+      rows.appendChild(line(sell ? "Shares to sell" : "Shares", a ? F.num(sh, 2) : "—"));
+      var L = [];
+      if (sell) L.push(["You receive", F.tok(amount, coll)]);
+      else if (kind === "binary") L.push(["If " + t.label, ret(sh)], ["Otherwise", "0 " + coll]);
+      else if (kind === "cat") L.push([side ? "If " + clip(o.name, 14) + " loses" : "If " + clip(o.name, 14) + " wins", ret(sh)], ["Otherwise", "0 " + coll]);
+      else if (kind === "scalar" || kind === "set") {
+        var up = kind === "set" ? side === 0 : t.k === 1, fv = kind === "set" ? o.value : scalarValue(m), pos = (fv - r.min) / (r.max - r.min), step = (r.max - r.min) / 10;
+        L.push(["At the forecast (" + (kind === "set" ? F.num(fv, 2) + "/10" : fmtUnit(m, fv)) + ")", a ? ret(sh * (up ? pos : 1 - pos)) : "—"]);
+        var stepTxt = (Math.abs(step) >= 10000 ? F.compact(step, 1) : String(+step.toPrecision(3))) + (r.unit ? " " + r.unit : "");
+        L.push([kind === "set" ? "Each panel point " + (up ? "up" : "down") : "Each " + (up ? "+" : "−") + stepTxt, a ? "+" + F.tok(sh / 10, coll) : "—"]);
+        L.push(["Max (at " + (kind === "set" ? (up ? "10" : "0") + "/10" : fmtUnit(m, up ? r.max : r.min)) + ")", a ? F.tok(sh, coll) : "—"]);
+        if (m.collSym) L.push(["If " + m.proposal + " is " + (m.parent.outcome === "Yes" ? "rejected" : "approved"), "void (" + coll + " = 0)"]);
+      } else if (kind === "multi" && isRisk(m)) {
+        if (o.noToAll) L.push(["If no asset defaults", ret(sh)], ["If any asset defaults", "0 " + coll]);
+        else L.push(["If only " + o.asset + " defaults", ret(sh)], ["If 2 assets default", a ? F.tok(sh / 2, coll) : "—"], ["If it doesn't default", "0 " + coll]);
+      } else if (kind === "multi") L.push(["If funded (1/" + m.slots + " each)", ret(sh / m.slots)], ["If not funded", "0 " + coll]);
+      else if (kind === "mscalar") L.push(["At the expected share (" + F.pct0(o.price) + ")", ret(sh * o.price)], ["Max (all of the total)", a ? F.tok(sh, coll) : "—"]);
+      L.forEach(function (x) { rows.appendChild(line(x[0], a ? x[1] : "—")); });
+      rows.appendChild(line("Max slippage", F.pct(SLIP, 1)));
+      var over = raw > SLIP; warn.hidden = !over; S.clear(warn);
+      if (over) { warn.appendChild(el("span", { html: S.icon("alert", 16), style: { display: "inline-flex" } })); warn.appendChild(el("span", {}, el("b", { text: "Thin pool. " }), "Estimated price impact " + F.pct(raw, 1) + " is above your " + F.pct(SLIP, 1) + " slippage, so this order would revert. Lower the amount.")); }
+      conf.disabled = over;
+      conf.textContent = over ? "Lower the amount" : !a ? "Confirm" : sell ? "Sell " + shortName(o) : kind === "multi" || kind === "mscalar" ? "Buy " + shortName(o) : "Buy " + t.label;
+    }
+    panel.appendChild(el("div", { class: "s-panel s-panel--nested", style: { gap: "14px" } }, el("div", { class: "s-amount" }, el("label", { text: "Amount" }), input), chips, rows, warn, el("div", { class: "s-ticket__confirm" }, conf, reset)));
+    var note = kind === "binary" ? "Yes and No add up to 100¢. Buying swaps " + coll + " for the outcome token in its pool."
+      : kind === "cat" ? "Yes buys " + o.symbol + ". No buys every other outcome as one basket, so it pays 1 " + coll + " if this outcome loses."
+      : kind === "set" ? "UP redeems the panel's score ÷ 10 and DOWN the rest; together 1 " + coll + ". See the payout at any score in Deep."
+      : kind === "scalar" ? "UP gains as the answer rises toward " + fmtUnit(m, r.max) + "; DOWN gains as it falls. Together they redeem for 1 " + coll + "."
+      : kind === "multi" && isRisk(m) ? "1 sDAI is split equally between the assets that default this quarter; No to All pays 1 sDAI if none do."
+      : kind === "multi" ? "A funded share redeems 1/" + m.slots + " sDAI, because the payout is split across the " + m.slots + " funded proposals."
+      : "Each token redeems its item's share of the answered total.";
+    if (m.collSym) note = "Pay with " + coll + ": split sDAI on #" + m.parent.id + " first (1 sDAI → 1 YES_sDAI + 1 NO_sDAI). " + note;
+    panel.appendChild(el("p", { class: "t-meta", text: note + " Sample prices; nothing is traded." }));
+    if (kind === "set") panel.appendChild(el("a", { class: "s-link t-meta ap-tlink", href: specialistHref(m, cur.o) + "-payout" }, "Payout at any score, in Deep", el("span", { html: S.icon("arrow-right", 13), style: { display: "inline-flex" } })));
+    calc(); host.appendChild(panel);
+  }
+  function mmrPanel(m, cur) {
+    var mode = m.state === "closed" ? "redeem" : "mint", amt = 100, c = cs(m);
     var p = el("section", { class: "s-panel ap-mmr", attrs: { "aria-label": "Mint, merge or redeem" } });
     var input = el("input", { attrs: { type: "text", inputmode: "decimal", value: "100", "aria-label": "Amount in " + c, maxlength: "12" } });
     var body = el("div", { class: "ap-mmr__lines" }), btn = el("button", { class: "s-btn s-btn--block", attrs: { type: "button" } });
     input.addEventListener("input", function () { amt = Math.min(1e9, parseFloat(input.value.replace(/[^0-9.]/g, "")) || 0); draw(); });
     input.addEventListener("blur", function () { input.value = amt ? F.num(amt, 2) : ""; });
     btn.addEventListener("click", function () { S.toast(amt ? "Sample only: no transaction sent (" + btn.textContent.toLowerCase() + ")." : "Enter an amount first.", amt ? "info" : "alert"); });
-    p.appendChild(el("div", { class: "s-panel__head" }, el("span", { class: "s-spec", text: "Positions" }), U.seg([["mint", "Mint"], ["merge", "Merge"], ["redeem", "Redeem"]], mode, function (v) { mode = v; draw(); }, "Position action")));
+    p.appendChild(el("div", { class: "s-panel__head" }, el("span", { class: "s-spec", text: isSet(m) ? "Positions · " + m.outcomes[cur.o].proposal : "Positions" }), U.seg([["mint", "Mint"], ["merge", "Merge"], ["redeem", "Redeem"]], mode, function (v) { mode = v; draw(); }, "Position action")));
     p.appendChild(el("div", { class: "s-amount" }, el("label", { text: mode === "mint" ? "Deposit" : "Sets" }), input));
     p.appendChild(body); p.appendChild(btn);
     function line(k, v) { return el("div", {}, el("span", { text: k }), el("b", { text: v })); }
     function draw() {
-      S.clear(body); var n = toks.length; btn.disabled = false;
+      // a scalar round mints per proposal: 1 sUSDS -> 1 UP_Pxx + 1 DOWN_Pxx; everything else mints one of every outcome token
+      var o = m.outcomes[cur.o], toks = isSet(m) ? [o.symbol, o.downSymbol] : m.outcomes.map(function (x) { return x.symbol; }), n = toks.length;
+      S.clear(body); btn.disabled = false;
+      var hs = p.querySelector(".s-panel__head .s-spec"); if (hs && isSet(m)) hs.textContent = "Positions · " + o.proposal;
       p.querySelector(".s-amount label").textContent = mode === "mint" ? "Deposit" : mode === "merge" ? "Full sets" : "Tokens";
       if (mode === "mint") {
-        body.appendChild(line("You deposit", F.tok(amt, c))); body.appendChild(line("You receive", F.num(amt, 2) + " of each of " + n + " tokens"));
+        body.appendChild(line("You deposit", F.tok(amt, c)));
+        body.appendChild(line("You receive", isSet(m) || n === 2 ? F.num(amt, 0) + " " + toks[0] + " + " + F.num(amt, 0) + " " + toks[1] : F.num(amt, 2) + " of each of " + n + " tokens"));
         body.appendChild(el("div", { class: "ap-toks" }, toks.slice(0, 10).map(function (s) { return el("span", { class: "s-tag", text: s }); }), n > 10 ? el("span", { class: "s-tag", text: "+" + (n - 10) }) : null));
-        body.appendChild(el("p", { class: "t-meta", text: "A full set is always worth 1 " + c + ", so minting never moves a price." }));
+        body.appendChild(el("p", { class: "t-meta", text: (isSet(m) ? "Each proposal is its own condition, so a set is one UP and one DOWN, worth 1 " + c + " together. " : "A full set is always worth 1 " + c + ", so minting never moves a price. ")
+          + (m.collSym ? "Get " + c + " by splitting sDAI on #" + m.parent.id + " first." : "") }));
         btn.textContent = "Mint " + F.num(amt, 0) + " sets";
       } else if (mode === "merge") {
         body.appendChild(line("You return", F.num(amt, 2) + " × " + n + " tokens")); body.appendChild(line("You receive", F.tok(amt, c)));
-        body.appendChild(el("p", { class: "t-meta", text: "Merging needs one of every outcome token" + (m.outcomes.some(function (o) { return o.invalid; }) ? ", INVALID included." : ".") }));
+        body.appendChild(el("p", { class: "t-meta", text: "Merging needs one of every outcome token" + (isSet(m) ? " of " + o.proposal + " (" + toks.join(" + ") + ")." : m.outcomes.some(function (x) { return x.invalid; }) ? ", INVALID included." : ".") }));
         btn.textContent = "Merge " + F.num(amt, 0) + " sets";
       } else {
         if (m.state === "closed") { var w = leader(m); body.appendChild(line("You redeem", F.num(amt, 2) + " " + w.symbol)); body.appendChild(line("You receive", F.tok(amt, c))); btn.textContent = "Redeem " + w.symbol; }
@@ -893,17 +1028,19 @@
       }
     }
     draw();
-    return p;
+    return { el: p, redraw: draw };
   }
   function tabDetails(panel, m, cur) {
-    var c = D.chain(m.chain);
+    var c = D.chain(m.chain), so = m.outcomes[cur.o];
+    var nTok = isSet(m) ? m.set * 2 : m.outcomes.length;
     panel.appendChild(U.kv([
-      ["Market", el("span", {}, "#" + m.id + " · " + TYPES[m.type].name + " · " + m.outcomes.length + " outcomes")],
+      ["Market", el("span", {}, "#" + m.id + " · " + tname(m) + " · " + (isSet(m) ? m.set + " proposals, " + nTok + " outcome tokens" : m.outcomes.length + " outcomes"))],
       ["Market contract", U.addr(m.address, { chars: 6, what: "market contract address" })],
-      ["Condition ID", U.addr(m.conditionId, { chars: 6, what: "condition ID" })],
-      ["Reality.eth question", U.addr(m.questionId, { chars: 6, what: "question ID" })],
+      isSet(m) ? ["Condition ID · " + so.proposal, el("span", { class: "s-row", style: { "--gap": "8px" } }, U.addr(so.conditionId, { chars: 6, what: "condition ID" }), el("span", { class: "t-meta", text: "one per proposal" }))]
+        : ["Condition ID", U.addr(m.conditionId, { chars: 6, what: "condition ID" })],
+      isSet(m) ? ["Reality.eth question · " + so.proposal, U.addr(so.questionId, { chars: 6, what: "question ID" })] : ["Reality.eth question", U.addr(m.questionId, { chars: 6, what: "question ID" })],
       ["Oracle", "Reality.eth, with Kleros as arbitrator"],
-      ["Collateral", m.collateral + " · " + COLL[m.collateral].name],
+      ["Collateral", m.collSym ? el("span", {}, m.collSym + " · the “" + m.parent.outcome + "” token of ", mlink(D.market(m.parent.id)), " (backed by " + m.collateral + ")") : m.collateral + " · " + COLL[m.collateral].name],
       ["Chain", el("span", { class: "s-row", style: { "--gap": "8px" } }, U.chainBadge(m.chain), el("span", { class: "t-meta", text: "chain ID " + c.chainId }))],
       ["Token standard", m.wrapper],
       ["Creator", U.addr(m.creator, { chars: 6, href: "#a=" + m.creator })],
@@ -912,15 +1049,37 @@
       m.parent ? ["Parent market", el("span", {}, mlink(D.market(m.parent.id)), " · pays out if “" + m.parent.outcome + "”")] : null,
       ["Kleros Curate", el("span", { class: "s-row", style: { "--gap": "8px" } }, U.verifyBadge(m.verify), el("span", { class: "t-meta", text: VERIFY[m.verify].note }))]
     ]));
-    panel.appendChild(el("h3", { class: "ap-sub", text: "Outcome tokens · ERC-20" }));
-    var t = U.table(panel, [
+    panel.appendChild(el("h3", { class: "ap-sub", text: "Outcome tokens · ERC-20" + (isSet(m) ? " · " + nTok + " (an UP and a DOWN per proposal)" : "") }));
+    var cols = isSet(m) ? [
+      { key: "index", label: "#", render: function (o) { return el("span", { class: "t-mono t-3", text: String(o.index + 1).padStart(2, "0") }); } },
+      { key: "name", label: "Proposal", class: "ap-wrap", render: function (o) { return clip(o.name, 40); } },
+      { key: "token", label: "UP token", render: function (o) { return el("span", { class: "ap-tokcell" }, el("span", { class: "t-mono", text: o.symbol }), U.addr(o.token, { chars: 4, what: o.symbol + " token address" })); } },
+      { key: "down", label: "DOWN token", render: function (o) { return el("span", { class: "ap-tokcell" }, el("span", { class: "t-mono", text: o.downSymbol }), U.addr(o.down, { chars: 4, what: o.downSymbol + " token address" })); } },
+      { key: "price", label: "UP · score", num: true, sort: true, render: function (o) { return F.cents(o.price) + " · " + F.num(o.value, 2); } }
+    ] : [
       { key: "index", label: "#", render: function (o) { return el("span", { class: "t-mono t-3", text: String(o.index) }); } },
       { key: "name", label: "Outcome", class: "ap-wrap", render: function (o) { return clip(o.name, 48); } },
       { key: "symbol", label: "Symbol", render: function (o) { return el("span", { class: "t-mono", text: o.symbol }); } },
       { key: "token", label: "Token address", render: function (o) { return U.addr(o.token, { chars: 6, what: o.symbol + " token address" }); } },
-      { key: "price", label: "Price", num: true, sort: true, render: function (o) { return m.type === "scalar" ? F.cents(o.price) : pfmt(m, o.price); } }
-    ], { rows: m.outcomes, compact: true, caption: "Outcome tokens" });
+      { key: "price", label: sc(m) || multiCat(m) ? "Price" : "Price · chance", num: true, sort: true, render: function (o) { return sc(m) ? F.cents(o.price) : multiCat(m) ? F.cents1(o.price) + " · " + words(m, o).value + (isRisk(m) && !o.noToAll && !o.invalid ? "/yr" : "") : words(m, o).value; } }
+    ];
+    var t = U.table(panel, cols, { rows: isSet(m) ? real(m) : m.outcomes, compact: true, caption: "Outcome tokens" });
     var rows = $$("tbody tr", t.table); if (rows[cur.o]) rows[cur.o].classList.add("is-selected");
+  }
+  function tabJson(panel, m, cur) {
+    var o = m.outcomes[cur.o];
+    var obj = { sample: true, id: +m.id, type: m.type, markets: m.set || undefined, question: m.question, chain: { name: chainName(m.chain), chainId: D.chain(m.chain).chainId },
+      collateral: cs(m), parent: m.parent ? { market: +m.parent.id, outcome: m.parent.outcome } : undefined, state: m.state, reportsOpen: m.openingDate,
+      address: m.address, conditionId: isSet(m) ? undefined : m.conditionId, questionId: isSet(m) ? undefined : m.questionId, oracle: "Reality.eth", arbitrator: "Kleros",
+      range: m.range ? [m.range.min, m.range.max] : undefined, slots: m.slots || undefined,
+      outcomes: real(m).slice(0, isSet(m) || m.outcomes.length > 12 ? 3 : 12).map(function (x) {
+        return isSet(m) ? { proposal: x.proposal, conditionId: x.conditionId, up: { token: x.token, symbol: x.symbol, price: x.price }, down: { token: x.down, symbol: x.downSymbol, price: x.downPrice }, expectedScore: x.value }
+          : { index: x.index, name: x.name, token: x.token, symbol: x.symbol, price: x.price, chance: x.chance != null ? +x.chance.toFixed(4) : undefined };
+      }) };
+    var txt = JSON.stringify(obj, null, 2), more = real(m).length - obj.outcomes.length;
+    panel.appendChild(el("div", { class: "s-row s-row--between" }, el("span", { class: "t-meta", text: "Read-only market record for scripts and agents. Same fields as this page" + (more > 0 ? "; " + more + " more outcomes in the full export." : ".") }),
+      el("span", { class: "s-row", style: { "--gap": "8px" } }, U.sample(), el("button", { class: "s-btn s-btn--ghost s-btn--sm", attrs: { type: "button", "data-copy": txt }, html: S.icon("copy", 14) }, "Copy JSON"))));
+    panel.appendChild(el("pre", { class: "ap-json", text: txt, attrs: { tabindex: "0", "aria-label": "Market record as JSON" } }));
   }
   function tabActivity(panel, m, ev) {
     var kinds = [["all", "All"], ["trade", "Trades"], ["liq", "Liquidity"], ["set", "Mint and merge"], ["oracle", "Oracle"]];
@@ -955,7 +1114,7 @@
     panel.appendChild(el("p", { class: "t-meta", text: "Top 10 addresses by position size, in collateral terms. Agents are labelled where their operators registered a name." }));
   }
   function tabResolution(panel, m) {
-    var tpl = { categorical: "Single select", "multi-categorical": "Multiple select", scalar: "Number (uint)", "multi-scalar": "Number, one question per item" }[m.type];
+    var tpl = isSet(m) ? "Number (uint), one question per proposal (" + m.set + ")" : { categorical: "Single select", "multi-categorical": "Multiple select", scalar: "Number (uint)", "multi-scalar": "Number, one question per item" }[m.type];
     var r = queueLine(m), act = r.action && STAGE[m.state] >= 2 && m.state !== "closed";
     var status = m.state === "not-open" ? "No answers yet. " + nextStep(m) : m.state === "closed" ? "Resolved: " + answerOf(m) + ". Winning tokens redeem 1:1 for " + m.collateral + "." : r.text;
     panel.appendChild(el("div", { class: "s-callout s-callout--violet ap-status" }, el("span", { html: S.icon(m.state === "dispute" ? "scale" : "clock", 16), style: { display: "inline-flex" } }),
@@ -968,7 +1127,12 @@
       ["Answer timeout", "3.5 days after each answer"],
       ["Minimum bond", "10 xDAI; each new answer must at least double the last bond"],
       ["Arbitrator", "Kleros, if anyone pays for arbitration before the timeout"],
-      ["Payout", m.type === "scalar" ? "UP and DOWN split 1 " + m.collateral + " by where the answer falls in " + fmtUnit(m, m.range.min) + " to " + fmtUnit(m, m.range.max) : m.type === "multi-categorical" ? "1 " + m.collateral + " split equally between the outcomes answered true" : m.type === "multi-scalar" ? "1 " + m.collateral + " split by the answered numbers" : "The winning token redeems 1:1 for " + m.collateral]
+      ["Payout", isSet(m) ? "Per proposal: UP redeems the panel's score ÷ 10 (0–10, clamped) and DOWN the rest, so a pair is always worth 1 " + m.collateral
+        : sc(m) ? "UP and DOWN split 1 " + cs(m) + " by where the answer falls in " + fmtUnit(m, m.range.min) + " to " + fmtUnit(m, m.range.max) + (m.collSym ? ". " + m.collSym + " is void unless #" + m.parent.id + " resolves " + m.parent.outcome : "")
+        : isRisk(m) ? "1 " + m.collateral + " split equally between the assets that default in the quarter; No to All redeems 1 if none do"
+        : multiCat(m) ? "1 " + m.collateral + " split equally between the outcomes answered true" + (m.slots ? ": 1/" + m.slots + " each for the " + m.slots + " funded proposals" : "")
+        : m.type === "multi-scalar" ? "Each token redeems its answered number ÷ the sum of all answers, so the tokens always add up to 1 " + m.collateral
+        : "The winning token redeems 1:1 for " + m.collateral + (m.futarchy && m.noInvalid ? ". No Invalid token: an invalid answer resolves as not approved" : "")]
     ];
     if (m.type === "categorical" || m.type === "multi-categorical") rows.push(["Invalid", "If the question can't be answered as written, INVALID redeems at 1"]);
     if (m.state === "waiting" || m.state === "dispute" || m.state === "pending" || m.state === "closed") rows.splice(1, 0, ["Current answer", el("b", { text: answerOf(m) })]);
@@ -1071,5 +1235,11 @@
   /* ======================= boot ======================= */
   var ni = $("#ap-notes-icon"); if (ni) ni.outerHTML = S.icon("info", 16);
   initHero(); initExplorer(); initActivity(); initLeaderboard(); initCreate();
+  (function oneSearch() { // two search fields on one screen read as a mistake: hide the header pill while the hero search is visible
+    var hs = $("[data-shell-search]"), hero = $("#ap-search-wrap");
+    if (!hs || !hero || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (en) { hs.classList.toggle("is-tucked", en[0].isIntersecting && mode === "home"); }, { rootMargin: "-80px 0px 0px 0px" }).observe(hero);
+    window.addEventListener("hashchange", function () { if (mode !== "home") hs.classList.remove("is-tucked"); });
+  })();
   route();
 })();

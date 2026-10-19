@@ -62,6 +62,7 @@
     signed: function (p, d) { var v = nf(d == null ? 2 : d).format(Math.abs(p * 100)); return (p > 0 ? "+" : p < 0 ? "−" : "±") + v + "%"; },
     signedNum: function (n, d) { return (n > 0 ? "+" : n < 0 ? "−" : "") + nf(d == null ? 2 : d).format(Math.abs(n)); },
     cents: function (p) { var c = p * 100; return (c < 1 && c > 0 ? nf(1).format(c) : Math.round(c)) + "¢"; },
+    cents1: function (p) { var c = p * 100; return (c < 10 ? nf(1).format(c) : Math.round(c)) + "¢"; },
     price: function (p, d) { return nf(d == null ? 4 : d).format(p); },
     addr: function (a, n) { if (!a) return ""; n = n || 4; return a.slice(0, 2 + n) + "…" + a.slice(-n); },
     date: function (t) { var d = new Date(typeof t === "number" ? t : Date.parse(t)); return d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear(); },
@@ -95,8 +96,26 @@
     var c = DATA().chain ? DATA().chain(id) : null;
     return el("span", { class: "s-chain" }, el("i", { text: c ? c.mono : "?" }), c ? c.name : id);
   };
+  ui.typeName = function (m) { return m.set ? "Scalar × " + m.set : TYPE_LABEL[m.type] || m.type; };
+  // Type-correct wording for one outcome's price. Returns {value, sub, yes, no, unit}:
+  //   scalar round (#2841)       8.83/10 · 88¢    Up / Down   (UP redeems score ÷ 10)
+  //   multi-categorical + slots  81% · 10¢        Buy / Sell  (a funded share redeems 1/slots)
+  //   multi-categorical risk     13.8% /yr · 3.2¢ Buy / Sell  (1 sDAI split between the assets that default)
+  //   multi-scalar               41% · 41¢        Buy / Sell  (each token redeems its share of the total)
+  //   categorical                64%              Yes / No    (price = probability)
+  ui.priceWords = function (m, o) {
+    if (o.invalid) return { value: fmt.cents1(o.price), unit: "price" };
+    if (m.set) { var r = m.range || { min: 0, max: 10 }; var v = o.value != null ? o.value : r.min + (r.max - r.min) * o.price;
+      return { value: fmt.num(v, 2) + "/" + trim(r.max, 0), sub: "UP " + fmt.cents(o.price), yes: "Up", no: "Down", unit: "score" }; }
+    if (m.type === "multi-categorical" && o.noToAll) return { value: fmt.pct(o.chance != null ? o.chance : o.price, 1), sub: fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "chance none default", p: o.price };
+    if (m.type === "multi-categorical" && o.pdAnnual != null) return { value: fmt.pct(o.pdAnnual, 1), sub: "/yr · " + fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "PD", p: o.pdAnnual };
+    if (m.type === "multi-categorical") { var ch = o.chance != null ? o.chance : Math.min(1, o.price * (m.slots || 1));
+      return { value: fmt.pct0(ch), sub: fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "chance", p: ch }; }
+    if (m.type === "multi-scalar") return { value: fmt.pct0(o.price), sub: "share", yes: "Buy", no: "Sell", unit: "share" };
+    return { value: fmt.pct0(o.price), unit: "chance" };
+  };
   ui.typeTag = function (m) {
-    var t = el("span", { class: "s-tag", text: TYPE_LABEL[m.type] || m.type });
+    var t = el("span", { class: "s-tag", text: ui.typeName(m) });
     if (!m.conditional && !m.futarchy) return t;
     var f = document.createDocumentFragment(); f.appendChild(t);
     if (m.conditional) f.appendChild(el("span", { class: "s-tag s-tag--violet", text: "Conditional" }));
@@ -184,14 +203,14 @@
   // o: {name, price, invalid}; opt: {actions:true|false, rank, delta, bar:true, onYes, onNo, button:true}
   ui.orow = function (o, opt) {
     opt = opt || {};
-    var row = el(opt.button ? "button" : "div", { class: "s-orow" + (o.invalid ? " is-invalid" : "") + (opt.bar === false ? " s-orow--nobar" : "") + (opt.lg ? " s-orow--lg" : ""), style: { "--p": String(Math.max(0, Math.min(1, o.price))) }, attrs: opt.button ? { type: "button" } : null });
+    var row = el(opt.button ? "button" : "div", { class: "s-orow" + (o.invalid ? " is-invalid" : "") + (opt.bar === false ? " s-orow--nobar" : "") + (opt.lg ? " s-orow--lg" : ""), style: { "--p": String(Math.max(0, Math.min(1, opt.p != null ? opt.p : o.price))) }, attrs: opt.button ? { type: "button" } : null });
     var lab = el("span", { class: "s-orow__label" });
     if (opt.rank != null) lab.appendChild(el("span", { class: "s-rank", text: String(opt.rank).padStart(2, "0") }));
     if (opt.swatch) lab.appendChild(el("i", { class: "s-dot", style: { color: opt.swatch } }));
     lab.appendChild(el("span", { class: "u-clamp-1", text: o.name }));
     row.appendChild(lab);
-    if (opt.delta != null) row.appendChild(el("span", { class: "s-orow__delta " + (opt.delta > 0 ? "t-pos" : opt.delta < 0 ? "t-neg" : "t-3"), text: fmt.signed(opt.delta, 1) }));
-    row.appendChild(el("span", { class: "s-orow__pct", text: opt.value || fmt.pct0(o.price) }));
+    if (opt.delta != null) row.appendChild(el("span", { class: "s-orow__delta " + (opt.delta > 0 ? "t-pos" : opt.delta < 0 ? "t-neg" : "t-3"), text: opt.deltaText || fmt.signed(opt.delta, 1) }));
+    row.appendChild(el("span", { class: "s-orow__pct" }, opt.value || fmt.pct0(o.price), opt.sub ? el("small", { class: "s-orow__sub", text: opt.sub }) : null));
     if (opt.actions !== false && !o.invalid) {
       var y = el("button", { class: "s-btn s-btn--xs", text: opt.yes || "Yes", attrs: { type: "button", "aria-label": (opt.yes || "Yes") + " on " + o.name } });
       var n = el("button", { class: "s-btn s-btn--xs s-btn--secondary", text: opt.no || "No", attrs: { type: "button", "aria-label": (opt.no || "No") + " on " + o.name } });
@@ -211,7 +230,7 @@
     if (opt.onOpen) title.addEventListener("click", function (e) { e.preventDefault(); opt.onOpen(m); });
     card.appendChild(el("div", { class: "s-card__head" }, ui.avatar(m.appId === "app" ? "grid" : m.appId, m.appId === "app" ? null : "ink"), title));
     var outs = m.outcomes.filter(function (o) { return !o.invalid; });
-    var disp = m.display || (m.type === "scalar" ? "scalar" : outs.length === 2 && /^yes$/i.test(outs[0].name) ? "rows2" : "rows");
+    var disp = m.display || (m.type === "scalar" && !m.set ? "scalar" : outs.length === 2 && /^yes$/i.test(outs[0].name) ? "rows2" : "rows");
     if (disp === "binary") {
       card.appendChild(el("div", { class: "s-mcard__binary" },
         el("button", { class: "s-btn", attrs: { type: "button", "data-demo": "" } }, outs[0].name + " " + fmt.cents(outs[0].price)),
@@ -233,7 +252,7 @@
           el("button", { class: "s-btn", attrs: { type: "button", "data-demo": "" }, text: "Up " + fmt.cents(outs[1].price) }))));
     } else {
       var top = outs.slice().sort(function (a, b) { return b.price - a.price; }).slice(0, 2);
-      card.appendChild(el("div", { class: "s-orows" }, top.map(function (o) { return ui.orow(o, {}); })));
+      card.appendChild(el("div", { class: "s-orows" }, top.map(function (o) { var w = ui.priceWords(m, o); return ui.orow(o, { value: w.value, sub: w.sub, yes: w.yes, no: w.no, p: w.p }); })));
     }
     var meta = el("div", { class: "s-card__meta" }, el("span", { text: fmt.usd(m.volume) + " Vol." }));
     if (m.state === "dispute" || m.state === "open" || m.state === "waiting") meta.appendChild(el("span", { text: DATA().state(m.state).label }));
@@ -292,7 +311,9 @@
   };
 
   /* ---- trade ticket / bet slip [kit] ---- */
-  // opt: {market, outcomes:[i,j] (two tiles), selected:0, chips:[1,5,20,100], slippage:.01, side:'buy'}
+  // opt: {market, outcomes:[i,j] (two tiles), selected:0, chips:[1,5,20,100], slippage:.01, side:'buy',
+  //       payout(o, shares, amount, outcomeIndex) -> [[label, value]] (replaces "Potential return"; use it when a share
+  //       does not redeem for exactly 1, e.g. scalar UP/DOWN or a multi-winner market), note: footnote text}
   ui.ticket = function (container, opt) {
     var m = opt.market, idx = opt.outcomes || [0, 1], sel = opt.selected || 0, amount = opt.amount || 0;
     var chips = opt.chips || [1, 5, 20, 100], slip = opt.slippage == null ? .01 : opt.slippage, coll = m.collateral || "sDAI";
@@ -306,7 +327,7 @@
     var reset = el("button", { class: "s-icon-btn", attrs: { type: "button", "aria-label": "Clear amount" }, html: S.icon("close", 20) });
     idx.forEach(function (oi, k) {
       var o = m.outcomes[oi];
-      var t = el("button", { class: "s-pricetile", attrs: { type: "button", "aria-pressed": String(k === sel) } }, el("small", { text: o.name }), el("b", { text: fmt.cents(o.price) }));
+      var t = el("button", { class: "s-pricetile", attrs: { type: "button", "aria-pressed": String(k === sel) } }, el("small", { text: o.name }), el("b", { text: fmt.cents1(o.price) }));
       t.addEventListener("click", function () { sel = k; $$(".s-pricetile", tiles).forEach(function (x, j) { x.setAttribute("aria-pressed", String(j === k)); }); calc(); });
       tiles.appendChild(t);
     });
@@ -322,9 +343,10 @@
       var o = m.outcomes[idx[sel]], p = o.price, avg = Math.min(.999, p * (1 + Math.min(slip, amount / Math.max(m.liquidity || 1, 1) * .5)));
       var shares = amount ? amount / avg : 0;
       clear(rows);
-      rows.appendChild(line("Average price", fmt.cents(avg)));
+      rows.appendChild(line("Average price", fmt.cents1(avg)));
       rows.appendChild(line("Shares", amount ? fmt.num(shares, 2) : "—"));
-      rows.appendChild(line("Potential return", amount ? fmt.tok(shares, coll) + " (" + fmt.signed(shares / amount - 1, 0) + ")" : "—"));
+      if (opt.payout) opt.payout(o, shares, amount, idx[sel]).forEach(function (r) { rows.appendChild(line(r[0], amount ? r[1] : "—")); });
+      else rows.appendChild(line("Potential return", amount ? fmt.tok(shares, coll) + " (" + fmt.signed(shares / amount - 1, 0) + ")" : "—"));
       rows.appendChild(line("Max slippage", fmt.pct(slip, 1)));
       conf.textContent = amount ? "Buy " + o.name : "Confirm";
     }
@@ -332,7 +354,7 @@
       el("div", { class: "s-amount" }, el("label", { text: "Amount" }), input), chipBox, rows,
       el("div", { class: "s-ticket__confirm" }, conf, reset));
     panel.appendChild(head); panel.appendChild(q); panel.appendChild(tiles); panel.appendChild(amountBox);
-    panel.appendChild(el("p", { class: "t-meta", text: "Pay with " + coll + ". Sample prices; nothing is traded." }));
+    panel.appendChild(el("p", { class: "t-meta", text: opt.note || "Pay with " + coll + ". Sample prices; nothing is traded." }));
     calc(); container.appendChild(panel); return panel;
   };
 

@@ -156,7 +156,7 @@
     var end = "";
     if (cfg.search) end += '<label class="s-search s-search--sm" data-shell-search>' + S.icon("search", 16) + '<span class="s-sr">Search</span><input type="search" placeholder="' + esc(cfg.search) + '" autocomplete="off"></label>';
     var hasCta = cfg.cta && cfg.cta[0];
-    if (cfg.connect !== false) end += '<button class="s-btn ' + (hasCta ? "s-btn--ghost s-hide-sm" : "") + '" type="button" data-demo="Wallet connection is not wired in this concept.">' + S.icon("wallet", 16) + '<span>Connect<span class="s-btn__long"> wallet</span></span></button>';
+    if (cfg.connect !== false) end += '<button class="s-btn ' + (hasCta ? "s-btn--ghost s-hide-sm" : "") + '" type="button" aria-label="Connect wallet" data-demo="Wallet connection is not wired in this concept.">' + S.icon("wallet", 16) + '<span class="s-btn__txt">Connect<span class="s-btn__long"> wallet</span></span></button>';
     if (hasCta) end += '<a class="s-btn" href="' + esc(cfg.cta[1] || "#") + '"' + (cfg.cta[1] ? "" : ' data-demo=""') + ">" + (cfg.cta[2] ? S.icon(cfg.cta[2], 16) : "") + '<span class="s-btn__long">' + esc(cfg.cta[0]) + "</span></a>";
     return '<a class="s-skip" href="#main">Skip to content</a>' + stripHTML() +
       '<header class="s-header"><div class="s-container s-header__in">' + '<div class="s-lockup">' + lock + "</div>" +
@@ -193,6 +193,12 @@
     if (h) {
       var onScroll = function () { h.classList.toggle("is-scrolled", window.scrollY > 4); };
       window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+    }
+    var nv = doc.querySelector(".s-nav");
+    if (nv) { // edge fade only while links are actually cut off
+      var navCheck = function () { var over = nv.scrollWidth > nv.clientWidth + 1; nv.classList.toggle("is-clipped", over); nv.classList.toggle("is-end", over && nv.scrollLeft + nv.clientWidth >= nv.scrollWidth - 2); };
+      nv.addEventListener("scroll", navCheck, { passive: true }); window.addEventListener("resize", navCheck);
+      if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(navCheck); navCheck();
     }
     var tb = doc.querySelector(".s-theme-btn");
     if (tb) tb.addEventListener("click", function () { S.setTheme(S.theme() === "light" ? "dark" : "light"); });

@@ -48,11 +48,13 @@
     reject: { label: "Reject", cls: "s-tag--neg", icon: "close", why: "below the −1% line" },
     neutral: { label: "Neutral", cls: "", icon: "info", why: "inside the ±1% band" }
   };
-  function recTag(r, long) {
-    var c = REC[r], t = el("span", { class: "s-tag ft-rec " + c.cls, html: S.icon(c.icon, 12) });
-    t.appendChild(document.createTextNode(c.label + (long ? " signal" : "")));
+  // prov: the official TWAP window has not closed, so the signal is provisional: outline tag, "so far"
+  function recTag(r, long, prov) {
+    var c = REC[r], t = el("span", { class: "s-tag ft-rec " + (prov ? "s-tag--outline ft-rec--prov" : c.cls), html: S.icon(prov ? "clock" : c.icon, 12) });
+    t.appendChild(document.createTextNode(prov ? (long ? c.label + " · provisional" : c.label + " · so far") : c.label + (long ? " signal" : "")));
     return t;
   }
+  function prov(m) { return !m.resolved && NOW < m.wEnd; }
   function range(a, b) {
     var A = new Date(a), B = new Date(b);
     if (A.getUTCMonth() === B.getUTCMonth() && A.getUTCFullYear() === B.getUTCFullYear()) return A.getUTCDate() + "–" + B.getUTCDate() + " " + MON[B.getUTCMonth()];
@@ -149,13 +151,13 @@
   function renderHero(m) {
     var box = $("#ft-hero-copy"); S.clear(box);
     box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "04" }), el("span", { text: "futarchy.seer.pm" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
-    box.appendChild(el("h1", { class: "ft-title", attrs: { id: "ft-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent", text: "if " + m.id + " is approved?" })));
+    box.appendChild(el("h1", { class: "ft-title", attrs: { id: "ft-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent" }, "if ", el("span", { class: "u-nowrap", text: m.id }), " is approved?")));
     box.appendChild(el("p", { class: "ft-subtitle" }, el("b", { text: m.id }), " · " + m.title));
-    var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec", text: (m.resolved ? "Final 5-day TWAP · " : "Trailing 5-day TWAP · ") + m.pair }), statusTag(m));
+    var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec", text: (m.resolved ? "Final 5-day TWAP · " : prov(m) ? "Signal so far · trailing 5-day TWAP · " : "Official 5-day TWAP · ") + m.pair }), statusTag(m));
     var grid = el("div", { class: "ft-signal__grid" },
-      cell("If approved", F.price(m.yesTwap, 4), "YES_" + m.tok + " in sDAI", "yes"),
-      cell("If rejected", F.price(m.noTwap, 4), "NO_" + m.tok + " in sDAI", "no"),
-      cell("Forecast impact", F.signed(m.impact), el("span", { class: "ft-cell__sub" }, recTag(m.rec, true)), null, signCls(m.impact)));
+      cell("If approved", F.price(m.yesTwap, 4), "YES_" + m.tok + " in YES_sDAI", "yes"),
+      cell("If rejected", F.price(m.noTwap, 4), "NO_" + m.tok + " in NO_sDAI", "no"),
+      cell("Forecast impact", F.signed(m.impact), el("span", { class: "ft-cell__sub" }, recTag(m.rec, true, prov(m)), prov(m) ? el("span", { class: "ft-prov", text: "Official window " + range(m.wStart, m.wEnd) }) : null), null, signCls(m.impact)));
     box.appendChild(el("div", { class: "ft-signal" }, head, grid));
     var call = el("div", { class: "s-callout s-callout--violet ft-callout", html: S.icon("vote", 16) }), p = el("p");
     if (!m.resolved) {
@@ -187,7 +189,7 @@
     top.appendChild(S.ui.specs([{ text: m.id }, { text: m.pair }]));
     top.appendChild(S.ui.specs(["Rule ±1% · 5-day TWAP"]));
     foot.appendChild(S.ui.specs(m.dec ? ["Mkt #" + m.dec.id, "#" + m.yesM.id, "#" + m.noM.id] : [m.org.name, "Est. on " + (D.chain(m.chain) || { name: m.chain }).name]));
-    foot.appendChild(el("div", { class: "s-specs" }, el("span", {}, "Status: ", el("b", { text: m.resolved ? (m.approved ? "Approved" : "Rejected") : phase(m).label }))));
+    foot.appendChild(el("div", { class: "s-specs" }, el("span", {}, "Status: ", el("b", { text: m.resolved ? (m.approved ? "Approved" : "Rejected") : phase(m).i === 1 ? "Reports not open yet · trading" : phase(m).label }))));
   }
   function drawPoster() {
     var m = cur(), box = $("#ft-poster-art");
@@ -701,7 +703,7 @@
       el("div", { class: "s-card__head" }, el("span", { class: "ft-orgtile", text: m.tok, attrs: { "aria-hidden": "true" } }),
         el("div", { class: "ft-pcard__h" }, el("span", { class: "t-meta", text: m.org.name + " · " + m.id }), q)),
       el("p", { class: "ft-pcard__t", text: m.title }), spark2(m), trio,
-      el("div", { class: "s-card__foot" }, meta, el("span", { class: "u-right" }, m.resolved ? el("span", { class: "s-tag " + (m.approved ? "s-tag--pos" : "s-tag--neg"), text: m.approved ? "Approved" : "Rejected" }) : recTag(m.rec, false))));
+      el("div", { class: "s-card__foot" }, meta, el("span", { class: "u-right" }, m.resolved ? el("span", { class: "s-tag " + (m.approved ? "s-tag--pos" : "s-tag--neg"), text: m.approved ? "Approved" : "Rejected" }) : recTag(m.rec, false, prov(m)))));
     if (m.id === state.id) c.setAttribute("aria-current", "true");
     c.addEventListener("click", function (e) { if (e.target.closest("a,button")) return; open(m.id); });
     return c;
@@ -773,7 +775,7 @@
         el("div", {}, el("span", { class: "ft-cell__label" }, el("i", { class: "ft-key ft-key--no" }), "NO_" + tok + " / NO_sDAI"), el("b", { class: "t-num", text: F.price(m.noSpot, 4) })))));
     var gb = el("div", { class: "ft-gauge" }); gauge(gb, m.impact, null, true);
     box.appendChild(step("03", "Read the gap", "The 5-day TWAP of YES against NO becomes the signal: approve above +1%, reject below −1%, otherwise neutral.",
-      el("div", { class: "ft-diag__gap" }, el("div", { class: "s-row s-row--between" }, el("b", { class: "t-num " + signCls(m.impact), text: F.signed(m.impact) }), recTag(m.rec, true)), gb)));
+      el("div", { class: "ft-diag__gap" }, el("div", { class: "s-row s-row--between" }, el("b", { class: "t-num " + signCls(m.impact), text: F.signed(m.impact) }), recTag(m.rec, true, prov(m))), gb)));
     box.appendChild(step("04", "Vote, then redeem", "The DAO votes. Reality.eth reports the result and Kleros arbitrates disputes. The winning branch redeems 1:1; the other voids.",
       el("div", { class: "ft-diag__redeem" },
         el("div", {}, el("span", { class: "s-tag s-tag--pos", text: "Approved" }), el("span", { class: "t-meta", text: "YES_ redeems · NO_ voids" })),

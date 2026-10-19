@@ -64,7 +64,7 @@
   /* ======================= 1. hero ======================= */
   function facts() {
     var dl = $("#op-facts"); if (!dl) return;
-    [["Entries", String(E.length), "proposals"], ["Slots", String(SLOTS), "to fund"], ["Pool", F.compact(R.budget), "sDAI"], ["Decision", F.dayMon(R.panelReveal), F.ago(R.panelReveal)]].forEach(function (f) {
+    [["Entries", String(E.length), "proposals"], ["Slots", String(SLOTS), "to fund"], ["Budget", F.compact(R.budget), "sDAI"], ["Decision", F.dayMon(R.panelReveal), F.ago(R.panelReveal)]].forEach(function (f) {
       dl.appendChild(el("div", {}, el("dt", { text: f[0] }), el("dd", {}, f[1], el("small", { text: f[2] }))));
     });
   }
@@ -72,10 +72,11 @@
   function poster() {
     var board = $("#op-board"), cap = $("#op-cap"); if (!board || !cap) return;
     var rows = [], active = -1, pinned = BY[FEAT] ? BY[FEAT].rank - 1 : SLOTS - 1;
-    var grid = el("div", { class: "op-board__grid", attrs: { "aria-hidden": "true" } }, [.25, .5, .75].map(function (v) { return el("i", { style: { left: (v * 100) + "%" } }); }));
+    // bar length on a square-root scale so the long tail stays readable at thumbnail size; grid lines mark 5/25/50%
+    var grid = el("div", { class: "op-board__grid", attrs: { "aria-hidden": "true" } }, [.05, .25, .5].map(function (v) { return el("i", { style: { left: (Math.sqrt(v) * 100).toFixed(2) + "%" } }); }));
     var list = el("div", { class: "op-board__rows" });
     E.forEach(function (e, i) {
-      var r = el("div", { class: "op-brow" + (e.inside ? " is-in" : "") + (e.id === FEAT ? " is-feat" : ""), data: { i: String(i) }, style: { "--v": String(e.chance) } },
+      var r = el("div", { class: "op-brow" + (e.inside ? " is-in" : "") + (e.id === FEAT ? " is-feat" : ""), data: { i: String(i) }, style: { "--v": String(Math.sqrt(e.chance).toFixed(4)) } },
         el("span", { class: "op-brow__n", text: pad2(e.rank) }),
         el("span", { class: "op-brow__track" }, el("i"), el("b", { class: "op-brow__v", text: F.pct0(e.chance) })));
       list.appendChild(r); rows.push(r);

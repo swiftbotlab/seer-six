@@ -238,12 +238,6 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-dchain[open] summary { margin-bottom: 4px; }
 
 /* ---------- responsive ---------- */
-/* Mid widths: the shared header's nav otherwise runs under the search pill (filed in REQUESTS.md).
-   Page-local: let the nav shrink and scroll with an edge fade instead of overlapping. */
-@media (min-width: 961px) and (max-width: 1320px) {
-  .s-header .s-nav { flex: 0 1 auto; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
-  .s-header .s-nav::-webkit-scrollbar { display: none; }
-}
 @media (max-width: 1240px) {
   .op-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .op-flow { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -275,7 +269,8 @@ html.op-lock, html.op-lock body { overflow: hidden; }
   .op-facts { grid-template-columns: repeat(2, minmax(0, auto)); gap: 14px 28px; }
   .op-mstats { --cols: 2 !important; }
   .op-mstats .s-stat__value { font-size: 19px; }
-  .op-flow { display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: none; border-radius: 0; }
+  .op-flow { display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: none; border-radius: 0; }
+  .op-flow::after { content: ""; flex: 0 0 1px; }
   .op-flow::-webkit-scrollbar { display: none; }
   .op-flow__step { flex: 0 0 78%; scroll-snap-align: start; scroll-margin-left: var(--gutter); }
   .op-flow__step:first-child { border-radius: var(--r-card) 0 0 var(--r-card); }
@@ -306,3 +301,9 @@ html.op-lock, html.op-lock body { overflow: hidden; }
   .op-dtop { top: -16px; margin: -16px -16px 0; padding: 12px 16px 10px; }
   .op-dstats { --cols: 2 !important; }
 }
+
+/* ---- finisher additions ---- */
+@media (min-width: 961px) { .op-hero__grid { align-items: start; } .op-hero__copy { padding-top: 14px; } }
+.op-axis { position: relative; display: block; height: 14px; }
+.op-axis span { position: absolute; top: 0; transform: translateX(-50%); }
+.op-axis span:first-child { transform: none; } .op-axis span:last-child { transform: translateX(-100%); }

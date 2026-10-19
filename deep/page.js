@@ -44,7 +44,7 @@
     return best || p.deep.forecasts[0].agent;
   }
   var state = { sel: D.featuredProposal, compareUser: false, fieldAll: false, cat: "all", q: "", contested: false, view: "people", compare: null, chart: "dist",
-    side: 0, thr: 8, sigSort: "likely", sigAll: false, lb: 0, step: 0, preds: null, predSrc: "", predErr: [], budget: 500, minEdge: .25, pay: 8.6 };
+    side: 0, thr: 8.135, sigSort: "likely", sigAll: false, lb: 0, step: 0, preds: null, predSrc: "", predErr: [], budget: 500, minEdge: .25, pay: 8.6 };
   state.compare = defaultCompare(D.proposal(state.sel));
 
   /* ---------------- 1. hero ---------------- */
@@ -63,8 +63,11 @@
     var gut = W < 440 ? 34 : 46, axisH = 22, top = 30, dom = [2, 10];
     var X = function (v) { return gut + (v - dom[0]) / (dom[1] - dom[0]) * (W - gut - 6); };
     var ampMax = (H - axisH - top) * (W < 440 ? .22 : .26), amp0 = ampMax * minSd / rows[0].deep.consensusSd;
-    var step = (H - axisH - top - amp0) / (n - 1), base0 = top + amp0;
-    var base = function (i) { return base0 + i * step; };
+    // the funded 8 are the point of the poster: they get 2.2x the row spacing (and a gap at the line); 9-40 stay compressed
+    var FUND = 2.2, GAP = 1.8, units = function (i) { var k = Math.min(i, R.slots - 1); return k * FUND + (i >= R.slots ? GAP + (i - R.slots) : 0); };
+    var step = (H - axisH - top - amp0) / units(n - 1), base0 = top + amp0;
+    var base = function (i) { return base0 + units(i) * step; };
+    ridge.baseOf = base;
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
     ridge.groups = []; ridge.base0 = base0; ridge.step = step;
     rows.forEach(function (p, i) {
@@ -114,7 +117,11 @@
   }
   (function ridgeEvents() {
     var box = $("#dp-ridge");
-    function idxAt(e) { if (!ridge.svg) return ridgeDefault(); var bb = box.getBoundingClientRect(), y = e.clientY - bb.top; return clamp(Math.ceil((y - ridge.base0) / ridge.step - .15), 0, ridge.rows.length - 1); }
+    function idxAt(e) {
+      if (!ridge.svg) return ridgeDefault(); var bb = box.getBoundingClientRect(), y = e.clientY - bb.top;
+      for (var i = 0; i < ridge.rows.length; i++) if (ridge.baseOf(i) >= y - ridge.step * .15) return i; // first wave whose baseline is below the pointer
+      return ridge.rows.length - 1;
+    }
     box.addEventListener("pointermove", function (e) { if (ridge.svg) ridgeOn(idxAt(e)); });
     box.addEventListener("pointerleave", function () { ridgeOn(ridgeDefault()); });
     box.addEventListener("click", function (e) { var i = idxAt(e); select(ridge.rows[i].id, { scroll: true, hash: true }); });
@@ -149,7 +156,7 @@
     });
   }
   renderSteps();
-  $("#dp-round-specs").appendChild(S.ui.specs(["Mkt #2841", "Multi-scalar", "OP Mainnet", "Collateral sUSDS", "Kleros Curate: verified", "Status: " + D.state(M.state).label]));
+  $("#dp-round-specs").appendChild(S.ui.specs(["Mkt #2841", "Scalar × 40", "OP Mainnet", "Collateral sUSDS", "Kleros Curate: verified", "Status: " + D.state(M.state).label]));
   $("#dp-round-q").textContent = "What will the panel score each proposal, from 0 to 10?";
   (function roundStats() {
     var box = $("#dp-round-stats");
@@ -264,7 +271,7 @@
   function manifest(rows) {
     var shown = rows.slice(0, 3);
     var obj = {
-      market: M.address, id: 2841, chain: { name: "OP Mainnet", chainId: 10 }, type: "multi-scalar", collateral: "sUSDS",
+      market: M.address, id: 2841, chain: { name: "OP Mainnet", chainId: 10 }, type: "scalar", markets: 40, collateral: "sUSDS",
       question: M.question, range: [0, 10], payout: "UP = score / 10; DOWN = 1 - UP",
       tradingCloses: R.closes, panelReveal: R.panelReveal, oracle: "Reality.eth", arbitrator: "Kleros",
       outcomes: shown.map(function (p) { return { id: p.id, up: F.addr(p._up, 4), down: F.addr(p._down, 4), upPrice: p.deep.up, sd: p.deep.consensusSd }; })
@@ -402,7 +409,16 @@
     var p = selP(), box = S.clear($("#dp-ticket"));
     var pm = { id: "2841", appId: "deep", collateral: "sUSDS", volume: p._vol, liquidity: p._liq, question: p.title,
       outcomes: [{ name: "UP · " + p.id, price: p.deep.up }, { name: "DOWN · " + p.id, price: p.deep.down }] };
-    S.ui.ticket(box, { market: pm, outcomes: [0, 1], selected: state.side, chips: [1, 5, 20, 100], slippage: .01, title: p.id + " panel score: " + p.title });
+    var fv = p.deep.marketScore;
+    S.ui.ticket(box, { market: pm, outcomes: [0, 1], selected: state.side, chips: [1, 5, 20, 100], slippage: .01, title: p.id + " panel score: " + p.title,
+      payout: function (o, sh, amt, k) { // a scalar share redeems score ÷ 10, so show the payout at the forecast, per point, and at the top
+        var up = k === 0, at = sh * (up ? fv / 10 : 1 - fv / 10);
+        return [["At the forecast (" + F.num(fv, 2) + ")", F.tok(at, "sUSDS") + " (" + F.signed(at / amt - 1, 0) + ")"], ["Each panel point " + (up ? "up" : "down"), "+" + F.tok(sh / 10, "sUSDS")], ["Max (at " + (up ? "10" : "0") + ")", F.tok(sh, "sUSDS")]];
+      },
+      note: "Pay with sUSDS on OP Mainnet. UP redeems the score ÷ 10, DOWN the rest. Sample prices; nothing is traded." });
+    var go = el("a", { class: "s-link t-meta dp-tlink", href: "#resolve" }, "Payout at any score");
+    go.addEventListener("click", function (e) { e.preventDefault(); $("#resolve").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); });
+    box.appendChild(go);
   }
   function select(id, opt) {
     opt = opt || {};
@@ -417,7 +433,7 @@
 
   /* ---------------- 5. funding signal ---------------- */
   (function sigSeg() { $("#dp-sig-seg").appendChild(S.ui.seg([["likely", "Most likely"], ["contested", "Contested first"]], "likely", function (v) { state.sigSort = v; renderSignal(); }, "Sort")); })();
-  var SIG = [["Likely", "80%+", "var(--c1)"], ["Contested", "20–80%", "var(--c3)"], ["Unlikely", "under 20%", "var(--c-other)"]];
+  var SIG = [["Likely", "80%+", "var(--c1)"], ["Contested", "20–80%", "var(--seq-3)"], ["Unlikely", "under 20%", "var(--c-other)"]];
   (function sigLegend() { var lg = $("#dp-sig-legend"); SIG.forEach(function (s) { lg.appendChild(el("span", {}, el("i", { style: { background: s[2] } }), s[0] + " " + s[1])); }); })();
   var thr = $("#dp-thr");
   function thrFill() { thr.style.setProperty("--v", ((state.thr - 6) / 3.5 * 100).toFixed(1) + "%"); }
@@ -425,8 +441,9 @@
   $("#dp-sig-more").addEventListener("click", function () { state.sigAll = !state.sigAll; renderSignal(); });
   function renderSignal() {
     var T = state.thr; thrFill();
-    $("#dp-thr-val").textContent = F.num(T, 2);
-    $("#dp-sig-title").textContent = "Chance of scoring " + F.num(T, 2) + " or more";
+    var Tt = Math.abs(T - CUT) < .003 ? F.num(CUT, 3) : F.num(T, 2);
+    $("#dp-thr-val").textContent = Tt + (Math.abs(T - CUT) < .003 ? " · funding line" : "");
+    $("#dp-sig-title").textContent = "Chance of scoring " + Tt + " or more";
     var rows = props.map(function (p) { return { p: p, v: pAbove(p, T) }; });
     var exp = rows.reduce(function (a, r) { return a + r.v; }, 0);
     var likely = rows.filter(function (r) { return r.v >= .8; }), cont = rows.filter(function (r) { return r.v >= .2 && r.v < .8; });
@@ -442,7 +459,7 @@
     var show = state.sigAll ? rows : rows.slice(0, 12);
     var box = S.clear($("#dp-sig-bars"));
     var bars = S.chart.bars(box, show.map(function (r) {
-      return { label: r.p.id + " · " + r.p.title, value: r.v, color: r.v >= .8 ? SIG[0][2] : r.v >= .2 ? SIG[1][2] : SIG[2][2], note: "P(score ≥ " + F.num(T, 2) + ")" };
+      return { label: r.p.id + " · " + r.p.title, value: r.v, color: r.v >= .8 ? SIG[0][2] : r.v >= .2 ? SIG[1][2] : SIG[2][2], note: "P(score ≥ " + Tt + ")" };
     }), { max: 1, format: F.pct0 });
     [].slice.call(bars.children).forEach(function (row, i) {
       var id = show[i].p.id; row.setAttribute("role", "button"); row.setAttribute("aria-label", show[i].p.id + " " + F.pct0(show[i].v) + ", open proposal");
@@ -651,8 +668,12 @@
   /* ---------------- boot ---------------- */
   renderField(); renderDetail(); renderSignal(); renderStrategy(); renderLb();
   function fromHash(scroll) {
-    var m = /^#(P-\d{2})$/i.exec(location.hash || "");
-    if (m && D.proposal(m[1].toUpperCase())) { select(m[1].toUpperCase(), { scroll: scroll }); return true; }
+    var m = /^#(P-\d{2})(-payout)?$/i.exec(location.hash || "");
+    if (m && D.proposal(m[1].toUpperCase())) {
+      select(m[1].toUpperCase(), { scroll: scroll && !m[2] });
+      if (m[2]) setTimeout(function () { $("#resolve").scrollIntoView({ block: "start" }); }, 80);
+      return true;
+    }
     return false;
   }
   if (fromHash(false)) setTimeout(function () { $("#proposal").scrollIntoView({ block: "start" }); }, 60);

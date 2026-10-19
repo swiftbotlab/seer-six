@@ -3,9 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Seer · Six interfaces, one protocol (concept)</title>
+<title>Every opinion has a price · Seer concept</title>
 <meta name="description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+<link rel="preload" href="assets/sample-data.js" as="script">
+<link rel="preload" href="assets/ui.js" as="script">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Seer concept by Swift Bot Labs">
+<meta property="og:title" content="Every opinion has a price · Seer concept">
+<meta property="og:description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:url" content="https://swiftbotlab.github.io/seer-six/">
+<meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/hub.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Every opinion has a price · Seer concept: Electric Foundation poster with sample data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@swiftbotlab">
+<meta name="twitter:title" content="Every opinion has a price · Seer concept">
+<meta name="twitter:description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/hub.png">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="assets/system.css">
 <style>
@@ -53,10 +71,25 @@
   .hb-notes { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) { .hb-cards, .hb-flow { grid-template-columns: 1fr; } .hb-poster__copy { padding: 28px 20px 24px; } }
+.hb-tour { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
+.hb-tour li { background: var(--surface); }
+.hb-tour a { display: grid; grid-template-columns: 34px minmax(0, 1fr) 18px; gap: 4px 12px; align-items: start; padding: 18px 18px 20px; height: 100%; color: inherit; transition: background var(--dur) var(--ease); }
+.hb-tour a:hover { background: var(--surface-2); }
+.hb-tour a:focus-visible { outline: 2px solid var(--violet-2); outline-offset: -2px; }
+.hb-tour__n { grid-row: span 3; font-family: var(--font-mono); font-size: 11px; color: var(--violet-3); padding-top: 3px; }
+.hb-tour__app { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.hb-tour__app svg { width: 15px; height: 15px; color: var(--violet-3); }
+.hb-tour__go { grid-row: 1; grid-column: 3; color: var(--text-3); }
+.hb-tour__go svg { width: 16px; height: 16px; }
+.hb-tour__do { grid-column: 2 / 4; color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; }
+.hb-tour__url { grid-column: 2 / 4; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; color: var(--text-3); overflow-wrap: anywhere; }
+@media (max-width: 1100px) { .hb-tour { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .hb-tour { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
 </style>
 </head>
 <body data-app="index">
-<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Interfaces", "#interfaces"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
+<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Tour", "#tour"], ["Interfaces", "#interfaces"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
 <script src="assets/shell.js"></script>
 <main id="main" class="s-main">
   <div class="s-container">
@@ -64,8 +97,8 @@
       <div class="hb-poster__copy">
         <div>
           <div class="s-specs"><span>Concept</span><span>Electric Foundation identity</span><span><b>6</b> interfaces</span></div>
-          <h1 id="hb-title" class="hb-poster__title u-mt-6">Six interfaces. <span class="t-accent">One protocol.</span></h1>
-          <p class="hb-poster__lede">A connected redesign of Seer's homepage, explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. One shell, one set of tokens and one shared sample dataset, so a single market can be followed from one app to the next.</p>
+          <h1 id="hb-title" class="hb-poster__title u-mt-6">Every opinion <span class="t-accent">has a price.</span></h1>
+          <p class="hb-poster__lede">One grant round, followed through six interfaces: Seer's homepage, explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing, redesigned on the Electric Foundation identity. One shell, one set of tokens and one shared sample dataset, so a single market can be traced from one app to the next.</p>
         </div>
         <div class="hb-poster__foot">
           <div class="s-row">
@@ -79,6 +112,16 @@
       </div>
     </section>
   </div>
+
+  <section class="s-section--tight hb-tour-sec" id="tour" aria-labelledby="hb-tour">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">If you have one minute</span><h2 id="hb-tour" class="t-h2">A 60-second tour</h2></div>
+        <span class="s-sample">Every number is sample data</span>
+      </div>
+      <ol class="hb-tour" id="hb-tour-list"></ol>
+    </div>
+  </section>
 
   <section class="s-section" id="interfaces" aria-labelledby="hb-int">
     <div class="s-container">
@@ -124,9 +167,11 @@
             <li><b>Motifs carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision, data bars are a field of entries.</li>
             <li><b>Typefaces.</b> PP Neue Montreal, Suisse Int'l Mono and Reckless are used when installed. Everyone else gets licensed stand-ins: Geist, Geist Mono (it keeps the slashed zero) and Instrument Serif Italic.</li>
             <li><b>Contrast.</b> Small muted text is lifted from #67676F to #8A8A94 in dark mode and from #8E8E99 to #6E6E79 in light mode, so 12px labels pass WCAG AA.</li>
-            <li><b>Semantic colour, used sparingly.</b> The kit has no green, amber or red. We add them only for price moves and risk bands, always next to a sign or a label.</li>
+            <li><b>Semantic colour, used sparingly.</b> The kit has no green, amber or red. We add them only for price moves and risk bands, always next to a sign or a label. Futarchy's NO branch is the kit's lavender, so "rejected" never reads as a positive colour.</li>
             <li><b>A chart palette.</b> Six colours, violet first, checked for colour-vision deficiency in both themes. Anything past six becomes "Other".</li>
             <li><b>Small kit fixes.</b> The kit's bet slip shows Yes 69¢ and No 37¢, which add up to 106; our binary prices add up to 100. "$100,00" is written "$100.00".</li>
+            <li><b>Each price in its market's unit.</b> The kit reads every price as a percent, but most Seer types don't work that way. A scalar round shows an expected score (8.14/10 · UP 81¢), a multi-winner market shows the chance beside the share price (50% · 6.3¢, a funded share pays 1/8), and the risk board shows a default chance per year. Tickets pay out the same way.</li>
+            <li><b>An ecosystem strip above every header.</b> One protocol, one wallet, six apps: the strip is the same on every page and marks where you are.</li>
           </ol>
         </div>
       </div>
@@ -172,7 +217,7 @@
   var steps = [
     ["deep", "Deep", "#2841", S.fmt.num(p.deep.marketScore, 2) + " / 10", "Agents forecast the panel's score. " + p.id + " ranks " + p.deep.rank + " of " + D.proposals.length + ", right on the funding line."],
     ["opportunity", "Opportunity", "#2842", S.fmt.pct0(p.opp.pSelect), "Traders price its chance of being funded. Reviewers read the borderline entries first; the panel decides."],
-    ["futarchy", "Futarchy", "LIP-31", S.fmt.signed(f.impact), "Conditional markets compare LAT if the round's budget passes versus if it fails. That is information for the vote, not the vote itself."],
+    ["futarchy", "Futarchy", "LIP-31", S.fmt.signed(f.impact) + " so far", "Conditional markets compare LAT if the round's budget passes versus if it fails; the official 5-day window is 2–7 Nov. Information for the vote, not the vote itself."],
     ["app", "App", "0x5eed…", D.markets.length + " markets", "The explorer lists every market above with its contract, condition ID, outcome tokens and event log."]
   ];
   var flow = document.getElementById("hb-flow");
@@ -181,6 +226,25 @@
       S.el("div", { class: "hb-flow__step" }, S.el("span", { html: S.glyph(s[0]) }), S.el("a", { class: "t-ui", href: s[0] + "/", text: s[1] }), S.el("span", { class: "s-spec u-right", text: s[2] })),
       S.el("b", { class: "hb-big t-num", text: s[3] }),
       S.el("p", { class: "t-meta", style: { color: "var(--text-2)", lineHeight: "1.5" }, text: s[4] })));
+  });
+  // 60-second tour: one signature interaction per interface, each a deep link
+  var TOUR = [
+    ["home", "home/", "Switch the hero between three markets and watch the bands converge on one price. Then pick an app in the protocol map."],
+    ["app", "app/#m=2841", "Type P-07 or 0x5eed in the search. #2841 opens with 80 UP/DOWN tokens, its event log and a JSON view."],
+    ["deep", "deep/#signal", "Drag “score needed to fund” off the funding line (8.135) and watch the contested queue reorder."],
+    ["futarchy", "futarchy/#LIP-31", "Scrub the TWAP window. The approve, neutral or reject signal recomputes, and the fork redraws."],
+    ["opportunity", "opportunity/#queue", "Move the fast-track and light-pass sliders. Review depth and hours per reviewer recompute."],
+    ["risk", "risk/#obETH", "Flip per year and per quarter, then compare staked and restaked ETH on one log scale."]
+  ];
+  var tl = document.getElementById("hb-tour-list");
+  TOUR.forEach(function (t, i) {
+    var a = S.app(t[0]);
+    tl.appendChild(S.el("li", {}, S.el("a", { href: t[1] },
+      S.el("span", { class: "hb-tour__n", text: "0" + (i + 1) }),
+      S.el("span", { class: "hb-tour__app", html: S.glyph(a.id) }, a.name),
+      S.el("span", { class: "hb-tour__go", html: S.icon("arrow-right", 16), attrs: { "aria-hidden": "true" } }),
+      S.el("span", { class: "hb-tour__do", text: t[2] }),
+      S.el("span", { class: "hb-tour__url", text: base + t[1] }))));
   });
   document.querySelectorAll("[data-icon]").forEach(function (n) { n.outerHTML = S.icon(n.getAttribute("data-icon"), 16); });
 })();

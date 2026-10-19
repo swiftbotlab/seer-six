@@ -6,6 +6,24 @@
 <title>Seer App · Market explorer (concept)</title>
 <meta name="description" content="The explorer for every Seer market: search any question, outcome or 0x address, filter by type, state and chain, and trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+<link rel="preload" href="../assets/sample-data.js" as="script">
+<link rel="preload" href="../assets/ui.js" as="script">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Seer concept by Swift Bot Labs">
+<meta property="og:title" content="Seer App · Market explorer (concept)">
+<meta property="og:description" content="The explorer for every Seer market: search any question, outcome or 0x address, filter by type, state and chain, and trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:url" content="https://swiftbotlab.github.io/seer-six/app/">
+<meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Seer App · Market explorer (concept): Electric Foundation poster with sample data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@swiftbotlab">
+<meta name="twitter:title" content="Seer App · Market explorer (concept)">
+<meta name="twitter:description" content="The explorer for every Seer market: search any question, outcome or 0x address, filter by type, state and chain, and trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
@@ -132,7 +150,7 @@
               <label class="s-field">Collateral<select class="s-select" id="ap-f-coll"></select></label>
             </div>
             <div class="ap-form__row ap-form__row--2">
-              <label class="s-field">Reports open on<input class="s-input" id="ap-f-date" type="date" value="2026-12-31" min="2026-10-20" max="2030-12-31"></label>
+              <label class="s-field">Reports open on<input class="s-input" id="ap-f-date" type="date" value="2026-12-31" min="2026-10-20" max="2030-12-31" aria-describedby="ap-f-date-read"><span class="ap-dateread" id="ap-f-date-read" aria-live="polite">31 Dec 2026 · 00:00 UTC</span></label>
               <label class="s-switch ap-curate"><input type="checkbox" id="ap-f-curate" checked> Submit to Kleros Curate</label>
             </div>
             <p class="t-meta ap-form__err" id="ap-f-err" role="alert"></p>
@@ -180,7 +198,8 @@
             <li><b>Explorer depth the kit doesn't draw.</b> An Etherscan-style record per market (contract, condition ID, Reality.eth question, outcome-token ERC-20s, event log, positions, resolution) and per address, built only from kit surfaces.</li>
             <li><b>The dot grid carries data.</b> In the lifecycle field each column is a market and each row a step; settled steps turn from dots into crosses, so the field reads as uncertainty becoming structure.</li>
             <li><b>State and verification on every card.</b> An explorer has to say where a market is in its life. Amber (waiting) and red (dispute) only ever appear next to their label.</li>
-            <li><b>"No" on a multi-outcome row is defined.</b> The kit shows Yes/No on every row; here No buys the other outcomes as one basket, and the ticket says so.</li>
+            <li><b>Row buttons follow the market type.</b> The kit shows Yes/No on every row. Here a categorical No buys the other outcomes as one basket; a scalar round trades Up/Down; multi-winner markets trade Buy/Sell, because a "No" there is not one clean bet.</li>
+            <li><b>Each price in its market's unit.</b> #2841 reads 8.14/10 · UP 81¢, #2842 reads 50% · 6.3¢ (a funded share pays 1/8 sDAI), #2850 a default chance per year. Charts, 24h moves and ticket payouts use the same unit.</li>
             <li><b>Kit fixes.</b> Binary prices add up to 100¢ (the kit's 69¢ + 37¢ is 106¢), amounts use a decimal point ("$100.00"), and sample markets use motif glyph tiles instead of photos.</li>
             <li><b>Type and contrast.</b> PP Neue Montreal and Suisse Int'l Mono when installed, Geist and Geist Mono otherwise; muted text is lifted so 12px labels pass WCAG AA.</li>
           </ol>
