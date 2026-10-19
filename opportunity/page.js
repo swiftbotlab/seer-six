@@ -18,6 +18,8 @@
   function sigm(x) { return 1 / (1 + Math.exp(-x)); }
   function pad2(n) { return String(n).padStart(2, "0"); }
   function cents1(p) { var c = p * 100; return F.num(c, c >= 1 ? 1 : 2) + "¢"; }
+  var CAP = F.num(100 / SLOTS, 1) + "¢";                     // what a funded share redeems: 1/8 sDAI = 12.5¢
+  function ofCap(p) { return cents1(p) + " of " + CAP; }     // "6.3¢ of 12.5¢": the price read against the payout
   function pts(d) { var v = Math.abs(d * 100); if (v < 0.05) return "±0.0 pts"; return (d > 0 ? "+" : "−") + F.num(v, 1) + " pts"; }
   function dcls(d) { return Math.abs(d) < 0.0005 ? "t-3" : d > 0 ? "t-pos" : "t-neg"; }
   function icon(name, size) { return el("span", { class: "op-ico", html: S.icon(name, size || 16), attrs: { "aria-hidden": "true" } }); }
@@ -81,7 +83,8 @@
       var e = E[i]; S.clear(cap);
       cap.appendChild(el("div", { class: "op-cap__l" },
         el("b", { text: e.id + " · " + e.title }),
-        el("span", { text: "Rank " + e.rank + " of " + E.length + " · " + cents1(e.price) + " a share · " + (e.inside ? "inside the line" : "below the line") })));
+        el("span", { text: "Rank " + e.rank + " of " + E.length + " · " + (e.inside ? "inside the line" : "below the line") + " · " + ofCap(e.price) + " a share" }),
+        el("small", { class: "op-cap__why", text: SLOTS + " slots: a funded share redeems 1/" + SLOTS + " sDAI (" + CAP + "), so " + cents1(e.price) + " ≈ " + F.pct0(e.chance) + "." })));
       cap.appendChild(el("div", { class: "op-cap__num" }, F.pct0(e.chance), el("small", { text: "Chance of selection" })));
     }
     function rowAt(ev) { var r = ev.target.closest && ev.target.closest(".op-brow"); return r ? +r.dataset.i : -1; }
@@ -171,7 +174,7 @@
       el("div", { class: "op-card__hd" }, tags, title)));
     c.appendChild(el("div", { class: "op-card__odds" },
       el("div", { class: "op-card__chance" }, el("b", { text: F.pct0(e.chance) }), el("span", { text: "chance of selection" })),
-      el("div", { class: "op-card__px" }, el("span", { class: "op-card__price", text: cents1(e.price) }), el("span", { class: dcls(e.d24), text: pts(e.d24) + " 24h" })),
+      el("div", { class: "op-card__px" }, el("span", { class: "op-card__price" }, cents1(e.price), el("small", { text: " of " + CAP })), el("span", { class: dcls(e.d24), text: pts(e.d24) + " 24h" })),
       spark(e)));
     c.appendChild(el("div", { class: "s-pbar op-card__bar" + (e.inside ? "" : " is-out"), style: { "--p": String(e.chance) }, attrs: { "aria-hidden": "true" } }, el("i")));
     c.appendChild(el("div", { class: "op-card__act" }, tradeBtns(e)));
@@ -220,8 +223,8 @@
         { key: "cat", label: "Category", sort: true, class: "s-hide-sm", render: function (r) { return el("span", { class: "s-tag", text: r.cat }); } },
         { key: "ask", label: "Ask (sDAI)", num: true, sort: true, class: "s-hide-sm", render: function (r) { return F.num(r.ask); } },
         { key: "score", label: "Deep score", num: true, sort: true, class: "s-hide-sm", render: function (r) { return el("a", { class: "s-link", href: "../deep/#" + r.id, text: F.num(r.score, 2), title: "Forecast panel score in Deep #2841" }); } },
-        { key: "price", label: "Price", num: true, sort: true, render: function (r) { return cents1(r.price); } },
         { key: "chance", label: "Chance", num: true, sort: true, render: function (r) { return el("span", { class: "op-tchance" }, el("span", { class: "s-pbar s-pbar--thin" + (r.inside ? "" : " is-out"), style: { "--p": String(r.chance) } }, el("i")), el("b", { text: F.pct0(r.chance) })); } },
+        { key: "price", label: "Price · of " + CAP, num: true, sort: true, render: function (r) { return cents1(r.price); } },
         { key: "d24", label: "24h", num: true, sort: true, render: function (r) { return el("span", { class: dcls(r.d24), text: pts(r.d24) }); } },
         { key: "act", label: "Trade", class: "op-tact", render: function (r) { return tradeBtns(r, true); } }
       ], { rows: rows, sortKey: "rank", sortDir: "asc", onRow: function (r) { openEntry(r.id); }, caption: "Entries in market #2842 with price and chance of selection", empty: { title: "No entries match", text: "Clear the filters to see all 40." } });
@@ -510,7 +513,7 @@
       el("div", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag", text: e.cat }), e.inside ? el("span", { class: "s-tag s-tag--violet", text: "Inside the line" }) : el("span", { class: "s-tag s-tag--outline", text: "Below the line" }), e.close ? el("span", { class: "s-tag s-tag--violet", text: "Close call" }) : null, el("span", { class: "t-meta", text: e.team + " · asks " + F.num(e.ask) + " sDAI" }))));
     var st = el("div", { class: "s-stats op-dstats", style: { "--cols": "4" } },
       U.stat("Chance", F.pct0(e.chance), { note: "of selection" }),
-      U.stat("Price", cents1(e.price), { note: "per share" }),
+      U.stat("Price", cents1(e.price), { note: "of " + CAP + " if funded" }),
       U.stat("Rank", pad2(e.rank), { unit: "of " + E.length, note: e.inside ? "Inside the line" : "Below the line" }),
       U.stat("24h", pts(e.d24).replace(" pts", ""), { unit: "pts", note: "Chance move" }));
     var dv = st.lastChild.querySelector(".s-stat__value"); if (dv) dv.classList.add(dcls(e.d24));

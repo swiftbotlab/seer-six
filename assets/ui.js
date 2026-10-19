@@ -109,8 +109,9 @@
       return { value: fmt.num(v, 2) + "/" + trim(r.max, 0), sub: "UP " + fmt.cents(o.price), yes: "Up", no: "Down", unit: "score" }; }
     if (m.type === "multi-categorical" && o.noToAll) return { value: fmt.pct(o.chance != null ? o.chance : o.price, 1), sub: fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "chance none default", p: o.price };
     if (m.type === "multi-categorical" && o.pdAnnual != null) return { value: fmt.pct(o.pdAnnual, 1), sub: "/yr · " + fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "PD", p: o.pdAnnual };
-    if (m.type === "multi-categorical") { var ch = o.chance != null ? o.chance : Math.min(1, o.price * (m.slots || 1));
-      return { value: fmt.pct0(ch), sub: fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "chance", p: ch }; }
+    if (m.type === "multi-categorical") { var ch = o.chance != null ? o.chance : Math.min(1, o.price * (m.slots || 1)), k = m.slots || 1;
+      // multi-winner: lead with the chance; the price reads against what a funded share redeems (1/k sDAI), e.g. "6.3¢ of 12.5¢"
+      return { value: fmt.pct0(ch), sub: k > 1 ? nf(1).format(o.price * 100) + "¢ of " + nf(1).format(100 / k) + "¢" : fmt.cents1(o.price), yes: "Buy", no: "Sell", unit: "chance", p: ch }; }
     if (m.type === "multi-scalar") return { value: fmt.pct0(o.price), sub: "share", yes: "Buy", no: "Sell", unit: "share" };
     return { value: fmt.pct0(o.price), unit: "chance" };
   };

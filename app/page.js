@@ -1117,7 +1117,7 @@
       { key: "name", label: "Outcome", class: "ap-wrap", render: function (o) { return clip(o.name, 48); } },
       { key: "symbol", label: "Symbol", render: function (o) { return el("span", { class: "t-mono", text: o.symbol }); } },
       { key: "token", label: "Token address", render: function (o) { return U.addr(o.token, { chars: 6, what: o.symbol + " token address" }); } },
-      { key: "price", label: sc(m) || multiCat(m) ? "Price" : "Price · chance", num: true, sort: true, render: function (o) { return sc(m) ? F.cents(o.price) : multiCat(m) ? F.cents1(o.price) + " · " + words(m, o).value + (isRisk(m) && !o.noToAll && !o.invalid ? "/yr" : "") : words(m, o).value; } }
+      { key: "price", label: sc(m) ? "Price" : multiCat(m) && !isRisk(m) ? "Chance · price" : multiCat(m) ? "Price" : "Price · chance", num: true, sort: true, render: function (o) { return sc(m) ? F.cents(o.price) : multiCat(m) && !isRisk(m) ? (o.invalid ? words(m, o).value : words(m, o).value + " · " + words(m, o).sub) : multiCat(m) ? F.cents1(o.price) + " · " + words(m, o).value + (!o.noToAll && !o.invalid ? "/yr" : "") : words(m, o).value; } }
     ];
     var t = U.table(panel, cols, { rows: isSet(m) ? real(m) : m.outcomes, compact: true, caption: "Outcome tokens" });
     var rows = $$("tbody tr", t.table); if (rows[cur.o]) rows[cur.o].classList.add("is-selected");

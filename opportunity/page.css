@@ -318,3 +318,10 @@ html.op-lock, html.op-lock body { overflow: hidden; }
   .s-card__meta, .op-card .t-meta, .op-flow__body p, .op-cap__l span { font-size: 12px; }
   .op-tile small { font-size: 11px; }
 }
+
+/* ---- price unit (2026-10-20): chance first, the price read against the 12.5¢ payout; the hero axis is named ---- */
+.op-axis__name { margin: 6px 40px 0 34px; text-align: right; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: rgba(224, 226, 245, .5); }
+.op-cap__l .op-cap__why { display: block; margin-top: 3px; font-family: var(--font-sans); font-size: 12px; font-weight: 400; letter-spacing: 0; text-transform: none; color: rgba(224, 226, 245, .6); }
+.op-card__price small { font-size: 12px; font-weight: 500; color: var(--text-3); }
+@media (max-width: 960px) { .op-axis__name { margin-left: 30px; margin-right: 28px; } }
+@media (max-width: 480px) { .op-poster__cap .op-cap__why { font-size: 12px; } .op-axis__long { display: none; } }
