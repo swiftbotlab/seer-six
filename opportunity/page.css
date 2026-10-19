@@ -29,7 +29,7 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-board__grid i { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px solid rgba(224, 226, 245, .07); }
 .op-board__rows { position: relative; display: flex; flex-direction: column; }
 .op-brow { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; align-items: center; height: var(--rh); padding-right: 40px; }
-.op-brow__n { font-family: var(--font-mono); font-size: 9.5px; line-height: 1; letter-spacing: .04em; color: rgba(224, 226, 245, .5); opacity: 0; font-variant-numeric: tabular-nums; transition: opacity var(--dur) var(--ease); }
+.op-brow__n { font-family: var(--font-mono); font-size: 11px; line-height: 1; letter-spacing: .04em; color: rgba(224, 226, 245, .5); opacity: 0; font-variant-numeric: tabular-nums; transition: opacity var(--dur) var(--ease); }
 .op-brow:first-child .op-brow__n, .op-brow:last-child .op-brow__n, .op-brow.is-active .op-brow__n { opacity: 1; }
 .op-brow.is-active .op-brow__n { color: #FFFFFF; }
 .op-brow__track { position: relative; height: 100%; display: flex; align-items: center; }
@@ -97,7 +97,7 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-card.is-selected { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
 .op-card__head { align-items: flex-start; }
 .op-tile { width: 44px; height: 44px; border-radius: 7px; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: var(--surface-3); color: var(--text-2); }
-.op-tile small { font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; opacity: .75; line-height: 1; }
+.op-tile small { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; line-height: 1; }
 .op-tile b { font-family: var(--font-mono); font-size: 15px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
 .op-tile.is-in { background: var(--ink); color: var(--lavender); }
 .op-card__hd { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
@@ -269,12 +269,10 @@ html.op-lock, html.op-lock body { overflow: hidden; }
   .op-facts { grid-template-columns: repeat(2, minmax(0, auto)); gap: 14px 28px; }
   .op-mstats { --cols: 2 !important; }
   .op-mstats .s-stat__value { font-size: 19px; }
-  .op-flow { display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: none; border-radius: 0; }
-  .op-flow::after { content: ""; flex: 0 0 1px; }
-  .op-flow::-webkit-scrollbar { display: none; }
-  .op-flow__step { flex: 0 0 78%; scroll-snap-align: start; scroll-margin-left: var(--gutter); }
-  .op-flow__step:first-child { border-radius: var(--r-card) 0 0 var(--r-card); }
-  .op-flow__step:last-child { grid-column: auto; border-radius: 0 var(--r-card) var(--r-card) 0; }
+  /* the five lifecycle steps stack with their number rail (a horizontal scroller here read as clipped) */
+  .op-flow { grid-template-columns: 1fr; }
+  .op-flow__step { padding: 14px 16px 16px; }
+  .op-flow__step:last-child { grid-column: auto; }
   .op-card { min-height: 0; gap: 10px; }
   .op-card__act, .op-card .s-card__foot, .op-card__spark { display: none; }
   .op-card__odds { grid-template-columns: minmax(0, 1fr) auto; }
@@ -307,3 +305,16 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-axis { position: relative; display: block; height: 14px; }
 .op-axis span { position: absolute; top: 0; transform: translateX(-50%); }
 .op-axis span:first-child { transform: none; } .op-axis span:last-child { transform: translateX(-100%); }
+
+/* ---------- small screens: the lifecycle steps stack, and no label drops under 11px ---------- */
+@media (max-width: 760px) {
+  .op-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .op-flow__step { padding: 14px 16px 16px; }
+}
+@media (max-width: 480px) {
+  .op-flow { grid-template-columns: 1fr; }
+  .op-flow__when, .op-ghead__n, .op-card__id, .op-tag-close, .op-sug__kind, .op-poster__cap small, .op-cap__num small, .op-sline span, .op-axis, .op-brow__v { font-size: 11px; }
+  .op-card__title { font-size: 15px; }
+  .s-card__meta, .op-card .t-meta, .op-flow__body p, .op-cap__l span { font-size: 12px; }
+  .op-tile small { font-size: 11px; }
+}

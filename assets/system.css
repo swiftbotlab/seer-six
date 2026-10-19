@@ -768,3 +768,8 @@ button.s-orow:hover { background: var(--surface-hover); }
   .s-strip, .s-header, .s-footer, .s-toasts { display: none !important; }
   body { background: #fff; color: #000; }
 }
+
+/* phones: the smallest mono labels (badges, chip counts, mono tags, table heads) come up to 11px */
+@media (max-width: 480px) {
+  .s-sample, .s-chip .s-chip__n, .s-tag--mono, .s-table th, .s-tabs .s-count { font-size: 11px; }
+}
