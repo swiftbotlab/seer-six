@@ -87,6 +87,23 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 @media (max-width: 640px) { .hb-tour { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
 .hb-poster__art { overflow: hidden; }
+/* today -> proposed: the live sites over our six screens */
+.hb-today { margin-bottom: 28px; }
+.hb-today__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px 32px; flex-wrap: wrap; margin-bottom: 14px; }
+.hb-today__head .s-spec { display: block; margin-bottom: 8px; }
+.hb-today__head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 58ch; }
+.hb-today__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.hb-today__col { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+.hb-today__img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; border-radius: 8px; background: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.hb-today__img--now { opacity: .82; filter: saturate(.8); }
+.hb-today__arrow { display: inline-flex; color: var(--text-3); }
+.hb-today__arrow svg { width: 14px; height: 14px; }
+.hb-today__col a { display: block; width: 100%; border-radius: 8px; }
+.hb-today__col a:hover .hb-today__img, .hb-today__col a:focus-visible .hb-today__img { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
+.hb-today__cap { margin-top: 3px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.hb-today__cap b { color: var(--violet-3); font-weight: 400; }
+@media (max-width: 1100px) { .hb-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .hb-today__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
 @media (max-width: 640px) { .hb-tour__url, .hb-card__url { display: none; } }
 /* kit -> concept: a crop of the Electric Foundation web frame beside the same component, live */
 .hb-fid-head { margin: 28px 0 14px; max-width: 72ch; }
@@ -146,6 +163,13 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     <div class="s-container">
       <div class="s-section-head">
         <div><span class="s-spec">Six labelled demos</span><h2 id="hb-int" class="t-h2">The interfaces</h2></div>
+      </div>
+      <div class="hb-today" id="hb-today">
+        <div class="hb-today__head">
+          <div><span class="s-spec">Today → proposed</span><h3 class="t-h3">Six products from six companies, then one shell and one dataset</h3></div>
+          <p>Top row: the six live sites as they are in October 2026, shown for comparison. Bottom row: the same six as designed here; open any of them.</p>
+        </div>
+        <div class="hb-today__grid" id="hb-today-grid"></div>
       </div>
       <div class="hb-cards" id="hb-cards"></div>
     </div>
@@ -229,6 +253,17 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
         S.el("span", { class: "hb-card__url", text: url }))));
     cards.appendChild(card);
     MOTIF[a.id](a.id === "opportunity" ? art : host);
+  });
+
+  // today -> proposed: the live site (captured October 2026) over this concept's screen, one column per interface
+  var tg = document.getElementById("hb-today-grid");
+  S.apps.forEach(function (a) {
+    tg.appendChild(S.el("figure", { class: "hb-today__col" },
+      S.el("img", { class: "hb-today__img hb-today__img--now", attrs: { src: "assets/today/" + a.id + ".jpg", alt: "Today: " + a.host + " as it is in October 2026", width: "480", height: "300", loading: "lazy", decoding: "async" } }),
+      S.el("span", { class: "hb-today__arrow", html: S.icon("chevron-down", 14), attrs: { "aria-hidden": "true" } }),
+      S.el("a", { href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } },
+        S.el("img", { class: "hb-today__img", attrs: { src: "assets/ours/" + a.id + ".jpg", alt: "Proposed: " + a.name + " on the Electric Foundation identity", width: "480", height: "300", loading: "lazy", decoding: "async" } })),
+      S.el("figcaption", { class: "hb-today__cap" }, S.el("b", { text: a.n }), " " + a.host)));
   });
 
   // the connected thread (all numbers from the shared sample dataset)
