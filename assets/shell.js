@@ -120,7 +120,8 @@
   };
   (function initTheme() {
     var q = /[?&]theme=(light|dark)/.exec(location.search);
-    var t = (q && q[1]) || getStoredTheme() || doc.documentElement.getAttribute("data-theme") || "dark";
+    var os = null; try { os = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : null; } catch (e) { /* no media queries: dark */ }
+    var t = (q && q[1]) || getStoredTheme() || os || "dark"; // ?theme= wins, then the viewer's saved choice, then the OS
     doc.documentElement.setAttribute("data-theme", t);
   })();
 

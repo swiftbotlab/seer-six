@@ -24,7 +24,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 <meta name="twitter:title" content="Every opinion has a price · Seer concept">
 <meta name="twitter:description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/hub.png">
-<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="assets/system.css">
 <style>
 /* hub page — prefix .hb- */

@@ -24,7 +24,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 <meta name="twitter:title" content="Seer · Decision infrastructure (concept)">
 <meta name="twitter:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/home.png">
-<script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
