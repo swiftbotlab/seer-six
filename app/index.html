@@ -4,47 +4,194 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Seer App · Market explorer (concept)</title>
-<meta name="description" content="Find, inspect and trade every Seer market across market types and chains. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="The explorer for every Seer market: search any question, outcome or 0x address, filter by type, state and chain, and trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /app/ — prefix .ap- (see SYSTEM.md) */
-.ap-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="app">
-<script>window.SEER_PAGE = {"nav": [["Markets", "#markets"], ["Explorer", "#explorer"], ["Leaderboard", "#leaderboard"], ["Create market", "#create"]], "search": "Search markets, outcomes or 0x…", "cta": ["Create market", "", "plus-square"]};</script>
+<script>window.SEER_PAGE = { nav: [["Markets", "#markets", true], ["Activity", "#activity"], ["Leaderboard", "#leaderboard"], ["Design notes", "#notes"]], search: "Search markets, outcomes or 0x…", cta: ["Create market", "#create", "plus-square"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
-        <div class="s-hero__kicker s-specs"><span>02</span><span>app.seer.pm</span><span>Explorer</span></div>
-        <h1 class="s-hero__title">Every market, <span class="t-accent">in one place.</span></h1>
-        <p class="s-hero__lede t-lede">The explorer for the whole protocol: every market type, every chain, every outcome token, traceable from question to redemption.</p>
+
+  <!-- ============ HOME: explorer front page ============ -->
+  <div id="ap-home">
+    <section class="s-hero ap-hero" aria-labelledby="ap-title">
+      <div class="s-container ap-hero__grid">
+        <div class="ap-hero__copy">
+          <div class="s-hero__kicker s-specs"><span>02</span><span>app.seer.pm</span><span>Explorer</span></div>
+          <h1 id="ap-title" class="s-hero__title ap-hero__title">Every market, <span class="t-accent">on the record.</span></h1>
+          <p class="s-hero__lede t-lede">Search any question, outcome, market number or 0x address. Every market type on every chain, traceable from its Reality.eth question to the last redemption.</p>
+          <div class="ap-search-wrap" id="ap-search-wrap">
+            <label class="s-search ap-search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+              <span class="s-sr">Search the explorer</span>
+              <input id="ap-q" type="search" autocomplete="off" spellcheck="false" maxlength="80" placeholder="Question, outcome, #2841, P-07 or 0x…" role="combobox" aria-expanded="false" aria-controls="ap-suggest" aria-autocomplete="list">
+              <kbd aria-hidden="true">Enter</kbd>
+            </label>
+            <div class="ap-suggest" id="ap-suggest" role="listbox" aria-label="Search results" hidden></div>
+          </div>
+          <div class="ap-try" id="ap-try"><span class="t-meta">Try</span></div>
+        </div>
+        <figure class="s-poster ap-poster" aria-labelledby="ap-field-cap">
+          <div class="ap-poster__head">
+            <div class="s-specs"><span>Lifecycle field</span><span id="ap-field-n">18 markets</span><span>7 steps</span></div>
+            <div class="s-specs ap-hide-sm"><span>Snapshot <b>19 Oct 2026 · 12:00 UTC</b></span></div>
+          </div>
+          <div class="ap-field" id="ap-field"></div>
+          <figcaption class="ap-poster__foot" id="ap-field-cap">
+            <span class="ap-legend">
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="1.6" fill="#BFBFE6" opacity=".6"/></svg>Step still open</span>
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="#8F55F7" stroke-width="1.4" stroke-linecap="round"/></svg>Step settled</span>
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.6" fill="none" stroke="rgba(143,85,247,.6)"/><circle cx="7" cy="7" r="2.6" fill="#B79BF7"/></svg>Where it is now</span>
+            </span>
+            <span class="ap-poster__note">Each column is a market, each row a step from creation to redemption: dots are still uncertain, crosses are settled. Select a column to open its record.</span>
+            <span class="s-specs ap-poster__counts" id="ap-field-counts"></span>
+          </figcaption>
+        </figure>
       </div>
-      <div class="s-hero__art"><div class="ap-art" id="ap-art"></div></div>
-    </div>
-  </section>
-  <section class="s-section--tight">
+    </section>
+
+    <section class="ap-section" id="markets" aria-labelledby="ap-markets-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head">
+          <div><span class="s-spec">All market types · all chains</span><h2 id="ap-markets-h" class="t-h2">Markets</h2></div>
+          <span class="s-sample">Sample data</span>
+        </div>
+        <div id="ap-cats"></div>
+        <div class="ap-toolbar" id="ap-toolbar">
+          <button type="button" class="s-btn s-btn--ghost s-btn--sm s-show-sm ap-ftoggle" id="ap-ftoggle" aria-expanded="false" aria-controls="ap-fbody"></button>
+          <div class="ap-toolbar__body" id="ap-fbody"></div>
+        </div>
+        <div class="ap-results">
+          <div class="ap-results__l" id="ap-resbar" aria-live="polite"></div>
+          <div class="ap-toolbar__end" id="ap-fend"></div>
+        </div>
+        <div id="ap-results"></div>
+      </div>
+    </section>
+
+    <section class="ap-section" id="activity" aria-labelledby="ap-activity-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head">
+          <div><span class="s-spec">Protocol index</span><h2 id="ap-activity-h" class="t-h2">Activity</h2></div>
+          <span class="s-sample">Sample data</span>
+        </div>
+        <div class="s-stats ap-index" id="ap-index" style="--cols:6"></div>
+        <div class="ap-mix" id="ap-mix"></div>
+        <div class="ap-act">
+          <section class="s-card s-card--pad" aria-labelledby="ap-tx-h">
+            <div class="s-row s-row--between"><div><span class="s-spec">Across all markets</span><h3 id="ap-tx-h" class="t-h3">Latest transactions</h3></div></div>
+            <div id="ap-tx"></div>
+          </section>
+          <section class="s-card s-card--pad" aria-labelledby="ap-queue-h">
+            <div class="s-row s-row--between"><div><span class="s-spec">Needs a person or a transaction</span><h3 id="ap-queue-h" class="t-h3">Resolution queue</h3></div></div>
+            <ol class="ap-queue" id="ap-queue"></ol>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="ap-section" id="leaderboard" aria-labelledby="ap-lb-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head">
+          <div><span class="s-spec">Trader Score 0–100 · resolved markets only</span><h2 id="ap-lb-h" class="t-h2">Leaderboard</h2></div>
+          <span class="s-sample">Sample data</span>
+        </div>
+        <div class="s-card ap-lb" id="ap-lb"></div>
+      </div>
+    </section>
+
+    <section class="ap-section" id="create" aria-labelledby="ap-create-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head">
+          <div><span class="s-spec">One transaction · four market types</span><h2 id="ap-create-h" class="t-h2">Create a market</h2></div>
+          <span class="s-sample">Preview only</span>
+        </div>
+        <div class="ap-create">
+          <form class="s-card s-card--pad ap-form" id="ap-form" novalidate>
+            <fieldset class="ap-fieldset">
+              <legend class="ap-label">Market type</legend>
+              <div class="ap-types" id="ap-types"></div>
+            </fieldset>
+            <label class="s-field">Question
+              <input class="s-input" id="ap-f-q" maxlength="160" autocomplete="off" placeholder="Will Gnosis Chain process over 1M transactions on 1 Dec 2026?">
+            </label>
+            <label class="s-field" id="ap-f-outs-wrap"><span>Outcomes <span class="t-meta ap-hint" id="ap-f-outs-hint">Comma-separated, 2 to 12</span></span>
+              <input class="s-input" id="ap-f-outs" maxlength="400" autocomplete="off" value="Rain, Dry, Snow">
+            </label>
+            <div class="ap-form__row" id="ap-f-range" hidden>
+              <label class="s-field">Lower bound<input class="s-input" id="ap-f-min" inputmode="decimal" value="0" maxlength="14"></label>
+              <label class="s-field">Upper bound<input class="s-input" id="ap-f-max" inputmode="decimal" value="2000000" maxlength="14"></label>
+              <label class="s-field">Unit<input class="s-input" id="ap-f-unit" maxlength="12" value="tx/day"></label>
+            </div>
+            <div class="ap-form__row">
+              <label class="s-field">Category<select class="s-select" id="ap-f-cat"></select></label>
+              <label class="s-field">Chain<select class="s-select" id="ap-f-chain"></select></label>
+              <label class="s-field">Collateral<select class="s-select" id="ap-f-coll"></select></label>
+            </div>
+            <div class="ap-form__row ap-form__row--2">
+              <label class="s-field">Reports open on<input class="s-input" id="ap-f-date" type="date" value="2026-12-31" min="2026-10-20" max="2030-12-31"></label>
+              <label class="s-switch ap-curate"><input type="checkbox" id="ap-f-curate" checked> Submit to Kleros Curate</label>
+            </div>
+            <p class="t-meta ap-form__err" id="ap-f-err" role="alert"></p>
+            <div class="s-row">
+              <button class="s-btn s-btn--lg" type="submit" id="ap-f-go">Create market</button>
+              <span class="t-meta">Sample only. Nothing is deployed.</span>
+            </div>
+          </form>
+          <aside class="ap-preview" aria-labelledby="ap-prev-h">
+            <span class="s-spec" id="ap-prev-h">Live preview</span>
+            <div id="ap-prev-card"></div>
+            <div class="s-card s-card--pad ap-deploy">
+              <span class="s-spec">What this transaction creates</span>
+              <ol class="ap-deploy__list" id="ap-deploy"></ol>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ VIEW: market detail / address (filled by page.js) ============ -->
+  <div id="ap-view" hidden></div>
+
+  <!-- ============ Design notes ============ -->
+  <section class="ap-section" id="notes" aria-labelledby="ap-notes-h">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="ap-preview"></div>
+      <div class="s-section-head ap-head">
+        <div><span class="s-spec">This interface</span><h2 id="ap-notes-h" class="t-h2">Design notes</h2></div>
+        <a class="s-btn s-btn--ghost" href="../#notes">Notes for all six</a>
+      </div>
+      <div class="ap-notes">
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
+          <ol>
+            <li><b>The kit's web frame, unchanged:</b> page #101013, card #1A1A1E, nested #1F1F24 (light: #F7F7F9 / #FFFFFF / #F1F1F4), and 328px market cards with radius 9 and 12px padding in a 4-column grid at 1440 with a 40px gutter.</li>
+            <li><b>The kit's components:</b> pill search, the category row with arrows, Yes/No outcome rows, full-width Up/Down and three-way buttons, and the bet slip with two price tiles, a Bold 32 amount, +$ chips and Confirm with ✕.</li>
+            <li><b>The kit's card footer:</b> "$Vol • date • category" with the gift and bookmark icons.</li>
+            <li><b>Mono spec labels</b> for machine facts: type, chain, collateral, market number, snapshot time.</li>
+          </ol>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Deliberate departures</h3>
+          <ol>
+            <li><b>Explorer depth the kit doesn't draw.</b> An Etherscan-style record per market (contract, condition ID, Reality.eth question, outcome-token ERC-20s, event log, positions, resolution) and per address, built only from kit surfaces.</li>
+            <li><b>The dot grid carries data.</b> In the lifecycle field each column is a market and each row a step; settled steps turn from dots into crosses, so the field reads as uncertainty becoming structure.</li>
+            <li><b>State and verification on every card.</b> An explorer has to say where a market is in its life. Amber (waiting) and red (dispute) only ever appear next to their label.</li>
+            <li><b>"No" on a multi-outcome row is defined.</b> The kit shows Yes/No on every row; here No buys the other outcomes as one basket, and the ticket says so.</li>
+            <li><b>Kit fixes.</b> Binary prices add up to 100¢ (the kit's 69¢ + 37¢ is 106¢), amounts use a decimal point ("$100.00"), and sample markets use motif glyph tiles instead of photos.</li>
+            <li><b>Type and contrast.</b> PP Neue Montreal and Suisse Int'l Mono when installed, Geist and Geist Mono otherwise; muted text is lifted so 12px labels pass WCAG AA.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Every market, price, address and name here is sample data from one shared dataset, so the same market shows up in Deep, Futarchy, Opportunity and Risk. Organisations, agents and traders are fictional and every address starts with 0x5eed. Nothing is live and nothing can be traded.</span></div>
     </div>
   </section>
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("ap-art"), box = document.getElementById("ap-preview");
-  S.motif.dotgrid(art, { cols: 22, rows: 12, dissolve: .5 });
-  var g = S.el("div", { class: "s-grid s-grid--cards" });
-  ["2831", "2832", "2835", "2833"].forEach(function (id) { g.appendChild(S.ui.marketCard(D.market(id))); });
-  box.appendChild(g);
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
