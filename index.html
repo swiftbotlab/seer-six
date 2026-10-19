@@ -72,7 +72,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   .hb-notes { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) { .hb-cards, .hb-flow { grid-template-columns: 1fr; } .hb-poster__copy { padding: 28px 20px 24px; } }
-/* 90-second read: six rows (interface, what it shows, the one thing to try, link) and four build facts */
+/* 60-second tour: six rows (interface, what it shows, the one thing to try, link) and four build facts */
 .hb-read { gap: 20px; }
 .hb-read__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; }
 .hb-read__head .s-spec { display: block; margin-bottom: 8px; }
@@ -176,7 +176,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     <div class="s-container">
       <div class="s-card s-card--pad hb-read">
         <div class="hb-read__head">
-          <div><span class="s-spec">If you have 90 seconds</span><h2 id="hb-tour" class="t-h2">A 90-second read for the Seer team</h2></div>
+          <div><span class="s-spec">If you have 60 seconds</span><h2 id="hb-tour" class="t-h2">The 60-second tour</h2></div>
           <p>Six interfaces on one shell. Each row: what the demo shows, the one thing to try, and its link. Below, what was built with and how.</p>
         </div>
         <ol class="hb-read__rows" id="hb-tour-list"></ol>
@@ -315,7 +315,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       S.el("b", { class: "hb-big t-num", text: s[3] }),
       S.el("p", { class: "t-meta", style: { color: "var(--text-2)", lineHeight: "1.5" }, text: s[4] })));
   });
-  // 90-second read: per interface, what the demo shows, one signature interaction and its deep link (names from S.apps)
+  // 60-second tour: per interface, what the demo shows, one signature interaction and its deep link (names from S.apps)
   var TOUR = [
     ["home", "home/", "Hero markets whose bands converge on one price, the protocol map, one worked example.", "Switch the hero between three markets and watch the bands converge on one price. Then pick an app in the protocol map."],
     ["app", "app/#m=2841", "Every market type and chain in one explorer: filters, table and cards, a full record per market.", "Type P-07 or 0x5eed in the search. #2841 opens with 80 UP/DOWN tokens, its event log and a JSON view."],
