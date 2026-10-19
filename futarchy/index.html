@@ -4,48 +4,131 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Futarchy · Conditional markets (concept)</title>
-<meta name="description" content="Conditional markets forecast a success measure if a proposal passes versus if it does not. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Conditional markets forecast a success measure if a proposal passes and if it does not: information for the DAO, not the decision. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /futarchy/ — prefix .ft- (see SYSTEM.md) */
-.ft-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="futarchy">
-<script>window.SEER_PAGE = {"nav": [["Proposals", "#proposals"], ["Organisations", "#orgs"], ["How it works", "#how"]], "search": "Search proposals"};</script>
+<script>window.SEER_PAGE = { nav: [["Proposal", "#top"], ["All proposals", "#proposals"], ["Track record", "#record"], ["How it works", "#how"]], search: "Search proposals" };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
-        <div class="s-hero__kicker s-specs"><span>04</span><span>futarchy.seer.pm</span><span>Gnosis</span></div>
-        <h1 class="s-hero__title">Two futures, <span class="t-accent">priced side by side.</span></h1>
-        <p class="s-hero__lede t-lede">Conditional markets forecast a success measure if a proposal passes and if it does not. The gap is information for the DAO. The vote still decides.</p>
-      </div>
-      <div class="s-hero__art"><div class="ft-art" id="ft-art"></div></div>
+
+  <!-- 1. Proposal header: the two futures and the signal, first screen -->
+  <section class="ft-hero" id="top" aria-labelledby="ft-title">
+    <div class="s-container ft-hero__grid">
+      <div class="ft-hero__copy" id="ft-hero-copy"></div>
+      <figure class="s-poster ft-poster" id="ft-poster">
+        <div class="ft-poster__art" id="ft-poster-art"></div>
+        <div class="ft-poster__top" id="ft-poster-top"></div>
+        <figcaption class="ft-poster__foot" id="ft-poster-foot"></figcaption>
+      </figure>
     </div>
   </section>
-  <section class="s-section--tight">
+
+  <!-- 2. Key figures + lifecycle -->
+  <section class="ft-figures" aria-label="Key figures and lifecycle">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="ft-preview"></div>
+      <div class="s-stats ft-stats" id="ft-stats"></div>
+      <div class="s-card ft-life" id="ft-life"></div>
     </div>
   </section>
+
+  <!-- 3. Prices, TWAP window, details + ticket -->
+  <section class="s-section--tight" aria-label="Prices and trading">
+    <div class="s-container ft-split">
+      <article class="s-card ft-chartcard" aria-labelledby="ft-chart-title">
+        <header class="ft-chartcard__head" id="ft-chart-head"></header>
+        <div id="ft-chart"></div>
+        <div class="ft-scrub" id="ft-scrub"></div>
+      </article>
+      <div class="ft-details">
+        <div id="ft-tabs"></div>
+        <div class="ft-pane" id="ft-pane"></div>
+      </div>
+      <aside class="ft-rail" aria-label="Trade">
+        <div id="ft-ticket-box"></div>
+        <div id="ft-view-box"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 4. All proposals -->
+  <section class="s-section" id="proposals" aria-labelledby="ft-proposals-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">All proposals</span><h2 class="t-h2" id="ft-proposals-title">Proposals by organisation</h2></div>
+        <div class="s-row ft-listbar" id="ft-status"></div>
+      </div>
+      <div class="ft-orgs" id="ft-orgs"></div>
+      <p class="t-meta ft-count" id="ft-count" aria-live="polite"></p>
+      <div class="s-grid s-grid--cards ft-grid" id="ft-grid"></div>
+    </div>
+  </section>
+
+  <!-- 5. Information, not the decision + track record -->
+  <section class="s-section ft-record" id="record" aria-labelledby="ft-record-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Track record</span><h2 class="t-h2" id="ft-record-title">Information for the DAO, not the decision</h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="ft-record__grid">
+        <ol class="ft-roles" id="ft-roles"></ol>
+        <div class="ft-record__table">
+          <div id="ft-record-table"></div>
+          <p class="t-meta ft-record__note">The signal is published when the TWAP window closes, before the vote opens. In LIP-30 the market was neutral and Lattice DAO approved anyway: the market informs, the vote decides.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. How it works -->
+  <section class="s-section" id="how" aria-labelledby="ft-how-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">How it works</span><h2 class="t-h2" id="ft-how-title">One proposal, two priced futures</h2></div>
+      </div>
+      <div class="s-grid ft-how" style="--cols:4" id="ft-how"></div>
+    </div>
+  </section>
+
+  <!-- 7. Design notes -->
+  <section class="s-section ft-notes" id="notes" aria-labelledby="ft-notes-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Design notes · 04 Futarchy</span><h2 class="t-h2" id="ft-notes-title">What we kept, and where we departed</h2></div>
+      </div>
+      <div class="ft-notes__grid">
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
+          <ul class="ft-list">
+            <li>The kit's dark and light UI tokens, violet <span class="t-mono">#7D33FF</span> for primary actions, and the secondary violet tint for the second choice.</li>
+            <li>Bet-slip geometry: 22px panel, 16px padding, 18px gap, two price tiles, a Bold 32 amount, + chips, Confirm and a clear button.</li>
+            <li>Medium 13 for UI, Medium 12 for meta, Bold 16/24 for titles, and mono spec labels for market metadata.</li>
+            <li>The official EF lockup in the header, and the logo sheet's 45° construction lines and circles behind the hero fork.</li>
+          </ul>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Departures on this page</h3>
+          <ol class="ft-list ft-list--num">
+            <li><b>The fork is a chart.</b> Its two branches end at the real 5-day TWAPs on a true price scale, and the ±1% band around the NO price is drawn in, so the signal reads before any number does.</li>
+            <li><b>The serif accent marks the condition</b> (“if LIP-31 is approved?”), the same clause the live product highlights.</li>
+            <li><b>Prices are in sDAI, not cents.</b> Conditional pools trade a token, not a probability, so the kit's ¢ tiles carry four-decimal prices and a colour key per branch.</li>
+            <li><b>Green and red appear only on the signed impact and the approve/reject label.</b> YES is violet and NO is teal on every chart, as on the other five interfaces.</li>
+            <li><b>The ticket shows both futures.</b> A conditional trade is undone in the branch that does not happen, so the slip states what you hold if approved and if rejected.</li>
+            <li><b>The window scrubber is exploratory.</b> The official signal always uses the fixed 5-day window; other windows are labelled as yours.</li>
+          </ol>
+          <p class="t-meta ft-notes__data">Sample data: Lattice, Harbor and Kestrel DAOs are fictional. LIP-31 is the same proposal the other five interfaces reference.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("ft-art"), box = document.getElementById("ft-preview");
-  var f = D.futarchy[0];
-  S.motif.fork(art, { split: .36 });
-  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("div", { class: "s-row s-row--between" }, S.el("b", { class: "t-title", text: f.id + " · " + f.title }), S.el("span", { class: "s-tag s-tag--pos", text: "Impact " + S.fmt.signed(f.impact) }) ));
-  S.chart.line(card, { series: [{ name: "If approved (YES)", short: "If approved", values: f.series.map(function (r) { return [r[0], r[1]]; }), color: "var(--c-yes)" }, { name: "If rejected (NO)", short: "If rejected", values: f.series.map(function (r) { return [r[0], r[2]]; }), color: "var(--c-no)" }], y: { format: function (v) { return S.fmt.price(v, 3); } }, height: 220 });
-  box.appendChild(card);
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
