@@ -312,6 +312,20 @@
 
 /* ---- finisher additions ---- */
 .ft-rec--prov { color: var(--text-2); }
+/* long signal chip ("Signal: leans approve · the vote decides"): wraps as two units in narrow cells */
+.ft-rec--long { flex-wrap: wrap; height: auto; min-height: 22px; padding-block: 4px; column-gap: 5px; row-gap: 3px; line-height: 1.25; white-space: normal; max-width: 100%; }
+.ft-rec--long svg { flex: none; }
+.ft-rec__tail { white-space: nowrap; color: var(--text-3); }
+/* gauge zone labels ("Leans reject · Neutral · Leans approve"): outer labels sit on the track's ends in the mini gauge;
+   on phones they take their own row under the % ticks so the two never collide */
+.ft-gauge--mini .ft-gauge__ticks .ft-gauge__zl--first { left: 0 !important; transform: none; }
+.ft-gauge--mini .ft-gauge__ticks .ft-gauge__zl--last { left: 100% !important; transform: translateX(-100%); }
+@media (max-width: 640px) {
+  .ft-gauge:not(.ft-gauge--mini) .ft-gauge__ticks { height: 38px; }
+  .ft-gauge:not(.ft-gauge--mini) .ft-gauge__zl { top: 21px; }
+  .ft-gauge__ticks .ft-gauge__zl--first { left: 0 !important; transform: none; }
+  .ft-gauge__ticks .ft-gauge__zl--last { left: 100% !important; transform: translateX(-100%); }
+}
 .ft-prov { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
 
 /* phones: chart labels come up to 11px */

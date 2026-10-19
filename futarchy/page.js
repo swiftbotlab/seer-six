@@ -44,14 +44,16 @@
   }
   function recOf(x) { return x > RULE.approveAbove ? "approve" : x < RULE.rejectBelow ? "reject" : "neutral"; }
   var REC = {
-    approve: { label: "Approve", cls: "s-tag--pos", icon: "check", why: "above the +1% line" },
-    reject: { label: "Reject", cls: "s-tag--neg", icon: "close", why: "below the −1% line" },
+    approve: { label: "Leans approve", cls: "s-tag--pos", icon: "check", why: "above the +1% line" },
+    reject: { label: "Leans reject", cls: "s-tag--neg", icon: "close", why: "below the −1% line" },
     neutral: { label: "Neutral", cls: "", icon: "info", why: "inside the ±1% band" }
   };
-  // prov: the official TWAP window has not closed, so the signal is provisional: outline tag, "so far"
+  // prov: the official TWAP window has not closed, so the signal is provisional: outline tag, "so far".
+  // Signal language only: the market leans one way; the DAO vote decides.
   function recTag(r, long, prov) {
     var c = REC[r], t = el("span", { class: "s-tag ft-rec " + (prov ? "s-tag--outline ft-rec--prov" : c.cls), html: S.icon(prov ? "clock" : c.icon, 12) });
-    t.appendChild(document.createTextNode(prov ? (long ? c.label + " · provisional" : c.label + " · so far") : c.label + (long ? " signal" : "")));
+    if (prov && long) { t.classList.add("ft-rec--long"); t.appendChild(el("span", { text: "Signal: " + c.label.toLowerCase() })); t.appendChild(el("span", { class: "ft-rec__tail", text: "· the vote decides" })); return t; }
+    t.appendChild(document.createTextNode(prov ? c.label + " · so far" : (long ? "Signal: " + c.label.toLowerCase() : c.label)));
     return t;
   }
   function prov(m) { return !m.resolved && NOW < m.wEnd; }
@@ -165,7 +167,7 @@
       p.appendChild(document.createTextNode(" The Snapshot vote, " + range(m.vOpen, m.vClose) + ", decides. These markets only forecast what each outcome would mean for " + m.tok + "."));
     } else {
       p.appendChild(el("b", { text: m.org.name + " decided on Snapshot: " + (m.approved ? "approved." : "rejected.") }));
-      p.appendChild(document.createTextNode(" The market's final signal was " + REC[m.rec].label.toLowerCase() + " (" + F.signed(m.impact) + "). The vote, not the market, made the call."));
+      p.appendChild(document.createTextNode(" The market's final signal: " + REC[m.rec].label.toLowerCase() + " (" + F.signed(m.impact) + "). The vote, not the market, made the call."));
     }
     call.appendChild(p); box.appendChild(call);
     var act = el("div", { class: "s-hero__actions ft-actions" });
@@ -187,7 +189,7 @@
   function renderPosterLabels(m) {
     var top = $("#ft-poster-top"), foot = $("#ft-poster-foot"); S.clear(top); S.clear(foot);
     top.appendChild(S.ui.specs([{ text: m.id }, { text: m.pair }]));
-    top.appendChild(S.ui.specs(["Rule ±1% · 5-day TWAP"]));
+    top.appendChild(S.ui.specs(["Signal band ±1% · 5-day TWAP"]));
     foot.appendChild(S.ui.specs(m.dec ? ["Mkt #" + m.dec.id, "#" + m.yesM.id, "#" + m.noM.id] : [m.org.name, "Est. on " + (D.chain(m.chain) || { name: m.chain }).name]));
     foot.appendChild(el("div", { class: "s-specs" }, el("span", {}, "Status: ", el("b", { text: m.resolved ? (m.approved ? "Approved" : "Rejected") : phase(m).i === 1 ? "Reports not open yet · trading" : phase(m).label }))));
   }
@@ -217,7 +219,7 @@
     svg.appendChild(cg);
     // neutral band: NO price ±1% — YES must clear it for an approve or reject signal
     svg.appendChild(sv("rect", { class: "ft-pt-band", x: sx, y: Y(up), width: ex - sx, height: Y(dn) - Y(up) }));
-    [[up, "+1% · approve above " + F.price(up, 4), Y(up) + 15], [dn, "−1% · reject below " + F.price(dn, 4), Y(dn) - 7]].forEach(function (l) {
+    [[up, "+1% · leans approve above " + F.price(up, 4), Y(up) + 15], [dn, "−1% · leans reject below " + F.price(dn, 4), Y(dn) - 7]].forEach(function (l) {
       svg.appendChild(sv("line", { class: "ft-pt-rule", x1: sx, x2: ex, y1: Y(l[0]), y2: Y(l[0]) }));
       var t = sv("text", { class: "ft-pt-micro", x: ex - 10, y: l[2], "text-anchor": "end" }); t.textContent = small ? l[1].split(" · ")[0] : l[1].toUpperCase(); svg.appendChild(t);
     });
@@ -383,7 +385,7 @@
     band.appendChild(sv("line", { class: "ft-band__edge", x1: x1, x2: x1, y1: g.mt, y2: g.mt + g.ph }));
     top.appendChild(sv("rect", { class: "ft-band__grip", x: x1 - 4, y: g.mt + g.ph / 2 - 14, width: 8, height: 28, rx: 3 }));
     var lab = sv("text", { class: "ft-band__lbl", x: clamp((x0 + x1) / 2, g.ml + 60, g.ml + g.pw - 60), y: g.mt - 12, "text-anchor": "middle" });
-    lab.textContent = (state.days + "-day window" + (isRule() ? " · rule" : "")).toUpperCase(); top.appendChild(lab);
+    lab.textContent = (state.days + "-day window" + (isRule() ? " · signal" : "")).toUpperCase(); top.appendChild(lab);
     var yy = g.Y(ty), yn = g.Y(tn), wide = x1 - x0 > 128;
     [[yy, "var(--c-yes)", ty, yy < yn], [yn, "var(--c-no)", tn, yn < yy]].forEach(function (l) {
       var ln = sv("line", { class: "ft-twapline", x1: x0, x2: x1, y1: l[0], y2: l[0] }); ln.style.stroke = l[1]; band.appendChild(ln);
@@ -403,12 +405,12 @@
   var sc = {};
   function renderScrub(m) {
     var box = $("#ft-scrub"); S.clear(box); var L = m.series.length;
-    var seg = S.ui.seg([[1, "1 day"], [3, "3 days"], [5, "5 days · rule"], [7, "7 days"]], state.days, function (v) { setWindow(v, state.i1); drawBand(); updateReadout(); }, "Window length");
+    var seg = S.ui.seg([[1, "1 day"], [3, "3 days"], [5, "5 days · signal"], [7, "7 days"]], state.days, function (v) { setWindow(v, state.i1); drawBand(); updateReadout(); }, "Window length");
     sc.range = el("input", { class: "s-range", attrs: { type: "range", min: "0", max: String(L - 1), step: "1", "aria-label": "Window end" } });
     sc.range.addEventListener("input", function () { moveWindow(+sc.range.value); });
     sc.end = el("b", { class: "t-num" });
     var reset = el("button", { class: "s-btn s-btn--quiet s-btn--sm ft-reset", attrs: { type: "button" }, html: S.icon("clock", 14) });
-    reset.appendChild(document.createTextNode("Reset to rule"));
+    reset.appendChild(document.createTextNode("Reset to the 5-day signal"));
     reset.addEventListener("click", function () { setWindow(5, L - 1); renderScrub(m); drawBand(); updateReadout(); });
     sc.reset = reset;
     box.appendChild(el("div", { class: "ft-scrub__controls" },
@@ -436,27 +438,27 @@
     sc.reset.disabled = rule;
     gauge(sc.gauge, imp, rule ? null : m.impact);
     sc.note.textContent = rule
-      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Rule view: the last 5 days of sample prices. The official window for " + m.id + " is " + range(m.wStart, m.wEnd) + "; the signal is published when it closes.")
-      : "Your window: " + F.signed(imp) + " (" + REC[r].label.toLowerCase() + "). The rule window reads " + F.signed(m.impact) + ". Only the fixed 5-day window produces the published signal.";
+      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Signal window: the last 5 days of sample prices. The official window for " + m.id + " is " + range(m.wStart, m.wEnd) + "; the signal is published when it closes.")
+      : "Your window: " + F.signed(imp) + " (" + REC[r].label.toLowerCase() + "). The 5-day signal window reads " + F.signed(m.impact) + ". Only the fixed 5-day window produces the published signal.";
   }
   function gauge(box, imp, ruleImp, mini) {
     S.clear(box); box.classList.toggle("ft-gauge--mini", !!mini);
     var lim = Math.max(.03, Math.abs(imp) * 1.2, ruleImp != null ? Math.abs(ruleImp) * 1.2 : 0);
     var P = function (x) { return (clamp(x, -lim, lim) + lim) / (2 * lim) * 100; }, r = recOf(imp);
     var a = P(RULE.rejectBelow), b = P(RULE.approveAbove);
-    var zones = [["reject", 0, a, "Reject"], ["neutral", a, b, "Neutral"], ["approve", b, 100, "Approve"]];
+    var zones = [["reject", 0, a, "Leans reject"], ["neutral", a, b, "Neutral"], ["approve", b, 100, "Leans approve"]];
     var track = el("div", { class: "ft-gauge__track", attrs: { role: "img", "aria-label": "Impact " + F.signed(imp) + ": " + REC[r].label + " (" + REC[r].why + ")" } },
       zones.map(function (z) { return el("span", { class: "ft-gauge__zone" + (r === z[0] ? " is-on" : ""), data: { zone: z[0] }, style: { left: z[1] + "%", width: (z[2] - z[1]) + "%" } }); }));
-    if (ruleImp != null) track.appendChild(el("i", { class: "ft-gauge__mark ft-gauge__mark--rule", style: { left: P(ruleImp) + "%" }, attrs: { title: "Rule window " + F.signed(ruleImp) } }));
+    if (ruleImp != null) track.appendChild(el("i", { class: "ft-gauge__mark ft-gauge__mark--rule", style: { left: P(ruleImp) + "%" }, attrs: { title: "5-day signal window " + F.signed(ruleImp) } }));
     track.appendChild(el("i", { class: "ft-gauge__mark", style: { left: P(imp) + "%" } }));
     box.appendChild(track);
     var row = el("div", { class: "ft-gauge__ticks", attrs: { "aria-hidden": "true" } });
-    zones.forEach(function (z) { row.appendChild(el("span", { class: "ft-gauge__zl" + (r === z[0] ? " is-on is-" + z[0] : ""), style: { left: (z[1] + z[2]) / 2 + "%" }, text: z[3] })); });
+    zones.forEach(function (z, i) { row.appendChild(el("span", { class: "ft-gauge__zl" + (i === 0 ? " ft-gauge__zl--first" : i === 2 ? " ft-gauge__zl--last" : "") + (r === z[0] ? " is-on is-" + z[0] : ""), style: { left: (z[1] + z[2]) / 2 + "%" }, text: z[3] })); });
     if (!mini) [-lim, RULE.rejectBelow, RULE.approveAbove, lim].forEach(function (x, i) {
       row.appendChild(el("span", { class: "ft-gauge__tk" + (i === 0 ? " is-first" : i === 3 ? " is-last" : ""), style: { left: P(x) + "%" }, text: F.signed(x, Math.abs(x) >= .1 ? 0 : (Math.round(x * 1000) % 10 ? 1 : 0)) }));
     });
     box.appendChild(row);
-    if (!mini && ruleImp != null) box.appendChild(el("div", { class: "s-legend ft-gauge__legend" }, el("span", {}, el("i", { class: "ft-lg-mark" }), "Your window"), el("span", {}, el("i", { class: "ft-lg-mark ft-lg-mark--rule" }), "Rule window")));
+    if (!mini && ruleImp != null) box.appendChild(el("div", { class: "s-legend ft-gauge__legend" }, el("span", {}, el("i", { class: "ft-lg-mark" }), "Your window"), el("span", {}, el("i", { class: "ft-lg-mark ft-lg-mark--rule" }), "5-day signal window")));
   }
 
   /* ======================= tabs ======================= */
@@ -478,7 +480,7 @@
       el("p", { class: "t-body ft-ov__about", text: ABOUT[m.id] || m.title }),
       S.ui.kv([
         ["Success measure", m.metric],
-        ["Signal rule", "Approve above +1%, reject below −1%, otherwise neutral"],
+        ["Signal band", "Leans approve above +1%, leans reject below −1%, otherwise neutral; the vote decides"],
         ["Decided by", m.org.name + " on Snapshot"],
         ["Result reported by", "Reality.eth, with Kleros arbitration"],
         ["Chain", S.ui.chainBadge(m.chain)]
@@ -740,7 +742,7 @@
   function renderRecord() {
     var roles = $("#ft-roles"); S.clear(roles);
     [["swap", "Traders", "Price the token under each outcome, and profit only if they are right about the branch that happens."],
-      ["scale", "The rule", "Turns the two prices into a signal: 5-day TWAP, ±1%. Published before the vote opens."],
+      ["scale", "The signal band", "Turns the two prices into advice: 5-day TWAP, ±1%. Published before the vote opens."],
       ["vote", "The DAO", "Decides on Snapshot. The signal is advisory; nothing executes automatically."],
       ["verified", "Reality.eth and Kleros", "Report the vote's result on-chain, with Kleros arbitrating disputes. Then the winning branch redeems."]
     ].forEach(function (r, i) {
@@ -774,7 +776,7 @@
         el("div", {}, el("span", { class: "ft-cell__label" }, el("i", { class: "ft-key" }), "YES_" + tok + " / YES_sDAI"), el("b", { class: "t-num", text: F.price(m.yesSpot, 4) })),
         el("div", {}, el("span", { class: "ft-cell__label" }, el("i", { class: "ft-key ft-key--no" }), "NO_" + tok + " / NO_sDAI"), el("b", { class: "t-num", text: F.price(m.noSpot, 4) })))));
     var gb = el("div", { class: "ft-gauge" }); gauge(gb, m.impact, null, true);
-    box.appendChild(step("03", "Read the gap", "The 5-day TWAP of YES against NO becomes the signal: approve above +1%, reject below −1%, otherwise neutral.",
+    box.appendChild(step("03", "Read the gap", "The 5-day TWAP of YES against NO becomes the signal: leans approve above +1%, leans reject below −1%, otherwise neutral. The vote still decides.",
       el("div", { class: "ft-diag__gap" }, el("div", { class: "s-row s-row--between" }, el("b", { class: "t-num " + signCls(m.impact), text: F.signed(m.impact) }), recTag(m.rec, true, prov(m))), gb)));
     box.appendChild(step("04", "Vote, then redeem", "The DAO votes. Reality.eth reports the result and Kleros arbitrates disputes. The winning branch redeems 1:1; the other voids.",
       el("div", { class: "ft-diag__redeem" },

@@ -356,7 +356,7 @@
             el("div", { class: "hm-pp" }, el("small", {}, el("i", { style: { background: "var(--c-no)" } }), "5-day TWAP so far · if rejected"), el("b", {}, f.price(F.noTwap, 4), el("small", { text: "NO_sDAI" })))));
           body.appendChild(el("div", { class: "hm-signal" }, el("span", { class: "hm-signal__v", text: f.signed(impact, 2) }),
             el("span", { class: "s-grow" }, el("b", { text: "Leaning approve, so far. " }), "Trailing 5 days, before the official window (" + f.dayMon(F.twapWindow.start) + "–" + f.dayMon(F.twapWindow.end) + ") opens. Information for the DAO, not the decision. The Snapshot vote runs " + f.dayMon(F.vote.opens) + "–" + f.dayMon(F.vote.closes) + ".")));
-          stage.appendChild(foot("Rule: compare the 5-day TWAPs (" + f.dayMon(F.twapWindow.start) + "–" + f.dayMon(F.twapWindow.end) + "). Above +1% approve, below −1% reject, otherwise neutral.", "../futarchy/#" + F.id, "Open " + F.id + " in Futarchy"));
+          stage.appendChild(foot("Signal band: compare the 5-day TWAPs (" + f.dayMon(F.twapWindow.start) + "–" + f.dayMon(F.twapWindow.end) + "). Above +1% leans approve, below −1% leans reject, otherwise neutral; the vote decides.", "../futarchy/#" + F.id, "Open " + F.id + " in Futarchy"));
         } },
       { app: "app", q: "What exactly is on-chain?", fig: "5 markets",
         render: function (stage) {
