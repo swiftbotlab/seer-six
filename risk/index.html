@@ -3,48 +3,265 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Risk Pricing · Default estimates (concept)</title>
-<meta name="description" content="Market estimates of default risk across assets, to compare side by side. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<title>Risk Pricing · Default estimates, side by side (concept)</title>
+<meta name="description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read side by side as ranges instead of one yes or no. Concept by Swift Bot Labs; sample data with fictional assets, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /risk/ — prefix .rk- (see SYSTEM.md) */
-.rk-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="risk">
-<script>window.SEER_PAGE = {"nav": [["Board", "#board"], ["Over time", "#time"], ["Participate", "#participate"], ["Method", "#method"]], "search": "Search assets", "cta": ["Download CSV", "", "download"]};</script>
+<script>window.SEER_PAGE = { nav: [["Board", "#board"], ["Compare", "#compare"], ["No to All", "#exposure"], ["Participate", "#participate"], ["Method", "#method"]], search: "Search assets", cta: ["Set estimates", "#participate", "sliders"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
-        <div class="s-hero__kicker s-specs"><span>06</span><span>risk.seer.pm</span><span>Ethereum</span></div>
-        <h1 class="s-hero__title">Risk, <span class="t-accent">as a range of prices.</span></h1>
-        <p class="s-hero__lede t-lede">Markets estimate the probability that each asset defaults this quarter, so you compare estimates across the board instead of reading a single yes or no.</p>
+
+  <!-- 1. Hero: the whole board on one axis, first screen -->
+  <section class="s-hero rk-hero">
+    <div class="s-container s-hero__grid rk-hero__grid">
+      <div class="rk-hero__copy">
+        <div class="s-hero__kicker s-specs"><span>06</span><span>risk.seer.pm</span><span>Ethereum</span><span>sDAI</span></div>
+        <h1 class="s-hero__title rk-hero__title">Default risk, <span class="t-accent">priced side by side.</span></h1>
+        <p class="s-hero__lede t-lede">Risk Pricing runs one market a quarter on 33 DeFi assets. Each price is the market's estimate that an asset defaults, read per year, with the spread of traders' views around it. Compare estimates across the board instead of reading one yes or no.</p>
+        <div class="s-hero__actions">
+          <a class="s-btn s-btn--lg rk-hero__btn" href="#participate">Set your estimates</a>
+          <a class="s-btn s-btn--lg s-btn--ghost rk-hero__btn" href="#method">How to read it</a>
+        </div>
+        <dl class="rk-facts" id="rk-facts"></dl>
       </div>
-      <div class="s-hero__art"><div class="rk-art" id="rk-art"></div></div>
+      <div class="s-hero__art rk-hero__art">
+        <figure class="s-poster rk-poster" id="rk-poster">
+          <div class="rk-poster__top">
+            <div class="s-specs"><span>Mkt <b>#2850</b></span><span>Q4 2026</span><span><b>33</b> assets</span></div>
+            <div class="rk-pseg" role="group" aria-label="Horizon" data-hgroup></div>
+          </div>
+          <div class="rk-plot" id="rk-plot" tabindex="0" role="img" aria-label="All 33 assets on one log scale of default probability, in four groups, over the four risk bands. Use the left and right arrow keys to read each asset; press Enter to open it."></div>
+          <div class="rk-plotlegend" id="rk-plotlegend" aria-hidden="true"></div>
+          <figcaption class="rk-poster__cap" id="rk-cap" aria-live="polite"></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
-  <section class="s-section--tight">
+
+  <!-- 2. The board -->
+  <section class="s-section--tight rk-boardsec" id="board">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="rk-preview"></div>
+      <div class="rk-roundbar">
+        <div class="rk-roundtabs" role="tablist" aria-label="Quarters">
+          <button class="rk-roundtab" type="button" role="tab" aria-selected="true"><span class="s-live"><span class="s-dot"></span></span><span>Q4 2026</span><span class="s-tag s-tag--violet s-tag--mono">Trading</span></button>
+          <button class="rk-roundtab" type="button" role="tab" aria-selected="false" data-demo="Q3 2026 closed on 30 Sep. Its board is not part of this sample."><span>Q3 2026</span><span class="s-tag s-tag--mono">Closed</span></button>
+        </div>
+        <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2850">Market #2850 on Seer <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="rk-qhead">
+        <div class="s-col" style="--gap:10px">
+          <div id="rk-qspecs"></div>
+          <h2 class="t-h2 rk-question">What is the yearly probability of default for each of these assets during Q4 2026?</h2>
+        </div>
+        <span class="s-sample">Sample data · fictional assets</span>
+      </div>
+      <div class="s-stats rk-stats" id="rk-stats" style="--cols:6"></div>
+
+      <div class="rk-toolbar" id="rk-toolbar">
+        <div class="rk-toolbar__row">
+          <div class="rk-groups" id="rk-groups"></div>
+          <div class="rk-bandf" id="rk-bandf" role="group" aria-label="Filter by band"></div>
+        </div>
+        <div class="rk-toolbar__row">
+          <div class="rk-toolbar__start">
+            <label class="s-search s-search--sm rk-search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><input type="search" id="rk-q" placeholder="Filter assets" aria-label="Filter assets" autocomplete="off"></label>
+            <label class="rk-sortlab"><span class="s-sr">Sort</span>
+              <select class="s-select rk-sort" id="rk-sort" aria-label="Sort assets">
+                <option value="group">By group</option>
+                <option value="high">Highest estimate first</option>
+                <option value="low">Lowest estimate first</option>
+                <option value="move">Biggest 12-week rise</option>
+                <option value="range">Widest traders' range</option>
+                <option value="name">Name, A to Z</option>
+              </select>
+            </label>
+          </div>
+          <div class="rk-toolbar__end">
+            <div class="s-seg" role="group" aria-label="Horizon" data-hgroup></div>
+            <div id="rk-view"></div>
+            <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="rk-csv"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg><span>Download CSV</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rk-boardbody" id="rk-boardbody" aria-live="polite"></div>
+      <p class="rk-key t-meta" id="rk-key"></p>
+    </div>
+  </section>
+
+  <!-- 3. Compare -->
+  <section class="s-section rk-cmpsec" id="compare">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Compare · up to four assets</span><h2 class="t-h2">Ranges, <span class="t-accent">not verdicts.</span></h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="rk-cmpbar">
+        <div class="rk-cmpchips" id="rk-cmp-chips"></div>
+        <label class="rk-cmpadd"><span class="s-sr">Add an asset to compare</span><select class="s-select" id="rk-cmp-add"></select></label>
+      </div>
+      <div class="rk-presets" id="rk-presets"></div>
+      <div class="rk-cmpgrid">
+        <div class="s-card s-card--pad rk-cmpcard">
+          <div class="rk-cardhead"><div><b class="t-title">Where traders' estimates sit</b><p class="t-meta">Each curve is the spread of positions on one asset, weighted by size. The peak is the market price.</p></div></div>
+          <div id="rk-cmp-dist" class="rk-dist"></div>
+        </div>
+        <div class="s-card s-card--pad rk-cmpcard">
+          <div class="rk-cardhead"><div><b class="t-title">Over 12 weeks</b><p class="t-meta">Weekly closing estimate, on the same log scale. Dashed lines are band edges.</p></div></div>
+          <div id="rk-cmp-line"></div>
+        </div>
+      </div>
+      <div id="rk-cmp-table" class="rk-cmptable"></div>
+    </div>
+  </section>
+
+  <!-- 4. No to All / basket -->
+  <section class="s-section rk-ntasec" id="exposure">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">No to All · the whole board in one number</span><h2 class="t-h2">The chance that <span class="t-accent">nothing defaults.</span></h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="rk-ntagrid">
+        <figure class="s-poster rk-nta" id="rk-nta">
+          <div class="rk-nta__top s-specs" id="rk-nta-specs"></div>
+          <div class="rk-nta__num" id="rk-nta-num"></div>
+          <div class="rk-nta__field" id="rk-nta-field" role="img"></div>
+          <figcaption class="rk-nta__cap" id="rk-nta-cap"></figcaption>
+        </figure>
+        <div class="s-panel rk-basket" id="rk-basket">
+          <div class="s-panel__head"><b class="t-title">Your basket</b><span class="t-meta" id="rk-bk-count"></span></div>
+          <div class="rk-bk-presets" id="rk-bk-presets"></div>
+          <fieldset class="rk-bk-groups" id="rk-bk-groups"><legend class="s-spec">Groups</legend></fieldset>
+          <div class="s-panel s-panel--nested rk-bk-amount">
+            <div class="s-amount"><label for="rk-bk-amt">Held across the basket</label><input id="rk-bk-amt" type="text" inputmode="decimal" value="$10,000.00" aria-describedby="rk-bk-amt-note"></div>
+            <div class="s-amountchips" id="rk-bk-chips"></div>
+            <p class="t-meta" id="rk-bk-amt-note">Split equally across the assets in the basket.</p>
+          </div>
+          <div class="s-stats rk-bk-stats" id="rk-bk-stats" style="--cols:2"></div>
+          <div>
+            <div class="rk-minihead"><span class="s-spec">Where the basket's risk sits</span></div>
+            <div id="rk-bk-stack"></div>
+          </div>
+          <p class="t-meta rk-assume">Treats defaults as independent, as the No to All figure does. Defaults that cluster make "none" a little more likely, and several at once more likely too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Participate -->
+  <section class="s-section rk-partsec" id="participate">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Participate · Q4 2026</span><h2 class="t-h2">Set your <span class="t-accent">own estimates.</span></h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="s-split s-split--wide rk-part">
+        <div class="rk-est">
+          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.2v4M8 4.9v.1" stroke-linecap="round"/></svg><span><b>One deposit covers every asset.</b> 1 sDAI mints one token for each asset plus No to All. Estimate as many assets as you like; the batch sells the tokens you think are priced too high and buys the ones you think are too low, with the same capital.</span></div>
+          <div class="rk-esttools">
+            <label class="s-btn s-btn--sm s-btn--ghost rk-upload"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5v-8M4.5 6 8 2.5 11.5 6M3 13.5h10"/></svg><span>Upload CSV predictions</span><input type="file" id="rk-file" accept=".csv,text/csv,text/plain" class="s-sr"></label>
+            <button class="s-btn s-btn--sm s-btn--quiet" type="button" id="rk-template">Template</button>
+            <span class="rk-esttools__end">
+              <button class="s-btn s-btn--sm s-btn--quiet" type="button" id="rk-expand">Expand all</button>
+              <button class="s-btn s-btn--sm s-btn--quiet" type="button" id="rk-reset">Reset to market</button>
+            </span>
+          </div>
+          <div class="rk-dropnote t-meta" id="rk-dropnote">CSV with two columns: <code>symbol,pd</code>. Give a yearly PD as a fraction (0.025) or a percent with the sign (2.5%). Parsed in your browser; nothing is uploaded.</div>
+          <div class="rk-nta-row" id="rk-nta-row"></div>
+          <div class="rk-acc" id="rk-acc"></div>
+        </div>
+        <aside class="s-sticky">
+          <section class="s-panel rk-slip" id="rk-slip" aria-label="Prediction slip"></section>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Method -->
+  <section class="s-section rk-methsec" id="method">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Method</span><h2 class="t-h2">How to <span class="t-accent">read the board.</span></h2></div>
+      </div>
+      <div class="rk-meth">
+        <article class="s-card s-card--pad rk-mcard">
+          <span class="rk-mcard__n">01</span>
+          <h3 class="t-h3">What counts as a default</h3>
+          <p class="t-body">Seer's Risk Pricing definition, which the market resolves against:</p>
+          <ul class="rk-deflist">
+            <li><b>Redemption failure.</b> The asset can't be redeemed at its expected value for 2 weeks.</li>
+            <li><b>Reserve insolvency.</b> Reserves sit 1% or more below issuance value for 7 days or longer.</li>
+            <li><b>Other structural failures</b> relevant to how the token works: wrappers, liquid staking tokens, fiat-backed stablecoins.</li>
+          </ul>
+          <p class="t-meta">Only defaults that happen during the quarter count. Defaults caused by events before it don't.</p>
+        </article>
+        <article class="s-card s-card--pad rk-mcard">
+          <span class="rk-mcard__n">02</span>
+          <h3 class="t-h3">From token price to yearly PD</h3>
+          <p class="t-body">Each asset has a token in market #2850, and so does No to All. At resolution the sDAI is split between the assets that defaulted; if none did, No to All takes it. So a token's price is the market's chance of a default this quarter. The board shows it per year.</p>
+          <div class="rk-formula" id="rk-formula"></div>
+        </article>
+        <article class="s-card s-card--pad rk-mcard">
+          <span class="rk-mcard__n">03</span>
+          <h3 class="t-h3">Four bands, as reading aids</h3>
+          <p class="t-body">Bands group yearly estimates so a long board scans quickly. They are not ratings. The number and its range are the signal.</p>
+          <ul class="rk-bandlist" id="rk-bandlist"></ul>
+        </article>
+        <article class="s-card s-card--pad rk-mcard">
+          <span class="rk-mcard__n">04</span>
+          <h3 class="t-h3">How it resolves</h3>
+          <p class="t-body">When the quarter ends, the question opens on Reality.eth. Anyone can answer with a bond; a challenged answer goes to Kleros. Once the answer is final, tokens redeem for sDAI.</p>
+          <div id="rk-timeline" class="rk-tl"></div>
+        </article>
+      </div>
+      <div class="rk-rules" id="rk-rules"></div>
+    </div>
+  </section>
+
+  <!-- 7. Design notes -->
+  <section class="s-section--tight rk-notesec" id="notes">
+    <div class="s-container">
+      <div class="s-card s-card--pad rk-notes">
+        <div class="rk-notes__head"><span class="s-spec">Design notes · Risk Pricing</span><h2 class="t-h3">Kept from the Electric Foundation kit, and where this page departs</h2></div>
+        <div class="rk-notes__cols">
+          <div>
+            <h3 class="rk-notes__h">Kept</h3>
+            <ul class="rk-notes__list">
+              <li>Kit tokens in both themes: page, card and nested surfaces, violet primary, the secondary No/Down button.</li>
+              <li>Radii 9 / 22 / 8, Medium 13 UI type, Medium 12 meta, Bold 16/24 titles and the Bold 32 amount in the slip.</li>
+              <li>Kit components: pill search, category row with arrows, segmented controls, bet slip with +$ chips and Confirm + ✕.</li>
+              <li>Mono spec labels for market metadata, one serif-italic accent phrase per headline.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="rk-notes__h">Departures</h3>
+            <ol class="rk-notes__list rk-notes__list--n">
+              <li><b>Stripes carry data.</b> The EF 45° line field is the risk motif. In the hero its density rises with each band; in No to All each stripe is one asset, as wide as its share of the board's risk.</li>
+              <li><b>A log scale, not bars from zero.</b> Estimates run from 0.07% to 14%. On a linear axis most of the board sits in one pixel; on a log scale twice as risky is always the same step.</li>
+              <li><b>Ranges next to every price.</b> Each estimate carries the 10th–90th percentile of traders' positions, so a 10% asset with a wide range reads differently from a tight one.</li>
+              <li><b>Band colours, used once.</b> The kit has no status colours. Green to red marks the four bands only, always beside a label and a distinct shape. Prices stay violet.</li>
+              <li><b>Fictional assets.</b> No real protocol is paired with an invented default estimate. Seer's own default definition and pricing mechanics are kept as published.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </main>
+
+<div class="s-drawer" id="rk-drawer" aria-hidden="true">
+  <div class="s-drawer__scrim" data-close></div>
+  <aside class="s-drawer__panel rk-drawer" role="dialog" aria-modal="true" aria-labelledby="rk-dr-title" id="rk-drawer-panel"></aside>
+</div>
+
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("rk-art"), box = document.getElementById("rk-preview");
-  S.motif.stripes(art, { gap: 30, width: 2, opacity: .55 });
-  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("b", { class: "t-title", text: "Highest yearly default estimates (fictional assets)" }));
-  S.chart.bars(card, D.riskAssets.slice().sort(function (a, b) { return b.pdAnnual - a.pdAnnual; }).slice(0, 6).map(function (a) { return { label: a.symbol + " · " + a.name, value: a.pdAnnual, color: "var(--band-" + a.band + ")", note: "Yearly PD" }; }), { format: function (v) { return S.fmt.pct(v, 1); }, max: .15 });
-  box.appendChild(card);
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
