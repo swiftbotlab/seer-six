@@ -4,48 +4,238 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Opportunity Markets · Triage by price (concept)</title>
-<meta name="description" content="Traders forecast which submissions are likely to be selected; reviewers keep the final say. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /opportunity/ — prefix .op- (see SYSTEM.md) */
-.op-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="opportunity">
-<script>window.SEER_PAGE = {"nav": [["Live", "#live"], ["Archive", "#archive"], ["How it works", "#how"], ["For sponsors", "#sponsors"]], "search": "Search entries", "cta": ["Start a market", "", "plus-square"]};</script>
+<script>window.SEER_PAGE = { nav: [["Round 4", "#field"], ["Review queue", "#queue"], ["Markets", "#markets"], ["How it works", "#how"]], search: "Search entries or teams", cta: ["Start a market", "#sponsors", "plus-square"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
+
+  <!-- 1. Hero: the core idea on the first screen -->
+  <section class="s-hero op-hero">
+    <div class="s-container s-hero__grid op-hero__grid">
+      <div class="op-hero__copy">
         <div class="s-hero__kicker s-specs"><span>05</span><span>opportunity.seer.pm</span><span>Gnosis</span><span>sDAI</span></div>
-        <h1 class="s-hero__title">Let prices <span class="t-accent">read the pile first.</span></h1>
-        <p class="s-hero__lede t-lede">Traders forecast which submissions a sponsor is likely to select. The price is a triage signal for reviewers; the final choice stays with them.</p>
+        <h1 class="s-hero__title op-hero__title">Prices sort the pile. <span class="t-accent">Reviewers still choose.</span></h1>
+        <p class="s-hero__lede t-lede">Every submission is an outcome. Traders buy the entries they expect the sponsor to select, and the prices become a reading order for the review panel. The sponsor makes the final choice, and traders are paid on it.</p>
+        <div class="s-hero__actions">
+          <a class="s-btn s-btn--lg op-hero__btn" href="#field">Trade Round 4</a>
+          <a class="s-btn s-btn--lg s-btn--ghost op-hero__btn" href="#queue">Open the review queue</a>
+        </div>
+        <dl class="op-facts" id="op-facts"></dl>
       </div>
-      <div class="s-hero__art"><div class="op-art" id="op-art"></div></div>
+      <div class="s-hero__art op-hero__art">
+        <figure class="s-poster op-poster" id="op-poster">
+          <div class="op-poster__top">
+            <div class="s-specs"><span>Mkt <b>#2842</b></span><span>Multi-categorical</span><span><b>40</b> entries</span></div>
+            <div class="s-specs op-hide-xs"><span>Status: <b>trading</b></span></div>
+          </div>
+          <div class="op-board" id="op-board" tabindex="0" role="group" aria-roledescription="chart" aria-label="All 40 entries ranked by chance of selection, one bar each. Violet bars are inside the eight funding slots. Use the up and down arrow keys to read each entry; press Enter to open it." aria-describedby="op-cap"></div>
+          <div class="op-axis" aria-hidden="true"><span>0</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+          <figcaption class="op-poster__cap" id="op-cap" aria-live="polite"></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
-  <section class="s-section--tight">
+
+  <!-- 2. The market: header, numbers and where the round is in its flow -->
+  <section class="s-section--tight op-round" id="round" aria-labelledby="op-mq">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="op-preview"></div>
+      <div class="op-mhead">
+        <div class="s-col op-mhead__main" style="--gap:12px">
+          <div id="op-mspecs"></div>
+          <h2 class="t-h2 op-mq" id="op-mq">Which proposals will the Lattice panel fund?</h2>
+          <div class="s-row op-mbadges" style="--gap:10px" id="op-mbadges"></div>
+        </div>
+        <div class="s-row op-mhead__end" style="--gap:8px">
+          <a class="s-btn s-btn--sm s-btn--ghost" href="../app/#m=2842" id="op-inapp">Inspect #2842 in App</a>
+          <span class="s-sample">Sample data</span>
+        </div>
+      </div>
+      <div class="s-stats op-mstats" id="op-mstats" style="--cols:6"></div>
+      <ol class="op-flow" id="op-flow" aria-label="Where Round 4 is"></ol>
     </div>
   </section>
+
+  <!-- 3. The field: every entry with its implied chance of selection -->
+  <section class="s-section--tight" id="field" aria-labelledby="op-field-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">The field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its <span class="t-accent">chance of selection</span></h2></div>
+        <div class="s-row" style="--gap:10px" id="op-view"></div>
+      </div>
+      <div class="op-tools">
+        <div class="op-tools__chips" id="op-cats"></div>
+        <div class="s-row op-tools__end" style="--gap:12px">
+          <label class="s-switch"><input type="checkbox" id="op-close"> Close calls only</label>
+          <label class="op-sort"><span class="s-sr">Sort entries</span>
+            <select class="s-select" id="op-sort">
+              <option value="chance">Sort: chance of selection</option>
+              <option value="move">Sort: biggest 24h move</option>
+              <option value="ask">Sort: largest ask</option>
+              <option value="id">Sort: entry number</option>
+            </select>
+          </label>
+          <label class="s-search s-search--sm op-q"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><span class="s-sr">Filter entries</span><input type="search" id="op-q" placeholder="Filter 40 entries" autocomplete="off"></label>
+        </div>
+      </div>
+      <div id="op-grid" class="op-grid"></div>
+      <div id="op-table" class="op-tablebox" hidden></div>
+      <p class="t-meta op-fieldnote" id="op-fieldnote" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 4. For the sponsor's reviewers: a reading order, not a verdict -->
+  <section class="s-section--tight" id="queue" aria-labelledby="op-queue-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">For the sponsor's reviewers</span><h2 class="t-h2" id="op-queue-h">Read the close calls <span class="t-accent">first</span></h2></div>
+        <div class="s-row" style="--gap:8px">
+          <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-export">Export queue (CSV)</button>
+          <span class="s-sample">Sample data</span>
+        </div>
+      </div>
+      <div class="op-queue">
+        <div class="s-col op-queue__side" style="--gap:16px">
+          <div class="s-panel op-qctl">
+            <p class="t-body">Five Lattice reviewers score all 40 proposals. The queue sets the order and depth of reading: entries near the selection line get a full review, clear favourites and long shots a shorter one. Every proposal is still read and scored.</p>
+            <div class="op-qrange">
+              <div class="s-row s-row--between"><label class="t-ui" for="op-hi">Fast-track at or above</label><b class="op-qval" id="op-hi-v">70%</b></div>
+              <input class="s-range" type="range" id="op-hi" min="50" max="95" step="5" value="70" aria-describedby="op-hi-help">
+              <p class="t-meta" id="op-hi-help">Likely picks: one reviewer checks fit and budget, then all five score.</p>
+            </div>
+            <div class="op-qrange">
+              <div class="s-row s-row--between"><label class="t-ui" for="op-lo">Light pass below</label><b class="op-qval" id="op-lo-v">20%</b></div>
+              <input class="s-range" type="range" id="op-lo" min="5" max="45" step="5" value="20" aria-describedby="op-lo-help">
+              <p class="t-meta" id="op-lo-help">Long shots: a shorter read, with a flag to escalate anything the market missed.</p>
+            </div>
+            <div class="s-stats op-qstats" id="op-qstats" style="--cols:2"></div>
+            <p class="t-meta">Assumes 3 h for a full review, 1 h for a fast-track and 30 min for a light pass, per reviewer.</p>
+          </div>
+          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> Prices set the reading order, never the result. Lattice DAO funds the eight proposals the panel scores highest, whatever the market says.</span></div>
+        </div>
+        <div class="s-card s-card--pad op-queue__main">
+          <div class="s-row s-row--between" style="--gap:12px">
+            <div><h3 class="t-title">Reading order</h3><p class="t-meta" id="op-qsub">Ranked by price. The dashed line is the eighth funding slot.</p></div>
+            <div id="op-qorder"></div>
+          </div>
+          <div class="op-strip" id="op-strip" role="img"></div>
+          <div class="s-legend" id="op-qlegend"></div>
+          <div id="op-qtable"></div>
+          <div class="s-row s-row--between">
+            <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-qmore">Show all 40</button>
+            <a class="s-link t-ui" href="../deep/#P-07">Score forecasts for each proposal in Deep</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Markets: live, upcoming, settled -->
+  <section class="s-section--tight" id="markets" aria-labelledby="op-markets-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Opportunity markets</span><h2 class="t-h2" id="op-markets-h">Live, upcoming and <span class="t-accent">settled</span></h2></div>
+      </div>
+      <div class="op-markets" id="op-markets"></div>
+    </div>
+  </section>
+
+  <!-- 6. How it works + for sponsors -->
+  <section class="s-section--tight" id="how" aria-labelledby="op-how-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">How it works · Mkt #2842</span><h2 class="t-h2" id="op-how-h">One pool, <span class="t-accent">several winners</span></h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="op-how">
+        <article class="s-card s-card--pad op-how__card">
+          <span class="op-how__n">01</span>
+          <h3 class="t-title">Every entry is an outcome token</h3>
+          <p class="t-body">The 40 proposals and an Invalid outcome are the outcomes of one multi-categorical market. Each position is an ERC-1155 token wrapped as an ERC-20, so it trades in an ordinary pool. One full set always redeems for 1 sDAI, so the prices add up to 100%.</p>
+          <div id="op-pool"></div>
+        </article>
+        <article class="s-card s-card--pad op-how__card">
+          <span class="op-how__n">02</span>
+          <h3 class="t-title">Funded entries split the payout</h3>
+          <p class="t-body">Several outcomes can be true. If the panel funds eight proposals, each funded share redeems for 1/8 sDAI and every other share for nothing.</p>
+          <div class="op-calc" id="op-calc"></div>
+        </article>
+        <article class="s-card s-card--pad op-how__card">
+          <span class="op-how__n">03</span>
+          <h3 class="t-title">Reality.eth records the decision</h3>
+          <p class="t-body">When the panel publishes its scores, anyone can answer the market's Reality.eth question with the funded list, backed by a bond. A challenged answer goes to Kleros. If the round is cancelled, the market resolves Invalid.</p>
+          <div id="op-res"></div>
+        </article>
+      </div>
+      <div class="s-card s-card--pad op-life">
+        <div class="s-row s-row--between"><h3 class="t-title">Lifecycle of #2842</h3><span class="t-meta" id="op-life-note"></span></div>
+        <div id="op-timeline"></div>
+      </div>
+
+      <div class="s-poster op-sponsor" id="sponsors" aria-labelledby="op-sp-h">
+        <div class="op-sponsor__copy">
+          <div class="s-specs"><span>For sponsors</span><span class="s-hide-sm">Grants · contests · hiring · names</span></div>
+          <h2 class="op-sponsor__title" id="op-sp-h">Closed beta today. <span class="t-accent">Permissionless tomorrow.</span></h2>
+          <p class="op-sponsor__lede">Any team choosing among many submissions can run its selection as an opportunity market. Reviewing costs more than submitting, so let the market read the pile with you.</p>
+          <div class="s-row" style="--gap:10px">
+            <button class="s-btn s-btn--lg op-hero__btn" type="button" data-demo="Opportunity markets are in closed beta. Market creation is not wired in this concept.">Start a market</button>
+            <a class="s-btn s-btn--lg s-btn--secondary op-hero__btn" href="#how">How it resolves</a>
+          </div>
+        </div>
+        <ol class="op-sponsor__steps">
+          <li><b>Post the call</b><span>Each entry becomes an outcome as it arrives.</span></li>
+          <li><b>Seed liquidity</b><span>A small sDAI pool, so the first prices mean something.</span></li>
+          <li><b>Review with prices beside you</b><span>Read the close calls first. Decide as you always would.</span></li>
+          <li><b>Publish the decision</b><span>Reality.eth records it, and traders redeem on it.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Design notes -->
+  <section class="s-section--tight" id="notes" aria-labelledby="op-notes-h">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Design notes · 05 Opportunity</span><h2 class="t-h2" id="op-notes-h">What we kept, <span class="t-accent">what we changed</span></h2></div></div>
+      <div class="op-notes">
+        <div class="s-card s-card--pad">
+          <h3 class="t-title">Kept from the Electric Foundation kit</h3>
+          <ul class="op-notelist">
+            <li>Tokens, radii and type roles as specified: card 9, bet slip 22, controls 8; Medium 13 UI, Medium 12 meta, Bold 32 amounts.</li>
+            <li>The market card's anatomy: glyph tile, two-line title, outcome pricing, and the "$Vol • time • category" footer with a bookmark.</li>
+            <li>The bet slip as drawn: two price tiles, an amount with +$ chips, Confirm with a clear button.</li>
+            <li>The "data barcode" bars and the ink poster, with mono spec labels around them.</li>
+          </ul>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-title">Departures on this page, and why</h3>
+          <ol class="op-notelist op-notelist--num">
+            <li><b>The barcode carries data.</b> Each bar in the hero is one entry; its length is the chance of selection. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
+            <li><b>Two numbers per entry.</b> In a market with several winners, price and probability differ, so each card shows the chance of selection first and the share price second.</li>
+            <li><b>Buy and Sell replace Yes and No.</b> Each entry is one outcome token, as in Seer's live Opportunity ticket. The +1 / +5 / +10 / +100 chips and 0.5% slippage come from that ticket too.</li>
+            <li><b>Payout math for split winners.</b> The ticket prices a funded share at 1/8 sDAI, not 1 sDAI, and warns when a thin pool would push an order past its slippage.</li>
+            <li><b>A reviewer view.</b> The kit has no sponsor screens. The review queue uses only violet tints and labels; there are no green or red verdict colours, because the market does not decide.</li>
+            <li><b>Kit fixes.</b> Decimal points, not commas; muted text lifted to pass AA contrast.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
+
+<!-- Entry drawer (one entry, its chart, ticket and on-chain record) -->
+<div class="s-drawer op-drawer" id="op-drawer" aria-hidden="true">
+  <div class="s-drawer__scrim" data-close></div>
+  <div class="s-drawer__panel op-dpanel" id="op-dpanel" role="dialog" aria-modal="true" aria-labelledby="op-d-title"></div>
+</div>
+
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("op-art"), box = document.getElementById("op-preview");
-  var props = D.proposals.slice().sort(function (a, b) { return b.opp.price - a.opp.price; });
-  S.motif.barcode(art, { values: props.slice(0, 18).map(function (p) { return p.opp.pSelect; }), highlight: [0, 1, 2, 3, 4, 5, 6, 7], bar: 12, gap: 7 });
-  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("b", { class: "t-title", text: D.round4.name + ": share of the market by proposal" }));
-  S.chart.stack(card, props.map(function (p) { return { label: p.id, value: p.opp.price }; }), { fold: 5, lg: true });
-  box.appendChild(card);
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
