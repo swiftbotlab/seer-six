@@ -950,7 +950,7 @@
     reset.addEventListener("click", function () { amount = 0; input.value = ""; calc(); input.focus(); });
     conf.addEventListener("click", function () { S.toast(amount ? "Sample only: no transaction sent (" + conf.textContent.toLowerCase() + ", " + F.tok(amount, coll) + ")." : "Enter an amount first.", amount ? "info" : "alert"); });
     function line(k, v) { return el("div", {}, el("span", { text: k }), el("b", { text: v })); }
-    function ret(pay) { return F.tok(pay, coll) + " (" + F.signed(pay / amount - 1, 0) + ")"; }
+    function ret(pay) { var x = pay / amount - 1; return F.tok(pay, coll) + " (" + (Math.abs(x) < .005 ? "±0%" : F.signed(x, 0)) + ")"; }
     function calc() {
       var t = tiles[side], raw = amount / Math.max(m.liquidity, 1) * .25, imp = Math.min(raw, SLIP), sell = sellMode();
       var avg = sell ? t.price * (1 - imp) : Math.min(.999, t.price * (1 + imp)), sh = amount ? amount / avg : 0, a = !!amount;

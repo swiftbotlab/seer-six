@@ -413,7 +413,8 @@
     S.ui.ticket(box, { market: pm, outcomes: [0, 1], selected: state.side, chips: [1, 5, 20, 100], slippage: .01, title: p.id + " panel score: " + p.title,
       payout: function (o, sh, amt, k) { // a scalar share redeems score ÷ 10, so show the payout at the forecast, per point, and at the top
         var up = k === 0, at = sh * (up ? fv / 10 : 1 - fv / 10);
-        return [["At the forecast (" + F.num(fv, 2) + ")", F.tok(at, "sUSDS") + " (" + F.signed(at / amt - 1, 0) + ")"], ["Each panel point " + (up ? "up" : "down"), "+" + F.tok(sh / 10, "sUSDS")], ["Max (at " + (up ? "10" : "0") + ")", F.tok(sh, "sUSDS")]];
+        var x = at / amt - 1;
+        return [["At the forecast (" + F.num(fv, 2) + ")", F.tok(at, "sUSDS") + " (" + (Math.abs(x) < .005 ? "±0%" : F.signed(x, 0)) + ")"], ["Each panel point " + (up ? "up" : "down"), "+" + F.tok(sh / 10, "sUSDS")], ["Max (at " + (up ? "10" : "0") + ")", F.tok(sh, "sUSDS")]];
       },
       note: "Pay with sUSDS on OP Mainnet. UP redeems the score ÷ 10, DOWN the rest. Sample prices; nothing is traded." });
     var go = el("a", { class: "s-link t-meta dp-tlink", href: "#resolve" }, "Payout at any score");
