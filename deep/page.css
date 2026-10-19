@@ -272,3 +272,6 @@ ol.dp-notelist { list-style: decimal; }
 
 /* ---- finisher additions ---- */
 .dp-tlink { display: inline-flex; margin-top: 10px; }
+
+/* phones: ridge-chart axis labels at 11px */
+@media (max-width: 480px) { #dp-ridge text, .dp-ridge text, .dp-mini text { font-size: 11px; } }
