@@ -230,7 +230,8 @@
     if (opt.onOpen) title.addEventListener("click", function (e) { e.preventDefault(); opt.onOpen(m); });
     card.appendChild(el("div", { class: "s-card__head" }, ui.avatar(m.appId === "app" ? "grid" : m.appId, m.appId === "app" ? null : "ink"), title));
     var outs = m.outcomes.filter(function (o) { return !o.invalid; });
-    var disp = m.display || (m.type === "scalar" && !m.set ? "scalar" : outs.length === 2 && /^yes$/i.test(outs[0].name) ? "rows2" : "rows");
+    // every two-outcome Yes/No market gets the kit's binary card (full-width Yes¢ / No¢), whatever its display flag
+    var disp = m.display || (m.type === "scalar" && !m.set ? "scalar" : outs.length === 2 && /^yes$/i.test(outs[0].name) && /^no$/i.test(outs[1].name) ? "binary" : "rows");
     if (disp === "binary") {
       card.appendChild(el("div", { class: "s-mcard__binary" },
         el("button", { class: "s-btn", attrs: { type: "button", "data-demo": "" } }, outs[0].name + " " + fmt.cents(outs[0].price)),
