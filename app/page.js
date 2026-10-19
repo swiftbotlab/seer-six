@@ -202,7 +202,7 @@
   function drawField() {
     var box = $("#ap-field"); if (!box) return; var W = Math.round(box.clientWidth); if (!W) return;
     var n = FIELD.length, R = D.lifecycle.length, narrow = W < 540, labW = narrow ? 0 : 108, top = 4;
-    var cell = Math.max(14, Math.min(42, (W - labW) / n)), gw = cell * n, ch = Math.min(cell, 27), H = Math.round(ch * R + top * 2);
+    var cell = Math.max(14, Math.min(42, (W - labW) / n)), gw = cell * n, ch = Math.min(cell, 27), ids = cell >= 40, H = Math.round(ch * R + top * 2 + (ids ? 18 : 0));
     var x0 = labW + Math.max(0, (W - labW - gw) / 2);
     var svg = S.svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": "Lifecycle field: " + n + " markets, each shown by how far it has moved from creation to redemption" });
     var band = S.svgEl("rect", { x: 0, y: 0, width: cell, height: H, rx: 4, fill: "rgba(143,85,247,.18)", visibility: "hidden" }); svg.appendChild(band);
@@ -215,6 +215,7 @@
         else if (r === idx) { svg.appendChild(S.svgEl("circle", { cx: cx, cy: cy, r: (Math.min(cell, ch) * .32).toFixed(1), fill: "none", stroke: "rgba(143,85,247,.55)", "stroke-width": 1 })); svg.appendChild(S.svgEl("circle", { cx: cx, cy: cy, r: Math.max(2.6, Math.min(cell, ch) * .14).toFixed(1), fill: "#B79BF7" })); }
         else svg.appendChild(S.svgEl("circle", { cx: cx, cy: cy, r: 1.4, fill: "#BFBFE6", opacity: .42 }));
       }
+      if (ids) { var idt = S.svgEl("text", { x: cx, y: H - 4, "text-anchor": "middle", class: "ap-col__id" }); idt.textContent = m.id; svg.appendChild(idt); }
       var hit = S.svgEl("rect", { x: cx - cell / 2, y: 0, width: cell, height: H, fill: "transparent", class: "ap-col", tabindex: "0", role: "link", "aria-label": "#" + m.id + " " + m.question + ". " + D.state(m.state).label + "." });
       var show = function (e) {
         band.setAttribute("x", cx - cell / 2); band.setAttribute("visibility", "visible");
@@ -1231,7 +1232,11 @@
   initHero(); initExplorer(); initActivity(); initLeaderboard(); initCreate();
   (function oneSearch() { // two search fields on one screen read as a mistake: hide the header pill while the hero search is visible
     var hs = $("[data-shell-search]"), hero = $("#ap-search-wrap");
-    if (!hs || !hero || !("IntersectionObserver" in window)) return;
+    if (!hs || !hero) return;
+    var hb = hero.getBoundingClientRect(); // first paint: tuck at once, with no fade, so the pill never shows as a ghost mid-transition
+    if (mode === "home" && hb.bottom > 80 && hb.top < window.innerHeight) hs.classList.add("is-tucked");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { hs.classList.add("ap-anim"); }); });
+    if (!("IntersectionObserver" in window)) return;
     new IntersectionObserver(function (en) { hs.classList.toggle("is-tucked", en[0].isIntersecting && mode === "home"); }, { rootMargin: "-80px 0px 0px 0px" }).observe(hero);
     window.addEventListener("hashchange", function () { if (mode !== "home") hs.classList.remove("is-tucked"); });
   })();

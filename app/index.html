@@ -35,12 +35,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 
   <!-- ============ HOME: explorer front page ============ -->
   <div id="ap-home">
-    <section class="s-hero ap-hero" aria-labelledby="ap-title">
-      <div class="s-container ap-hero__grid">
-        <div class="ap-hero__copy">
-          <div class="s-hero__kicker s-specs"><span>02</span><span>app.seer.pm</span><span>Explorer</span></div>
-          <h1 id="ap-title" class="s-hero__title ap-hero__title">Every market, <span class="t-accent">on the record.</span></h1>
-          <p class="s-hero__lede t-lede">Search any question, outcome, market number or 0x address. Every market type on every chain, traceable from its Reality.eth question to the last redemption.</p>
+    <!-- compact explorer bar: kicker + one-line title on the left, the explorer's own search on the right; the markets grid comes next -->
+    <section class="ap-bar" aria-labelledby="ap-title">
+      <div class="s-container ap-bar__in">
+        <div class="ap-bar__copy">
+          <div class="s-specs ap-bar__kicker"><span>02</span><span>app.seer.pm</span><span>Explorer</span><span class="ap-hide-sm">Every market type · every chain</span></div>
+          <h1 id="ap-title" class="ap-bar__title">Every market, <span class="t-accent">on the record.</span></h1>
+        </div>
+        <div class="ap-bar__search">
           <div class="ap-search-wrap" id="ap-search-wrap">
             <label class="s-search ap-search">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
@@ -52,30 +54,13 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
           </div>
           <div class="ap-try" id="ap-try"><span class="t-meta">Try</span></div>
         </div>
-        <figure class="s-poster ap-poster" aria-labelledby="ap-field-cap">
-          <div class="ap-poster__head">
-            <div class="s-specs"><span>Lifecycle field</span><span id="ap-field-n">18 markets</span><span>7 steps</span></div>
-            <div class="s-specs ap-hide-sm"><span>Snapshot <b>19 Oct 2026 · 12:00 UTC</b></span></div>
-          </div>
-          <div class="ap-field" id="ap-field"></div>
-          <figcaption class="ap-poster__foot" id="ap-field-cap">
-            <span class="ap-legend">
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="1.6" fill="#BFBFE6" opacity=".6"/></svg>Step still open</span>
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="#8F55F7" stroke-width="1.4" stroke-linecap="round"/></svg>Step settled</span>
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.6" fill="none" stroke="rgba(143,85,247,.6)"/><circle cx="7" cy="7" r="2.6" fill="#B79BF7"/></svg>Where it is now</span>
-            </span>
-            <span class="ap-poster__note">Each column is a market, each row a step from creation to redemption: dots are still uncertain, crosses are settled. Select a column to open its record.</span>
-            <span class="s-specs ap-poster__counts" id="ap-field-counts"></span>
-          </figcaption>
-        </figure>
       </div>
     </section>
 
     <section class="ap-section" id="markets" aria-labelledby="ap-markets-h">
       <div class="s-container">
-        <div class="s-section-head ap-head">
-          <div><span class="s-spec">All market types · all chains</span><h2 id="ap-markets-h" class="t-h2">Markets</h2></div>
-          <span class="s-sample">Sample data</span>
+        <div class="s-section-head ap-head ap-head--compact">
+          <div><h2 id="ap-markets-h" class="t-h3">Markets</h2></div>
         </div>
         <div id="ap-cats"></div>
         <div class="ap-toolbar" id="ap-toolbar">
@@ -93,9 +78,24 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     <section class="ap-section" id="activity" aria-labelledby="ap-activity-h">
       <div class="s-container">
         <div class="s-section-head ap-head">
-          <div><span class="s-spec">Protocol index</span><h2 id="ap-activity-h" class="t-h2">Activity</h2></div>
-          <span class="s-sample">Sample data</span>
+          <div><span class="s-spec">Protocol index · where every market is in its life</span><h2 id="ap-activity-h" class="t-h2">Activity</h2></div>
         </div>
+        <figure class="s-poster ap-poster ap-poster--wide" aria-labelledby="ap-field-cap">
+          <div class="ap-poster__head">
+            <div class="s-specs"><span>Lifecycle field</span><span id="ap-field-n">18 markets</span><span>7 steps</span></div>
+            <div class="s-specs ap-hide-sm"><span>Snapshot <b>19 Oct 2026 · 12:00 UTC</b></span></div>
+          </div>
+          <div class="ap-field" id="ap-field"></div>
+          <figcaption class="ap-poster__foot" id="ap-field-cap">
+            <span class="ap-legend">
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="1.6" fill="#BFBFE6" opacity=".6"/></svg>Step still open</span>
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="#8F55F7" stroke-width="1.4" stroke-linecap="round"/></svg>Step settled</span>
+              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.6" fill="none" stroke="rgba(143,85,247,.6)"/><circle cx="7" cy="7" r="2.6" fill="#B79BF7"/></svg>Where it is now</span>
+            </span>
+            <span class="ap-poster__note">Each column is a market, each row a step from creation to redemption: dots are still uncertain, crosses are settled. Select a column to open its record.</span>
+            <span class="s-specs ap-poster__counts" id="ap-field-counts"></span>
+          </figcaption>
+        </figure>
         <div class="s-stats ap-index" id="ap-index" style="--cols:6"></div>
         <div class="ap-mix" id="ap-mix"></div>
         <div class="ap-act">
@@ -115,7 +115,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       <div class="s-container">
         <div class="s-section-head ap-head">
           <div><span class="s-spec">Trader Score 0–100 · resolved markets only</span><h2 id="ap-lb-h" class="t-h2">Leaderboard</h2></div>
-          <span class="s-sample">Sample data</span>
         </div>
         <div class="s-card ap-lb" id="ap-lb"></div>
       </div>
