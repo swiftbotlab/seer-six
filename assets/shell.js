@@ -120,8 +120,8 @@
   };
   (function initTheme() {
     var q = /[?&]theme=(light|dark)/.exec(location.search);
-    var os = null; try { os = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : null; } catch (e) { /* no media queries: dark */ }
-    var t = (q && q[1]) || getStoredTheme() || os || "dark"; // ?theme= wins, then the viewer's saved choice, then the OS
+    var t = (q && q[1]) || getStoredTheme(); // ?theme= wins, then the viewer's saved choice; otherwise dark (the EF kit and live Seer are dark-first, whatever the OS says)
+    if (t !== "light") t = "dark";
     doc.documentElement.setAttribute("data-theme", t);
   })();
 
