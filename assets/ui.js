@@ -285,6 +285,7 @@
       c._th = th; tr.appendChild(th);
     });
     thead.appendChild(tr); table.appendChild(thead); table.appendChild(tbody); wrap.appendChild(table); container.appendChild(wrap);
+    if (S.clipWatch) S.clipWatch(wrap); // right-edge fade while the table is wider than its box
     function val(row, c) { return typeof c.sort === "function" ? c.sort(row) : row[c.key]; }
     function render() {
       columns.forEach(function (c) { if (c.sort) { if (c.key === state.key) c._th.setAttribute("aria-sort", state.dir === "asc" ? "ascending" : "descending"); else c._th.removeAttribute("aria-sort"); } });

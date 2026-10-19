@@ -50,6 +50,13 @@
     if (isSet(m) || multiCat(m)) return shortName(l) + " " + wtext(m, l);
     return (isYesNo(m) ? l.name : clip(l.name, 26)) + " " + words(m, l).value;
   }
+  function move24(m) {
+    if (sc(m)) { var r = m.range, v1 = scalarValue(m), v0 = r.min + (r.max - r.min) * priceAgo(m, 1, DAY), dv = v1 - v0, wd = r.max - r.min;
+      return { d: dv, text: (dv >= 0 ? "+" : "−") + (wd >= 10000 ? F.compact(Math.abs(dv), 1) : F.num(Math.abs(dv), wd >= 10 ? 1 : 3)) + (r.unit ? " " + r.unit : "") }; }
+    var l = leader(m), uf = unitFn(m), du = uf.conv(l.price, l) - uf.conv(priceAgo(m, l.index, DAY), l);
+    return { d: du, text: uf.delta(du) };
+  }
+  function deltaEl(mv, cls) { return el("span", { class: "s-delta " + (Math.abs(mv.d) < 5e-4 ? "s-delta--flat" : mv.d > 0 ? "s-delta--up" : "s-delta--down") + (cls ? " " + cls : ""), text: mv.text, title: "24h move of the leading outcome" }); }
   function sep() { return el("i", { text: "/", attrs: { "aria-hidden": "true" } }); }
   function avatarSm(m) { var ink = m.appId !== "app"; return el("span", { class: "s-avatar s-avatar--sm" + (ink ? " s-avatar--ink" : ""), html: S.glyph(ink ? m.appId : "grid"), attrs: { "aria-hidden": "true" } }); }
   function demoLink(label, msg, cls) { return el("button", { class: cls || "ap-lnk", text: label, attrs: { type: "button", "data-demo": msg } }); }
@@ -295,7 +302,10 @@
 
   /* ======================= explorer ======================= */
   var FS = { q: "", cat: "all", type: "all", state: "all", chain: "all", verify: "all", coll: "all", sort: "volume", cond: false, fut: false, live: false, view: "cards", all: false };
-  try { var sv = localStorage.getItem("ap-view"); if (sv === "table" || sv === "cards") FS.view = sv; } catch (e) { /* fine */ }
+  (function () { // the viewer's last choice wins; otherwise a wide screen opens on the dense table and a phone on cards
+    var sv = null; try { sv = localStorage.getItem("ap-view"); } catch (e) { /* private mode: fine */ }
+    FS.view = sv === "table" || sv === "cards" ? sv : (window.matchMedia && matchMedia("(min-width: 1200px)").matches ? "table" : "cards");
+  })();
   var SORTS = [["volume", "Volume"], ["liquidity", "Liquidity"], ["openInterest", "Open interest"], ["opening", "Opening date"], ["created", "Creation date"], ["move", "24h move"]];
   var filterEls = {};
   function setQuery(q, fromHero) {
@@ -428,7 +438,8 @@
     if (m.conditional) row.appendChild(el("span", { class: "s-tag s-tag--violet", text: "Conditional" }));
     if (m.verify === "challenged" || m.verify === "verifying") row.appendChild(U.verifyBadge(m.verify));
     var spec = el("div", { class: "s-specs ap-cspec" }, el("span", { text: tname(m) }), el("span", { text: chainName(m.chain) }), el("span", { class: "ap-nc", text: cs(m) }));
-    var foot = $(".s-card__foot", c), bot = el("div", { class: "ap-cbot" });
+    var foot = $(".s-card__foot", c), bot = el("div", { class: "ap-cbot" }), meta = $(".s-card__meta", c);
+    if (meta) { meta.appendChild(deltaEl(move24(m))); meta.appendChild(el("span", { text: F.usd(m.liquidity) + " liq" })); }
     c.insertBefore(bot, foot);
     if (row.childNodes.length) bot.appendChild(row);
     bot.appendChild(spec); bot.appendChild(foot);
@@ -463,16 +474,17 @@
   }
   function renderTable(res, list) {
     var box = el("div", { class: "ap-table-tight" }); res.appendChild(box);
-    var key = { volume: "volume", liquidity: "liquidity", openInterest: "openInterest", opening: "openingDate" }[FS.sort] || null;
+    var key = { volume: "volume", liquidity: "liquidity", openInterest: "openInterest", opening: "openingDate", move: "move" }[FS.sort] || null;
     U.table(box, [
       { key: "id", label: "Market", sort: function (m) { return m.question.toLowerCase(); }, class: "ap-wrap", render: marketCell },
       { key: "type", label: "Type", sort: function (m) { return tname(m); }, render: function (m) { return el("span", { class: "s-tag", text: tname(m) }); } },
       { key: "state", label: "State", sort: function (m) { return stage(m); }, render: function (m) { return U.stateBadge(m.state); } },
       { key: "chain", label: "Chain", sort: true, render: function (m) { return U.chainBadge(m.chain); } },
       { key: "lead", label: "Leading", render: function (m) { return leadText(m); } },
+      { key: "move", label: "24H", num: true, class: "t-mono", sort: function (m) { return Math.abs(delta24(m, leader(m).index)); }, render: function (m) { return deltaEl(move24(m)); } },
       { key: "liquidity", label: "Liquidity", num: true, sort: true, render: function (m) { return F.usd(m.liquidity); } },
       { key: "volume", label: "Volume", num: true, sort: true, render: function (m) { return F.usd(m.volume); } },
-      { key: "openInterest", label: "Open int.", num: true, sort: true, render: function (m) { return F.usd(m.openInterest); } },
+      { key: "openInterest", label: "Open int.", num: true, sort: true, class: "col-xl", render: function (m) { return F.usd(m.openInterest); } },
       { key: "openingDate", label: "Reports open", num: true, sort: function (m) { return Date.parse(m.openingDate); }, render: function (m) { return F.date(m.openingDate); } }
     ], { rows: list, sortKey: key, sortDir: FS.sort === "opening" ? "asc" : "desc", onRow: function (m) { openMarket(m.id); }, caption: "Markets matching the current filters" });
   }
@@ -650,6 +662,10 @@
 
   /* ======================= market record (detail) ======================= */
   function defaultOutcome(m) { return sc(m) ? 1 : leader(m).index; }
+  // a rail taller than the viewport scrolls with the page and holds at its bottom edge, so the pool-depth and position panels stay reachable
+  var curRail = null;
+  function railFit(rail) { var hh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 72; rail.style.top = Math.min(hh + 16, window.innerHeight - rail.offsetHeight - 16) + "px"; }
+  window.addEventListener("resize", function () { if (curRail && curRail.isConnected) railFit(curRail); });
   function showMarket(m, p) {
     enterView();
     var o = p.o != null && m.outcomes[+p.o] ? +p.o : defaultOutcome(m);
@@ -808,6 +824,7 @@
     }
     drawTicket();
     rail.appendChild(mmr.el);
+    curRail = rail; if (window.ResizeObserver) new ResizeObserver(function () { railFit(rail); }).observe(rail); railFit(rail);
     if (app.id !== "app") {
       rail.appendChild(el("section", { class: "s-card s-card--pad ap-spec-card" },
         el("div", { class: "s-row" }, U.avatar(app.id, "ink"), el("div", {}, el("span", { class: "s-spec", text: "Specialist app" }), el("b", { text: app.name }))),
@@ -974,6 +991,7 @@
       if (over) { warn.appendChild(el("span", { html: S.icon("alert", 16), style: { display: "inline-flex" } })); warn.appendChild(el("span", {}, el("b", { text: "Thin pool. " }), "Estimated price impact " + F.pct(raw, 1) + " is above your " + F.pct(SLIP, 1) + " slippage, so this order would revert. Lower the amount.")); }
       conf.disabled = over;
       conf.textContent = over ? "Lower the amount" : !a ? "Confirm" : sell ? "Sell " + shortName(o) : kind === "multi" || kind === "mscalar" ? "Buy " + shortName(o) : "Buy " + t.label;
+      if (pool) pool.update(t, amount, sell);
     }
     panel.appendChild(el("div", { class: "s-panel s-panel--nested", style: { gap: "14px" } }, el("div", { class: "s-amount" }, el("label", { text: "Amount" }), input), chips, rows, warn, el("div", { class: "s-ticket__confirm" }, conf, reset)));
     var note = kind === "binary" ? "Yes and No add up to 100¢. Buying swaps " + coll + " for the outcome token in its pool."
@@ -986,7 +1004,45 @@
     if (m.collSym) note = "Pay with " + coll + ": split sDAI on #" + m.parent.id + " first (1 sDAI → 1 YES_sDAI + 1 NO_sDAI). " + note;
     panel.appendChild(el("p", { class: "t-meta", text: note + " Sample prices; nothing is traded." }));
     if (kind === "set") panel.appendChild(el("a", { class: "s-link t-meta ap-tlink", href: specialistHref(m, cur.o) + "-payout" }, "Payout at any score, in Deep", el("span", { html: S.icon("arrow-right", 13), style: { display: "inline-flex" } })));
-    calc(); host.appendChild(panel);
+    var pool = poolPanel(m, coll);
+    calc(); host.appendChild(panel); host.appendChild(pool.el);
+  }
+  /* pool depth: the selected token's constant-product pool (x · y = k), sized from the market's liquidity figure.
+     Seer trades outcome tokens in AMM pools, so depth is a curve, not a ladder of resting orders. Sample figures. */
+  function poolPanel(m, coll) {
+    var L = Math.max(1, m.liquidity || 0), SIZES = [10, 50, 100, 500, 1000]; // the market's liquidity figure, read as this token's pool
+    var p = el("section", { class: "s-panel ap-pool", attrs: { "aria-label": "Pool depth" } });
+    var title = el("h3", { class: "t-title ap-pool__t" });
+    p.appendChild(el("div", { class: "s-panel__head" }, el("div", {}, el("span", { class: "s-spec", text: "Pool depth" }), title), el("span", { class: "t-meta ap-pool__n", text: F.usd(L) + " liquidity" })));
+    var bar = el("div", { class: "ap-pool__bar", attrs: { role: "img" } }), legend = el("div", { class: "ap-pool__legend" });
+    var tbl = el("table", { class: "ap-pool__rows" }), hdr = el("tr"), tb = el("tbody");
+    ["Buy", "Avg price", "Price after", "Impact"].forEach(function (h) { hdr.appendChild(el("th", { text: h, attrs: { scope: "col" } })); });
+    tbl.appendChild(el("thead", {}, hdr)); tbl.appendChild(tb);
+    p.appendChild(bar); p.appendChild(legend); p.appendChild(tbl);
+    p.appendChild(el("p", { class: "t-meta", text: "Constant-product pool (sample): " + coll + " reserve × token reserve = k, so each trade moves the price along the curve. Reserves are sized from this market's liquidity figure; the +$ chips in the slip pick a row." }));
+    function px(v) { return v >= 1 ? "≥ $1.00" : F.cents1(v); }
+    function update(tile, amount, sell) {
+      var price = Math.min(.999, Math.max(.001, tile.price)), x = L / 2, y = x / price, k = x * y; // at the spot price the pool holds equal value on each side
+      var tok = String(tile.label).split(" · ")[0];
+      title.textContent = tok + " · " + F.cents1(price) + " spot";
+      bar.style.setProperty("--p", String(y / (x + y)));
+      bar.setAttribute("aria-label", F.num(y, 0) + " " + tok + " tokens against " + F.tok(x, coll, 0) + " in the pool");
+      S.clear(legend);
+      legend.appendChild(el("span", {}, el("i", { class: "ap-pool__sw ap-pool__sw--tok" }), F.num(y, 0) + " " + tok));
+      legend.appendChild(el("span", {}, el("i", { class: "ap-pool__sw" }), F.tok(x, coll, 0)));
+      hdr.firstChild.textContent = sell ? "Sell" : "Buy";
+      S.clear(tb);
+      SIZES.forEach(function (a) {
+        var avg, after, imp;
+        if (sell) { var tin = a / price, y1 = y + tin, x1 = k / y1; avg = (x - x1) / tin; after = x1 / y1; imp = after / price - 1; }
+        else { var x2 = x + a, y2 = k / x2, out = y - y2; avg = a / out; after = x2 / y2; imp = after / price - 1; }
+        var mag = Math.abs(imp);
+        tb.appendChild(el("tr", { class: amount === a ? "is-selected" : "", attrs: amount === a ? { "aria-current": "true" } : null },
+          el("td", { text: "$" + F.num(a, 0) }), el("td", { text: px(avg) }), el("td", { text: px(after) }),
+          el("td", { class: mag > .05 ? "t-neg" : mag > .01 ? "t-warn" : "", text: (imp < 0 ? "−" : "+") + F.pct(mag, mag < .1 ? 1 : 0) })));
+      });
+    }
+    return { el: p, update: update };
   }
   function mmrPanel(m, cur) {
     var mode = m.state === "closed" ? "redeem" : "mint", amt = 100, c = cs(m);

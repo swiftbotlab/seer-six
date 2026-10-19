@@ -10,6 +10,8 @@
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
 <link rel="preload" href="assets/sample-data.js" as="script">
 <link rel="preload" href="assets/ui.js" as="script">
+<link rel="preload" href="assets/kit/betslip.jpg" as="image">
+<link rel="preload" href="assets/today/home.jpg" as="image">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Every opinion has a price · Seer concept">
@@ -50,7 +52,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 .hb-card__name svg { width: 18px; height: 18px; color: var(--violet-3); }
 .hb-card__blurb { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; }
 .hb-card__foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 10px; }
-.hb-card__url { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); overflow-wrap: anywhere; }
 .hb-card a.s-btn::after { content: ""; position: absolute; inset: 0; }
 .hb-card { position: relative; }
 .hb-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
@@ -71,20 +72,43 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   .hb-notes { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) { .hb-cards, .hb-flow { grid-template-columns: 1fr; } .hb-poster__copy { padding: 28px 20px 24px; } }
-.hb-tour { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
-.hb-tour li { background: var(--surface); }
-.hb-tour a { display: grid; grid-template-columns: 34px minmax(0, 1fr) 18px; gap: 4px 12px; align-items: start; padding: 18px 18px 20px; height: 100%; color: inherit; transition: background var(--dur) var(--ease); }
-.hb-tour a:hover { background: var(--surface-2); }
-.hb-tour a:focus-visible { outline: 2px solid var(--violet-2); outline-offset: -2px; }
-.hb-tour__n { grid-row: span 3; font-family: var(--font-mono); font-size: 11px; color: var(--violet-3); padding-top: 3px; }
-.hb-tour__app { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
-.hb-tour__app svg { width: 15px; height: 15px; color: var(--violet-3); }
-.hb-tour__go { grid-row: 1; grid-column: 3; color: var(--text-3); }
-.hb-tour__go svg { width: 16px; height: 16px; }
-.hb-tour__do { grid-column: 2 / 4; color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; }
-.hb-tour__url { grid-column: 2 / 4; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; color: var(--text-3); overflow-wrap: anywhere; }
-@media (max-width: 1100px) { .hb-tour { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .hb-tour { grid-template-columns: 1fr; } }
+/* 90-second read: six rows (interface, what it shows, the one thing to try, link) and four build facts */
+.hb-read { gap: 20px; }
+.hb-read__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; }
+.hb-read__head .s-spec { display: block; margin-bottom: 8px; }
+.hb-read__head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 56ch; }
+.hb-read__rows { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.hb-read__row { display: grid; grid-template-columns: 24px 170px minmax(0, 1fr) minmax(0, 1.25fr) auto; gap: 4px 20px; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.45; }
+.hb-read__row:last-child { border-bottom: 1px solid var(--line); }
+.hb-read__n { font-family: var(--font-mono); font-size: 11px; color: var(--violet-3); }
+.hb-read__app { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+.hb-read__app:hover { color: var(--violet-3); }
+.hb-read__app svg { width: 15px; height: 15px; color: var(--violet-3); flex: none; }
+.hb-read__what { color: var(--text-2); font-weight: 500; }
+.hb-read__try { color: var(--text-2); font-weight: 500; }
+.hb-read__try b { color: var(--text); font-weight: 600; }
+.hb-read__open { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-ui); font-weight: 500; color: var(--violet-3); white-space: nowrap; }
+.hb-read__open:hover { color: var(--text); }
+.hb-read__facts { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px; }
+.hb-read__facts li { position: relative; padding-left: 22px; font-size: 14px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
+.hb-read__facts li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 7px; height: 7px; border-radius: 1.5px; background: var(--violet-2); transform: rotate(45deg); }
+.hb-read__facts b { color: var(--text); font-weight: 600; }
+.hb-read__facts a { color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.hb-read__facts a:hover { color: var(--text); }
+@media (max-width: 1100px) {
+  .hb-read__row { grid-template-columns: 24px 150px minmax(0, 1fr) auto; }
+  .hb-read__n, .hb-read__app { grid-row: 1 / span 2; align-self: start; }
+  .hb-read__what, .hb-read__try { grid-column: 3; }
+  .hb-read__open { grid-column: 4; grid-row: 1; }
+}
+@media (max-width: 640px) {
+  .hb-read__row { grid-template-columns: 24px minmax(0, 1fr); gap: 4px 12px; }
+  .hb-read__n, .hb-read__app { grid-row: 1; }
+  .hb-read__app { grid-column: 2; }
+  .hb-read__what, .hb-read__try, .hb-read__open { grid-column: 2; }
+  .hb-read__open { grid-row: auto; }
+  .hb-read__facts { grid-template-columns: 1fr; }
+}
 @media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
 .hb-poster__art { overflow: hidden; }
 /* today -> proposed: the live sites over our six screens */
@@ -94,7 +118,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 .hb-today__head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 58ch; }
 .hb-today__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 .hb-today__col { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
-.hb-today__img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; border-radius: 8px; background: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.hb-today__img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; border-radius: 8px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
 .hb-today__img--now { opacity: .82; filter: saturate(.8); }
 .hb-today__arrow { display: inline-flex; color: var(--text-3); }
 .hb-today__arrow svg { width: 14px; height: 14px; }
@@ -104,15 +128,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 .hb-today__cap b { color: var(--violet-3); font-weight: 400; }
 @media (max-width: 1100px) { .hb-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .hb-today__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
-@media (max-width: 640px) { .hb-tour__url, .hb-card__url { display: none; } }
 /* kit -> concept: a crop of the Electric Foundation web frame beside the same component, live */
-.hb-fid-head { margin: 28px 0 14px; max-width: 72ch; }
+.hb-fid-head { margin: 0 0 14px; max-width: 72ch; }
 .hb-fid-head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; margin-top: 6px; }
 .hb-fid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .hb-pair { background: var(--surface); border-radius: var(--r-panel); padding: 16px 16px 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; align-items: start; align-content: start; }
 .hb-pair__t { grid-column: 1 / -1; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
 .hb-pair__lbl { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
-.hb-pair__kit img { display: block; width: 100%; height: auto; border-radius: 8px; background: #101013; }
+.hb-pair__kit img { display: block; width: 100%; height: auto; min-height: 24px; border-radius: 8px; background: var(--surface-2); }
 .hb-pair__kit img + img { margin-top: 8px; }
 .hb-pair__box { padding: 12px; border-radius: 10px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
 .hb-pair__box .s-card, .hb-pair__box .s-ticket { width: 100%; max-width: none; }
@@ -151,11 +174,19 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 
   <section class="s-section--tight hb-tour-sec" id="tour" aria-labelledby="hb-tour">
     <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">If you have one minute</span><h2 id="hb-tour" class="t-h2">A 60-second tour</h2></div>
-        <span class="s-sample">Every number is sample data</span>
+      <div class="s-card s-card--pad hb-read">
+        <div class="hb-read__head">
+          <div><span class="s-spec">If you have 90 seconds</span><h2 id="hb-tour" class="t-h2">A 90-second read for the Seer team</h2></div>
+          <p>Six interfaces on one shell. Each row: what the demo shows, the one thing to try, and its link. Below, what was built with and how.</p>
+        </div>
+        <ol class="hb-read__rows" id="hb-tour-list"></ol>
+        <ul class="hb-read__facts" id="hb-facts">
+          <li><b>Electric Foundation, as specified.</b> The official mark and wordmark, the kit's tokens, radii and type spec, and its components built live: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
+          <li><b>One dataset, traced across apps.</b> P-07 in <a href="deep/#P-07">Deep</a>, markets <a href="app/#m=2841">#2841</a> and <a href="app/#m=2842">#2842</a> in the explorer, <a href="futarchy/#LIP-31">LIP-31</a> in Futarchy; every cross-link resolves.</li>
+          <li><b>Seer's mechanics kept.</b> Reality.eth answers and bonds, Kleros arbitration, Kleros Curate, the six market states, conditional tokens (split, merge, redeem) and sDAI / xDAI / sUSDS per chain.</li>
+          <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no external requests; fonts self-hosted. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
+        </ul>
       </div>
-      <ol class="hb-tour" id="hb-tour-list"></ol>
     </div>
   </section>
 
@@ -166,7 +197,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       </div>
       <div class="hb-today" id="hb-today">
         <div class="hb-today__head">
-          <div><span class="s-spec">Today → proposed</span><h3 class="t-h3">Six products from six companies, then one shell and one dataset</h3></div>
+          <div><span class="s-spec">Today → proposed</span><h3 class="t-h3">Six products today. Here: one shell, one set of tokens, one dataset.</h3></div>
           <p>Top row: the six live sites as they are in October 2026, shown for comparison. Bottom row: the same six as designed here; open any of them.</p>
         </div>
         <div class="hb-today__grid" id="hb-today-grid"></div>
@@ -191,6 +222,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
         <div><span class="s-spec">Rationale</span><h2 id="hb-notes" class="t-h2">Design notes</h2></div>
         <a class="s-btn s-btn--ghost" href="system/">Open the design system</a>
       </div>
+      <details class="s-details"><summary>Design notes for the six interfaces<small>kept from the kit · deliberate departures</small></summary>
       <div class="hb-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
@@ -217,8 +249,11 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
           </ol>
         </div>
       </div>
-      <div class="hb-fid-head"><span class="s-spec">Kit → concept</span><h3 class="t-h3">The kit's components, as built</h3><p>Left, a crop of the Electric Foundation web frame. Right, the same component live from this concept's shared system, in whichever theme you are reading, with the kit's measurements under each pair.</p></div>
+      </details>
+      <details class="s-details" id="kit"><summary>Kit components, side by side<small>bet slip · market card · binary card · search and categories</small></summary>
+      <div class="hb-fid-head"><span class="s-spec">Kit → concept</span><p>Left, a crop of the Electric Foundation web frame. Right, the same component live from this concept's shared system, in whichever theme you are reading, with the kit's measurements under each pair.</p></div>
       <div class="hb-fid" id="hb-fid"></div>
+      </details>
       <div class="s-callout u-mt-6"><span data-icon="info"></span><span><b>About the data.</b> Every price, volume, address and name in these demos is sample data, made up to show the design. Organisations, proposals, agents and assets are fictional, and every address starts with 0x5eed. Nothing is live and nothing can be traded.</span></div>
     </div>
   </section>
@@ -232,7 +267,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   S.motif.wedges(document.getElementById("hb-wedges"), { weights: [1, 1, 1, 1, 1, 1], gap: 26, vp: [.98, .42], w: 800, h: 640, fade: true });
 
   // six labelled demo cards
-  var cards = document.getElementById("hb-cards"), base = location.href.replace(/[#?].*$/, "").replace(/index\.html$/, "");
+  var cards = document.getElementById("hb-cards");
   var MOTIF = {
     home: function (n) { S.motif.wedges(n, { weights: D.market("2832").outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 10, w: 600, h: 300, vp: [.92, .5], fade: true }); },
     app: function (n) { S.motif.dotgrid(n, { cols: 20, rows: 8, cell: 30, dissolve: .45 }); },
@@ -244,13 +279,11 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   S.apps.forEach(function (a) {
     var art = S.el("div", { class: "hb-card__art" }, S.el("span", { class: "hb-card__n", text: a.n + " · " + a.host }));
     var host = S.el("div"); art.appendChild(host);
-    var url = base + a.path;
     var card = S.el("article", { class: "hb-card" }, art, S.el("div", { class: "hb-card__body" },
       S.el("h3", { class: "hb-card__name", html: S.glyph(a.id) }, a.name),
       S.el("p", { class: "hb-card__blurb", text: a.blurb }),
       S.el("div", { class: "hb-card__foot" },
-        S.el("a", { class: "s-btn s-btn--secondary", href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } }, "Open demo", S.el("span", { html: S.icon("arrow-right", 16) })),
-        S.el("span", { class: "hb-card__url", text: url }))));
+        S.el("a", { class: "s-btn s-btn--secondary", href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } }, "Open demo", S.el("span", { html: S.icon("arrow-right", 16) })))));
     cards.appendChild(card);
     MOTIF[a.id](a.id === "opportunity" ? art : host);
   });
@@ -259,10 +292,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   var tg = document.getElementById("hb-today-grid");
   S.apps.forEach(function (a) {
     tg.appendChild(S.el("figure", { class: "hb-today__col" },
-      S.el("img", { class: "hb-today__img hb-today__img--now", attrs: { src: "assets/today/" + a.id + ".jpg", alt: "Today: " + a.host + " as it is in October 2026", width: "480", height: "300", loading: "lazy", decoding: "async" } }),
+      S.el("img", { class: "hb-today__img hb-today__img--now", attrs: { src: "assets/today/" + a.id + ".jpg", alt: "Today: " + a.host + " as it is in October 2026", width: "480", height: "300", loading: "eager", decoding: "async" } }),
       S.el("span", { class: "hb-today__arrow", html: S.icon("chevron-down", 14), attrs: { "aria-hidden": "true" } }),
       S.el("a", { href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } },
-        S.el("img", { class: "hb-today__img", attrs: { src: "assets/ours/" + a.id + ".jpg", alt: "Proposed: " + a.name + " on the Electric Foundation identity", width: "480", height: "300", loading: "lazy", decoding: "async" } })),
+        S.el("img", { class: "hb-today__img", attrs: { src: "assets/ours/" + a.id + ".jpg", alt: "Proposed: " + a.name + " on the Electric Foundation identity", width: "480", height: "300", loading: "eager", decoding: "async" } })),
       S.el("figcaption", { class: "hb-today__cap" }, S.el("b", { text: a.n }), " " + a.host)));
   });
 
@@ -282,37 +315,37 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       S.el("b", { class: "hb-big t-num", text: s[3] }),
       S.el("p", { class: "t-meta", style: { color: "var(--text-2)", lineHeight: "1.5" }, text: s[4] })));
   });
-  // 60-second tour: one signature interaction per interface, each a deep link
+  // 90-second read: per interface, what the demo shows, one signature interaction and its deep link (names from S.apps)
   var TOUR = [
-    ["home", "home/", "Switch the hero between three markets and watch the bands converge on one price. Then pick an app in the protocol map."],
-    ["app", "app/#m=2841", "Type P-07 or 0x5eed in the search. #2841 opens with 80 UP/DOWN tokens, its event log and a JSON view."],
-    ["deep", "deep/#signal", "Drag “score needed to fund” off the funding line (8.135) and watch the contested queue reorder."],
-    ["futarchy", "futarchy/#LIP-31", "Scrub the TWAP window. The approve, neutral or reject signal recomputes, and the fork redraws."],
-    ["opportunity", "opportunity/#queue", "Move the fast-track and light-pass sliders. Review depth and hours per reviewer recompute."],
-    ["risk", "risk/#obETH", "Flip per year and per quarter, then compare staked and restaked ETH on one log scale."]
+    ["home", "home/", "Hero markets whose bands converge on one price, the protocol map, one worked example.", "Switch the hero between three markets and watch the bands converge on one price. Then pick an app in the protocol map."],
+    ["app", "app/#m=2841", "Every market type and chain in one explorer: filters, table and cards, a full record per market.", "Type P-07 or 0x5eed in the search. #2841 opens with 80 UP/DOWN tokens, its event log and a JSON view."],
+    ["deep", "deep/#signal", "A 40-proposal scalar round as a ridge plot, with the funding signal and an agents' manifest.", "Drag “score needed to fund” off the funding line (8.135) and watch the contested queue reorder."],
+    ["futarchy", "futarchy/#LIP-31", "Conditional markets as a fork drawn to the real TWAPs, with the 1% rule and both futures in the slip.", "Scrub the TWAP window. The approve, neutral or reject signal recomputes, and the fork redraws."],
+    ["opportunity", "opportunity/#queue", "Ranked entries in a multi-winner market (a funded share pays 1/8 sDAI) and a reviewer queue.", "Move the fast-track and light-pass sliders. Review depth and hours per reviewer recompute."],
+    ["risk", "risk/#obETH", "Default risk per asset on one log scale, in bands, with ranges next to every price.", "Flip per year and per quarter, then compare staked and restaked ETH on one log scale."]
   ];
   var tl = document.getElementById("hb-tour-list");
   TOUR.forEach(function (t, i) {
     var a = S.app(t[0]);
-    tl.appendChild(S.el("li", {}, S.el("a", { href: t[1] },
-      S.el("span", { class: "hb-tour__n", text: "0" + (i + 1) }),
-      S.el("span", { class: "hb-tour__app", html: S.glyph(a.id) }, a.name),
-      S.el("span", { class: "hb-tour__go", html: S.icon("arrow-right", 16), attrs: { "aria-hidden": "true" } }),
-      S.el("span", { class: "hb-tour__do", text: t[2] }),
-      S.el("span", { class: "hb-tour__url", text: base + t[1] }))));
+    tl.appendChild(S.el("li", { class: "hb-read__row" },
+      S.el("span", { class: "hb-read__n", text: a.n }),
+      S.el("a", { class: "hb-read__app", href: t[1], html: S.glyph(a.id) }, a.name),
+      S.el("span", { class: "hb-read__what", text: t[2] }),
+      S.el("span", { class: "hb-read__try" }, S.el("b", { text: "Try: " }), t[3]),
+      S.el("a", { class: "hb-read__open", href: t[1], attrs: { "aria-label": "Open the " + a.name + " demo" } }, "Open demo", S.el("span", { html: S.icon("arrow-right", 14), style: { display: "inline-flex" } }))));
   });
   // kit -> concept pairs: the kit crop on the left, the live component from assets/ui.js on the right
   var FID = [
-    { t: "Bet slip", kit: [["assets/kit/betslip.jpg", "Kit bet slip: a market header with Yes 69¢ and No 37¢ tiles, an Amount of $100,00, +$ chips and Confirm"]],
+    { t: "Bet slip", kit: [["assets/kit/betslip.jpg", 772, 255, "Kit bet slip: a market header with Yes 69¢ and No 37¢ tiles, an Amount of $100,00, +$ chips and Confirm"]],
       spec: "Two price tiles · <b>Bold 32</b> amount at −2% · +$1 +$5 +$20 +$100 chips · Confirm with ✕ · panel radius <b>22</b> on #1A1A1E. Kit fixes: Yes + No add up to <b>100¢</b>; “$100.00”.",
       build: function (box) { S.ui.ticket(box, { market: D.market("2831"), outcomes: [0, 1], selected: 0, amount: 100 }); } },
-    { t: "Market card", kit: [["assets/kit/card.jpg", "Kit market card: image tile, two-line title, two outcome rows with Yes and No, a $Vol footer with gift and bookmark icons"]],
+    { t: "Market card", kit: [["assets/kit/card.jpg", 672, 436, "Kit market card: image tile, two-line title, two outcome rows with Yes and No, a $Vol footer with gift and bookmark icons"]],
       spec: "<b>328 × 210</b> · radius <b>9</b> · <b>12px</b> padding · <b>Bold 16/24</b> title · outcome rows with Yes / No · “$Vol • date • category” footer, <b>Medium 12</b>, gift and bookmark.",
       build: function (box) { box.appendChild(S.ui.marketCard(D.market("2832"))); } },
-    { t: "Binary card", kit: [["assets/kit/binary.jpg", "Kit binary card: full-width Yes button in violet and No button in dark violet"]],
+    { t: "Binary card", kit: [["assets/kit/binary.jpg", 672, 436, "Kit binary card: full-width Yes button in violet and No button in dark violet"]],
       spec: "Full-width Yes on <b>#7D33FF</b> and No on <b>#241E33</b> with lavender text · button radius <b>8</b> · the same footer · prices in cents, adding up to 100.",
       build: function (box) { box.appendChild(S.ui.marketCard(D.market("2831"))); } },
-    { t: "Pill search and category row", kit: [["assets/kit/search.jpg", "Kit search pill with a magnifier icon and the placeholder Search markets…"], ["assets/kit/cats.jpg", "Kit category row: an arrow button, an active All chip and text categories"]],
+    { t: "Pill search and category row", kit: [["assets/kit/search.jpg", 680, 132, "Kit search pill with a magnifier icon and the placeholder Search markets…"], ["assets/kit/cats.jpg", 690, 55, "Kit category row: an arrow button, an active All chip and text categories"]],
       spec: "Search pill, radius <b>22</b>, icon left, <b>Medium 13</b> placeholder · category row with arrow buttons · active chip <b>#8F55F7</b> · chip radius <b>8</b>.",
       build: function (box) {
         var lab = S.el("label", { class: "s-search", html: S.icon("search", 16) }); lab.appendChild(S.el("span", { class: "s-sr", text: "Search markets" }));
@@ -323,7 +356,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
   var fid = document.getElementById("hb-fid");
   FID.forEach(function (f) {
     var kit = S.el("div", { class: "hb-pair__kit" }, S.el("span", { class: "hb-pair__lbl", text: "Electric Foundation kit" }));
-    f.kit.forEach(function (k) { kit.appendChild(S.el("img", { attrs: { src: k[0], alt: k[1], loading: "lazy", decoding: "async" } })); });
+    f.kit.forEach(function (k) { kit.appendChild(S.el("img", { attrs: { src: k[0], width: String(k[1]), height: String(k[2]), alt: k[3], loading: "eager", decoding: "async" } })); });
     var box = S.el("div", { class: "hb-pair__box" });
     var ours = S.el("div", { class: "hb-pair__ours" }, S.el("span", { class: "hb-pair__lbl", text: "This concept · live" }), box);
     fid.appendChild(S.el("section", { class: "hb-pair", attrs: { "aria-label": f.t + ": kit and concept" } }, S.el("h4", { class: "hb-pair__t", text: f.t }), kit, ours, S.el("p", { class: "hb-pair__spec", html: f.spec })));

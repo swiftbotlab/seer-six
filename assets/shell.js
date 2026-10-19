@@ -125,6 +125,15 @@
     doc.documentElement.setAttribute("data-theme", t);
   })();
 
+  /* Seer.clipWatch(node): sets .is-clipped while node scrolls horizontally and .is-end once it is scrolled to its end */
+  S.clipWatch = function (n) {
+    if (!n || n._clipWatched) return; n._clipWatched = true;
+    var check = function () { var over = n.scrollWidth - n.clientWidth > 4; n.classList.toggle("is-clipped", over); n.classList.toggle("is-end", over && n.scrollLeft + n.clientWidth >= n.scrollWidth - 2); };
+    var tm; n.addEventListener("scroll", function () { check(); clearTimeout(tm); tm = setTimeout(check, 240); }, { passive: true }); window.addEventListener("resize", check);
+    if (window.ResizeObserver) new ResizeObserver(check).observe(n);
+    check();
+  };
+
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   S.esc = esc;
 
@@ -173,7 +182,8 @@
       '<div class="s-specs"><span>Every opinion has a price</span><span>Est. on Gnosis Chain</span></div></div>' +
       '<div class="s-footer__cols">' +
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
-      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
+      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#notes">Design notes</a><a href="' + S.url("system/") + '">Design system: tokens and components</a></div>' +
+      '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and vanilla JS, no build step, no trackers.</p><p class="t-meta s-footer__fact">Fonts self-hosted: Geist, Geist Mono, Instrument Serif.</p></div>' +
       '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Every price, volume, address and name on these pages is sample data, made up to show the design. Nothing is live and nothing can be traded.</p></div>' +
       "</div>" +
       '<div class="s-footer__base"><span class="s-footer__credit">Concept by Swift Bot Labs · not affiliated with Seer</span>' +
@@ -196,11 +206,26 @@
       window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
     }
     var nv = doc.querySelector(".s-nav");
-    if (nv) { // edge fade only while links are actually cut off
-      var navCheck = function () { var over = nv.scrollWidth > nv.clientWidth + 1; nv.classList.toggle("is-clipped", over); nv.classList.toggle("is-end", over && nv.scrollLeft + nv.clientWidth >= nv.scrollWidth - 2); };
-      nv.addEventListener("scroll", navCheck, { passive: true }); window.addEventListener("resize", navCheck);
+    if (nv) { // edge fade only while links are actually cut off; is-end only once the nav has really been scrolled to its end
+      var navCheck = function () { var over = nv.scrollWidth - nv.clientWidth > 4; nv.classList.toggle("is-clipped", over); nv.classList.toggle("is-end", over && nv.scrollLeft > 2 && nv.scrollLeft + nv.clientWidth >= nv.scrollWidth - 2); };
+      var navTm; nv.addEventListener("scroll", function () { navCheck(); clearTimeout(navTm); navTm = setTimeout(navCheck, 240); }, { passive: true }); // the snap settles after the last scroll event
+      window.addEventListener("resize", navCheck); window.addEventListener("load", navCheck);
+      if (window.ResizeObserver) new ResizeObserver(navCheck).observe(nv); // fonts and late layout change the nav's width after first paint
       if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(navCheck); navCheck();
+      var act = nv.querySelector(".is-active, a[aria-current=\"true\"]");
+      if (act && act.scrollIntoView && nv.scrollWidth - nv.clientWidth > 4) { try { act.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e) { /* older engines: fine */ } }
     }
+    // F4: a hash that points inside (or at a section holding) a closed <details> opens it before the browser scrolls there
+    var openDetails = function () {
+      var id = location.hash.slice(1); if (!id) return; var t;
+      try { t = doc.getElementById(decodeURIComponent(id)); } catch (e) { return; }
+      if (!t) return;
+      var opened = false, d = t.closest("details"); while (d) { if (!d.open) opened = true; d.open = true; d = d.parentElement ? d.parentElement.closest("details") : null; }
+      [].forEach.call(t.querySelectorAll("details.s-details"), function (x) { if (!x.open) opened = true; x.open = true; });
+      if (opened && t.scrollIntoView) { t.scrollIntoView(); if (doc.readyState !== "complete") window.addEventListener("load", function () { t.scrollIntoView(); }, { once: true }); } // the fold (and late fonts) change the layout under the browser's own jump
+    };
+    openDetails(); window.addEventListener("hashchange", openDetails);
+    [].forEach.call(doc.querySelectorAll(".s-table-wrap"), S.clipWatch);
     var tb = doc.querySelector(".s-theme-btn");
     if (tb) tb.addEventListener("click", function () { S.setTheme(S.theme() === "light" ? "dark" : "light"); });
     // shell search: pages may listen for `seer:search`
