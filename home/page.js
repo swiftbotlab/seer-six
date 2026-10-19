@@ -63,7 +63,7 @@
       st.hover = null;
       // spec line + question + caption
       var sp = $("hm-price-specs"); S.clear(sp);
-      ["Mkt #" + m.id, tname(m), D.chain(m.chain).name, D.state(m.state).label].forEach(function (x, k) { sp.appendChild(el("span", { text: x, class: k >= 2 ? "s-hide-sm" : null })); });
+      ["Mkt #" + m.id, tname(m), D.chain(m.chain).name].forEach(function (x, k) { sp.appendChild(el("span", { text: x, class: k >= 2 ? "s-hide-sm" : null })); });
       $("hm-price-q").textContent = m.question;
       var cap = $("hm-price-cap"); S.clear(cap);
       var sum = st.items.reduce(function (a, o) { return a + o.price; }, 0);
@@ -263,7 +263,7 @@
       S.clear(read);
       if (appId) {
         var a = S.app(appId), L = APP_LINE[appId], m = D.market(L[2]);
-        read.appendChild(el("div", {}, el("span", { class: "s-spec", text: a.n + " · " + a.host + " · uses " + USES[appId].length + " of " + ALL.length + " building blocks" }), el("h3", { class: "u-mt-2", text: a.name + ": " + L[0] }), el("p", { text: L[1] })));
+        read.appendChild(el("div", {}, el("span", { class: "s-spec", text: a.n + " · uses " + USES[appId].length + " of " + ALL.length + " building blocks" }), el("h3", { class: "u-mt-2", text: a.name + ": " + L[0] }), el("p", { text: L[1] })));
         read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Example market · sample" }),
           el("div", {}, el("a", { class: "hm-pill", href: "../app/#m=" + m.id }, el("span", { html: S.icon("search", 14), style: { display: "inline-flex" } }), "#" + m.id + " · " + (m.short || tname(m))), appLink(appId, "Open " + a.name))));
       } else if (primId) {
@@ -490,7 +490,7 @@
         [r.id === "not-open" ? "Reports open" : "Opened", el("span", { text: f.date(m.openingDate) })]];
       if (m.answer != null) kv.push(["Answer", el("span", { text: String(m.answer) + (m.range && m.range.unit ? " " + m.range.unit : "") })]);
       detail.appendChild(el("div", { class: "s-card s-card--pad hm-res__ex" },
-        el("div", { class: "s-row s-row--between" }, el("span", { class: "s-spec", text: "Example in this state" }), S.ui.sample()),
+        el("div", { class: "s-row s-row--between" }, el("span", { class: "s-spec", text: "Example in this state" })),
         el("a", { class: "s-card__title", href: "../app/#m=" + m.id, text: m.question }),
         el("div", { class: "hm-res__badges" }, S.ui.typeTag(m), S.ui.verifyBadge(m.verify), S.ui.chainBadge(m.chain)),
         S.ui.kv(kv)));
@@ -522,7 +522,7 @@
     var m = D.market("2843"), outs = m.outcomes, col = m.collateral;
     var st = { mode: "split", amount: 100, win: 0 };
     var panel = el("section", { class: "s-panel hm-tok", attrs: { "aria-label": "Outcome token calculator" } });
-    panel.appendChild(el("div", { class: "hm-tok__head" }, S.ui.specs(["Mkt #" + m.id, "LIP-31", D.chain(m.chain).name]), S.ui.sample()));
+    panel.appendChild(el("div", { class: "hm-tok__head" }, S.ui.specs(["Mkt #" + m.id, "LIP-31", D.chain(m.chain).name])));
     panel.appendChild(el("h3", { class: "t-title", text: m.question }));
     var modeSeg = S.ui.seg([["split", "Split"], ["merge", "Merge"], ["redeem", "Redeem"]], st.mode, function (v) { st.mode = v; calc(); }, "Action");
     var winBox = el("div", { class: "hm-tok__opts" }, el("span", { text: "If the final answer is" }),

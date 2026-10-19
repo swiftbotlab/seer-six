@@ -106,7 +106,7 @@
   /* ======================= 2. market head + flow ======================= */
   function round() {
     var specs = $("#op-mspecs");
-    if (specs) specs.appendChild(U.specs([{ html: "Mkt <b>#" + M.id + "</b>" }, R.org, "Builders Grants R4", { class: "s-hide-sm", html: "<b>" + E.length + "</b> entries + Invalid" }]));
+    if (specs) specs.appendChild(U.specs([{ html: "Mkt <b>#" + M.id + "</b>" }, "Builders Grants R4", { class: "s-hide-sm", html: "<b>" + E.length + "</b> entries + Invalid" }]));
     var b = $("#op-mbadges");
     if (b) { b.appendChild(U.stateBadge(M.state)); b.appendChild(U.verifyBadge(M.verify)); b.appendChild(U.chainBadge(M.chain)); b.appendChild(U.typeTag(M)); b.appendChild(el("span", { class: "s-tag", text: M.collateral })); }
     var st = $("#op-mstats");
@@ -246,7 +246,6 @@
         ST.view = v; $("#op-grid").hidden = v !== "grid"; $("#op-table").hidden = v !== "table";
         $("#op-sort").closest(".op-sort").hidden = v !== "grid"; renderField();
       }, "Field view"));
-      vbox.appendChild(U.sample());
     }
     var sort = $("#op-sort"); if (sort) sort.addEventListener("change", function () { ST.sort = sort.value; renderField(); });
     var close = $("#op-close"); if (close) close.addEventListener("change", function () { ST.close = close.checked; ST.more = false; renderField(); });
@@ -359,7 +358,7 @@
     // live (sample)
     var art = el("div", { class: "op-mk__art", attrs: { "aria-hidden": "true" } });
     var live = el("article", { class: "s-card s-card--pad op-mk" },
-      el("div", { class: "s-row s-row--between", style: { "--gap": "8px" } }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--violet s-tag--mono", text: "Live" }), U.stateBadge(M.state)), U.sample()),
+      el("div", { class: "s-row s-row--between", style: { "--gap": "8px" } }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--violet s-tag--mono", text: "Live" }), U.stateBadge(M.state))),
       el("div", {}, el("h3", { class: "t-title", text: R.name }), el("p", { class: "t-meta", text: R.org + " · " + SLOTS + " grants from " + F.num(R.budget) + " sDAI · #" + M.id })),
       art,
       U.kv([["Entries", el("span", { text: E.length + " proposals" })], ["Volume", el("span", { text: F.num(M.volume) + " sDAI" })], ["Panel decision", el("span", { text: F.date(R.panelReveal) })]]),

@@ -152,7 +152,7 @@
   }
   function renderHero(m) {
     var box = $("#ft-hero-copy"); S.clear(box);
-    box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "04" }), el("span", { text: "futarchy.seer.pm" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
+    box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "04" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
     box.appendChild(el("h1", { class: "ft-title", attrs: { id: "ft-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent" }, "if ", el("span", { class: "u-nowrap", text: m.id }), " is approved?")));
     box.appendChild(el("p", { class: "ft-subtitle" }, el("b", { text: m.id }), " · " + m.title));
     var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec", text: (m.resolved ? "Final 5-day TWAP · " : prov(m) ? "Signal so far · trailing 5-day TWAP · " : "Official 5-day TWAP · ") + m.pair }), statusTag(m));
@@ -287,7 +287,7 @@
   function renderChartHead(m) {
     var h = $("#ft-chart-head"); S.clear(h);
     h.appendChild(el("div", { class: "ft-chartcard__title" }, el("span", { class: "s-spec", text: "Conditional prices · " + m.pair + " · hourly" }), el("h2", { class: "t-h3", attrs: { id: "ft-chart-title" }, text: m.tok + " under each outcome" })));
-    h.appendChild(el("div", { class: "s-row ft-chartcard__meta", style: { "--gap": "14px" } }, S.chart.legend([{ name: "If approved · YES_" + m.tok, color: "var(--c-yes)" }, { name: "If rejected · NO_" + m.tok, color: "var(--c-no)" }], "line"), S.ui.sample()));
+    h.appendChild(el("div", { class: "s-row ft-chartcard__meta", style: { "--gap": "14px" } }, S.chart.legend([{ name: "If approved · YES_" + m.tok, color: "var(--c-yes)" }, { name: "If rejected · NO_" + m.tok, color: "var(--c-no)" }], "line")));
   }
   function drawChart() {
     var m = cur(), s = m.series, L = s.length, root = ch.root;
@@ -487,7 +487,7 @@
       ]));
     var pA = m.pA, outs = [{ name: "Approved", price: pA }, { name: "Not approved", price: 1 - pA }];
     var dm = el("div", { class: "s-card s-card--flat ft-dm" },
-      el("div", { class: "ft-dm__head" }, el("span", { class: "s-spec", text: m.dec ? "Decision market #" + m.dec.id : "Decision market" }), m.dec ? S.ui.stateBadge(m.dec.state) : S.ui.sample()),
+      el("div", { class: "ft-dm__head" }, el("span", { class: "s-spec", text: m.dec ? "Decision market #" + m.dec.id : "Decision market" }), m.dec ? S.ui.stateBadge(m.dec.state) : null),
       el("h3", { class: "t-title", text: "Will " + m.org.name + " approve " + m.id + "?" }),
       el("div", { class: "s-orows" }, outs.map(function (o) { return S.ui.orow(o, { actions: false }); })),
       el("p", { class: "t-meta", text: m.resolved ? "Resolved. Reality.eth reported the Snapshot result; the decision market paid out on it." : "This forecasts the vote, not the effect. An invalid answer resolves as not approved." }));

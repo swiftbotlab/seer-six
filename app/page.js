@@ -695,7 +695,7 @@
     head.appendChild(el("div", { class: "ap-dhead__top" },
       U.avatar(m.appId === "app" ? "grid" : m.appId, m.appId === "app" ? null : "ink"),
       el("div", { class: "ap-dhead__main" }, badges, el("h1", { class: "ap-dtitle", text: m.question }), links,
-        U.specs(["Mkt #" + m.id, chainName(m.chain) + " · chain " + D.chain(m.chain).chainId, "Created " + F.date(m.created), (Date.parse(m.openingDate) > NOW ? "Reports open " : "Reports opened ") + F.date(m.openingDate)])),
+        U.specs(["Mkt #" + m.id, chainName(m.chain), (Date.parse(m.openingDate) > NOW ? "Reports open " : "Reports opened ") + F.date(m.openingDate)])),
       el("div", { class: "ap-dhead__actions" },
         el("button", { class: "s-icon-btn", attrs: { type: "button", "aria-label": "Copy link to this market", "data-copy": shareUrl(m) }, html: S.icon("link", 16) }),
         el("button", { class: "s-icon-btn", attrs: { type: "button", "aria-label": "Bookmark", "data-demo": "Bookmarks are not wired in this concept." }, html: S.icon("bookmark", 16) }))));
@@ -1134,14 +1134,14 @@
       }) };
     var txt = JSON.stringify(obj, null, 2), more = real(m).length - obj.outcomes.length;
     panel.appendChild(el("div", { class: "s-row s-row--between" }, el("span", { class: "t-meta", text: "Read-only market record for scripts and agents. Same fields as this page" + (more > 0 ? "; " + more + " more outcomes in the full export." : ".") }),
-      el("span", { class: "s-row", style: { "--gap": "8px" } }, U.sample(), el("button", { class: "s-btn s-btn--ghost s-btn--sm", attrs: { type: "button", "data-copy": txt }, html: S.icon("copy", 14) }, "Copy JSON"))));
+      el("span", { class: "s-row", style: { "--gap": "8px" } }, el("button", { class: "s-btn s-btn--ghost s-btn--sm", attrs: { type: "button", "data-copy": txt }, html: S.icon("copy", 14) }, "Copy JSON"))));
     panel.appendChild(el("pre", { class: "ap-json", text: txt, attrs: { tabindex: "0", "aria-label": "Market record as JSON" } }));
   }
   function tabActivity(panel, m, ev) {
     var kinds = [["all", "All"], ["trade", "Trades"], ["liq", "Liquidity"], ["set", "Mint and merge"], ["oracle", "Oracle"]];
     var KIND = { Swap: "trade", "Add liquidity": "liq", Split: "set", Merge: "set", Redeem: "set", Answer: "oracle", Dispute: "oracle" };
     var box = el("div"), tbl;
-    panel.appendChild(el("div", { class: "s-row s-row--between" }, U.seg(kinds, "all", function (v) { tbl.update(v === "all" ? ev : ev.filter(function (e) { return KIND[e.type] === v; })); }, "Event type"), U.sample()));
+    panel.appendChild(el("div", { class: "s-row s-row--between" }, U.seg(kinds, "all", function (v) { tbl.update(v === "all" ? ev : ev.filter(function (e) { return KIND[e.type] === v; })); }, "Event type")));
     panel.appendChild(box);
     tbl = U.table(box, [
       { key: "type", label: "Event", render: function (e) { return evTag(e.type === "Split" ? "Split" : e.type); } },
@@ -1238,7 +1238,7 @@
     var av = el("span", { class: "s-avatar ap-avatar-user", html: S.icon(e && e.agent ? "agent" : "user", 24), attrs: { "aria-hidden": "true" } });
     col.appendChild(el("header", { class: "ap-dhead" }, el("div", { class: "ap-dhead__top" }, av,
       el("div", { class: "ap-dhead__main" },
-        el("div", { class: "ap-badges" }, el("span", { class: "s-tag s-tag--violet", text: kind }), e && e.agent ? el("span", { class: "s-tag s-tag--outline", html: S.glyph("deep") }, "Trades in Deep") : null, U.sample()),
+        el("div", { class: "ap-badges" }, el("span", { class: "s-tag s-tag--violet", text: kind }), e && e.agent ? el("span", { class: "s-tag s-tag--outline", html: S.glyph("deep") }, "Trades in Deep") : null),
         el("h1", { class: "ap-dtitle", text: label }),
         el("div", { class: "s-row", style: { "--gap": "6px" } }, el("span", { class: "ap-addr-full", text: a }), el("button", { class: "s-addr__copy", attrs: { type: "button", "aria-label": "Copy address", "data-copy": a }, html: S.icon("copy", 13) })),
         e && e.agent ? U.specs(["Operator " + e.agent.operator, e.agent.trades + " trades", "Brier " + e.agent.brier.toFixed(3)]) : e && e.trader ? U.specs([e.trader.markets + " markets traded", "Volume " + F.usd(e.trader.volume)]) : null))));
@@ -1252,7 +1252,7 @@
       U.stat("Position value", "≈ " + F.usd(val), { note: "collateral terms, sample" }),
       U.stat("Markets created", String(e.created.length), { note: e.created.length ? "as creator" : "none" }),
       U.stat("Trader Score", who ? String(who.traderScore) : "—", { note: who ? who.tier + " tier" : "not ranked" })));
-    var posCard = !e.positions.length && e.events.length ? null : el("section", { class: "s-card s-card--pad", attrs: { "aria-labelledby": "ap-pos-h" } }, el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: "Open positions" }), el("h2", { id: "ap-pos-h", class: "t-h3", text: "Positions" })), U.sample()));
+    var posCard = !e.positions.length && e.events.length ? null : el("section", { class: "s-card s-card--pad", attrs: { "aria-labelledby": "ap-pos-h" } }, el("div", { class: "ap-cardhead" }, el("div", {}, el("span", { class: "s-spec", text: "Open positions" }), el("h2", { id: "ap-pos-h", class: "t-h3", text: "Positions" }))));
     if (posCard) col.appendChild(posCard);
     if (!posCard) { /* activity-only address: the activity table below carries it */ }
     else if (!e.positions.length) posCard.appendChild(el("p", { class: "t-meta", text: "No positions in the sample." }));

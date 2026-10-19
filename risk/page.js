@@ -245,7 +245,7 @@
   }
 
   /* ======================= 2. board ======================= */
-  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, "Ethereum", "sDAI", { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "Status: <b>reports not open yet · trading</b>" }]));
+  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "<b>Trading</b>" }]));
   (function () { var lg = $("#rk-plotlegend"); BANDS.forEach(function (b) { lg.appendChild(bandChip(b.id)); }); })();
   function renderStats() {
     var box = $("#rk-stats"), h = st.h; S.clear(box);

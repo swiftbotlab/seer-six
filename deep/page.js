@@ -158,7 +158,7 @@
     });
   }
   renderSteps();
-  $("#dp-round-specs").appendChild(S.ui.specs(["Mkt #2841", "Scalar × 40", "OP Mainnet", "Collateral sUSDS", "Kleros Curate: verified", "Status: " + D.state(M.state).label]));
+  $("#dp-round-specs").appendChild(S.ui.specs(["Mkt #2841", "Scalar × 40", D.state(M.state).label]));
   $("#dp-round-q").textContent = "What will the panel score each proposal, from 0 to 10?";
   (function roundStats() {
     var box = $("#dp-round-stats");
@@ -639,7 +639,7 @@
   })();
   var payBox = $("#dp-payout"), payRange, payVal, payOut, payHead;
   (function payoutInit() {
-    payHead = el("div", { class: "s-row s-row--between" }, el("h3", { class: "t-title", text: "Try a payout" }), el("span", { class: "s-sample", text: "Sample data" }));
+    payHead = el("div", { class: "s-row s-row--between" }, el("h3", { class: "t-title", text: "Try a payout" }));
     payVal = el("b", { class: "t-amount t-num" });
     payRange = el("input", { class: "s-range", attrs: { type: "range", min: "0", max: "10", step: "0.05", value: String(state.pay), "aria-label": "Panel score" } });
     payRange.addEventListener("input", function () { state.pay = +payRange.value; renderPayout(); });
