@@ -665,6 +665,30 @@ button.s-orow:hover { background: var(--surface-hover); }
 .s-details + .s-details { margin-top: 16px; }
 @media (max-width: 640px) { .s-details > summary { padding: 16px 18px; font-size: 15px; } }
 
+/* "More on this page" (2026-10-20): each page's long tail (tools, guides, design notes) folded behind labelled rows.
+   The original <section id> sits inside its <details>, so nav links and #hash deep links open it (shell.js). */
+.s-more { padding-block: var(--s-10) var(--s-12); }
+.s-more__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.s-more__head .s-spec { display: block; margin-bottom: 8px; }
+.s-more__head p { margin: 0; font-size: var(--fs-meta); color: var(--text-3); }
+.s-more .s-more__item + .s-more__item { margin-top: 10px; }
+.s-more__item > summary { padding: 16px 22px; align-items: center; }
+.s-more__t { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.s-more__t b { font-weight: 600; }
+.s-details > summary .s-more__t small { margin: 0; padding: 0; font-size: var(--fs-meta); font-weight: 500; line-height: 1.4; color: var(--text-3); letter-spacing: 0; }
+.s-more__k { margin-left: auto; font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+.s-more__item[open] > summary .s-more__k { visibility: hidden; }
+.s-more__item > section { padding-block: 4px 28px; }
+.s-more__item > section > .s-container { padding-inline: 0; max-width: none; }
+/* the summary already names the section: drop the duplicated spec label + h2 (any action buttons in the head stay) */
+.s-more__item > section .s-section-head > div:first-child:has(> h2) { display: none; }
+.s-more__item > section .s-section-head:not(:has(> :not(div:first-child))) { display: none; }
+.s-more__item > section .rk-notes__head { display: none; }
+@media (max-width: 640px) {
+  .s-more__item > summary { padding: 14px 16px; }
+  .s-more__k { display: none; }
+}
+
 /* Callout / notice */
 .s-callout { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface-2); color: var(--text-2); font-size: var(--fs-ui); line-height: 1.5; font-weight: 500; }
 .s-callout svg { width: 16px; height: 16px; flex: none; margin-top: 1px; color: var(--violet-3); }

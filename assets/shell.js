@@ -225,6 +225,8 @@
       if (opened && t.scrollIntoView) { t.scrollIntoView(); if (doc.readyState !== "complete") window.addEventListener("load", function () { t.scrollIntoView(); }, { once: true }); } // the fold (and late fonts) change the layout under the browser's own jump
     };
     openDetails(); window.addEventListener("hashchange", openDetails);
+    // a link to the hash already in the URL fires no hashchange: open its fold anyway
+    doc.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest('a[href^="#"]'); if (a && a.getAttribute("href") === location.hash) setTimeout(openDetails, 0); });
     [].forEach.call(doc.querySelectorAll(".s-table-wrap"), S.clipWatch);
     var tb = doc.querySelector(".s-theme-btn");
     if (tb) tb.addEventListener("click", function () { S.setTheme(S.theme() === "light" ? "dark" : "light"); });

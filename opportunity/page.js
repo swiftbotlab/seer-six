@@ -138,6 +138,7 @@
 
   /* ======================= 3. the field ======================= */
   var ST = { cat: "all", q: "", sort: "chance", close: false, view: "grid", more: false };
+  var QN = window.matchMedia && window.matchMedia("(max-width: 640px)").matches ? 6 : 10; // review-queue rows before "Show all"
   var SORTS = {
     chance: function (a, b) { return a.rank - b.rank; },
     move: function (a, b) { return Math.abs(b.d24) - Math.abs(a.d24) || a.rank - b.rank; },
@@ -202,7 +203,7 @@
     host.appendChild(a.length ? el("div", { class: "op-cards" }, a.map(card)) : note("No entries inside the line match these filters."));
     host.appendChild(divider());
     host.appendChild(groupHead("Below the line", "Ranks " + (SLOTS + 1) + "–" + E.length + ": each still read and scored by the panel", b.length));
-    var few = window.matchMedia && window.matchMedia("(max-width: 640px)").matches ? 4 : 8;
+    var few = 4; // one row of cards below the line; "Show all" opens the rest
     var limit = ST.more || b.length <= few + 4 ? b.length : few;
     host.appendChild(b.length ? el("div", { class: "op-cards" }, b.slice(0, limit).map(card)) : note("No entries below the line match these filters."));
     if (b.length > limit) {
@@ -304,7 +305,7 @@
       strip.appendChild(plot);
       strip.appendChild(el("div", { class: "op-strip__x", attrs: { "aria-hidden": "true" } }, el("span", { text: "Rank 01" }), el("span", { text: "Rank " + E.length })));
     }
-    var rows = QS.all ? list : list.slice(0, 10);
+    var rows = QS.all ? list : list.slice(0, QN);
     var cols2 = [
       { key: "o", label: "Order", num: true, width: "64px", render: function (r) { return el("span", { class: "op-rk" }, pad2(r.qo)); } },
       { key: "title", label: "Entry", render: function (r) { return el("div", { class: "op-tcell" }, el("b", { text: r.title }), el("span", { class: "t-meta", text: r.id + " · rank " + r.rank + " · " + r.team })); } },
@@ -318,7 +319,7 @@
       if (!qTable) qTable = U.table(host, cols2, { rows: rows, compact: true, onRow: function (r) { openEntry(r.id); }, caption: "Review queue for Lattice Builders Grants Round 4" });
       else qTable.update(rows);
     }
-    var more = $("#op-qmore"); if (more) more.textContent = QS.all ? "Show the first 10" : "Show all " + E.length;
+    var more = $("#op-qmore"); if (more) more.textContent = QS.all ? "Show the first " + QN : "Show all " + E.length;
     var sub = $("#op-qsub"); if (sub) sub.textContent = QS.order === "close" ? "Full reviews first, closest to the selection line at the top; then fast-tracks, then light passes." : "Ranked by price, highest chance first. The dashed line is the eighth funding slot.";
   }
   function queue() {

@@ -109,57 +109,99 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     </div>
   </section>
 
-  <!-- 4. MARKET TYPES ----------------------------------------------------------- -->
-  <section class="s-section hm-types" id="types" aria-labelledby="hm-types-title">
+  <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
+  <section class="s-section--tight s-more" aria-labelledby="hm-more-title">
     <div class="s-container">
-      <div class="s-section-head">
-        <div>
-          <span class="s-spec">Building blocks</span>
-          <h2 id="hm-types-title" class="t-h2">Four market types, one format</h2>
+      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="hm-more-title">Tools, guides and design notes</h2></div><p>4 sections · each opens in place</p></div>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Four market types, one format</b><small>Categorical, scalar, multi-categorical and multi-scalar, each with a sample market.</small></span><span class="s-more__k">Market types</span></summary>
+      <!-- 4. MARKET TYPES ----------------------------------------------------------- -->
+      <section class="s-section hm-types" id="types" aria-labelledby="hm-types-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div>
+              <span class="s-spec">Building blocks</span>
+              <h2 id="hm-types-title" class="t-h2">Four market types, one format</h2>
+            </div>
+          </div>
+          <div class="hm-types__bar" id="hm-types-bar"></div>
+          <div class="hm-types__grid">
+            <div class="hm-types__copy" id="hm-types-copy"></div>
+            <div class="hm-types__cards" id="hm-types-cards"></div>
+          </div>
         </div>
-      </div>
-      <div class="hm-types__bar" id="hm-types-bar"></div>
-      <div class="hm-types__grid">
-        <div class="hm-types__copy" id="hm-types-copy"></div>
-        <div class="hm-types__cards" id="hm-types-cards"></div>
-      </div>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>How a market gets its answer</b><small>Reality.eth answers and bonds, Kleros arbitration, and the six market states.</small></span><span class="s-more__k">Resolution</span></summary>
+      <!-- 5. RESOLUTION ------------------------------------------------------------- -->
+      <section class="s-section hm-res" id="resolution" aria-labelledby="hm-res-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div>
+              <span class="s-spec">Reality.eth answers · Kleros arbitration</span>
+              <h2 id="hm-res-title" class="t-h2">How a market gets its answer</h2>
+            </div>
+            <p class="t-body hm-head-note">Every market passes through the same six states. Select one to see what happens and who acts.</p>
+          </div>
+          <div class="hm-track" id="hm-track" role="tablist" aria-label="Market states"></div>
+          <div class="hm-res__detail" id="hm-res-detail" role="tabpanel"></div>
+          <div class="hm-trust" id="hm-trust"></div>
+        </div>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Outcome tokens are ordinary tokens</b><small>For builders: split collateral into outcome tokens, merge them back, redeem.</small></span><span class="s-more__k">Builders</span></summary>
+      <!-- 6. BUILDERS: outcome tokens ---------------------------------------------- -->
+      <section class="s-section hm-build" id="builders" aria-labelledby="hm-build-title">
+        <div class="s-container hm-build__grid">
+          <div class="hm-build__copy">
+            <span class="s-spec">For builders</span>
+            <h2 id="hm-build-title" class="t-h2 u-mt-2">Outcome tokens are ordinary tokens</h2>
+            <p class="t-body u-mt-4">Every Seer market sits on Gnosis Conditional Tokens. Collateral splits into one token per outcome, and each position is wrapped as an ERC-20, so it trades on ordinary pools, sits in any wallet and can be read by any contract.</p>
+            <ul class="hm-points">
+              <li><b>Split</b> 1 sDAI into one token of every outcome.</li>
+              <li><b>Merge</b> a full set back into 1 sDAI at any time.</li>
+              <li><b>Redeem</b> winning tokens for collateral after the answer is final.</li>
+              <li><b>Create</b> a market without permission, on any of the four chains.</li>
+            </ul>
+            <div class="hm-links" id="hm-links"></div>
+          </div>
+          <div id="hm-tokens"></div>
+        </div>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Design notes</b><small>What comes from the Electric Foundation kit, and the departures.</small></span><span class="s-more__k">Design notes</span></summary>
+      <!-- 8. DESIGN NOTES ------------------------------------------------------------ -->
+      <section class="s-section hm-notes" id="notes" aria-labelledby="hm-notes-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div>
+              <span class="s-spec">Design notes · 01 Homepage</span>
+              <h2 id="hm-notes-title" class="t-h2">Design notes</h2>
+            </div>
+            <a class="s-btn s-btn--ghost" href="../#notes">All notes for the six interfaces</a>
+          </div>
+                <div class="hm-notes__grid">
+            <ol class="hm-notes__list">
+              <li><b>Wedges carry prices.</b> The kit's converging wedges are drawn from sample prices: band width is an outcome's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
+              <li><b>A protocol map replaces the marketing grid.</b> The raven art, the category pill cloud and the feature cards become one diagram: five apps above the building blocks they share.</li>
+              <li><b>One worked example instead of claims.</b> A fictional grant round is followed through four apps with the same market IDs they use. No invented protocol totals.</li>
+            </ol>
+            <ol class="hm-notes__list">
+              <li><b>Typefaces.</b> Geist, Geist Mono and Instrument Serif Italic stand in for PP Neue Montreal, Suisse Int'l Mono and Reckless when those are not installed.</li>
+              <li><b>Colour.</b> Muted text is lifted to pass WCAG AA. Status amber and red appear only on market states, next to their label; charts use the system palette, violet first.</li>
+              <li><b>Two poster moments.</b> The ink protocol layer and the violet closing poster come from the kit's posters; everything else stays on calm kit surfaces.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+      </details>
     </div>
   </section>
 
-  <!-- 5. RESOLUTION ------------------------------------------------------------- -->
-  <section class="s-section hm-res" id="resolution" aria-labelledby="hm-res-title">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div>
-          <span class="s-spec">Reality.eth answers · Kleros arbitration</span>
-          <h2 id="hm-res-title" class="t-h2">How a market gets its answer</h2>
-        </div>
-        <p class="t-body hm-head-note">Every market passes through the same six states. Select one to see what happens and who acts.</p>
-      </div>
-      <div class="hm-track" id="hm-track" role="tablist" aria-label="Market states"></div>
-      <div class="hm-res__detail" id="hm-res-detail" role="tabpanel"></div>
-      <div class="hm-trust" id="hm-trust"></div>
-    </div>
-  </section>
 
-  <!-- 6. BUILDERS: outcome tokens ---------------------------------------------- -->
-  <section class="s-section hm-build" id="builders" aria-labelledby="hm-build-title">
-    <div class="s-container hm-build__grid">
-      <div class="hm-build__copy">
-        <span class="s-spec">For builders</span>
-        <h2 id="hm-build-title" class="t-h2 u-mt-2">Outcome tokens are ordinary tokens</h2>
-        <p class="t-body u-mt-4">Every Seer market sits on Gnosis Conditional Tokens. Collateral splits into one token per outcome, and each position is wrapped as an ERC-20, so it trades on ordinary pools, sits in any wallet and can be read by any contract.</p>
-        <ul class="hm-points">
-          <li><b>Split</b> 1 sDAI into one token of every outcome.</li>
-          <li><b>Merge</b> a full set back into 1 sDAI at any time.</li>
-          <li><b>Redeem</b> winning tokens for collateral after the answer is final.</li>
-          <li><b>Create</b> a market without permission, on any of the four chains.</li>
-        </ul>
-        <div class="hm-links" id="hm-links"></div>
-      </div>
-      <div id="hm-tokens"></div>
-    </div>
-  </section>
 
   <!-- 7. PROOF + CTA poster ----------------------------------------------------- -->
   <section class="s-section--tight hm-proof" aria-labelledby="hm-proof-title">
@@ -177,32 +219,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     </div>
   </section>
 
-  <!-- 8. DESIGN NOTES ------------------------------------------------------------ -->
-  <section class="s-section hm-notes" id="notes" aria-labelledby="hm-notes-title">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div>
-          <span class="s-spec">Design notes · 01 Homepage</span>
-          <h2 id="hm-notes-title" class="t-h2">Design notes</h2>
-        </div>
-        <a class="s-btn s-btn--ghost" href="../#notes">All notes for the six interfaces</a>
-      </div>
-      <details class="s-details"><summary>Design notes for this page<small>kept from the kit · departures</small></summary>
-      <div class="hm-notes__grid">
-        <ol class="hm-notes__list">
-          <li><b>Wedges carry prices.</b> The kit's converging wedges are drawn from sample prices: band width is an outcome's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
-          <li><b>A protocol map replaces the marketing grid.</b> The raven art, the category pill cloud and the feature cards become one diagram: five apps above the building blocks they share.</li>
-          <li><b>One worked example instead of claims.</b> A fictional grant round is followed through four apps with the same market IDs they use. No invented protocol totals.</li>
-        </ol>
-        <ol class="hm-notes__list">
-          <li><b>Typefaces.</b> Geist, Geist Mono and Instrument Serif Italic stand in for PP Neue Montreal, Suisse Int'l Mono and Reckless when those are not installed.</li>
-          <li><b>Colour.</b> Muted text is lifted to pass WCAG AA. Status amber and red appear only on market states, next to their label; charts use the system palette, violet first.</li>
-          <li><b>Two poster moments.</b> The ink protocol layer and the violet closing poster come from the kit's posters; everything else stays on calm kit surfaces.</li>
-        </ol>
-      </div>
-      </details>
-    </div>
-  </section>
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>

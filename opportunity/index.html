@@ -152,97 +152,110 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     </div>
   </section>
 
-  <!-- 5. Markets: live, upcoming, settled -->
-  <section class="s-section--tight" id="markets" aria-labelledby="op-markets-h">
+  <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
+  <section class="s-section--tight s-more" aria-labelledby="op-more-title">
     <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">Opportunity markets</span><h2 class="t-h2" id="op-markets-h">Live, upcoming and settled</h2></div>
-      </div>
-      <div class="op-markets" id="op-markets"></div>
-    </div>
-  </section>
+      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="op-more-title">Tools, guides and design notes</h2></div><p>3 sections · each opens in place</p></div>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Live, upcoming and settled</b><small>Other opportunity markets: grants, contests, hiring and names, plus the public archive.</small></span><span class="s-more__k">Markets</span></summary>
+      <!-- 5. Markets: live, upcoming, settled -->
+      <section class="s-section--tight" id="markets" aria-labelledby="op-markets-h">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div><span class="s-spec">Opportunity markets</span><h2 class="t-h2" id="op-markets-h">Live, upcoming and settled</h2></div>
+          </div>
+          <div class="op-markets" id="op-markets"></div>
+        </div>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>One pool, several winners</b><small>How a multi-winner market pays, and how a sponsor starts one.</small></span><span class="s-more__k">How it works</span></summary>
+      <!-- 6. How it works + for sponsors -->
+      <section class="s-section--tight" id="how" aria-labelledby="op-how-h">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div><span class="s-spec">How it works · Mkt #2842</span><h2 class="t-h2" id="op-how-h">One pool, several winners</h2></div>
+          </div>
+          <div class="op-how">
+            <article class="s-card s-card--pad op-how__card">
+              <span class="op-how__n">01</span>
+              <h3 class="t-title">Every entry is an outcome token</h3>
+              <p class="t-body">The 40 proposals and an Invalid outcome are the outcomes of one multi-categorical market. Each position is an ERC-1155 token wrapped as an ERC-20, so it trades in an ordinary pool. One full set always redeems for 1 sDAI, so the prices add up to 100%.</p>
+              <div id="op-pool"></div>
+            </article>
+            <article class="s-card s-card--pad op-how__card">
+              <span class="op-how__n">02</span>
+              <h3 class="t-title">Funded entries split the payout</h3>
+              <p class="t-body">Several outcomes can be true. If the panel funds eight proposals, each funded share redeems for 1/8 sDAI and every other share for nothing.</p>
+              <div class="op-calc" id="op-calc"></div>
+            </article>
+            <article class="s-card s-card--pad op-how__card">
+              <span class="op-how__n">03</span>
+              <h3 class="t-title">Reality.eth records the decision</h3>
+              <p class="t-body">When the panel publishes its scores, anyone can answer the market's Reality.eth question with the funded list, backed by a bond. A challenged answer goes to Kleros. If the round is cancelled, the market resolves Invalid.</p>
+              <div id="op-res"></div>
+            </article>
+          </div>
+          <div class="s-card s-card--pad op-life">
+            <div class="s-row s-row--between"><h3 class="t-title">Lifecycle of #2842</h3><span class="t-meta" id="op-life-note"></span></div>
+            <div id="op-timeline"></div>
+          </div>
 
-  <!-- 6. How it works + for sponsors -->
-  <section class="s-section--tight" id="how" aria-labelledby="op-how-h">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">How it works · Mkt #2842</span><h2 class="t-h2" id="op-how-h">One pool, several winners</h2></div>
-      </div>
-      <div class="op-how">
-        <article class="s-card s-card--pad op-how__card">
-          <span class="op-how__n">01</span>
-          <h3 class="t-title">Every entry is an outcome token</h3>
-          <p class="t-body">The 40 proposals and an Invalid outcome are the outcomes of one multi-categorical market. Each position is an ERC-1155 token wrapped as an ERC-20, so it trades in an ordinary pool. One full set always redeems for 1 sDAI, so the prices add up to 100%.</p>
-          <div id="op-pool"></div>
-        </article>
-        <article class="s-card s-card--pad op-how__card">
-          <span class="op-how__n">02</span>
-          <h3 class="t-title">Funded entries split the payout</h3>
-          <p class="t-body">Several outcomes can be true. If the panel funds eight proposals, each funded share redeems for 1/8 sDAI and every other share for nothing.</p>
-          <div class="op-calc" id="op-calc"></div>
-        </article>
-        <article class="s-card s-card--pad op-how__card">
-          <span class="op-how__n">03</span>
-          <h3 class="t-title">Reality.eth records the decision</h3>
-          <p class="t-body">When the panel publishes its scores, anyone can answer the market's Reality.eth question with the funded list, backed by a bond. A challenged answer goes to Kleros. If the round is cancelled, the market resolves Invalid.</p>
-          <div id="op-res"></div>
-        </article>
-      </div>
-      <div class="s-card s-card--pad op-life">
-        <div class="s-row s-row--between"><h3 class="t-title">Lifecycle of #2842</h3><span class="t-meta" id="op-life-note"></span></div>
-        <div id="op-timeline"></div>
-      </div>
-
-      <div class="s-poster op-sponsor" id="sponsors" aria-labelledby="op-sp-h">
-        <div class="op-sponsor__copy">
-          <div class="s-specs"><span>For sponsors</span><span class="s-hide-sm">Grants · contests · hiring · names</span></div>
-          <h2 class="op-sponsor__title" id="op-sp-h">Closed beta today. <span class="t-accent">Permissionless tomorrow.</span></h2>
-          <p class="op-sponsor__lede">Any team choosing among many submissions can run its selection as an opportunity market. Reviewing costs more than submitting, so let the market read the pile with you.</p>
-          <div class="s-row" style="--gap:10px">
-            <button class="s-btn s-btn--lg op-hero__btn" type="button" data-demo="Opportunity markets are in closed beta. Market creation is not wired in this concept.">Start a market</button>
-            <a class="s-btn s-btn--lg s-btn--secondary op-hero__btn" href="#how">How it resolves</a>
+          <div class="s-poster op-sponsor" id="sponsors" aria-labelledby="op-sp-h">
+            <div class="op-sponsor__copy">
+              <div class="s-specs"><span>For sponsors</span><span class="s-hide-sm">Grants · contests · hiring · names</span></div>
+              <h2 class="op-sponsor__title" id="op-sp-h">Closed beta today. <span class="t-accent">Permissionless tomorrow.</span></h2>
+              <p class="op-sponsor__lede">Any team choosing among many submissions can run its selection as an opportunity market. Reviewing costs more than submitting, so let the market read the pile with you.</p>
+              <div class="s-row" style="--gap:10px">
+                <button class="s-btn s-btn--lg op-hero__btn" type="button" data-demo="Opportunity markets are in closed beta. Market creation is not wired in this concept.">Start a market</button>
+                <a class="s-btn s-btn--lg s-btn--secondary op-hero__btn" href="#how">How it resolves</a>
+              </div>
+            </div>
+            <ol class="op-sponsor__steps">
+              <li><b>Post the call</b><span>Each entry becomes an outcome as it arrives.</span></li>
+              <li><b>Seed liquidity</b><span>A small sDAI pool, so the first prices mean something.</span></li>
+              <li><b>Review with prices beside you</b><span>Read the close calls first. Decide as you always would.</span></li>
+              <li><b>Publish the decision</b><span>Reality.eth records it, and traders redeem on it.</span></li>
+            </ol>
           </div>
         </div>
-        <ol class="op-sponsor__steps">
-          <li><b>Post the call</b><span>Each entry becomes an outcome as it arrives.</span></li>
-          <li><b>Seed liquidity</b><span>A small sDAI pool, so the first prices mean something.</span></li>
-          <li><b>Review with prices beside you</b><span>Read the close calls first. Decide as you always would.</span></li>
-          <li><b>Publish the decision</b><span>Reality.eth records it, and traders redeem on it.</span></li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. Design notes -->
-  <section class="s-section--tight" id="notes" aria-labelledby="op-notes-h">
-    <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Design notes · 05 Opportunity</span><h2 class="t-h2" id="op-notes-h">What we kept, what we changed</h2></div></div>
-      <details class="s-details"><summary>Design notes for this page<small>kept from the kit · departures</small></summary>
-      <div class="op-notes">
-        <div class="s-card s-card--pad">
-          <h3 class="t-title">Kept from the Electric Foundation kit</h3>
-          <ul class="op-notelist">
-            <li>Tokens, radii and type roles as specified: card 9, bet slip 22, controls 8; Medium 13 UI, Medium 12 meta, Bold 32 amounts.</li>
-            <li>The market card's anatomy: glyph tile, two-line title, outcome pricing, and the "$Vol • time • category" footer with a bookmark.</li>
-            <li>The bet slip as drawn: two price tiles, an amount with +$ chips, Confirm with a clear button.</li>
-            <li>The "data barcode" bars and the ink poster, with mono spec labels around them.</li>
-          </ul>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>What we kept, what we changed</b><small>Design notes: what comes from the Electric Foundation kit, and the departures.</small></span><span class="s-more__k">Design notes</span></summary>
+      <!-- 7. Design notes -->
+      <section class="s-section--tight" id="notes" aria-labelledby="op-notes-h">
+        <div class="s-container">
+          <div class="s-section-head"><div><span class="s-spec">Design notes · 05 Opportunity</span><h2 class="t-h2" id="op-notes-h">What we kept, what we changed</h2></div></div>
+                <div class="op-notes">
+            <div class="s-card s-card--pad">
+              <h3 class="t-title">Kept from the Electric Foundation kit</h3>
+              <ul class="op-notelist">
+                <li>Tokens, radii and type roles as specified: card 9, bet slip 22, controls 8; Medium 13 UI, Medium 12 meta, Bold 32 amounts.</li>
+                <li>The market card's anatomy: glyph tile, two-line title, outcome pricing, and the "$Vol • time • category" footer with a bookmark.</li>
+                <li>The bet slip as drawn: two price tiles, an amount with +$ chips, Confirm with a clear button.</li>
+                <li>The "data barcode" bars and the ink poster, with mono spec labels around them.</li>
+              </ul>
+            </div>
+            <div class="s-card s-card--pad">
+              <h3 class="t-title">Departures on this page, and why</h3>
+              <ol class="op-notelist op-notelist--num">
+                <li><b>The barcode carries data.</b> Each bar in the hero is one entry; its length is the chance of selection, on a square-root scale so the long tail stays visible. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
+                <li><b>Two numbers per entry.</b> In a market with several winners, price and probability differ, so each card shows the chance of selection first and the share price second.</li>
+                <li><b>Buy and Sell replace Yes and No.</b> Each entry is one outcome token, as in Seer's live Opportunity ticket. The +1 / +5 / +10 / +100 chips and 0.5% slippage come from that ticket too.</li>
+                <li><b>Payout math for split winners.</b> The ticket prices a funded share at 1/8 sDAI, not 1 sDAI, and warns when a thin pool would push an order past its slippage.</li>
+                <li><b>A reviewer view.</b> The kit has no sponsor screens. The review queue uses only violet tints and labels; there are no green or red verdict colours, because the market does not decide.</li>
+                <li><b>Kit fixes.</b> Decimal points, not commas; muted text lifted to pass AA contrast.</li>
+              </ol>
+            </div>
+          </div>
         </div>
-        <div class="s-card s-card--pad">
-          <h3 class="t-title">Departures on this page, and why</h3>
-          <ol class="op-notelist op-notelist--num">
-            <li><b>The barcode carries data.</b> Each bar in the hero is one entry; its length is the chance of selection, on a square-root scale so the long tail stays visible. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
-            <li><b>Two numbers per entry.</b> In a market with several winners, price and probability differ, so each card shows the chance of selection first and the share price second.</li>
-            <li><b>Buy and Sell replace Yes and No.</b> Each entry is one outcome token, as in Seer's live Opportunity ticket. The +1 / +5 / +10 / +100 chips and 0.5% slippage come from that ticket too.</li>
-            <li><b>Payout math for split winners.</b> The ticket prices a funded share at 1/8 sDAI, not 1 sDAI, and warns when a thin pool would push an order past its slippage.</li>
-            <li><b>A reviewer view.</b> The kit has no sponsor screens. The review queue uses only violet tints and labels; there are no green or red verdict colours, because the market does not decide.</li>
-            <li><b>Kit fixes.</b> Decimal points, not commas; muted text lifted to pass AA contrast.</li>
-          </ol>
-        </div>
-      </div>
+      </section>
       </details>
     </div>
   </section>
+
+
 
 </main>
 

@@ -85,65 +85,78 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
     </div>
   </section>
 
-  <!-- 5. Information, not the decision + track record -->
-  <section class="s-section ft-record" id="record" aria-labelledby="ft-record-title">
+  <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
+  <section class="s-section--tight s-more" aria-labelledby="ft-more-title">
     <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">Track record</span><h2 class="t-h2" id="ft-record-title">Information for the DAO, not the decision</h2></div>
-      </div>
-      <div class="ft-record__grid">
-        <ol class="ft-roles" id="ft-roles"></ol>
-        <div class="ft-record__table">
-          <div id="ft-record-table"></div>
-          <p class="t-meta ft-record__note">The signal is published when the TWAP window closes, before the vote opens. In LIP-30 the market was neutral and Lattice DAO approved anyway: the market informs, the vote decides.</p>
+      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="ft-more-title">Tools, guides and design notes</h2></div><p>3 sections · each opens in place</p></div>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Information for the DAO, not the decision</b><small>Track record: each market signal next to the DAO&#x27;s actual vote.</small></span><span class="s-more__k">Track record</span></summary>
+      <!-- 5. Information, not the decision + track record -->
+      <section class="s-section ft-record" id="record" aria-labelledby="ft-record-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div><span class="s-spec">Track record</span><h2 class="t-h2" id="ft-record-title">Information for the DAO, not the decision</h2></div>
+          </div>
+          <div class="ft-record__grid">
+            <ol class="ft-roles" id="ft-roles"></ol>
+            <div class="ft-record__table">
+              <div id="ft-record-table"></div>
+              <p class="t-meta ft-record__note">The signal is published when the TWAP window closes, before the vote opens. In LIP-30 the market was neutral and Lattice DAO approved anyway: the market informs, the vote decides.</p>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. How it works -->
-  <section class="s-section" id="how" aria-labelledby="ft-how-title">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">How it works</span><h2 class="t-h2" id="ft-how-title">One proposal, two priced futures</h2></div>
-      </div>
-      <div class="s-grid ft-how" style="--cols:4" id="ft-how"></div>
-    </div>
-  </section>
-
-  <!-- 7. Design notes -->
-  <section class="s-section ft-notes" id="notes" aria-labelledby="ft-notes-title">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">Design notes · 04 Futarchy</span><h2 class="t-h2" id="ft-notes-title">What we kept, and where we departed</h2></div>
-      </div>
-      <details class="s-details"><summary>Design notes for this page<small>kept from the kit · departures</small></summary>
-      <div class="ft-notes__grid">
-        <div class="s-card s-card--pad">
-          <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
-          <ul class="ft-list">
-            <li>The kit's dark and light UI tokens, violet <span class="t-mono">#7D33FF</span> for primary actions, and the secondary violet tint for the second choice.</li>
-            <li>Bet-slip geometry: 22px panel, 16px padding, 18px gap, two price tiles, a Bold 32 amount, + chips, Confirm and a clear button.</li>
-            <li>Medium 13 for UI, Medium 12 for meta, Bold 16/24 for titles, and mono spec labels for market metadata.</li>
-            <li>The official EF lockup in the header, and the logo sheet's 45° construction lines and circles behind the hero fork.</li>
-          </ul>
-        </div>
-        <div class="s-card s-card--pad">
-          <h3 class="t-h3">Departures on this page</h3>
-          <ol class="ft-list ft-list--num">
-            <li><b>The fork is a chart.</b> Its two branches end at the real 5-day TWAPs on a true price scale, and the ±1% band around the NO price is drawn in, so the signal reads before any number does.</li>
-            <li><b>The serif accent marks the condition</b> (“if … is approved?”), the same clause the live product highlights.</li>
-            <li><b>Prices are in conditional sDAI, not cents.</b> Each pool trades YES_LAT against YES_sDAI (and NO_LAT against NO_sDAI), not a probability, so the kit's ¢ tiles carry four-decimal prices and a colour key per branch.</li>
-            <li><b>Green and red appear only on the signed impact and the signal label.</b> YES is violet and NO is kit lavender on every chart, as on the other five interfaces.</li>
-            <li><b>The ticket shows both futures.</b> A conditional trade is undone in the branch that does not happen, so the slip states what you hold if approved and if rejected.</li>
-            <li><b>The window scrubber is exploratory.</b> The official signal always uses the fixed 5-day window; other windows are labelled as yours.</li>
-          </ol>
-        </div>
-      </div>
+      </section>
       </details>
-      <p class="t-meta ft-notes__data">Sample data: Lattice, Harbor and Kestrel DAOs are fictional. LIP-31 is the same proposal the other five interfaces reference.</p>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>One proposal, two priced futures</b><small>Split, trade each future, read the gap, then vote and redeem.</small></span><span class="s-more__k">How it works</span></summary>
+      <!-- 6. How it works -->
+      <section class="s-section" id="how" aria-labelledby="ft-how-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div><span class="s-spec">How it works</span><h2 class="t-h2" id="ft-how-title">One proposal, two priced futures</h2></div>
+          </div>
+          <div class="s-grid ft-how" style="--cols:4" id="ft-how"></div>
+        </div>
+      </section>
+      </details>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>What we kept, and where we departed</b><small>Design notes: what comes from the Electric Foundation kit, and the departures.</small></span><span class="s-more__k">Design notes</span></summary>
+      <!-- 7. Design notes -->
+      <section class="s-section ft-notes" id="notes" aria-labelledby="ft-notes-title">
+        <div class="s-container">
+          <div class="s-section-head">
+            <div><span class="s-spec">Design notes · 04 Futarchy</span><h2 class="t-h2" id="ft-notes-title">What we kept, and where we departed</h2></div>
+          </div>
+                <div class="ft-notes__grid">
+            <div class="s-card s-card--pad">
+              <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
+              <ul class="ft-list">
+                <li>The kit's dark and light UI tokens, violet <span class="t-mono">#7D33FF</span> for primary actions, and the secondary violet tint for the second choice.</li>
+                <li>Bet-slip geometry: 22px panel, 16px padding, 18px gap, two price tiles, a Bold 32 amount, + chips, Confirm and a clear button.</li>
+                <li>Medium 13 for UI, Medium 12 for meta, Bold 16/24 for titles, and mono spec labels for market metadata.</li>
+                <li>The official EF lockup in the header, and the logo sheet's 45° construction lines and circles behind the hero fork.</li>
+              </ul>
+            </div>
+            <div class="s-card s-card--pad">
+              <h3 class="t-h3">Departures on this page</h3>
+              <ol class="ft-list ft-list--num">
+                <li><b>The fork is a chart.</b> Its two branches end at the real 5-day TWAPs on a true price scale, and the ±1% band around the NO price is drawn in, so the signal reads before any number does.</li>
+                <li><b>The serif accent marks the condition</b> (“if … is approved?”), the same clause the live product highlights.</li>
+                <li><b>Prices are in conditional sDAI, not cents.</b> Each pool trades YES_LAT against YES_sDAI (and NO_LAT against NO_sDAI), not a probability, so the kit's ¢ tiles carry four-decimal prices and a colour key per branch.</li>
+                <li><b>Green and red appear only on the signed impact and the signal label.</b> YES is violet and NO is kit lavender on every chart, as on the other five interfaces.</li>
+                <li><b>The ticket shows both futures.</b> A conditional trade is undone in the branch that does not happen, so the slip states what you hold if approved and if rejected.</li>
+                <li><b>The window scrubber is exploratory.</b> The official signal always uses the fixed 5-day window; other windows are labelled as yours.</li>
+              </ol>
+            </div>
+          </div>
+          <p class="t-meta ft-notes__data">Sample data: Lattice, Harbor and Kestrel DAOs are fictional. LIP-31 is the same proposal the other five interfaces reference.</p>
+        </div>
+      </section>
+      </details>
     </div>
   </section>
+
+
 
 </main>
 <script src="../assets/sample-data.js"></script>

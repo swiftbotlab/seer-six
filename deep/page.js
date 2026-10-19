@@ -258,7 +258,7 @@
     });
   }
 
-  var FIELD_LIM = matchMedia("(max-width: 640px)").matches ? 10 : 16;
+  var FIELD_LIM = matchMedia("(max-width: 640px)").matches ? 10 : 12; // desktop: the 8 funded ranks + the 4 closest below the line
   function limitRows(table) {
     var lim = state.fieldAll ? 1e9 : FIELD_LIM;
     [].slice.call(table.querySelectorAll("tbody tr")).forEach(function (tr, i) { if (tr.querySelector(".s-empty")) return; tr.hidden = i >= lim; });

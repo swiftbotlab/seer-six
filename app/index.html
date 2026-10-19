@@ -75,100 +75,115 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       </div>
     </section>
 
-    <section class="ap-section" id="activity" aria-labelledby="ap-activity-h">
+    <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
+    <section class="s-section--tight s-more" aria-labelledby="ap-more-title">
       <div class="s-container">
-        <div class="s-section-head ap-head">
-          <div><span class="s-spec">Protocol index · where every market is in its life</span><h2 id="ap-activity-h" class="t-h2">Activity</h2></div>
-        </div>
-        <figure class="s-poster ap-poster ap-poster--wide" aria-labelledby="ap-field-cap">
-          <div class="ap-poster__head">
-            <div class="s-specs"><span>Lifecycle field</span><span id="ap-field-n">18 markets</span><span>7 steps</span></div>
-            <div class="s-specs ap-hide-sm"><span>Snapshot <b>19 Oct 2026 · 12:00 UTC</b></span></div>
+        <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="ap-more-title">Activity, leaderboard and market creation</h2></div><p>3 sections · each opens in place</p></div>
+        <details class="s-details s-more__item">
+          <summary><span class="s-more__t"><b>Activity</b><small>The protocol index: every market&#x27;s lifecycle, the latest transactions and the resolution queue.</small></span><span class="s-more__k">Activity</span></summary>
+        <section class="ap-section" id="activity" aria-labelledby="ap-activity-h">
+          <div class="s-container">
+            <div class="s-section-head ap-head">
+              <div><span class="s-spec">Protocol index · where every market is in its life</span><h2 id="ap-activity-h" class="t-h2">Activity</h2></div>
+            </div>
+            <figure class="s-poster ap-poster ap-poster--wide" aria-labelledby="ap-field-cap">
+              <div class="ap-poster__head">
+                <div class="s-specs"><span>Lifecycle field</span><span id="ap-field-n">18 markets</span><span>7 steps</span></div>
+                <div class="s-specs ap-hide-sm"><span>Snapshot <b>19 Oct 2026 · 12:00 UTC</b></span></div>
+              </div>
+              <div class="ap-field" id="ap-field"></div>
+              <figcaption class="ap-poster__foot" id="ap-field-cap">
+                <span class="ap-legend">
+                  <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="1.6" fill="#BFBFE6" opacity=".6"/></svg>Step still open</span>
+                  <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="#8F55F7" stroke-width="1.4" stroke-linecap="round"/></svg>Step settled</span>
+                  <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.6" fill="none" stroke="rgba(143,85,247,.6)"/><circle cx="7" cy="7" r="2.6" fill="#B79BF7"/></svg>Where it is now</span>
+                </span>
+                <span class="ap-poster__note">Each column is a market, each row a step from creation to redemption: dots are still uncertain, crosses are settled. Select a column to open its record.</span>
+                <span class="s-specs ap-poster__counts" id="ap-field-counts"></span>
+              </figcaption>
+            </figure>
+            <div class="s-stats ap-index" id="ap-index" style="--cols:6"></div>
+            <div class="ap-mix" id="ap-mix"></div>
+            <div class="ap-act">
+              <section class="s-card s-card--pad" aria-labelledby="ap-tx-h">
+                <div class="s-row s-row--between"><div><span class="s-spec">Across all markets</span><h3 id="ap-tx-h" class="t-h3">Latest transactions</h3></div></div>
+                <div id="ap-tx"></div>
+              </section>
+              <section class="s-card s-card--pad" aria-labelledby="ap-queue-h">
+                <div class="s-row s-row--between"><div><span class="s-spec">Needs a person or a transaction</span><h3 id="ap-queue-h" class="t-h3">Resolution queue</h3></div></div>
+                <ol class="ap-queue" id="ap-queue"></ol>
+              </section>
+            </div>
           </div>
-          <div class="ap-field" id="ap-field"></div>
-          <figcaption class="ap-poster__foot" id="ap-field-cap">
-            <span class="ap-legend">
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="1.6" fill="#BFBFE6" opacity=".6"/></svg>Step still open</span>
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="#8F55F7" stroke-width="1.4" stroke-linecap="round"/></svg>Step settled</span>
-              <span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.6" fill="none" stroke="rgba(143,85,247,.6)"/><circle cx="7" cy="7" r="2.6" fill="#B79BF7"/></svg>Where it is now</span>
-            </span>
-            <span class="ap-poster__note">Each column is a market, each row a step from creation to redemption: dots are still uncertain, crosses are settled. Select a column to open its record.</span>
-            <span class="s-specs ap-poster__counts" id="ap-field-counts"></span>
-          </figcaption>
-        </figure>
-        <div class="s-stats ap-index" id="ap-index" style="--cols:6"></div>
-        <div class="ap-mix" id="ap-mix"></div>
-        <div class="ap-act">
-          <section class="s-card s-card--pad" aria-labelledby="ap-tx-h">
-            <div class="s-row s-row--between"><div><span class="s-spec">Across all markets</span><h3 id="ap-tx-h" class="t-h3">Latest transactions</h3></div></div>
-            <div id="ap-tx"></div>
-          </section>
-          <section class="s-card s-card--pad" aria-labelledby="ap-queue-h">
-            <div class="s-row s-row--between"><div><span class="s-spec">Needs a person or a transaction</span><h3 id="ap-queue-h" class="t-h3">Resolution queue</h3></div></div>
-            <ol class="ap-queue" id="ap-queue"></ol>
-          </section>
-        </div>
+        </section>
+        </details>
+        <details class="s-details s-more__item">
+          <summary><span class="s-more__t"><b>Leaderboard</b><small>Trader Score 0–100 on resolved markets, for people and agents.</small></span><span class="s-more__k">Leaderboard</span></summary>
+        <section class="ap-section" id="leaderboard" aria-labelledby="ap-lb-h">
+          <div class="s-container">
+            <div class="s-section-head ap-head">
+              <div><span class="s-spec">Trader Score 0–100 · resolved markets only</span><h2 id="ap-lb-h" class="t-h2">Leaderboard</h2></div>
+            </div>
+            <div class="s-card ap-lb" id="ap-lb"></div>
+          </div>
+        </section>
+        </details>
+        <details class="s-details s-more__item">
+          <summary><span class="s-more__t"><b>Create a market</b><small>One transaction, four market types, with a live preview of what it creates.</small></span><span class="s-more__k">Create</span></summary>
+        <section class="ap-section" id="create" aria-labelledby="ap-create-h">
+          <div class="s-container">
+            <div class="s-section-head ap-head">
+              <div><span class="s-spec">One transaction · four market types</span><h2 id="ap-create-h" class="t-h2">Create a market</h2></div>
+              <span class="s-sample">Preview only</span>
+            </div>
+            <div class="ap-create">
+              <form class="s-card s-card--pad ap-form" id="ap-form" novalidate>
+                <fieldset class="ap-fieldset">
+                  <legend class="ap-label">Market type</legend>
+                  <div class="ap-types" id="ap-types"></div>
+                </fieldset>
+                <label class="s-field">Question
+                  <input class="s-input" id="ap-f-q" maxlength="160" autocomplete="off" placeholder="Will Gnosis Chain process over 1M transactions on 1 Dec 2026?">
+                </label>
+                <label class="s-field" id="ap-f-outs-wrap"><span>Outcomes <span class="t-meta ap-hint" id="ap-f-outs-hint">Comma-separated, 2 to 12</span></span>
+                  <input class="s-input" id="ap-f-outs" maxlength="400" autocomplete="off" value="Rain, Dry, Snow">
+                </label>
+                <div class="ap-form__row" id="ap-f-range" hidden>
+                  <label class="s-field">Lower bound<input class="s-input" id="ap-f-min" inputmode="decimal" value="0" maxlength="14"></label>
+                  <label class="s-field">Upper bound<input class="s-input" id="ap-f-max" inputmode="decimal" value="2000000" maxlength="14"></label>
+                  <label class="s-field">Unit<input class="s-input" id="ap-f-unit" maxlength="12" value="tx/day"></label>
+                </div>
+                <div class="ap-form__row">
+                  <label class="s-field">Category<select class="s-select" id="ap-f-cat"></select></label>
+                  <label class="s-field">Chain<select class="s-select" id="ap-f-chain"></select></label>
+                  <label class="s-field">Collateral<select class="s-select" id="ap-f-coll"></select></label>
+                </div>
+                <div class="ap-form__row ap-form__row--2">
+                  <label class="s-field">Reports open on<input class="s-input" id="ap-f-date" type="date" value="2026-12-31" min="2026-10-20" max="2030-12-31" aria-describedby="ap-f-date-read"><span class="ap-dateread" id="ap-f-date-read" aria-live="polite">31 Dec 2026 · 00:00 UTC</span></label>
+                  <label class="s-switch ap-curate"><input type="checkbox" id="ap-f-curate" checked> Submit to Kleros Curate</label>
+                </div>
+                <p class="t-meta ap-form__err" id="ap-f-err" role="alert"></p>
+                <div class="s-row">
+                  <button class="s-btn s-btn--lg" type="submit" id="ap-f-go">Create market</button>
+                  <span class="t-meta">Sample only. Nothing is deployed.</span>
+                </div>
+              </form>
+              <aside class="ap-preview" aria-labelledby="ap-prev-h">
+                <span class="s-spec" id="ap-prev-h">Live preview</span>
+                <div id="ap-prev-card"></div>
+                <div class="s-card s-card--pad ap-deploy">
+                  <span class="s-spec">What this transaction creates</span>
+                  <ol class="ap-deploy__list" id="ap-deploy"></ol>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+        </details>
       </div>
     </section>
 
-    <section class="ap-section" id="leaderboard" aria-labelledby="ap-lb-h">
-      <div class="s-container">
-        <div class="s-section-head ap-head">
-          <div><span class="s-spec">Trader Score 0–100 · resolved markets only</span><h2 id="ap-lb-h" class="t-h2">Leaderboard</h2></div>
-        </div>
-        <div class="s-card ap-lb" id="ap-lb"></div>
-      </div>
-    </section>
 
-    <section class="ap-section" id="create" aria-labelledby="ap-create-h">
-      <div class="s-container">
-        <div class="s-section-head ap-head">
-          <div><span class="s-spec">One transaction · four market types</span><h2 id="ap-create-h" class="t-h2">Create a market</h2></div>
-          <span class="s-sample">Preview only</span>
-        </div>
-        <div class="ap-create">
-          <form class="s-card s-card--pad ap-form" id="ap-form" novalidate>
-            <fieldset class="ap-fieldset">
-              <legend class="ap-label">Market type</legend>
-              <div class="ap-types" id="ap-types"></div>
-            </fieldset>
-            <label class="s-field">Question
-              <input class="s-input" id="ap-f-q" maxlength="160" autocomplete="off" placeholder="Will Gnosis Chain process over 1M transactions on 1 Dec 2026?">
-            </label>
-            <label class="s-field" id="ap-f-outs-wrap"><span>Outcomes <span class="t-meta ap-hint" id="ap-f-outs-hint">Comma-separated, 2 to 12</span></span>
-              <input class="s-input" id="ap-f-outs" maxlength="400" autocomplete="off" value="Rain, Dry, Snow">
-            </label>
-            <div class="ap-form__row" id="ap-f-range" hidden>
-              <label class="s-field">Lower bound<input class="s-input" id="ap-f-min" inputmode="decimal" value="0" maxlength="14"></label>
-              <label class="s-field">Upper bound<input class="s-input" id="ap-f-max" inputmode="decimal" value="2000000" maxlength="14"></label>
-              <label class="s-field">Unit<input class="s-input" id="ap-f-unit" maxlength="12" value="tx/day"></label>
-            </div>
-            <div class="ap-form__row">
-              <label class="s-field">Category<select class="s-select" id="ap-f-cat"></select></label>
-              <label class="s-field">Chain<select class="s-select" id="ap-f-chain"></select></label>
-              <label class="s-field">Collateral<select class="s-select" id="ap-f-coll"></select></label>
-            </div>
-            <div class="ap-form__row ap-form__row--2">
-              <label class="s-field">Reports open on<input class="s-input" id="ap-f-date" type="date" value="2026-12-31" min="2026-10-20" max="2030-12-31" aria-describedby="ap-f-date-read"><span class="ap-dateread" id="ap-f-date-read" aria-live="polite">31 Dec 2026 · 00:00 UTC</span></label>
-              <label class="s-switch ap-curate"><input type="checkbox" id="ap-f-curate" checked> Submit to Kleros Curate</label>
-            </div>
-            <p class="t-meta ap-form__err" id="ap-f-err" role="alert"></p>
-            <div class="s-row">
-              <button class="s-btn s-btn--lg" type="submit" id="ap-f-go">Create market</button>
-              <span class="t-meta">Sample only. Nothing is deployed.</span>
-            </div>
-          </form>
-          <aside class="ap-preview" aria-labelledby="ap-prev-h">
-            <span class="s-spec" id="ap-prev-h">Live preview</span>
-            <div id="ap-prev-card"></div>
-            <div class="s-card s-card--pad ap-deploy">
-              <span class="s-spec">What this transaction creates</span>
-              <ol class="ap-deploy__list" id="ap-deploy"></ol>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
   </div>
 
   <!-- ============ VIEW: market detail / address (filled by page.js) ============ -->
