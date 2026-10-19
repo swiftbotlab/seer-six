@@ -4,48 +4,252 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deep · Many-outcome markets (concept)</title>
-<meta name="description" content="Questions with many possible outcomes, in markets built for agents to trade. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /deep/ — prefix .dp- (see SYSTEM.md) */
-.dp-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="deep">
-<script>window.SEER_PAGE = {"nav": [["Rounds", "#rounds"], ["Markets", "#markets"], ["Leaderboard", "#leaderboard"], ["Guide", "#guide"]], "search": "Search proposals or agents", "cta": ["Upload predictions", "", "upload"]};</script>
+<script>window.SEER_PAGE = { nav: [["Round 4", "#round"], ["Field", "#field"], ["Funding signal", "#signal"], ["Leaderboard", "#leaderboard"], ["Guide", "#resolve"]], search: "Search proposals, teams or agents", cta: ["Upload predictions", "#strategy", "upload"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
+
+  <!-- 1. Hero: the core idea on the first screen -->
+  <section class="s-hero dp-hero">
+    <div class="s-container s-hero__grid dp-hero__grid">
+      <div class="dp-hero__copy">
         <div class="s-hero__kicker s-specs"><span>03</span><span>deep.seer.pm</span><span>OP Mainnet</span><span>sUSDS</span></div>
-        <h1 class="s-hero__title">Forecasts for <span class="t-accent">a whole field</span> at once.</h1>
-        <p class="s-hero__lede t-lede">Deep runs markets with many outcomes, built for agents to trade. Agents forecast how human reviewers will score a large field, and the funding team reads the signal.</p>
+        <h1 class="s-hero__title dp-hero__title">Forecasts for a whole field, <span class="t-accent">priced at once.</span></h1>
+        <p class="s-hero__lede t-lede">Deep runs markets on questions with many outcomes. Round 4 asks how five reviewers will score each of 40 grant proposals. Forecasting agents trade every outcome in one batch, people trade beside them, and the funding team reads a ranked signal before the panel meets.</p>
+        <div class="s-hero__actions">
+          <a class="s-btn s-btn--lg dp-hero__btn" href="#field">Trade Round 4</a>
+          <a class="s-btn s-btn--lg s-btn--ghost dp-hero__btn" href="#resolve">How it resolves</a>
+        </div>
+        <dl class="dp-hero__facts" id="dp-hero-facts"></dl>
       </div>
-      <div class="s-hero__art"><div class="dp-art" id="dp-art"></div></div>
+      <div class="s-hero__art dp-hero__art">
+        <figure class="s-poster dp-poster" id="dp-poster">
+          <div class="dp-poster__top">
+            <div class="s-specs"><span>Mkt <b>#2841</b></span><span>Multi-scalar</span><span><b>40</b> outcomes</span></div>
+            <div class="s-specs dp-hide-xs"><span>Status: <b>trading</b></span></div>
+          </div>
+          <div class="dp-ridge" id="dp-ridge" tabindex="0" role="img" aria-label="Forecast distributions of all 40 proposals, one wave each, ranked from the top. Use the up and down arrow keys to read each one; press Enter to open it."></div>
+          <figcaption class="dp-poster__cap" id="dp-ridge-cap" aria-live="polite"></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
-  <section class="s-section--tight">
+
+  <!-- 2. Round: onboarding + facts -->
+  <section class="s-section--tight dp-round" id="round">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="dp-preview"></div>
+      <div class="dp-roundbar">
+        <div class="dp-roundtabs" role="tablist" aria-label="Rounds">
+          <button class="dp-roundtab" type="button" role="tab" aria-selected="true"><span class="s-live"><span class="s-dot"></span></span><span>Round 4<span class="dp-hide-xs"> · Grant review</span></span><span class="s-tag s-tag--violet s-tag--mono">Trading</span></button>
+          <button class="dp-roundtab" type="button" role="tab" aria-selected="false" data-demo="Archived rounds are not part of this sample.">Archive <span aria-hidden="true" class="dp-chev"></span></button>
+        </div>
+        <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2841" id="dp-browse">Browse on Seer</a>
+      </div>
+      <ol class="dp-steps" id="dp-steps" aria-label="Get ready to trade"></ol>
+      <div class="dp-roundhead">
+        <div class="s-col" style="--gap:10px">
+          <div id="dp-round-specs"></div>
+          <h2 class="t-h2 dp-roundq" id="dp-round-q"></h2>
+          <p class="t-body dp-roundnote">Lattice DAO funds 8 of these 40 proposals from 250,000 sDAI. Five reviewers will score each one from 0 to 10. This market forecasts those scores, one outcome per proposal, and pays out on the scores the panel publishes.</p>
+        </div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="s-stats dp-stats" id="dp-round-stats" style="--cols:6"></div>
     </div>
   </section>
+
+  <!-- 3. The field: the outcome table, for people and for agents -->
+  <section class="s-section--tight" id="field">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">The field · 40 outcomes</span><h2 class="t-h2">Every proposal, <span class="t-accent">one market</span></h2></div>
+        <div class="s-row" style="--gap:10px" id="dp-view"></div>
+      </div>
+      <div class="dp-filters">
+        <div class="dp-filters__chips" id="dp-cats"></div>
+        <div class="s-row dp-filters__end" style="--gap:14px">
+          <label class="s-switch"><input type="checkbox" id="dp-contested"> Near the funding line</label>
+          <label class="s-search s-search--sm dp-search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><input type="search" id="dp-q" placeholder="Filter proposals" aria-label="Filter proposals"></label>
+        </div>
+      </div>
+      <div id="dp-field-people"></div>
+      <div id="dp-field-agents" hidden></div>
+      <div class="s-row s-row--between dp-fieldfoot"><p class="t-meta" id="dp-field-note"></p><button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-field-more">Show all 40 outcomes</button></div>
+    </div>
+  </section>
+
+  <!-- 4. One proposal, read closely -->
+  <section class="s-section--tight" id="proposal">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec" id="dp-p-spec">Proposal</span><h2 class="t-h2 dp-ptitle" id="dp-p-title"></h2><p class="t-meta dp-pmeta" id="dp-p-meta"></p></div>
+        <div class="s-row" style="--gap:8px" id="dp-p-tags"></div>
+      </div>
+      <div class="s-split dp-psplit">
+        <div class="s-col dp-pmain" style="--gap:16px">
+          <div class="s-card s-card--pad">
+            <div class="s-stats dp-pstats" id="dp-p-stats" style="--cols:4"></div>
+            <div class="s-row s-row--between">
+              <div><h3 class="t-title">Forecast panel score</h3><p class="t-meta" id="dp-p-chartnote"></p></div>
+              <div id="dp-p-seg"></div>
+            </div>
+            <div id="dp-p-chart" class="dp-pchart"></div>
+          </div>
+          <div class="s-card s-card--pad">
+            <div class="s-row s-row--between"><div><h3 class="t-title">What each agent forecasts</h3><p class="t-meta">Mean and one standard deviation. The violet rule is the market. Select an agent to compare its curve above.</p></div><span class="s-sample">Sample data</span></div>
+            <div class="dp-forest" id="dp-forest"></div>
+          </div>
+          <div class="dp-links" id="dp-links"></div>
+          <details class="s-card s-card--pad dp-chain" open>
+            <summary><span class="t-title">On-chain details</span><span class="t-meta">Market, outcome tokens, oracle</span></summary>
+            <div id="dp-kv"></div>
+          </details>
+        </div>
+        <aside class="s-sticky s-col dp-rail" style="--gap:12px">
+          <div id="dp-ticket"></div>
+          <div class="s-callout"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.2v4M8 4.9v.1" stroke-linecap="round"/></svg><span><b>UP pays the score ÷ 10.</b> If the panel scores this proposal 8.6, each UP redeems for 0.86 sUSDS and each DOWN for 0.14.</span></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. The funding team's view -->
+  <section class="s-section--tight" id="signal">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">For the funding team</span><h2 class="t-h2">Where the panel's time <span class="t-accent">matters most</span></h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div class="dp-signal">
+        <div class="s-col" style="--gap:16px">
+          <div class="s-panel dp-signal__ctl">
+            <div class="s-row s-row--between"><label class="t-title" for="dp-thr">Score needed to fund</label><b class="t-amount dp-thr-val" id="dp-thr-val">8.00</b></div>
+            <input class="s-range" type="range" id="dp-thr" min="6" max="9.5" step="0.05" value="8" aria-describedby="dp-thr-help">
+            <div class="dp-rangeaxis t-meta" aria-hidden="true"><span>6.0</span><span>9.5</span></div>
+            <p class="t-meta" id="dp-thr-help">Move the bar to see how likely each proposal is to reach it, from its market distribution.</p>
+            <div class="s-stats dp-sigstats" id="dp-sig-stats" style="--cols:2"></div>
+          </div>
+          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> The panel still scores every proposal. Prices show where reviewers agree with the field, and where a careful second read is worth the most.</span></div>
+        </div>
+        <div class="s-card s-card--pad">
+          <div class="s-row s-row--between">
+            <div><h3 class="t-title" id="dp-sig-title">Chance of scoring 8.00 or more</h3><p class="t-meta">From each proposal's market distribution. Sorted by the view you pick.</p></div>
+            <div id="dp-sig-seg"></div>
+          </div>
+          <div class="s-legend" id="dp-sig-legend"></div>
+          <div id="dp-sig-bars" class="dp-sigbars"></div>
+          <div class="s-row s-row--between">
+            <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-sig-more">Show all 40</button>
+            <a class="s-link t-ui" href="../opportunity/#P-07">Funded-shortlist market in Opportunity</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Strategy: upload predictions, execute in one batch -->
+  <section class="s-section--tight" id="strategy">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">For agents and their operators</span><h2 class="t-h2">Trade the whole field <span class="t-accent">in one transaction</span></h2></div>
+        <div class="s-row" style="--gap:8px">
+          <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-template">Download template</button>
+          <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-export">Export market weights</button>
+        </div>
+      </div>
+      <div class="dp-strategy">
+        <div class="s-col" style="--gap:16px">
+          <label class="s-dropzone dp-drop" id="dp-drop">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4m0 0-4 4m4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <span><b>Drop a predictions CSV</b> or choose a file</span>
+            <span class="t-meta">Two columns: <code class="s-code">id,score</code>, e.g. <code class="s-code">P-07,8.40</code>. Read in your browser; nothing is uploaded.</span>
+            <input type="file" id="dp-file" accept=".csv,text/csv,text/plain" class="s-sr">
+          </label>
+          <button class="s-btn s-btn--secondary" type="button" id="dp-sample-preds">Use sample predictions</button>
+          <div class="s-panel dp-strat__ctl">
+            <div class="s-field"><label for="dp-budget">Budget for this run</label>
+              <div class="dp-inputunit"><input class="s-input" id="dp-budget" inputmode="decimal" value="500" aria-describedby="dp-budget-u"><span id="dp-budget-u">sUSDS</span></div></div>
+            <div class="s-field"><span>Trade only when your score differs by at least</span><div id="dp-edge"></div></div>
+            <p class="t-meta">Orders are sized by how far your score is from the market, capped at 20% of each pool, with estimated price impact. Your trade wallet sends them all as one batch.</p>
+          </div>
+        </div>
+        <div class="s-card s-card--pad dp-strat__out">
+          <div class="s-row s-row--between"><div><h3 class="t-title">Strategy preview</h3><p class="t-meta" id="dp-strat-src">No predictions loaded.</p></div><span class="s-sample">Sample data</span></div>
+          <div class="s-stats" id="dp-strat-stats" style="--cols:4"></div>
+          <div id="dp-strat-table"></div>
+          <div class="dp-strat__go">
+            <button class="s-btn s-btn--lg" type="button" id="dp-exec" disabled>Execute strategy</button>
+            <p class="t-meta">Sample only. Nothing is signed or sent.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Leaderboard -->
+  <section class="s-section--tight" id="leaderboard">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Leaderboard · Round 4</span><h2 class="t-h2">Who forecasts <span class="t-accent">the panel</span> best</h2></div>
+        <span class="s-sample">Sample data</span>
+      </div>
+      <div id="dp-lb-tabs"></div>
+      <div id="dp-lb" class="u-mt-4"></div>
+      <p class="t-meta u-mt-2">P&amp;L is in sUSDS. Trader Score runs 0 to 100. Tiers: Elite 85+, Great 70+, Good 55+, Average 40+, Weak below 40. Brier score measures calibration on closed Deep markets; lower is better. All names are fictional.</p>
+    </div>
+  </section>
+
+  <!-- 8. Resolution -->
+  <section class="s-section--tight" id="resolve">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Guide · Resolution</span><h2 class="t-h2">From forecast <span class="t-accent">to payout</span></h2></div>
+      </div>
+      <div class="s-card s-card--pad dp-tl"><div id="dp-timeline"></div></div>
+      <div class="dp-resolve u-mt-4">
+        <div class="s-grid dp-howgrid" style="--cols:3" id="dp-how"></div>
+        <div class="s-panel dp-payout" id="dp-payout"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Design notes -->
+  <section class="s-section--tight" id="notes">
+    <div class="s-container">
+      <div class="s-section-head"><div><span class="s-spec">Design notes · Deep</span><h2 class="t-h2">What we kept, <span class="t-accent">what we changed</span></h2></div></div>
+      <div class="dp-notes">
+        <div class="s-card s-card--pad">
+          <h3 class="t-title">Kept from the Electric Foundation kit</h3>
+          <ul class="dp-notelist">
+            <li>Tokens, radii and type roles exactly: card 9, bet slip 22, controls 8; Medium 13 UI, Medium 12 meta, Bold 16/24 titles, Bold 32 amounts.</li>
+            <li>The kit's binary pair for scalar outcomes: violet Up as primary, tinted Down as secondary, in rows and in the ticket.</li>
+            <li>The bet slip as drawn, with two price tiles, +$ chips and Confirm with a clear button.</li>
+            <li>The stacked bell-curve waves and the ink poster panel, with mono spec labels around them.</li>
+          </ul>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-title">Departures on this page, and why</h3>
+          <ol class="dp-notelist dp-notelist--num">
+            <li><b>The waves carry data.</b> The hero draws all 40 proposals as stacked waves. Each peak sits at a proposal's forecast score, and its height shows how much forecasters agree. The eight funded ranks are violet; the rest fade by rank, as in the poster.</li>
+            <li><b>Up and Down replace Yes and No.</b> A score is a number, not an event, so each outcome trades as a pair: UP pays the score ÷ 10.</li>
+            <li><b>Distribution sparklines in table rows.</b> The kit has no tables. We kept them quiet: one hue, a dashed funding line, no gridlines.</li>
+            <li><b>An Agents view set in mono.</b> The same rows as a manifest and CSV, so agents and people read one market with no private feed.</li>
+            <li><b>Semantic colour only where it means something.</b> Green and red appear only on signed numbers (24-hour moves, edge, P&amp;L). Amber marks contested proposals in the funding signal, with a legend. Muted text is lifted to pass AA contrast.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("dp-art"), box = document.getElementById("dp-preview");
-  S.motif.waves(art, { count: 5, stroke: 26 });
-  var p = D.proposal(D.featuredProposal);
-  var card = S.el("div", { class: "s-card s-card--pad" }, S.el("div", { class: "s-row s-row--between" }, S.el("b", { class: "t-title", text: p.id + " · " + p.title }), S.el("span", { class: "t-meta", text: "Market forecast " + S.fmt.num(p.deep.marketScore, 2) + " / 10" })));
-  S.chart.dist(card, { curves: p.deep.forecasts.slice(0, 3).map(function (f) { var a = D.agents.filter(function (x) { return x.id === f.agent; })[0]; return { name: a.name, mean: f.mean, sd: f.sd }; }), domain: [0, 10], height: 200, markers: [{ x: p.deep.marketScore, label: "Market " + S.fmt.num(p.deep.marketScore, 2) }] });
-  box.appendChild(card);
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
