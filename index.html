@@ -86,6 +86,25 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 @media (max-width: 1100px) { .hb-tour { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .hb-tour { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
+.hb-poster__art { overflow: hidden; }
+@media (max-width: 640px) { .hb-tour__url, .hb-card__url { display: none; } }
+/* kit -> concept: a crop of the Electric Foundation web frame beside the same component, live */
+.hb-fid-head { margin: 28px 0 14px; max-width: 72ch; }
+.hb-fid-head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; margin-top: 6px; }
+.hb-fid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.hb-pair { background: var(--surface); border-radius: var(--r-panel); padding: 16px 16px 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; align-items: start; align-content: start; }
+.hb-pair__t { grid-column: 1 / -1; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.hb-pair__lbl { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+.hb-pair__kit img { display: block; width: 100%; height: auto; border-radius: 8px; background: #101013; }
+.hb-pair__kit img + img { margin-top: 8px; }
+.hb-pair__box { padding: 12px; border-radius: 10px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.hb-pair__box .s-card, .hb-pair__box .s-ticket { width: 100%; max-width: none; }
+.hb-pair__box .s-search { width: 100%; margin-bottom: 10px; }
+.hb-pair__spec { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; line-height: 1.6; letter-spacing: .02em; color: var(--text-2); }
+.hb-pair__spec b { color: var(--text); font-weight: 400; }
+.hb-pair__kit, .hb-pair__ours { min-width: 0; }
+@media (max-width: 1100px) { .hb-fid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .hb-pair { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body data-app="index">
@@ -174,6 +193,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
           </ol>
         </div>
       </div>
+      <div class="hb-fid-head"><span class="s-spec">Kit → concept</span><h3 class="t-h3">The kit's components, as built</h3><p>Left, a crop of the Electric Foundation web frame. Right, the same component live from this concept's shared system, in whichever theme you are reading, with the kit's measurements under each pair.</p></div>
+      <div class="hb-fid" id="hb-fid"></div>
       <div class="s-callout u-mt-6"><span data-icon="info"></span><span><b>About the data.</b> Every price, volume, address and name in these demos is sample data, made up to show the design. Organisations, proposals, agents and assets are fictional, and every address starts with 0x5eed. Nothing is live and nothing can be traded.</span></div>
     </div>
   </section>
@@ -244,6 +265,34 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
       S.el("span", { class: "hb-tour__go", html: S.icon("arrow-right", 16), attrs: { "aria-hidden": "true" } }),
       S.el("span", { class: "hb-tour__do", text: t[2] }),
       S.el("span", { class: "hb-tour__url", text: base + t[1] }))));
+  });
+  // kit -> concept pairs: the kit crop on the left, the live component from assets/ui.js on the right
+  var FID = [
+    { t: "Bet slip", kit: [["assets/kit/betslip.jpg", "Kit bet slip: a market header with Yes 69¢ and No 37¢ tiles, an Amount of $100,00, +$ chips and Confirm"]],
+      spec: "Two price tiles · <b>Bold 32</b> amount at −2% · +$1 +$5 +$20 +$100 chips · Confirm with ✕ · panel radius <b>22</b> on #1A1A1E. Kit fixes: Yes + No add up to <b>100¢</b>; “$100.00”.",
+      build: function (box) { S.ui.ticket(box, { market: D.market("2831"), outcomes: [0, 1], selected: 0, amount: 100 }); } },
+    { t: "Market card", kit: [["assets/kit/card.jpg", "Kit market card: image tile, two-line title, two outcome rows with Yes and No, a $Vol footer with gift and bookmark icons"]],
+      spec: "<b>328 × 210</b> · radius <b>9</b> · <b>12px</b> padding · <b>Bold 16/24</b> title · outcome rows with Yes / No · “$Vol • date • category” footer, <b>Medium 12</b>, gift and bookmark.",
+      build: function (box) { box.appendChild(S.ui.marketCard(D.market("2832"))); } },
+    { t: "Binary card", kit: [["assets/kit/binary.jpg", "Kit binary card: full-width Yes button in violet and No button in dark violet"]],
+      spec: "Full-width Yes on <b>#7D33FF</b> and No on <b>#241E33</b> with lavender text · button radius <b>8</b> · the same footer · prices in cents, adding up to 100.",
+      build: function (box) { box.appendChild(S.ui.marketCard(D.market("2831"))); } },
+    { t: "Pill search and category row", kit: [["assets/kit/search.jpg", "Kit search pill with a magnifier icon and the placeholder Search markets…"], ["assets/kit/cats.jpg", "Kit category row: an arrow button, an active All chip and text categories"]],
+      spec: "Search pill, radius <b>22</b>, icon left, <b>Medium 13</b> placeholder · category row with arrow buttons · active chip <b>#8F55F7</b> · chip radius <b>8</b>.",
+      build: function (box) {
+        var lab = S.el("label", { class: "s-search", html: S.icon("search", 16) }); lab.appendChild(S.el("span", { class: "s-sr", text: "Search markets" }));
+        lab.appendChild(S.el("input", { attrs: { type: "search", placeholder: "Search markets…", autocomplete: "off", maxlength: "80" } })); box.appendChild(lab);
+        box.appendChild(S.ui.chipRow([["all", "All"], ["elections", "Elections"], ["politics", "Politics"], ["business", "Business"], ["science", "Science"], ["crypto", "Crypto"], ["pop", "Pop Culture"], ["sports", "Sports"], ["weather", "Weather"]], "all", function () {}));
+      } }
+  ];
+  var fid = document.getElementById("hb-fid");
+  FID.forEach(function (f) {
+    var kit = S.el("div", { class: "hb-pair__kit" }, S.el("span", { class: "hb-pair__lbl", text: "Electric Foundation kit" }));
+    f.kit.forEach(function (k) { kit.appendChild(S.el("img", { attrs: { src: k[0], alt: k[1], loading: "lazy", decoding: "async" } })); });
+    var box = S.el("div", { class: "hb-pair__box" });
+    var ours = S.el("div", { class: "hb-pair__ours" }, S.el("span", { class: "hb-pair__lbl", text: "This concept · live" }), box);
+    fid.appendChild(S.el("section", { class: "hb-pair", attrs: { "aria-label": f.t + ": kit and concept" } }, S.el("h4", { class: "hb-pair__t", text: f.t }), kit, ours, S.el("p", { class: "hb-pair__spec", html: f.spec })));
+    try { f.build(box); } catch (e) { box.appendChild(S.el("p", { class: "t-meta", text: "Component preview unavailable." })); }
   });
   document.querySelectorAll("[data-icon]").forEach(function (n) { n.outerHTML = S.icon(n.getAttribute("data-icon"), 16); });
 })();

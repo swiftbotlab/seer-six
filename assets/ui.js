@@ -324,6 +324,7 @@
     var tiles = el("div", { class: "s-pricetiles" });
     var rows = el("div", { class: "s-ticket__rows" });
     var input = el("input", { attrs: { type: "text", inputmode: "decimal", placeholder: "$0", "aria-label": "Amount in " + coll } });
+    if (amount) input.value = "$" + fmt.num(amount, 2); // a seeded amount shows as "$100.00" (the kit writes "$100,00")
     var conf = el("button", { class: "s-btn s-btn--lg", attrs: { type: "button" }, text: "Confirm" });
     var reset = el("button", { class: "s-icon-btn", attrs: { type: "button", "aria-label": "Clear amount" }, html: S.icon("close", 20) });
     idx.forEach(function (oi, k) {

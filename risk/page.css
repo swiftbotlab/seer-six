@@ -387,3 +387,10 @@ html.rk-noscroll { overflow: hidden; }
   .rk-bandlist li { grid-template-columns: 100px minmax(0, 1fr) auto; }
   .rk-drawer .s-kv { grid-template-columns: 1fr; }
 }
+
+/* phones: no mono label on the board under 11px */
+@media (max-width: 480px) {
+  .rk-plot text, .rk-plot .rk-p-band text, .rk-plot .rk-p-lanen, .rk-p-tick, .rk-p-axis, .rk-bandbtn__n, .rk-axis__tick, .rk-axis__v, .rk-ghead__n, .rk-bk-n, .rk-cap__r small, .rk-axis > span:not(.rk-axis__track) { font-size: 11px; }
+  .rk-row__val span { font-size: 12px; }
+  .rk-row__asset b { font-size: 15px; }
+}
