@@ -26,14 +26,14 @@
 .rk-plot { position: relative; flex: 1 1 auto; min-height: 320px; border-radius: 12px; }
 .rk-plot:focus-visible { outline: 2px solid var(--lavender); outline-offset: 4px; }
 .rk-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.rk-plot text { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; fill: rgba(224, 226, 245, .62); font-variant-numeric: tabular-nums; }
+.rk-plot text { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; fill: rgba(224, 226, 245, .62); font-variant-numeric: tabular-nums; }
 .rk-p-stripes path { stroke: #BFBFE6; stroke-width: 1.2; fill: none; }
 .rk-p-edge { stroke: rgba(224, 226, 245, .38); stroke-width: 1; stroke-dasharray: 3 4; }
 .rk-p-rail { stroke-width: 3; stroke-linecap: round; }
-.rk-plot .rk-p-band text { fill: rgba(224, 226, 245, .8); font-size: 10px; letter-spacing: .07em; }
+.rk-plot .rk-p-band text { fill: rgba(224, 226, 245, .8); font-size: 11px; letter-spacing: .07em; }
 .rk-p-lane { stroke: rgba(224, 226, 245, .1); stroke-width: 1; }
 .rk-plot .rk-p-lanelbl { fill: rgba(224, 226, 245, .88); font-size: 11px; }
-.rk-plot .rk-p-lanen { fill: rgba(224, 226, 245, .5); font-size: 10px; }
+.rk-plot .rk-p-lanen { fill: rgba(224, 226, 245, .5); font-size: 11px; }
 .rk-plot .rk-p-axis { fill: rgba(224, 226, 245, .5); }
 .rk-p-dot { fill: #8F55F7; stroke: var(--ink); stroke-width: 2; transition: fill var(--dur) var(--ease); }
 .rk-p-dot.is-cmp { fill: #B79BF7; }
@@ -50,7 +50,7 @@
 .rk-poster .s-band, .rk-nta .s-band { background: rgba(224, 226, 245, .1); color: #FFFFFF; }
 .rk-cap__r { text-align: right; }
 .rk-cap__num { display: block; font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: var(--lavender); line-height: 1; font-variant-numeric: tabular-nums; }
-.rk-cap__r small { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgba(224, 226, 245, .6); margin-top: 6px; white-space: nowrap; }
+.rk-cap__r small { display: block; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: rgba(224, 226, 245, .6); margin-top: 6px; white-space: nowrap; }
 
 /* ---------- 2. board ---------- */
 .rk-roundbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
@@ -75,7 +75,7 @@
 .rk-bandbtn .s-band { background: transparent; }
 .rk-bandbtn[aria-pressed="false"] { opacity: .55; box-shadow: inset 0 0 0 1px var(--line); }
 .rk-bandbtn[aria-pressed="false"] .s-band { text-decoration: line-through; }
-.rk-bandbtn__n { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.rk-bandbtn__n { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); }
 .rk-bandbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .rk-toolbar__start { display: flex; align-items: center; gap: 10px; flex: 1 1 360px; min-width: 0; }
 .rk-search { flex: 1 1 220px; max-width: 320px; min-width: 0; }
@@ -86,16 +86,16 @@
 /* risk bars: dot + traders' range on a log axis */
 .rk-board { --rk-cols: 26px minmax(150px, 210px) minmax(0, 1fr) 96px 104px 112px; background: var(--surface); border-radius: var(--r-card); }
 .rk-axis { display: grid; grid-template-columns: var(--rk-cols); gap: 0 16px; align-items: end; padding: 14px 16px 10px; border-bottom: 1px solid var(--line); position: sticky; top: var(--header-h); z-index: 2; background: var(--surface); border-radius: var(--r-card) var(--r-card) 0 0; }
-.rk-axis > span:not(.rk-axis__track) { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+.rk-axis > span:not(.rk-axis__track) { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
 .rk-axis__v, .rk-axis__m { text-align: right; }
 .rk-axis__track { position: relative; height: 46px; }
 .rk-axis__band { position: absolute; top: 0; height: 22px; display: flex; justify-content: center; overflow: hidden; }
 .rk-axis__band .s-band { background: transparent; padding: 0 4px; }
-.rk-axis__tick { position: absolute; bottom: 0; transform: translateX(-50%); font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rk-axis__tick { position: absolute; bottom: 0; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rk-rows { display: flex; flex-direction: column; }
 .rk-ghead { display: flex; align-items: baseline; gap: 8px; padding: 18px 16px 8px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .rk-ghead b { font-size: 14px; font-weight: 600; }
-.rk-ghead__n { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.rk-ghead__n { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); }
 .rk-ghead__nta { margin-left: auto; }
 .rk-row { position: relative; display: grid; grid-template-columns: var(--rk-cols); gap: 0 16px; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--line); cursor: pointer; transition: background var(--dur) var(--ease); }
 .rk-row:last-child { border-bottom: 0; border-radius: 0 0 var(--r-card) var(--r-card); }
@@ -193,7 +193,7 @@
 .rk-bk-presets { display: flex; gap: 6px; flex-wrap: wrap; }
 .rk-bk-groups { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 18px; min-width: 0; }
 .rk-bk-groups legend { padding: 0; margin-bottom: 10px; float: left; width: 100%; }
-.rk-bk-n { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.rk-bk-n { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); }
 .rk-bk-amount .s-amount label { font-size: 14px; white-space: nowrap; }
 .rk-bk-amount .s-amount input { font-size: 26px; }
 .rk-bk-stats .s-stat { padding: 14px 16px; }
@@ -228,7 +228,7 @@
 .rk-acc__head:hover { background: var(--surface-2); }
 .rk-acc__head:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .rk-acc__head b { font-weight: 600; }
-.rk-acc__n { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.rk-acc__n { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); }
 .rk-acc__ed { margin-left: auto; color: var(--violet-3); }
 .rk-acc__chev { display: inline-flex; color: var(--text-3); transition: transform var(--dur) var(--ease); }
 .rk-acc__head[aria-expanded="true"] .rk-acc__chev { transform: rotate(180deg); }
@@ -392,7 +392,8 @@ html.rk-noscroll { overflow: hidden; }
 
 /* phones: no mono label on the board under 11px */
 @media (max-width: 480px) {
-  .rk-plot text, .rk-plot .rk-p-band text, .rk-plot .rk-p-lanen, .rk-p-tick, .rk-p-axis, .rk-bandbtn__n, .rk-axis__tick, .rk-axis__v, .rk-ghead__n, .rk-bk-n, .rk-cap__r small, .rk-axis > span:not(.rk-axis__track) { font-size: 11px; }
+  .rk-plot text, .rk-plot .rk-p-band text, .rk-plot .rk-p-lanen, .rk-p-tick, .rk-p-axis { font-size: 11px; }
+  .rk-bandbtn__n, .rk-axis__tick, .rk-axis__v, .rk-ghead__n, .rk-bk-n, .rk-cap__r small, .rk-axis > span:not(.rk-axis__track) { font-size: 11.5px; }
   .rk-row__val span { font-size: 12px; }
   .rk-row__asset b { font-size: 15px; }
 }
