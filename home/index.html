@@ -4,45 +4,191 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Seer · Decision infrastructure (concept)</title>
-<meta name="description" content="Seer is the protocol beneath six interfaces: one oracle, one outcome-token standard, one set of markets. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem("seer-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
-<style>
-/* page styles for /home/ — prefix .hm- (see SYSTEM.md) */
-.hm-art { height: 100%; min-height: clamp(200px, 30vw, 380px); }
-</style>
+<link rel="stylesheet" href="page.css">
 </head>
 <body data-app="home">
-<script>window.SEER_PAGE = {"nav": [["Protocol", "#protocol"], ["Interfaces", "#interfaces"], ["Builders", "#builders"], ["Docs", "#docs"]], "cta": ["Open App", "../app/", "arrow-right"]};</script>
+<script>window.SEER_PAGE = { product: "", nav: [["Protocol", "#protocol"], ["Worked example", "#connect"], ["Market types", "#types"], ["Resolution", "#resolution"], ["Builders", "#builders"]], cta: ["Open the App", "../app/", "arrow-right"], connect: false };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
-  <section class="s-hero">
-    <div class="s-container s-hero__grid">
-      <div>
-        <div class="s-hero__kicker s-specs"><span>01</span><span>seer.pm</span><span>Decision infrastructure</span></div>
-        <h1 class="s-hero__title">See what the <span class="t-accent">markets</span> believe.</h1>
-        <p class="s-hero__lede t-lede">Seer is the protocol beneath every interface on this site: one oracle, one outcome-token standard, one set of markets. Each app is a different way to read the same prices.</p>
+
+  <!-- 1. HERO: how a price forms ------------------------------------------------ -->
+  <section class="hm-hero" aria-labelledby="hm-title">
+    <div class="s-container hm-hero__grid">
+      <div class="hm-hero__copy">
+        <div class="s-specs hm-hero__kicker"><span>Seer protocol</span><span>Decision infrastructure</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
+        <h1 id="hm-title" class="hm-hero__title">See what the markets <span class="t-accent">believe.</span></h1>
+        <p class="t-lede hm-hero__lede">Seer is an open protocol for prediction markets. Ask a question, let traders price every answer, and read one clear signal. Five apps share the same markets, tokens and oracle, each for a different kind of decision.</p>
+        <div class="hm-hero__actions">
+          <a class="s-btn s-btn--lg" href="../app/">Explore markets</a>
+          <a class="s-btn s-btn--lg s-btn--secondary" href="#protocol">How Seer works</a>
+        </div>
       </div>
-      <div class="s-hero__art"><div class="hm-art" id="hm-art"></div></div>
+
+      <figure class="s-poster hm-price" aria-labelledby="hm-price-q">
+        <div class="hm-price__top">
+          <div class="s-specs" id="hm-price-specs"></div>
+          <span class="s-sample">Sample prices</span>
+        </div>
+        <p class="hm-price__q" id="hm-price-q"></p>
+        <div class="hm-price__art" id="hm-price-art"></div>
+        <div class="hm-price__legend" id="hm-price-legend" role="group" aria-label="Outcomes"></div>
+        <figcaption class="hm-price__foot">
+          <div id="hm-price-seg"></div>
+          <p class="hm-price__cap" id="hm-price-cap"></p>
+        </figcaption>
+      </figure>
+      <dl class="hm-facts" aria-label="Protocol facts">
+        <div><dt>Market types</dt><dd>4 <span>+ conditional</span></dd></div>
+        <div><dt>Answers</dt><dd>Reality.eth <span>+ Kleros</span></dd></div>
+        <div><dt>Collateral</dt><dd>sDAI <span>xDAI · sUSDS</span></dd></div>
+        <div><dt>Chains</dt><dd>4 <span>ETH · OP · GNO · BASE</span></dd></div>
+      </dl>
     </div>
   </section>
-  <section class="s-section--tight">
+
+  <!-- 2. ECOSYSTEM MAP: one protocol beneath five apps ------------------------- -->
+  <section class="s-section hm-eco" id="protocol" aria-labelledby="hm-eco-title">
     <div class="s-container">
-      <div class="s-section-head"><div><span class="s-spec">Status</span><h2 class="t-h2">Interface in progress</h2></div><span class="s-sample">Sample data</span></div>
-      <div id="hm-preview"></div>
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">One protocol beneath five apps</span>
+          <h2 id="hm-eco-title" class="t-h2">Every app reads the same markets</h2>
+        </div>
+        <p class="t-body hm-head-note">Pick an app to see the building blocks it uses, or a building block to see which apps rely on it.</p>
+      </div>
+      <div class="hm-map">
+        <div class="hm-map__apps" id="hm-map-apps"></div>
+        <div class="hm-map__bus" id="hm-map-bus" aria-hidden="true"></div>
+        <div class="s-poster hm-layer">
+          <div class="hm-layer__head">
+            <span class="hm-layer__name"><span id="hm-layer-mark"></span>Seer protocol</span>
+            <div class="s-specs s-hide-sm"><span>Same market format</span><span>Same outcome tokens</span><span>Same oracle</span></div>
+          </div>
+          <div class="hm-layer__groups" id="hm-layer-groups"></div>
+          <div class="hm-layer__read" id="hm-layer-read" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ONE QUESTION, FOUR APPS ------------------------------------------------ -->
+  <section class="s-section hm-thread" id="connect" aria-labelledby="hm-thread-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">Sample thread · Lattice Builders Grants · Round 4</span>
+          <h2 id="hm-thread-title" class="t-h2">One grant round, four apps, one set of markets</h2>
+        </div>
+        <span class="s-sample">Sample data · fictional DAO</span>
+      </div>
+      <p class="t-body hm-thread__lede" id="hm-thread-lede"></p>
+      <div class="hm-thread__grid">
+        <div class="hm-steps" id="hm-steps" role="tablist" aria-label="Apps in the thread" aria-orientation="vertical"></div>
+        <section class="s-panel hm-stage" id="hm-stage" role="tabpanel"></section>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MARKET TYPES ----------------------------------------------------------- -->
+  <section class="s-section hm-types" id="types" aria-labelledby="hm-types-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">Building blocks</span>
+          <h2 id="hm-types-title" class="t-h2">Four market types, one format</h2>
+        </div>
+        <span class="s-sample">Sample markets</span>
+      </div>
+      <div class="hm-types__bar" id="hm-types-bar"></div>
+      <div class="hm-types__grid">
+        <div class="hm-types__copy" id="hm-types-copy"></div>
+        <div class="hm-types__cards" id="hm-types-cards"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. RESOLUTION ------------------------------------------------------------- -->
+  <section class="s-section hm-res" id="resolution" aria-labelledby="hm-res-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">Reality.eth answers · Kleros arbitration</span>
+          <h2 id="hm-res-title" class="t-h2">How a market gets its answer</h2>
+        </div>
+        <p class="t-body hm-head-note">Every market passes through the same six states. Select one to see what happens and who acts.</p>
+      </div>
+      <div class="hm-track" id="hm-track" role="tablist" aria-label="Market states"></div>
+      <div class="hm-res__detail" id="hm-res-detail" role="tabpanel"></div>
+      <div class="hm-trust" id="hm-trust"></div>
+    </div>
+  </section>
+
+  <!-- 6. BUILDERS: outcome tokens ---------------------------------------------- -->
+  <section class="s-section hm-build" id="builders" aria-labelledby="hm-build-title">
+    <div class="s-container hm-build__grid">
+      <div class="hm-build__copy">
+        <span class="s-spec">For builders</span>
+        <h2 id="hm-build-title" class="t-h2 u-mt-2">Outcome tokens are ordinary tokens</h2>
+        <p class="t-body u-mt-4">Every Seer market sits on Gnosis Conditional Tokens. Collateral splits into one token per outcome, and each position is wrapped as an ERC-20, so it trades on ordinary pools, sits in any wallet and can be read by any contract.</p>
+        <ul class="hm-points">
+          <li><b>Split</b> 1 sDAI into one token of every outcome.</li>
+          <li><b>Merge</b> a full set back into 1 sDAI at any time.</li>
+          <li><b>Redeem</b> winning tokens for collateral after the answer is final.</li>
+          <li><b>Create</b> a market without permission, on any of the four chains.</li>
+        </ul>
+        <div class="hm-links" id="hm-links"></div>
+      </div>
+      <div id="hm-tokens"></div>
+    </div>
+  </section>
+
+  <!-- 7. PROOF + CTA poster ----------------------------------------------------- -->
+  <section class="s-section--tight hm-proof" aria-labelledby="hm-proof-title">
+    <div class="s-container hm-proof__grid">
+      <div class="s-card s-card--pad hm-rebrand" id="hm-rebrand"></div>
+      <div class="s-poster s-poster--violet hm-cta">
+        <div class="s-specs hm-cta__specs"><span>Every opinion has a price</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
+        <h2 id="hm-proof-title" class="hm-cta__title">Ask a question. <span class="t-accent">Read the answer.</span></h2>
+        <div class="hm-cta__actions">
+          <a class="s-btn s-btn--lg hm-btn-ink" href="../app/">Open the App</a>
+          <button class="s-btn s-btn--lg hm-btn-fog" type="button" data-demo="Market creation is not wired in this concept.">Create a market</button>
+        </div>
+        <div class="hm-cta__word" id="hm-cta-word" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. DESIGN NOTES ------------------------------------------------------------ -->
+  <section class="s-section hm-notes" id="notes" aria-labelledby="hm-notes-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">Concept · 01 seer.pm</span>
+          <h2 id="hm-notes-title" class="t-h2">Design notes</h2>
+        </div>
+        <a class="s-btn s-btn--ghost" href="../#notes">All notes for the six interfaces</a>
+      </div>
+      <div class="hm-notes__grid">
+        <ol class="hm-notes__list">
+          <li><b>Wedges carry prices.</b> The kit's converging wedges are drawn from sample prices: band width is an outcome's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
+          <li><b>A protocol map replaces the marketing grid.</b> The raven art, the category pill cloud and the feature cards become one diagram: five apps above the building blocks they share.</li>
+          <li><b>One worked example instead of claims.</b> A fictional grant round is followed through four apps with the same market IDs they use. No invented protocol totals.</li>
+        </ol>
+        <ol class="hm-notes__list">
+          <li><b>Typefaces.</b> Geist, Geist Mono and Instrument Serif Italic stand in for PP Neue Montreal, Suisse Int'l Mono and Reckless when those are not installed.</li>
+          <li><b>Colour.</b> Muted text is lifted to pass WCAG AA. Status amber and red appear only on market states, next to their label; charts use the system palette, violet first.</li>
+          <li><b>Two poster moments.</b> The ink protocol layer and the violet closing poster come from the kit's posters; everything else stays on calm kit surfaces.</li>
+        </ol>
+      </div>
     </div>
   </section>
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
-<script>
-(function () {
-  var D = window.SEER_SAMPLE, S = window.Seer;
-  var art = document.getElementById("hm-art"), box = document.getElementById("hm-preview");
-  S.motif.wedges(art, { weights: D.market("2832").outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 12, fade: true });
-  box.appendChild(S.ui.empty({ title: "The homepage is being built", text: "One protocol beneath six interfaces. This page will show how a price forms and how the apps fit together.", motif: "wedges", motifOpts: { weights: [.3, .2, .25, .1, .15], gap: 6, fade: true } }));
-})();
-</script>
+<script src="page.js"></script>
 </body>
 </html>
