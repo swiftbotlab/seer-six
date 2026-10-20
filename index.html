@@ -145,10 +145,24 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-pair__kit, .hb-pair__ours { min-width: 0; }
 @media (max-width: 1100px) { .hb-fid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) { .hb-pair { grid-template-columns: minmax(0, 1fr); } }
+/* the kit, applied: the kit's market grid beside the App here, then what was kept and what changed */
+.hb-ka { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.hb-ka__fig { margin: 0; min-width: 0; }
+.hb-ka__img { display: block; width: 100%; height: auto; border-radius: 12px; background: var(--surface-2); box-shadow: 0 0 0 1px var(--line); }
+.hb-ka__zoom { display: block; border-radius: 12px; }
+.hb-ka__zoom:hover .hb-ka__img, .hb-ka__zoom:focus-visible .hb-ka__img { box-shadow: 0 0 0 1.5px var(--violet-2); }
+.hb-ka__cap { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-top: 10px; font-size: 14px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+.hb-ka__cap .s-spec { color: var(--violet-3); }
+.hb-kc { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px; margin-top: 20px; }
+.hb-kc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.hb-kc li { position: relative; padding-left: 28px; font-size: 14px; line-height: 1.55; font-weight: 500; color: var(--text-2); }
+.hb-kc li b { color: var(--text); font-weight: 600; }
+.hb-kc li svg { position: absolute; left: 0; top: 2px; color: var(--violet-3); }
+@media (max-width: 900px) { .hb-ka, .hb-kc { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body data-app="index">
-<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Tour", "#tour"], ["Interfaces", "#interfaces"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
+<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Tour", "#tour"], ["Interfaces", "#interfaces"], ["The kit", "#kit-applied"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
 <script src="assets/shell.js"></script>
 <main id="main" class="s-main">
   <div class="s-container">
@@ -206,6 +220,39 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </div>
   </section>
 
+  <section class="s-section--tight" id="kit-applied" aria-labelledby="hb-ka">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Electric Foundation kit → this concept</span><h2 id="hb-ka" class="t-h2">The kit, applied</h2></div>
+        <a class="s-btn s-btn--ghost" href="#kit">Component pairs</a>
+      </div>
+      <div class="hb-ka">
+        <figure class="hb-ka__fig"><a class="hb-ka__zoom" href="assets/kit/market-grid.jpg" aria-label="Open the full-size image"><img class="hb-ka__img" src="assets/kit/market-grid.jpg" width="1200" height="630" loading="lazy" decoding="async" alt="The Electric Foundation kit's dark-mode web frame: a category row with arrow buttons above a four-column grid of market cards with Yes and No buttons, Up and Down buttons and volume footers."></a><figcaption class="hb-ka__cap"><span class="s-spec">Kit</span>Electric Foundation web frame, dark mode</figcaption></figure>
+        <figure class="hb-ka__fig"><a class="hb-ka__zoom" href="assets/ours/app-grid.jpg" aria-label="Open the full-size image"><img class="hb-ka__img" src="assets/ours/app-grid.jpg" width="1200" height="658" loading="lazy" decoding="async" alt="The App in this concept, card view at the same width: the same category row and four-column card grid, with filters, scalar Up and Down rows, multi-outcome Buy and Sell rows and mono spec footers. Sample data."></a><figcaption class="hb-ka__cap"><span class="s-spec">Here</span>The App, card view, same width · sample data</figcaption></figure>
+      </div>
+      <div class="hb-kc">
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Kept</h3>
+          <ul>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>The mark.</b> The bolt and the wordmark come from the designer&#39;s own vectors: recoloured, never redrawn.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>Tokens and geometry.</b> Page #101013, card #1A1A1E, primary #7D33FF, active chip #8F55F7; radius 9 for cards, 22 for panels, 8 for controls.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>The components.</b> Pill search, the category row with arrows, Yes/No outcome rows, Up/Down buttons and the bet slip keep the kit&#39;s shapes and spacing.</li>
+          </ul>
+        </div>
+        <div class="s-card s-card--pad">
+          <h3 class="t-h3">Changed, and why</h3>
+          <ul>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>One sans in headlines.</b> The kit&#39;s web screens use a single sans; its Reckless italic lives in the social frames. Here the accent phrase turns violet in the same face.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>An 11.5px type floor.</b> No HTML text is smaller and chart labels are at least 11px, so dense boards stay readable on a phone.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Muted text, lifted.</b> #67676F becomes #8A8A94 on dark and #8E8E99 becomes #6E6E79 on light, so 12px labels pass WCAG AA.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Motifs that carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision.</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Each price in its market&#39;s unit.</b> A scalar reads 8.14/10 and a multi-winner market 50% · 6.3¢ of 12.5¢. Binary prices add up to 100¢; the kit&#39;s slip shows 69¢ + 37¢.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="s-section--tight" id="connect" aria-labelledby="hb-con">
     <div class="s-container">
       <div class="s-section-head">
@@ -222,7 +269,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div><span class="s-spec">Rationale</span><h2 id="hb-notes" class="t-h2">Design notes</h2></div>
         <a class="s-btn s-btn--ghost" href="system/">Open the design system</a>
       </div>
-      <details class="s-details"><summary>Design notes for the six interfaces<small>kept from the kit · deliberate departures</small></summary>
+      <details class="s-details"><summary>All design notes<small>the long version · kept from the kit · deliberate departures</small></summary>
       <div class="hb-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
