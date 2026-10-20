@@ -361,20 +361,41 @@
     row.addEventListener("pointerenter", function () { if (st.active !== a.id) { st.active = a.id; drawPlot(); renderFormula(); } });
     return row;
   }
+  var GLIM = 3; // by group: the three riskiest per group; "Show all" opens a group, "Expand all" the board
   function barsView(list) {
     var box = el("div", { class: "rk-board" }), rows = el("div", { class: "rk-rows", attrs: { role: "list", "aria-label": "Assets on the board" } });
     box.appendChild(axisRow());
+    var fold = st.sort === "group" && !st.q, hidden = 0, k = 0;
+    st.gopen = st.gopen || {};
     var lastG = null;
     list.forEach(function (a) {
       if (st.sort === "group" && a.group !== lastG) {
-        lastG = a.group;
+        lastG = a.group; k = 0;
         var inG = list.filter(function (x) { return x.group === a.group; });
         var nta = inG.reduce(function (acc, x) { return acc * (1 - hv(x.y, st.h)); }, 1);
-        rows.appendChild(el("div", { class: "rk-ghead", attrs: { role: "presentation" } }, el("b", { text: GLABEL[a.group] }), el("span", { class: "rk-ghead__n", text: String(inG.length) }), el("span", { class: "rk-ghead__nta t-meta", text: "None of these defaults: " + pdF(nta) + " " + hShort(st.h) })));
+        var head = el("div", { class: "rk-ghead", attrs: { role: "presentation" } }, el("b", { text: GLABEL[a.group] }), el("span", { class: "rk-ghead__n", text: String(inG.length) }), el("span", { class: "rk-ghead__nta t-meta", text: "None of these defaults: " + pdF(nta) + " " + hShort(st.h) }));
+        if (fold && inG.length > GLIM) {
+          var g = a.group, open = !!st.gopen[g];
+          var tg = el("button", { class: "rk-ghead__more", attrs: { type: "button", "aria-expanded": String(open) }, text: open ? "Top " + GLIM : "All " + inG.length });
+          tg.addEventListener("click", function () { st.gopen[g] = !st.gopen[g]; renderBoard(); });
+          head.appendChild(tg);
+        }
+        rows.appendChild(head);
       }
-      rows.appendChild(rowEl(a));
+      var r = rowEl(a);
+      if (fold && !st.gopen[a.group] && k >= GLIM) { r.hidden = true; hidden++; }
+      k++;
+      rows.appendChild(r);
     });
     box.appendChild(rows);
+    if (fold) {
+      var anyOpen = Object.keys(st.gopen).some(function (g) { return st.gopen[g]; });
+      if (hidden || anyOpen) {
+        var all = el("button", { class: "s-btn s-btn--sm s-btn--ghost rk-expand", attrs: { type: "button" }, text: hidden ? "Expand all " + list.length + " assets" : "Collapse to the top " + GLIM + " per group" });
+        all.addEventListener("click", function () { var on = hidden > 0; GROUPS.forEach(function (g) { st.gopen[g.id] = on; }); renderBoard(); });
+        box.appendChild(el("div", { class: "rk-expandwrap" }, el("span", { class: "t-meta", text: hidden ? "Showing the " + GLIM + " riskiest assets in each group · " + hidden + " more folded" : "All " + list.length + " assets shown" }), all));
+      }
+    }
     return box;
   }
 

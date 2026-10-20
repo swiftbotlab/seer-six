@@ -229,12 +229,21 @@
         { key: "d24", label: "24h", num: true, sort: true, render: function (r) { return el("span", { class: dcls(r.d24), text: pts(r.d24) }); } },
         { key: "act", label: "Trade", class: "op-tact", render: function (r) { return tradeBtns(r, true); } }
       ], { rows: rows, sortKey: "rank", sortDir: "asc", onRow: function (r) { openEntry(r.id); }, caption: "Entries in market #2842 with price and chance of selection", empty: { title: "No entries match", text: "Clear the filters to see all 40." } });
+      tableApi.table.querySelector("thead").addEventListener("click", function () { setTimeout(limitTable, 0); });
     } else tableApi.update(rows);
-    fieldNote(rows.length, rows.length);
+    limitTable();
+    fieldNote(rows.length, ST.tableAll ? rows.length : Math.min(rows.length, TLIM));
+  }
+  var TLIM = 12; // table view: the top 12 rows, "Show all" opens the rest
+  function limitTable() {
+    if (!tableApi) return;
+    var trs = [].slice.call(tableApi.table.querySelectorAll("tbody tr")).filter(function (tr) { return !tr.querySelector(".s-empty"); });
+    trs.forEach(function (tr, i) { tr.hidden = !ST.tableAll && i >= TLIM; });
+    var b = $("#op-tmore"); if (b) { b.parentNode.hidden = ST.view !== "table" || trs.length <= TLIM; b.textContent = ST.tableAll ? "Show the top " + TLIM : "Show all " + trs.length; }
   }
   function fieldNote(match, shown) {
     var n = $("#op-fieldnote"); if (!n) return;
-    n.textContent = (match === E.length ? "All " + E.length + " entries" : match + " of " + E.length + " entries match") + (shown < match ? ", " + shown + " shown" : "") + ". Chance of selection is the market's estimate for each entry; the panel's scores decide. Sample data.";
+    n.textContent = (match === E.length ? "All " + E.length + " entries" : match + " of " + E.length + " entries match") + (shown < match ? ", " + shown + " shown" : "") + ". Chance of selection is the market's estimate; the panel's scores decide.";
   }
   function renderField() { if (ST.view === "grid") renderGrid(); else renderTable(); }
   function field() {
@@ -244,11 +253,12 @@
     var vbox = $("#op-view");
     if (vbox) {
       vbox.appendChild(U.seg([["grid", "Grid"], ["table", "Table"]], "grid", function (v) {
-        ST.view = v; $("#op-grid").hidden = v !== "grid"; $("#op-table").hidden = v !== "table";
+        ST.view = v; $("#op-grid").hidden = v !== "grid"; $("#op-table").hidden = v !== "table"; $("#op-tmorewrap").hidden = true;
         $("#op-sort").closest(".op-sort").hidden = v !== "grid"; renderField();
       }, "Field view"));
     }
     var sort = $("#op-sort"); if (sort) sort.addEventListener("change", function () { ST.sort = sort.value; renderField(); });
+    var tm = $("#op-tmore"); if (tm) tm.addEventListener("click", function () { ST.tableAll = !ST.tableAll; renderField(); if (!ST.tableAll) $("#field").scrollIntoView({ block: "start" }); });
     var close = $("#op-close"); if (close) close.addEventListener("change", function () { ST.close = close.checked; ST.more = false; renderField(); });
     var q = $("#op-q"), shellQ = $("[data-shell-search] input");
     if (q) q.addEventListener("input", function () { ST.q = q.value.trim().slice(0, 80); if (shellQ) shellQ.value = q.value; renderField(); });

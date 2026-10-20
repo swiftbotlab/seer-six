@@ -92,21 +92,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </div>
   </section>
 
-  <!-- 3b. The round: get ready to trade, and the market's facts -->
-  <section class="s-section--tight dp-round dp-round--facts" id="round-facts" aria-label="Round 4: how to trade and the market's facts">
-    <div class="s-container">
-      <ol class="dp-steps" id="dp-steps" aria-label="Get ready to trade"></ol>
-      <div class="dp-roundhead">
-        <div class="s-col" style="--gap:10px">
-          <div id="dp-round-specs"></div>
-          <h2 class="t-h2 dp-roundq" id="dp-round-q"></h2>
-          <p class="t-body dp-roundnote">Lattice DAO funds 8 of these 40 proposals from 250,000 sDAI. Five reviewers will score each one from 0 to 10. This market forecasts those scores, one outcome per proposal, and pays out on the scores the panel publishes.</p>
-        </div>
-      </div>
-      <div class="s-stats dp-stats" id="dp-round-stats" style="--cols:6"></div>
-    </div>
-  </section>
-
   <!-- 4. One proposal, read closely -->
   <section class="s-section--tight" id="proposal">
     <div class="s-container">
@@ -145,7 +130,24 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
   <section class="s-section--tight s-more" aria-labelledby="dp-more-title">
     <div class="s-container">
-      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="dp-more-title">Tools, guides and design notes</h2></div><p>5 sections · each opens in place</p></div>
+      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="dp-more-title">Tools, guides and design notes</h2></div><p>6 sections · each opens in place</p></div>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Round 4 at a glance</b><small>How to get ready to trade, and the market's facts: volume, liquidity, slots, dates.</small></span><span class="s-more__k">Round facts</span></summary>
+    <!-- 3b. The round: get ready to trade, and the market's facts -->
+    <section class="s-section--tight dp-round dp-round--facts" id="round-facts" aria-label="Round 4: how to trade and the market's facts">
+      <div class="s-container">
+        <ol class="dp-steps" id="dp-steps" aria-label="Get ready to trade"></ol>
+        <div class="dp-roundhead">
+          <div class="s-col" style="--gap:10px">
+            <div id="dp-round-specs"></div>
+            <h2 class="t-h2 dp-roundq" id="dp-round-q"></h2>
+            <p class="t-body dp-roundnote">Lattice DAO funds 8 of these 40 proposals from 250,000 sDAI. Five reviewers will score each one from 0 to 10. This market forecasts those scores, one outcome per proposal, and pays out on the scores the panel publishes.</p>
+          </div>
+        </div>
+        <div class="s-stats dp-stats" id="dp-round-stats" style="--cols:6"></div>
+      </div>
+    </section>
+      </details>
       <details class="s-details s-more__item">
         <summary><span class="s-more__t"><b>Where the panel&#x27;s time matters most</b><small>For the funding team: move the funding bar and see each proposal&#x27;s chance of clearing it.</small></span><span class="s-more__k">Funding signal</span></summary>
       <!-- 5. The funding team's view -->

@@ -85,6 +85,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       </div>
       <div id="op-grid" class="op-grid"></div>
       <div id="op-table" class="op-tablebox" hidden></div>
+      <div class="op-morewrap" id="op-tmorewrap" hidden><button class="s-btn s-btn--ghost op-more" type="button" id="op-tmore">Show all 40</button></div>
       <p class="t-meta op-fieldnote" id="op-fieldnote" aria-live="polite"></p>
     </div>
   </section>
@@ -96,24 +97,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div><span class="s-spec op-set__when">Snapshot from app.seer.pm, 20 Oct 2026</span><h2 class="t-h3" id="op-settled-h">A settled round, for real</h2></div>
       </div>
       <div id="op-settled"></div>
-    </div>
-  </section>
-
-  <!-- 3b. The market: numbers and where the round is in its flow (after the field) -->
-  <section class="s-section--tight op-round" id="round" aria-labelledby="op-mq">
-    <div class="s-container">
-      <div class="op-mhead">
-        <div class="s-col op-mhead__main" style="--gap:12px">
-          <div id="op-mspecs"></div>
-          <h2 class="t-h2 op-mq" id="op-mq">Round 4 at a glance: 8 slots, 250,000 sDAI</h2>
-          <div class="s-row op-mbadges" style="--gap:10px" id="op-mbadges"></div>
-        </div>
-        <div class="s-row op-mhead__end" style="--gap:8px">
-          <a class="s-btn s-btn--sm s-btn--ghost" href="../app/#m=2842" id="op-inapp">Inspect #2842 in App</a>
-        </div>
-      </div>
-      <div class="s-stats op-mstats" id="op-mstats" style="--cols:6"></div>
-      <ol class="op-flow" id="op-flow" aria-label="Where Round 4 is"></ol>
     </div>
   </section>
 
@@ -129,7 +112,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="op-queue">
         <div class="s-col op-queue__side" style="--gap:16px">
           <div class="s-panel op-qctl">
-            <p class="t-body">Five Lattice reviewers score all 40 proposals. The queue sets the order and depth of reading: entries near the selection line get a full review, clear favourites and long shots a shorter one. Every proposal is still read and scored.</p>
+            <p class="t-body">Entries near the selection line get a full review; clear favourites and long shots a shorter one. All 40 are still read and scored.</p>
             <div class="op-qrange">
               <div class="s-row s-row--between"><label class="t-ui" for="op-hi">Fast-track at or above</label><b class="op-qval" id="op-hi-v">70%</b></div>
               <input class="s-range" type="range" id="op-hi" min="50" max="95" step="5" value="70" aria-describedby="op-hi-help">
@@ -141,9 +124,9 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
               <p class="t-meta" id="op-lo-help">Long shots: a shorter read, with a flag to escalate anything the market missed.</p>
             </div>
             <div class="s-stats op-qstats" id="op-qstats" style="--cols:2"></div>
-            <p class="t-meta">Assumes 3 h for a full review, 1 h for a fast-track and 30 min for a light pass, per reviewer.</p>
+            <p class="t-meta">Per reviewer: 3 h full, 1 h fast-track, 30 min light pass.</p>
           </div>
-          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> Prices set the reading order, never the result. Lattice DAO funds the eight proposals the panel scores highest, whatever the market says.</span></div>
+          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> Prices set the reading order; the panel's scores pick the eight.</span></div>
         </div>
         <div class="s-card s-card--pad op-queue__main">
           <div class="s-row s-row--between" style="--gap:12px">
@@ -165,7 +148,27 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
   <section class="s-section--tight s-more" aria-labelledby="op-more-title">
     <div class="s-container">
-      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="op-more-title">Tools, guides and design notes</h2></div><p>3 sections · each opens in place</p></div>
+      <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="op-more-title">Tools, guides and design notes</h2></div><p>4 sections · each opens in place</p></div>
+      <details class="s-details s-more__item">
+        <summary><span class="s-more__t"><b>Round 4 at a glance</b><small>The market's numbers and where the round is in its flow, from call for entries to payout.</small></span><span class="s-more__k">Round facts</span></summary>
+    <!-- 3b. The market: numbers and where the round is in its flow (after the field) -->
+    <section class="s-section--tight op-round" id="round" aria-labelledby="op-mq">
+      <div class="s-container">
+        <div class="op-mhead">
+          <div class="s-col op-mhead__main" style="--gap:12px">
+            <div id="op-mspecs"></div>
+            <h2 class="t-h2 op-mq" id="op-mq">Round 4 at a glance: 8 slots, 250,000 sDAI</h2>
+            <div class="s-row op-mbadges" style="--gap:10px" id="op-mbadges"></div>
+          </div>
+          <div class="s-row op-mhead__end" style="--gap:8px">
+            <a class="s-btn s-btn--sm s-btn--ghost" href="../app/#m=2842" id="op-inapp">Inspect #2842 in App</a>
+          </div>
+        </div>
+        <div class="s-stats op-mstats" id="op-mstats" style="--cols:6"></div>
+        <ol class="op-flow" id="op-flow" aria-label="Where Round 4 is"></ol>
+      </div>
+    </section>
+      </details>
       <details class="s-details s-more__item">
         <summary><span class="s-more__t"><b>Live and upcoming</b><small>Other opportunity markets: grants, contests, hiring and names.</small></span><span class="s-more__k">Markets</span></summary>
       <!-- 5. Markets: live and upcoming (the settled round is up top, in #settled) -->

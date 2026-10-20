@@ -192,12 +192,12 @@
     return '<footer class="s-footer"><div class="s-container s-footer__in">' +
       '<div class="s-footer__brand">' + S.logo("lockup") +
       '<p class="t-body" style="max-width:34ch">Decision infrastructure. One protocol beneath six interfaces.</p>' +
-      '<div class="s-specs"><span>Every opinion has a price</span><span>Est. on Gnosis Chain</span></div></div>' +
+      '</div>' +
       '<div class="s-footer__cols">' +
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
-      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system: tokens and components</a></div>' +
-      '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and vanilla JS, no build step, no trackers.</p><p class="t-meta s-footer__fact">Fonts self-hosted: Geist, Geist Mono.</p></div>' +
-      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Every price, volume, address and name on these pages is sample data, made up to show the design, except panels marked as a dated snapshot of app.seer.pm. Nothing is live and nothing can be traded.</p></div>' +
+      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
+      '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and JS. No trackers.</p></div>' +
+      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Sample data, made up to show the design, except panels marked as a dated snapshot of app.seer.pm. Nothing here is live or tradable.</p></div>' +
       "</div>" +
       '<div class="s-footer__base"><span class="s-footer__credit">Concept by Swift Bot Labs · not affiliated with Seer</span>' +
       '<span class="s-specs"><span>Concept, not live</span><span>@swiftbotlab</span></span></div>' +
