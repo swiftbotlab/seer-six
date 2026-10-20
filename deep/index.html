@@ -33,20 +33,20 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
-  <!-- 1. Hero: the core idea on the first screen -->
-  <section class="s-hero dp-hero">
-    <div class="s-container s-hero__grid dp-hero__grid">
-      <div class="dp-hero__copy">
-        <div class="s-hero__kicker s-specs"><span>03</span><span>OP Mainnet</span><span>sUSDS</span></div>
-        <h1 class="s-hero__title dp-hero__title">Forecasts for a whole field, <span class="t-accent">priced at once.</span></h1>
-        <p class="s-hero__lede t-lede">Deep runs markets on questions with many outcomes. Round 4 asks how five reviewers will score each of 40 grant proposals. Forecasting agents trade every outcome in one batch, people trade beside them, and the funding team reads a ranked signal before the panel meets.</p>
-        <div class="s-hero__actions">
-          <a class="s-btn s-btn--lg dp-hero__btn" href="#field">Trade Round 4</a>
-          <a class="s-btn s-btn--lg s-btn--ghost dp-hero__btn" href="#resolve">How it resolves</a>
-        </div>
+  <!-- 1. App head: the market question, the field's forecast beside it, then the table -->
+  <section class="s-apphead dp-head" aria-labelledby="dp-title">
+    <div class="s-container s-apphead__grid dp-head__grid">
+      <div class="s-apphead__copy">
+        <div class="s-hero__kicker s-specs"><span>03 · Deep</span><span>Round 4</span><span>OP Mainnet</span><span>sUSDS</span></div>
+        <h1 class="s-apphead__title" id="dp-title">What will the panel score each proposal?</h1>
+        <p class="s-apphead__sub">Forty grant proposals, one market. Agents and people trade every expected score at once; Lattice DAO funds the top eight.</p>
         <dl class="dp-hero__facts" id="dp-hero-facts"></dl>
+        <div class="s-apphead__actions">
+          <a class="s-btn" href="#field">Trade Round 4</a>
+          <a class="s-btn s-btn--ghost" href="#resolve">How it resolves</a>
+        </div>
       </div>
-      <div class="s-hero__art dp-hero__art">
+      <div class="s-apphead__art s-apphead__art--wide dp-hero__art">
         <figure class="s-poster dp-poster" id="dp-poster">
           <div class="dp-poster__top">
             <div class="s-specs"><span>Mkt <b>#2841</b></span><span>Scalar × 40</span><span><b>80</b> UP/DOWN tokens</span></div>
@@ -59,7 +59,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </div>
   </section>
 
-  <!-- 2. Round: onboarding + facts -->
+  <!-- 2. Round tabs, right above the field -->
   <section class="s-section--tight dp-round" id="round">
     <div class="s-container">
       <div class="dp-roundbar">
@@ -69,15 +69,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
         <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2841" id="dp-browse">Browse on Seer</a>
       </div>
-      <ol class="dp-steps" id="dp-steps" aria-label="Get ready to trade"></ol>
-      <div class="dp-roundhead">
-        <div class="s-col" style="--gap:10px">
-          <div id="dp-round-specs"></div>
-          <h2 class="t-h2 dp-roundq" id="dp-round-q"></h2>
-          <p class="t-body dp-roundnote">Lattice DAO funds 8 of these 40 proposals from 250,000 sDAI. Five reviewers will score each one from 0 to 10. This market forecasts those scores, one outcome per proposal, and pays out on the scores the panel publishes.</p>
-        </div>
-      </div>
-      <div class="s-stats dp-stats" id="dp-round-stats" style="--cols:6"></div>
     </div>
   </section>
 
@@ -98,6 +89,21 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div id="dp-field-people"></div>
       <div id="dp-field-agents" hidden></div>
       <div class="s-row s-row--between dp-fieldfoot"><p class="t-meta" id="dp-field-note"></p><button class="s-btn s-btn--sm s-btn--ghost" type="button" id="dp-field-more">Show all 40 outcomes</button></div>
+    </div>
+  </section>
+
+  <!-- 3b. The round: get ready to trade, and the market's facts -->
+  <section class="s-section--tight dp-round dp-round--facts" id="round-facts" aria-label="Round 4: how to trade and the market's facts">
+    <div class="s-container">
+      <ol class="dp-steps" id="dp-steps" aria-label="Get ready to trade"></ol>
+      <div class="dp-roundhead">
+        <div class="s-col" style="--gap:10px">
+          <div id="dp-round-specs"></div>
+          <h2 class="t-h2 dp-roundq" id="dp-round-q"></h2>
+          <p class="t-body dp-roundnote">Lattice DAO funds 8 of these 40 proposals from 250,000 sDAI. Five reviewers will score each one from 0 to 10. This market forecasts those scores, one outcome per proposal, and pays out on the scores the panel publishes.</p>
+        </div>
+      </div>
+      <div class="s-stats dp-stats" id="dp-round-stats" style="--cols:6"></div>
     </div>
   </section>
 

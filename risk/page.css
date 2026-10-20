@@ -397,3 +397,14 @@ html.rk-noscroll { overflow: hidden; }
   .rk-row__val span { font-size: 12px; }
   .rk-row__asset b { font-size: 15px; }
 }
+
+/* tool-first head (2026-10-20): compact title + the one-axis board beside it; the board follows at once */
+.rk-head__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.rk-head .rk-facts { margin-top: 18px; padding-top: 14px; }
+.rk-head .rk-facts dd { font-size: 18px; }
+.rk-head .rk-poster { min-height: 380px; gap: 8px; padding: 14px 18px 12px; }
+.rk-head .rk-plot { min-height: 236px; }
+.rk-head .rk-poster__cap { min-height: 40px; padding-top: 8px; }
+#board.rk-boardsec { padding-top: 4px; }
+.rk-marketfacts { margin-top: var(--s-8); }
+@media (max-width: 640px) { .rk-head .rk-facts { margin-top: 14px; } }

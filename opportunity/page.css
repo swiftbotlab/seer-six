@@ -325,3 +325,14 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-card__price small { font-size: 12px; font-weight: 500; color: var(--text-3); }
 @media (max-width: 960px) { .op-axis__name { margin-left: 30px; margin-right: 28px; } }
 @media (max-width: 480px) { .op-poster__cap .op-cap__why { font-size: 12px; } .op-axis__long { display: none; } }
+
+/* tool-first head (2026-10-20): compact title + the 40-bar board beside it; the field follows at once */
+.op-head__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.op-head .op-facts { margin-top: 18px; padding-top: 14px; }
+.op-head .op-facts dd { font-size: 18px; }
+.op-head .op-poster { --rh: 7px; gap: 8px; padding: 14px 18px 12px; }
+.op-head .op-poster__top .op-hide-xs { display: none; } /* the status sits in the market badges below */
+.op-head .op-sline span { margin-left: 0; margin-right: auto; padding: 0 8px 0 0; } /* left, clear of the active bar's value label */
+.op-head .op-poster__cap { min-height: 40px; padding-top: 8px; }
+#field { padding-top: 20px; }
+@media (max-width: 640px) { .op-head .op-facts { margin-top: 14px; } #field { padding-top: 12px; } }

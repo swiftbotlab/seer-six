@@ -275,3 +275,17 @@ ol.dp-notelist { list-style: decimal; }
 
 /* phones: ridge-chart axis labels at 11px */
 @media (max-width: 480px) { #dp-ridge text, .dp-ridge text, .dp-mini text { font-size: 11px; } }
+
+/* tool-first head (2026-10-20): compact title + the ridge beside it; tabs and the field follow at once */
+.dp-head__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.dp-head .dp-hero__facts { margin-top: 18px; padding-top: 14px; }
+.dp-head .dp-hero__facts dd { font-size: 18px; }
+.dp-head .dp-poster { min-height: 330px; padding: 14px 18px 12px; }
+.dp-head .dp-poster__top .dp-hide-xs { display: none; } /* the status sits in the round tabs below */
+.dp-head .dp-ridge { min-height: 200px; }
+.dp-head .dp-poster__cap { min-height: 40px; padding-top: 8px; }
+.dp-head .dp-poster__cap .dp-cap-num { font-size: 26px; }
+#round.dp-round { padding-block: 4px 0; }
+#field { padding-top: 20px; }
+.dp-round--facts .dp-steps { margin-top: 0; }
+@media (max-width: 640px) { .dp-head .dp-hero__facts { margin-top: 14px; } #field { padding-top: 12px; } }

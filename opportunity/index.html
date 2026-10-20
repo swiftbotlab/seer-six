@@ -33,20 +33,20 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
-  <!-- 1. Hero: the core idea on the first screen -->
-  <section class="s-hero op-hero">
-    <div class="s-container s-hero__grid op-hero__grid">
-      <div class="op-hero__copy">
-        <div class="s-hero__kicker s-specs"><span>05</span><span>Gnosis</span><span>sDAI</span></div>
-        <h1 class="s-hero__title op-hero__title">Prices sort the pile. <span class="t-accent">Reviewers still choose.</span></h1>
-        <p class="s-hero__lede t-lede">Every submission is an outcome. Traders buy the entries they expect the sponsor to select, and the prices become a reading order for the review panel. The sponsor makes the final choice, and traders are paid on it.</p>
-        <div class="s-hero__actions">
-          <a class="s-btn s-btn--lg op-hero__btn" href="#field">Trade Round 4</a>
-          <a class="s-btn s-btn--lg s-btn--ghost op-hero__btn" href="#queue">Open the review queue</a>
-        </div>
+  <!-- 1. App head: the market question, every entry's chance beside it, then the field -->
+  <section class="s-apphead op-head" aria-labelledby="op-title">
+    <div class="s-container s-apphead__grid op-head__grid">
+      <div class="s-apphead__copy">
+        <div class="s-hero__kicker s-specs"><span>05 · Opportunity</span><span>Builders Grants R4</span><span>Gnosis</span><span>sDAI</span></div>
+        <h1 class="s-apphead__title" id="op-title">Which proposals will the panel fund?</h1>
+        <p class="s-apphead__sub">Each of the 40 entries is an outcome, priced by its chance of selection. Reviewers get a reading order; the sponsor still picks the eight.</p>
         <dl class="op-facts" id="op-facts"></dl>
+        <div class="s-apphead__actions">
+          <a class="s-btn" href="#field">Trade Round 4</a>
+          <a class="s-btn s-btn--ghost" href="#queue">Open the review queue</a>
+        </div>
       </div>
-      <div class="s-hero__art op-hero__art">
+      <div class="s-apphead__art s-apphead__art--wide op-hero__art">
         <figure class="s-poster op-poster" id="op-poster">
           <div class="op-poster__top">
             <div class="s-specs"><span>Mkt <b>#2842</b></span><span>Multi-categorical</span><span><b>40</b> entries</span></div>
@@ -58,24 +58,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <figcaption class="op-poster__cap" id="op-cap" aria-live="polite"></figcaption>
         </figure>
       </div>
-    </div>
-  </section>
-
-  <!-- 2. The market: header, numbers and where the round is in its flow -->
-  <section class="s-section--tight op-round" id="round" aria-labelledby="op-mq">
-    <div class="s-container">
-      <div class="op-mhead">
-        <div class="s-col op-mhead__main" style="--gap:12px">
-          <div id="op-mspecs"></div>
-          <h2 class="t-h2 op-mq" id="op-mq">Which proposals will the Lattice panel fund?</h2>
-          <div class="s-row op-mbadges" style="--gap:10px" id="op-mbadges"></div>
-        </div>
-        <div class="s-row op-mhead__end" style="--gap:8px">
-          <a class="s-btn s-btn--sm s-btn--ghost" href="../app/#m=2842" id="op-inapp">Inspect #2842 in App</a>
-        </div>
-      </div>
-      <div class="s-stats op-mstats" id="op-mstats" style="--cols:6"></div>
-      <ol class="op-flow" id="op-flow" aria-label="Where Round 4 is"></ol>
     </div>
   </section>
 
@@ -104,6 +86,24 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div id="op-grid" class="op-grid"></div>
       <div id="op-table" class="op-tablebox" hidden></div>
       <p class="t-meta op-fieldnote" id="op-fieldnote" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 3b. The market: numbers and where the round is in its flow (after the field) -->
+  <section class="s-section--tight op-round" id="round" aria-labelledby="op-mq">
+    <div class="s-container">
+      <div class="op-mhead">
+        <div class="s-col op-mhead__main" style="--gap:12px">
+          <div id="op-mspecs"></div>
+          <h2 class="t-h2 op-mq" id="op-mq">Round 4 at a glance: 8 slots, 250,000 sDAI</h2>
+          <div class="s-row op-mbadges" style="--gap:10px" id="op-mbadges"></div>
+        </div>
+        <div class="s-row op-mhead__end" style="--gap:8px">
+          <a class="s-btn s-btn--sm s-btn--ghost" href="../app/#m=2842" id="op-inapp">Inspect #2842 in App</a>
+        </div>
+      </div>
+      <div class="s-stats op-mstats" id="op-mstats" style="--cols:6"></div>
+      <ol class="op-flow" id="op-flow" aria-label="Where Round 4 is"></ol>
     </div>
   </section>
 

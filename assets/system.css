@@ -369,6 +369,19 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-hero__actions { margin-top: var(--s-8); display: flex; gap: 10px; flex-wrap: wrap; }
 .s-hero__actions .s-btn { --h: 48px; font-size: 14px; padding: 0 20px; } /* one hero CTA size across the five apps */
 .s-hero__art { position: relative; min-height: 320px; color: var(--violet-2); }
+/* App head: the five app pages open on a compact title (the market question), the key chart beside it on wide
+   screens, then the working tool. No marketing hero: the board starts in the first screen. */
+.s-apphead { padding-block: 28px 20px; }
+.s-apphead__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; align-items: stretch; }
+.s-apphead__copy { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.s-apphead .s-hero__kicker { margin-bottom: 14px; }
+.s-apphead__title { font-size: clamp(26px, 2.4vw, 36px); line-height: 1.12; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
+.s-apphead__sub { margin-top: 10px; font-size: 15px; line-height: 1.55; font-weight: 500; color: var(--text-2); max-width: 62ch; }
+.s-apphead__actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.s-apphead__actions .s-btn { --h: 44px; padding: 0 18px; }
+.s-apphead__art { position: relative; min-width: 0; }
+@media (max-width: 960px) { .s-apphead .s-apphead__grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+@media (max-width: 640px) { .s-apphead { padding-block: 20px 8px; } .s-apphead__art--wide, .s-apphead__actions, .s-apphead .s-apphead__copy > dl { display: none; } }
 @media (max-width: 960px) { .s-hero__grid { grid-template-columns: 1fr; } .s-hero__art { min-height: 220px; } .s-hero { padding-block: var(--s-10) var(--s-8); } }
 
 /* 6. COMPONENTS ------------------------------------------------------------- */

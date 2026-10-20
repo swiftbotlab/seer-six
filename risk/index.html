@@ -33,20 +33,20 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
-  <!-- 1. Hero: the whole board on one axis, first screen -->
-  <section class="s-hero rk-hero">
-    <div class="s-container s-hero__grid rk-hero__grid">
-      <div class="rk-hero__copy">
-        <div class="s-hero__kicker s-specs"><span>06</span><span>Ethereum</span><span>sDAI</span></div>
-        <h1 class="s-hero__title rk-hero__title">Default risk, <span class="t-accent">priced side by side.</span></h1>
-        <p class="s-hero__lede t-lede">Risk Pricing runs one market a quarter on 33 DeFi assets. Each price is the market's estimate that an asset defaults, read per year, with the spread of traders' views around it. Compare estimates across the board instead of reading one yes or no.</p>
-        <div class="s-hero__actions">
-          <a class="s-btn s-btn--lg rk-hero__btn" href="#participate">Set your estimates</a>
-          <a class="s-btn s-btn--lg s-btn--ghost rk-hero__btn" href="#method">How to read it</a>
-        </div>
+  <!-- 1. App head: the market question, the whole board on one axis beside it, then the board -->
+  <section class="s-apphead rk-head" aria-labelledby="rk-title">
+    <div class="s-container s-apphead__grid rk-head__grid">
+      <div class="s-apphead__copy">
+        <div class="s-hero__kicker s-specs"><span>06 · Risk</span><span>Q4 2026</span><span>Ethereum</span><span>sDAI</span></div>
+        <h1 class="s-apphead__title" id="rk-title">How likely is each asset to default?</h1>
+        <p class="s-apphead__sub">One market a quarter on 33 DeFi assets. Each price is a yearly default estimate, with the traders' range around it, so the board reads side by side.</p>
         <dl class="rk-facts" id="rk-facts"></dl>
+        <div class="s-apphead__actions">
+          <a class="s-btn" href="#participate">Set your estimates</a>
+          <a class="s-btn s-btn--ghost" href="#method">How to read it</a>
+        </div>
       </div>
-      <div class="s-hero__art rk-hero__art">
+      <div class="s-apphead__art s-apphead__art--wide rk-hero__art">
         <figure class="s-poster rk-poster" id="rk-poster">
           <div class="rk-poster__top">
             <div class="s-specs"><span>Mkt <b>#2850</b></span><span>Q4 2026</span><span><b>33</b> assets</span></div>
@@ -71,13 +71,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2850">Market #2850 on Seer <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="rk-qhead">
-        <div class="s-col" style="--gap:10px">
-          <div id="rk-qspecs"></div>
-          <h2 class="t-h2 rk-question">What is the yearly probability of default for each of these assets during Q4 2026?</h2>
-        </div>
-      </div>
-      <div class="s-stats rk-stats" id="rk-stats" style="--cols:6"></div>
 
       <div class="rk-toolbar" id="rk-toolbar">
         <div class="rk-toolbar__row">
@@ -108,6 +101,17 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 
       <div class="rk-boardbody" id="rk-boardbody" aria-live="polite"></div>
       <p class="rk-key t-meta" id="rk-key"></p>
+
+      <!-- the market's exact question and numbers, under the board they describe -->
+      <div class="rk-marketfacts">
+      <div class="rk-qhead">
+        <div class="s-col" style="--gap:10px">
+          <div id="rk-qspecs"></div>
+          <h2 class="t-h2 rk-question">What is the yearly probability of default for each of these assets during Q4 2026?</h2>
+        </div>
+      </div>
+      <div class="s-stats rk-stats" id="rk-stats" style="--cols:6"></div>
+      </div>
     </div>
   </section>
 

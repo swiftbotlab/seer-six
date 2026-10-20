@@ -334,3 +334,9 @@
   .ft-gauge__zl, .ft-gauge--mini .ft-gauge__zl { font-size: 11.5px; }
   .ft-chart text { font-size: 11px; }
 }
+
+/* tool-first (2026-10-20): a one-line title like the other apps; the chart and the ticket follow the proposal at once */
+.ft-hero { padding-block: 24px 16px; }
+@media (min-width: 1101px) { .ft-hero__grid { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 32px; } }
+.ft-hero .ft-title { font-size: clamp(26px, 2.3vw, 34px); line-height: 1.12; font-weight: 600; letter-spacing: -.025em; max-width: none; }
+.ft-subtitle { margin-top: 8px; font-size: 15px; }

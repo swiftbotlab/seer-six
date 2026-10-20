@@ -159,7 +159,7 @@
   }
   renderSteps();
   $("#dp-round-specs").appendChild(S.ui.specs(["Mkt #2841", "Scalar × 40", D.state(M.state).label]));
-  $("#dp-round-q").textContent = "What will the panel score each proposal, from 0 to 10?";
+  $("#dp-round-q").textContent = "Round 4 at a glance: scores from 0 to 10, eight funded";
   (function roundStats() {
     var box = $("#dp-round-stats");
     box.appendChild(S.ui.stat("Outcomes", "40", { note: "One per proposal" }));
