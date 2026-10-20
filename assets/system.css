@@ -505,7 +505,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-orow--nobar::before { display: none; }
 .s-orow__label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
 .s-orow__label .s-rank { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); width: 18px; flex: none; }
-.s-orow__pct { font-variant-numeric: tabular-nums; color: var(--text); min-width: 44px; text-align: right; }
+.s-orow__pct { flex: none; font-variant-numeric: tabular-nums; color: var(--text); min-width: 44px; text-align: right; }
 .s-orow__sub { display: block; font-size: 11.5px; line-height: 1.2; font-weight: 500; color: var(--text-3); letter-spacing: 0; white-space: nowrap; }
 .s-orow__delta { font-size: 11.5px; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
 .s-orow__actions { display: flex; gap: 6px; flex: none; }
