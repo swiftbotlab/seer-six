@@ -22,5 +22,5 @@ agents and assets are fictional, and every address starts with `0x5eed`.
 
 Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name, mark and the
 Electric Foundation identity belong to their owners and are used here only to present
-this design concept. Stand-in fonts (Geist, Geist Mono, Instrument Serif) are under the
+this design concept. Stand-in fonts (Geist, Geist Mono) are under the
 SIL Open Font License; see `assets/fonts/`.

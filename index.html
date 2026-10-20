@@ -7,7 +7,7 @@
 <meta name="description" content="A connected redesign of Seer's six interfaces on the Electric Foundation identity: homepage, App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
-if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-serif-italic-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
+if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
 <link rel="preload" href="assets/sample-data.js" as="script">
 <link rel="preload" href="assets/ui.js" as="script">
 <link rel="preload" href="assets/kit/betslip.jpg" as="image">
@@ -33,7 +33,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
 .hb-poster { margin-top: 28px; min-height: 560px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
 .hb-poster__copy { position: relative; z-index: 2; padding: 56px 48px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
 .hb-poster__title { font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.04em; font-weight: 400; color: var(--lavender); max-width: 9ch; }
-.hb-poster__title .t-accent { color: #fff; }
+.hb-poster__title .t-accent { color: #A57BFF; }
 .hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 48ch; margin-top: 22px; }
 .hb-poster__art { position: relative; min-height: 320px; color: var(--violet); }
 .hb-poster__art .hb-wedges { position: absolute; inset: 0; }
@@ -239,7 +239,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin","instrument-ser
           <h3 class="t-h3">Deliberate departures</h3>
           <ol>
             <li><b>Motifs carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision, data bars are a field of entries.</li>
-            <li><b>Typefaces.</b> PP Neue Montreal, Suisse Int'l Mono and Reckless are used when installed. Everyone else gets licensed stand-ins: Geist, Geist Mono (it keeps the slashed zero) and Instrument Serif Italic.</li>
+            <li><b>Typefaces.</b> PP Neue Montreal and Suisse Int'l Mono are used when installed; everyone else gets licensed stand-ins, Geist and Geist Mono (it keeps the slashed zero). Headlines use one sans: the accent words are violet, not a second, serif face.</li>
             <li><b>Contrast.</b> Small muted text is lifted from #67676F to #8A8A94 in dark mode and from #8E8E99 to #6E6E79 in light mode, so 12px labels pass WCAG AA.</li>
             <li><b>Semantic colour, used sparingly.</b> The kit has no green, amber or red. We add them only for price moves and risk bands, always next to a sign or a label. Futarchy's NO branch is the kit's lavender, so "rejected" never reads as a positive colour.</li>
             <li><b>A chart palette.</b> Six colours, violet first, checked for colour-vision deficiency in both themes. Anything past six becomes "Other".</li>

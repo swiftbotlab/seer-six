@@ -183,7 +183,7 @@
       '<div class="s-footer__cols">' +
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
       '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#notes">Design notes</a><a href="' + S.url("system/") + '">Design system: tokens and components</a></div>' +
-      '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and vanilla JS, no build step, no trackers.</p><p class="t-meta s-footer__fact">Fonts self-hosted: Geist, Geist Mono, Instrument Serif.</p></div>' +
+      '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and vanilla JS, no build step, no trackers.</p><p class="t-meta s-footer__fact">Fonts self-hosted: Geist, Geist Mono.</p></div>' +
       '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Every price, volume, address and name on these pages is sample data, made up to show the design. Nothing is live and nothing can be traded.</p></div>' +
       "</div>" +
       '<div class="s-footer__base"><span class="s-footer__credit">Concept by Swift Bot Labs · not affiliated with Seer</span>' +

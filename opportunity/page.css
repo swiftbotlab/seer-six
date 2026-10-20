@@ -195,7 +195,7 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-sponsor { margin-top: var(--s-8); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--s-10); padding: 40px; align-items: center; }
 .op-sponsor__copy { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .op-sponsor__title { font-size: clamp(30px, 3.4vw, 48px); line-height: 1.04; font-weight: 500; letter-spacing: -.03em; color: var(--fog); max-width: 18ch; }
-.op-sponsor__title .t-accent { color: var(--lavender); }
+.op-sponsor__title .t-accent { color: #A57BFF; }
 .op-sponsor__lede { font-size: 16px; line-height: 1.55; color: rgba(224, 226, 245, .78); max-width: 52ch; }
 .op-sponsor__steps { display: flex; flex-direction: column; counter-reset: sp; border-top: 1px solid rgba(224, 226, 245, .12); }
 .op-sponsor__steps li { counter-increment: sp; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 8px; padding: 16px 0; border-bottom: 1px solid rgba(224, 226, 245, .12); }
