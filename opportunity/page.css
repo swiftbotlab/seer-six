@@ -166,7 +166,7 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-dep.is-fast i { background: var(--violet-wash); box-shadow: inset 0 0 0 1.5px var(--violet-2); }
 
 /* ---------- 5. markets ---------- */
-.op-markets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.op-markets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
 .op-mk { gap: 16px; }
 .op-mk .s-kv { grid-template-columns: minmax(110px, 40%) minmax(0, 1fr); margin-top: auto; }
 .op-mk .s-kv > dt, .op-mk .s-kv > dd { padding: 9px 0; }
@@ -336,3 +336,15 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-head .op-poster__cap { min-height: 40px; padding-top: 8px; }
 #field { padding-top: 20px; }
 @media (max-width: 640px) { .op-head .op-facts { margin-top: 14px; } #field { padding-top: 12px; } }
+/* 3a. settled round: Seer's real Rebrand Contest in one row */
+.op-set__when { display: block; margin-bottom: 6px; color: var(--violet-3); }
+.op-settled .s-section-head { margin-bottom: 14px; }
+.op-set { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr) minmax(0, .8fr); gap: 16px 28px; align-items: center; }
+.op-set__l { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.op-set__stack { min-width: 0; }
+.op-set__end { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.op-set__end .s-kv { grid-template-columns: minmax(80px, 40%) minmax(0, 1fr); }
+.op-set__end .s-kv > dt, .op-set__end .s-kv > dd { padding: 5px 0; }
+.op-set__end .s-btn { align-self: flex-start; }
+@media (max-width: 1100px) { .op-set { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .op-set__stack { grid-column: 1 / -1; grid-row: 2; } }
+@media (max-width: 640px) { .op-set { grid-template-columns: minmax(0, 1fr); } .op-set__stack { grid-row: auto; } }

@@ -599,7 +599,7 @@
       if (t.winner) { r.classList.add("is-selected"); r.querySelector(".s-orow__label").appendChild(el("span", { class: "s-tag s-tag--solid", text: "Chosen" })); }
       rows.appendChild(r);
     });
-    rows.appendChild(S.ui.orow({ name: "Other " + (A.entries - top.length) + " entries", price: other }, { actions: false, value: f.pct(other, 1) }));
+    rows.appendChild(S.ui.orow({ name: "Other " + (A.entries - top.length) + " entries", price: other }, { actions: false, value: "0.5–1% each" }));
     box.appendChild(rows);
     box.appendChild(el("div", { class: "s-row s-row--between" }, S.ui.specs([A.entries + " entries", A.images + " images", "Finalised"]),
       el("a", { class: "s-btn s-btn--ghost s-btn--sm", href: "../opportunity/" }, "See the archive", el("span", { html: S.icon("arrow-right", 14), style: { display: "inline-flex" } }))));

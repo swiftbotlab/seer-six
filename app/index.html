@@ -29,7 +29,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="app">
-<script>window.SEER_PAGE = { nav: [["Markets", "#markets", true], ["Activity", "#activity"], ["Leaderboard", "#leaderboard"], ["Design notes", "#notes"]], search: "Search markets, outcomes or 0x…", cta: ["Create market", "#create", "plus-square"] };</script>
+<script>window.SEER_PAGE = { nav: [["Markets", "#markets", true], ["Activity", "#activity"], ["Real markets", "#on-seer"], ["Leaderboard", "#leaderboard"], ["Design notes", "#notes"]], search: "Search markets, outcomes or 0x…", cta: ["Create market", "#create", "plus-square"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
@@ -72,6 +72,17 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <div class="ap-toolbar__end" id="ap-fend"></div>
         </div>
         <div id="ap-results"></div>
+      </div>
+    </section>
+
+    <!-- Also on Seer: real markets, copied once from app.seer.pm (assets/seer-snapshot.js); not live, no runtime requests -->
+    <section class="ap-section ap-snap" id="on-seer" aria-labelledby="ap-snap-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head ap-head--compact">
+          <div><span class="s-spec ap-snap__when" id="ap-snap-when">Snapshot from app.seer.pm</span><h2 id="ap-snap-h" class="t-h3">Also on Seer: real markets</h2></div>
+          <p class="ap-snap__note">The same card, fed with real markets as Seer's app listed them at the snapshot time. Copied once; prices are not live. Each opens on Seer.</p>
+        </div>
+        <div class="ap-snap__grid" id="ap-snap"></div>
       </div>
     </section>
 
@@ -228,5 +239,34 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
 <script src="page.js"></script>
+<script src="../assets/seer-snapshot.js"></script>
+<script>
+(function () {
+  var S = window.Seer, X = window.SEER_SNAPSHOT, host = document.getElementById("ap-snap");
+  if (!S || !X || !host) return;
+  document.getElementById("ap-snap-when").textContent = "Snapshot from " + X.source + ", " + X.when;
+  var pct = function (v) { return (Math.round(v * 10) / 10) + "%"; };
+  X.markets.forEach(function (m) {
+    var body;
+    if (m.scalar) {
+      var c = m.scalar, pos = Math.max(0, Math.min(1, (c.value - c.min) / (c.max - c.min)));
+      body = S.el("div", { class: "ap-snap__scalar" },
+        S.el("div", { class: "ap-snap__val" }, S.el("b", { class: "t-num", text: String(c.value) }), S.el("span", { text: " " + c.unit + " expected" })),
+        S.el("div", { class: "ap-snap__range", attrs: { role: "img", "aria-label": "Expected " + c.value + " " + c.unit + " on a range of " + c.min + " to " + c.max } }, S.el("i", { style: { left: (pos * 100).toFixed(1) + "%" } })),
+        S.el("div", { class: "ap-snap__ends t-num" }, S.el("span", { text: String(c.min) }), S.el("span", { text: String(c.max) })));
+    } else {
+      body = S.el("ul", { class: "ap-snap__outs" }, m.outcomes.slice(0, 3).map(function (o, i) {
+        return S.el("li", { style: { "--w": Math.max(1.5, o[1]) + "%" }, attrs: { "data-i": String(i) } }, S.el("span", { class: "ap-snap__o", text: o[0], attrs: { title: o[0] } }), S.el("b", { class: "t-num", text: pct(o[1]) }));
+      }));
+    }
+    host.appendChild(S.el("article", { class: "ap-snap__card" },
+      S.el("h3", { class: "ap-snap__t" }, S.el("a", { href: X.base + m.slug, text: m.title, attrs: { rel: "noopener", target: "_blank" } })),
+      body,
+      S.el("div", { class: "ap-snap__foot" },
+        S.el("span", { class: "t-num", text: m.oi, attrs: { title: "Open interest and liquidity, as Seer's card showed it" } }),
+        S.el("span", { class: "ap-snap__go" }, "Open on Seer", S.el("span", { html: S.icon("external", 13) })))));
+  });
+})();
+</script>
 </body>
 </html>

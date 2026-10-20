@@ -374,32 +374,37 @@
       U.kv([["Entries close", el("span", { text: "23 Oct 2026 · 23:59 AoE" })], ["Prices", el("span", { class: "t-3", text: "None yet" })], ["Decided by", el("span", { text: "Seer team" })]]),
       el("button", { class: "s-btn s-btn--block s-btn--ghost", attrs: { type: "button", "data-demo": "Reminders are not wired in this concept." }, text: "Remind me when it lists" }));
     host.appendChild(up);
-    // archive (real, finalised)
-    var A = D.opportunity.archive[0];
+  }
+
+  /* ======================= 3c. settled: the real Seer Rebrand Contest (snapshot of its market page) ======================= */
+  function settled() {
+    var host = $("#op-settled"); if (!host) return;
+    var A = D.opportunity.archive[0], X = window.SEER_SNAPSHOT || {}, link = (X.rebrand && X.rebrand.url) || "https://app.seer.pm/";
     var rest = 1 - A.top.reduce(function (s, t) { return s + t.share; }, 0);
-    var stackBox = el("div", { class: "op-mk__stack" });
-    var arch = el("article", { class: "s-card s-card--pad op-mk" },
-      el("div", { class: "s-row s-row--between", style: { "--gap": "8px" } }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--mono", text: "Archive" }), U.stateBadge("closed")), el("span", { class: "s-tag s-tag--outline", text: "Public result" })),
-      el("div", {}, el("h3", { class: "t-title", text: A.title }), el("p", { class: "t-meta", text: "Seer · " + A.entries + " entries · " + A.images + " images" })),
+    var stackBox = el("div", { class: "op-set__stack" });
+    host.appendChild(el("article", { class: "s-card s-card--pad op-set" },
+      el("div", { class: "op-set__l" },
+        el("div", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--mono", text: "Settled" }), U.stateBadge("closed"), el("span", { class: "s-tag s-tag--outline", text: "Real market" })),
+        el("h3", { class: "t-title", text: A.title }),
+        el("p", { class: "op-mk__win" }, icon("trophy", 15), el("span", {}, "Answer: ", el("b", { text: A.top[0].name }), ", also the market favourite at " + F.pct(A.top[0].share, 1) + ". These six interfaces are built on it."))),
       stackBox,
-      el("p", { class: "op-mk__win" }, icon("trophy", 15), el("span", {}, el("b", { text: A.top[0].name }), " was selected. It was also the market favourite, at " + F.pct(A.top[0].share, 1) + ". The six interfaces in this concept use it.")),
-      U.kv([["Volume", el("span", { text: F.usd(A.volume, true) })], ["Liquidity", el("span", { text: F.usd(A.liquidity, true) })]]),
-      el("p", { class: "t-meta", text: A.note }));
-    host.appendChild(arch);
-    stackInOrder(stackBox, A.top.map(function (t, i) { return { label: t.name, value: t.share, color: ["var(--c1)", "var(--c2)", "var(--c3)"][i] }; }).concat([{ label: (A.entries - A.top.length) + " others", value: rest, color: "var(--c-other)" }]));
+      el("div", { class: "op-set__end" },
+        U.kv([["Entries", el("span", { text: A.entries + " · " + A.images + " images" })], ["Volume", el("span", { text: F.usd(A.volume, true) })], ["Liquidity", el("span", { text: F.usd(A.liquidity, true) })]]),
+        el("a", { class: "s-btn s-btn--sm s-btn--secondary", href: link, attrs: { rel: "noopener", target: "_blank" } }, "Open on Seer", icon("external", 14)))));
+    stackInOrder(stackBox, A.top.map(function (t, i) { return { label: t.name, value: t.share, color: ["var(--c1)", "var(--c2)", "var(--c3)"][i] }; }).concat([{ label: (A.entries - A.top.length) + " others", value: rest, color: "var(--c-other)", txt: "0.5–1% each" }]));
   }
 
   // 100% stack that keeps the given order (the shared one sorts by size; here "others" must stay last)
   function stackInOrder(host, items) {
-    var bar = el("div", { class: "s-stackbar s-stackbar--lg", attrs: { role: "img", "aria-label": items.map(function (i) { return i.label + " " + F.pct(i.value, 1); }).join(", ") } });
+    var bar = el("div", { class: "s-stackbar s-stackbar--lg", attrs: { role: "img", "aria-label": items.map(function (i) { return i.label + " " + (i.txt || F.pct(i.value, 1)); }).join(", ") } });
     items.forEach(function (it) {
-      var seg = el("i", { style: { flex: "0 0 calc(" + (it.value * 100).toFixed(3) + "% - 2px)", "--seg": it.color }, attrs: { tabindex: "0", "aria-label": it.label + " " + F.pct(it.value, 1) } });
-      var show = function (ev) { var bb = seg.getBoundingClientRect(); S.tip.show(ev && ev.clientX || bb.left, ev && ev.clientY || bb.top, it.label, [{ label: "Final price", value: F.pct(it.value, 1), color: it.color }]); };
+      var seg = el("i", { style: { flex: "0 0 calc(" + (it.value * 100).toFixed(3) + "% - 2px)", "--seg": it.color }, attrs: { tabindex: "0", "aria-label": it.label + " " + (it.txt || F.pct(it.value, 1)) } });
+      var show = function (ev) { var bb = seg.getBoundingClientRect(); S.tip.show(ev && ev.clientX || bb.left, ev && ev.clientY || bb.top, it.label, [{ label: "Final price", value: it.txt || F.pct(it.value, 1), color: it.color }]); };
       seg.addEventListener("pointermove", show); seg.addEventListener("focus", function () { show(); });
       seg.addEventListener("pointerleave", S.tip.hide); seg.addEventListener("blur", S.tip.hide);
       bar.appendChild(seg);
     });
-    host.appendChild(el("div", {}, bar, el("div", { class: "s-legend u-mt-2" }, items.map(function (it) { return el("span", {}, el("i", { style: { background: it.color } }), it.label + " " + F.pct(it.value, 1)); }))));
+    host.appendChild(el("div", {}, bar, el("div", { class: "s-legend u-mt-2" }, items.map(function (it) { return el("span", {}, el("i", { style: { background: it.color } }), it.label + " " + (it.txt || F.pct(it.value, 1))); }))));
   }
 
   /* ======================= 6. how it works ======================= */
@@ -601,7 +606,7 @@
   }
 
   /* ---------- boot ---------- */
-  facts(); poster(); round(); field(); queue(); markets(); how(); drawerEvents();
+  facts(); poster(); round(); field(); settled(); queue(); markets(); how(); drawerEvents();
   fromHash();
   window.addEventListener("hashchange", fromHash);
 })();
