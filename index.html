@@ -30,30 +30,16 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <link rel="stylesheet" href="assets/system.css">
 <style>
 /* hub page — prefix .hb- */
-.hb-poster { margin-top: 28px; min-height: 560px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
-.hb-poster__copy { position: relative; z-index: 2; padding: 56px 48px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
-.hb-poster__title { font-size: clamp(44px, 6.4vw, 96px); line-height: .96; letter-spacing: -.04em; font-weight: 400; color: var(--lavender); max-width: 9ch; }
+.hb-poster { margin-top: 24px; min-height: 400px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.hb-poster__copy { position: relative; z-index: 2; padding: 40px 44px 36px; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+.hb-poster__title { font-size: clamp(42px, 5.4vw, 80px); line-height: .96; letter-spacing: -.04em; font-weight: 400; color: var(--lavender); max-width: 9ch; }
 .hb-poster__title .t-accent { color: #A57BFF; }
-.hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 48ch; margin-top: 22px; }
+.hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 50ch; margin-top: 18px; }
 .hb-poster__art { position: relative; min-height: 320px; color: var(--violet); }
 .hb-poster__art .hb-wedges { position: absolute; inset: 0; }
 .hb-poster__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .hb-poster .s-btn--secondary { background: rgba(125, 51, 255, .18); color: #E0D2FF; }
 .hb-poster .s-btn--secondary:hover { background: rgba(125, 51, 255, .28); }
-.hb-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.hb-card { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-panel); overflow: hidden; transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.hb-card:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
-.hb-card:focus-within { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
-.hb-card__art { position: relative; height: 188px; background: var(--ink); color: var(--violet-2); overflow: hidden; }
-.hb-card__art > div { position: absolute; inset: 0; }
-.hb-card__art .hb-card__n { position: absolute; left: 12px; top: 10px; padding: 3px 6px; border-radius: 4px; background: rgba(12, 10, 22, .82); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; color: rgba(224, 226, 245, .72); z-index: 2; }
-.hb-card__body { padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-.hb-card__name { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
-.hb-card__name svg { width: 18px; height: 18px; color: var(--violet-3); }
-.hb-card__blurb { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; }
-.hb-card__foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 10px; }
-.hb-card a.s-btn::after { content: ""; position: absolute; inset: 0; }
-.hb-card { position: relative; }
 .hb-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
 .hb-flow > div { background: var(--surface); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .hb-flow__step { display: flex; align-items: center; gap: 8px; }
@@ -64,14 +50,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-notes ol li { counter-increment: d; position: relative; padding-left: 34px; color: var(--text-2); font-size: 14px; line-height: 1.55; font-weight: 500; }
 .hb-notes ol li::before { content: counter(d, decimal-leading-zero); position: absolute; left: 0; top: 1px; font-family: var(--font-mono); font-size: 11.5px; color: var(--violet-3); }
 .hb-notes ol li b { color: var(--text); font-weight: 600; }
-@media (max-width: 1100px) { .hb-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hb-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .hb-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 860px) {
   .hb-poster { grid-template-columns: 1fr; min-height: 0; }
   .hb-poster__copy { padding: 36px 24px 28px; }
   .hb-poster__art { min-height: 240px; }
   .hb-notes { grid-template-columns: 1fr; }
 }
-@media (max-width: 640px) { .hb-cards, .hb-flow { grid-template-columns: 1fr; } .hb-poster__copy { padding: 28px 20px 24px; } }
+@media (max-width: 640px) { .hb-poster__copy { padding: 26px 20px 22px; } }
 /* 60-second tour: six rows (interface, what it shows, the one thing to try, link) and four build facts */
 .hb-read { gap: 20px; }
 .hb-read__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; }
@@ -111,23 +97,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 }
 @media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
 .hb-poster__art { overflow: hidden; }
-/* today -> proposed: the live sites over our six screens */
-.hb-today { margin-bottom: 28px; }
-.hb-today__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px 32px; flex-wrap: wrap; margin-bottom: 14px; }
-.hb-today__head .s-spec { display: block; margin-bottom: 8px; }
-.hb-today__head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 58ch; }
-.hb-today__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
-.hb-today__col { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
-.hb-today__img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; border-radius: 8px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
-.hb-today__img--now { opacity: .82; filter: saturate(.8); }
-.hb-today__arrow { display: inline-flex; color: var(--text-3); }
-.hb-today__arrow svg { width: 14px; height: 14px; }
-.hb-today__col a { display: block; width: 100%; border-radius: 8px; }
-.hb-today__col a:hover .hb-today__img, .hb-today__col a:focus-visible .hb-today__img { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
-.hb-today__cap { margin-top: 3px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.hb-today__cap b { color: var(--violet-3); font-weight: 400; }
-@media (max-width: 1100px) { .hb-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .hb-today__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
 /* kit -> concept: a crop of the Electric Foundation web frame beside the same component, live */
 .hb-fid-head { margin: 0 0 14px; max-width: 72ch; }
 .hb-fid-head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; margin-top: 6px; }
@@ -146,23 +115,66 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 @media (max-width: 1100px) { .hb-fid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) { .hb-pair { grid-template-columns: minmax(0, 1fr); } }
 /* the kit, applied: the kit's market grid beside the App here, then what was kept and what changed */
-.hb-ka { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.hb-ka { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, .92fr); gap: 16px; align-items: start; }
 .hb-ka__fig { margin: 0; min-width: 0; }
 .hb-ka__img { display: block; width: 100%; height: auto; border-radius: 12px; background: var(--surface-2); box-shadow: 0 0 0 1px var(--line); }
 .hb-ka__zoom { display: block; border-radius: 12px; }
 .hb-ka__zoom:hover .hb-ka__img, .hb-ka__zoom:focus-visible .hb-ka__img { box-shadow: 0 0 0 1.5px var(--violet-2); }
-.hb-ka__cap { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-top: 10px; font-size: 14px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+.hb-ka__cap { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
 .hb-ka__cap .s-spec { color: var(--violet-3); }
-.hb-kc { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px; margin-top: 20px; }
-.hb-kc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-.hb-kc li { position: relative; padding-left: 28px; font-size: 14px; line-height: 1.55; font-weight: 500; color: var(--text-2); }
+.hb-kc { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border-radius: var(--r-panel); padding: 16px 18px; min-width: 0; }
+.hb-kc .t-h3 { font-size: 15px; letter-spacing: -.01em; margin-bottom: 8px; }
+.hb-kc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.hb-kc li { position: relative; padding-left: 20px; font-size: 13.5px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+.hb-kc li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--violet-3); font-family: var(--font-mono); font-size: 12px; }
+.hb-kc li.hb-kc--keep::before { content: "✓"; }
 .hb-kc li b { color: var(--text); font-weight: 600; }
-.hb-kc li svg { position: absolute; left: 0; top: 2px; color: var(--violet-3); }
-@media (max-width: 900px) { .hb-ka, .hb-kc { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1100px) { .hb-ka { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .hb-kc { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 24px; } }
+@media (max-width: 640px) { .hb-ka { grid-template-columns: minmax(0, 1fr); gap: 12px; } .hb-kc { grid-template-columns: minmax(0, 1fr); } }
+/* section heads with a one-line note on the right */
+.hb-head { margin-bottom: 18px; }
+.hb-head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 60ch; }
+/* the six interfaces: one grid, our screen with today's live site inset */
+.hb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.hb-tile { position: relative; display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-panel); overflow: hidden; transition: box-shadow var(--dur) var(--ease); }
+.hb-tile:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.hb-tile:focus-within { box-shadow: inset 0 0 0 1.5px var(--violet-2); }
+.hb-tile__shot { position: relative; aspect-ratio: 2 / 1; overflow: hidden; background: var(--surface-2); }
+.hb-tile__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.hb-tile__now { position: absolute; right: 10px; bottom: 10px; width: 34%; margin: 0; border-radius: 6px; overflow: hidden; background: var(--surface-2); box-shadow: 0 0 0 1px rgba(255, 255, 255, .18), 0 6px 18px rgba(0, 0, 0, .45); }
+.hb-tile__now img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; object-position: top left; }
+.hb-tile__now figcaption { position: absolute; left: 4px; top: 4px; padding: 1px 5px; border-radius: 3px; background: rgba(12, 10, 22, .85); color: rgba(224, 226, 245, .85); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+.hb-tile__n { position: absolute; left: 10px; top: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(12, 10, 22, .85); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; color: rgba(224, 226, 245, .8); }
+.hb-tile__body { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding: 12px 16px 14px; }
+.hb-tile__name { font-size: 17px; font-weight: 600; letter-spacing: -.015em; }
+.hb-tile__name a { display: inline-flex; align-items: center; gap: 9px; color: var(--text); }
+.hb-tile__name a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.hb-tile__name svg { width: 16px; height: 16px; color: var(--violet-3); flex: none; }
+.hb-tile__open { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-ui); font-weight: 500; color: var(--violet-3); }
+.hb-tile:hover .hb-tile__open { color: var(--text); }
+.hb-tile__line { grid-column: 1 / -1; color: var(--text-2); font-size: 13.5px; line-height: 1.45; font-weight: 500; }
+@media (max-width: 1100px) { .hb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .hb-grid { gap: 10px; }
+  .hb-tile__body { padding: 10px 10px 12px; grid-template-columns: minmax(0, 1fr); }
+  .hb-tile__name { font-size: 14.5px; }
+  .hb-tile__open { display: none; }
+  .hb-tile__line { font-size: 12.5px; }
+  .hb-tile__now { width: 42%; right: 6px; bottom: 6px; }
+  .hb-tile__now figcaption { display: none; }
+  .hb-tile__n { left: 6px; top: 6px; padding: 1px 4px; }
+  .hb-tile__host { display: none; }
+  .hb-poster__art { min-height: 150px; }
+  .hb-flow b.hb-big { font-size: 22px; }
+}
+/* hub rhythm: tighter sections */
+main > .s-section--tight { padding-block: 32px; }
+/* the tour inside its fold */
+#tour .hb-read__rows { margin-bottom: 16px; }
 </style>
 </head>
 <body data-app="index">
-<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Tour", "#tour"], ["Interfaces", "#interfaces"], ["The kit", "#kit-applied"], ["How they connect", "#connect"], ["Design notes", "#notes"], ["System", "system/"]], connect: false };</script>
+<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Interfaces", "#interfaces"], ["The kit", "#kit-applied"], ["How they connect", "#connect"], ["Tour", "#tour"], ["System", "system/"]], connect: false };</script>
 <script src="assets/shell.js"></script>
 <main id="main" class="s-main">
   <div class="s-container">
@@ -171,12 +183,12 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div>
           <div class="s-specs"><span>Concept</span><span>Electric Foundation identity</span><span><b>6</b> interfaces</span></div>
           <h1 id="hb-title" class="hb-poster__title u-mt-6">Every opinion <span class="t-accent">has a price.</span></h1>
-          <p class="hb-poster__lede">One grant round, followed through six interfaces: Seer's homepage, explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing, redesigned on the Electric Foundation identity. One shell, one set of tokens and one shared sample dataset, so a single market can be traced from one app to the next.</p>
+          <p class="hb-poster__lede">Seer's six interfaces, redesigned on the Electric Foundation identity: one shell, one set of tokens and one shared sample dataset, so a single market can be traced from one app to the next.</p>
         </div>
         <div class="hb-poster__foot">
           <div class="s-row">
             <a class="s-btn s-btn--lg" href="home/">Start at the homepage</a>
-            <a class="s-btn s-btn--lg s-btn--secondary" href="#interfaces">All six demos</a>
+            <a class="s-btn s-btn--lg s-btn--secondary" href="#tour">The 60-second tour</a>
           </div>
         </div>
       </div>
@@ -186,68 +198,44 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </section>
   </div>
 
-  <section class="s-section--tight hb-tour-sec" id="tour" aria-labelledby="hb-tour">
+  <section class="s-section--tight" id="interfaces" aria-labelledby="hb-int">
     <div class="s-container">
-      <div class="s-card s-card--pad hb-read">
-        <div class="hb-read__head">
-          <div><span class="s-spec">If you have 60 seconds</span><h2 id="hb-tour" class="t-h2">The 60-second tour</h2></div>
-          <p>Six interfaces on one shell. Each row: what the demo shows, the one thing to try, and its link. Below, what was built with and how.</p>
-        </div>
-        <ol class="hb-read__rows" id="hb-tour-list"></ol>
-        <ul class="hb-read__facts" id="hb-facts">
-          <li><b>Electric Foundation, as specified.</b> The official mark and wordmark, the kit's tokens, radii and type spec, and its components built live: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
-          <li><b>One dataset, traced across apps.</b> P-07 in <a href="deep/#P-07">Deep</a>, markets <a href="app/#m=2841">#2841</a> and <a href="app/#m=2842">#2842</a> in the explorer, <a href="futarchy/#LIP-31">LIP-31</a> in Futarchy; every cross-link resolves.</li>
-          <li><b>Seer's mechanics kept.</b> Reality.eth answers and bonds, Kleros arbitration, Kleros Curate, the six market states, conditional tokens (split, merge, redeem) and sDAI / xDAI / sUSDS per chain.</li>
-          <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no external requests; fonts self-hosted. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
-        </ul>
+      <div class="s-section-head hb-head">
+        <div><span class="s-spec">One shell · six apps</span><h2 id="hb-int" class="t-h2">The interfaces</h2></div>
+        <p>Each card: the proposed screen, with the live site as it is today (October 2026) inset for comparison.</p>
       </div>
+      <div class="hb-grid" id="hb-grid"></div>
     </div>
   </section>
 
-  <section class="s-section" id="interfaces" aria-labelledby="hb-int">
+  <section class="s-section--tight hb-ka-sec" id="kit-applied" aria-labelledby="hb-ka">
     <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">Six labelled demos</span><h2 id="hb-int" class="t-h2">The interfaces</h2></div>
-      </div>
-      <div class="hb-today" id="hb-today">
-        <div class="hb-today__head">
-          <div><span class="s-spec">Today → proposed</span><h3 class="t-h3">Six products today. Here: one shell, one set of tokens, one dataset.</h3></div>
-          <p>Top row: the six live sites as they are in October 2026, shown for comparison. Bottom row: the same six as designed here; open any of them.</p>
-        </div>
-        <div class="hb-today__grid" id="hb-today-grid"></div>
-      </div>
-      <div class="hb-cards" id="hb-cards"></div>
-    </div>
-  </section>
-
-  <section class="s-section--tight" id="kit-applied" aria-labelledby="hb-ka">
-    <div class="s-container">
-      <div class="s-section-head">
+      <div class="s-section-head hb-head">
         <div><span class="s-spec">Electric Foundation kit → this concept</span><h2 id="hb-ka" class="t-h2">The kit, applied</h2></div>
         <a class="s-btn s-btn--ghost" href="#kit">Component pairs</a>
       </div>
       <div class="hb-ka">
         <figure class="hb-ka__fig"><a class="hb-ka__zoom" href="assets/kit/market-grid.jpg"><img class="hb-ka__img" src="assets/kit/market-grid.jpg" width="1200" height="630" loading="lazy" decoding="async" alt="The Electric Foundation kit's dark-mode web frame: a category row with arrow buttons above a four-column grid of market cards with Yes and No buttons, Up and Down buttons and volume footers."></a><figcaption class="hb-ka__cap"><span class="s-spec">Kit</span>Electric Foundation web frame, dark mode</figcaption></figure>
-        <figure class="hb-ka__fig"><a class="hb-ka__zoom" href="assets/ours/app-grid.jpg"><img class="hb-ka__img" src="assets/ours/app-grid.jpg" width="1200" height="658" loading="lazy" decoding="async" alt="The App in this concept, card view at the same width: the same category row and four-column card grid, with filters, scalar Up and Down rows, multi-outcome Buy and Sell rows and mono spec footers. Sample data."></a><figcaption class="hb-ka__cap"><span class="s-spec">Here</span>The App, card view, same width · sample data</figcaption></figure>
-      </div>
-      <div class="hb-kc">
-        <div class="s-card s-card--pad">
-          <h3 class="t-h3">Kept</h3>
-          <ul>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>The mark.</b> The bolt and the wordmark come from the designer&#39;s own vectors: recoloured, never redrawn.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>Tokens and geometry.</b> Page #101013, card #1A1A1E, primary #7D33FF, active chip #8F55F7; radius 9 for cards, 22 for panels, 8 for controls.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><b>The components.</b> Pill search, the category row with arrows, Yes/No outcome rows, Up/Down buttons and the bet slip keep the kit&#39;s shapes and spacing.</li>
-          </ul>
-        </div>
-        <div class="s-card s-card--pad">
-          <h3 class="t-h3">Changed, and why</h3>
-          <ul>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>One sans in headlines.</b> The kit&#39;s web screens use a single sans; its Reckless italic lives in the social frames. Here the accent phrase turns violet in the same face.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>An 11.5px type floor.</b> No HTML text is smaller and chart labels are at least 11px, so dense boards stay readable on a phone.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Muted text, lifted.</b> #67676F becomes #8A8A94 on dark and #8E8E99 becomes #6E6E79 on light, so 12px labels pass WCAG AA.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Motifs that carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision.</li>
-            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><b>Each price in its market&#39;s unit.</b> A scalar reads 8.14/10 and a multi-winner market 50% · 6.3¢ of 12.5¢. Binary prices add up to 100¢; the kit&#39;s slip shows 69¢ + 37¢.</li>
-          </ul>
+        <figure class="hb-ka__fig"><a class="hb-ka__zoom" href="assets/ours/app-grid.jpg"><img class="hb-ka__img" src="assets/ours/app-grid.jpg" width="1200" height="658" loading="lazy" decoding="async" alt="The App in this concept, card view at the same width: the same category row and four-column card grid, with filters, scalar Up and Down rows, multi-outcome Buy and Sell rows and mono spec footers. Sample data."></a><figcaption class="hb-ka__cap"><span class="s-spec">Here</span>The App, card view, same width</figcaption></figure>
+        <div class="hb-kc">
+          <div>
+            <h3 class="t-h3">Kept</h3>
+            <ul>
+              <li class="hb-kc--keep"><b>The mark.</b> The designer&#39;s own vectors, recoloured.</li>
+              <li class="hb-kc--keep"><b>Tokens.</b> #101013 · #1A1A1E · #7D33FF; radius 9 · 22 · 8.</li>
+              <li class="hb-kc--keep"><b>Components.</b> Pill search, chips, outcome rows, bet slip.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="t-h3">Changed, and why</h3>
+            <ul>
+              <li><b>One sans.</b> The accent phrase is violet, not a serif.</li>
+              <li><b>11.5px floor,</b> so dense boards read on a phone.</li>
+              <li><b>Muted text lifted</b> to #8A8A94 to pass WCAG AA.</li>
+              <li><b>Motifs carry data:</b> shares, forecasts, a decision fork.</li>
+              <li><b>Prices in their unit:</b> 8.14/10, 50% · 6.3¢ of 12.5¢.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -255,21 +243,27 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 
   <section class="s-section--tight" id="connect" aria-labelledby="hb-con">
     <div class="s-container">
-      <div class="s-section-head">
+      <div class="s-section-head hb-head">
         <div><span class="s-spec">One market, followed across apps</span><h2 id="hb-con" class="t-h2">How they connect</h2></div>
+        <p id="hb-con-lede"></p>
       </div>
-      <p class="t-body u-mb-6" style="max-width:70ch" id="hb-con-lede"></p>
       <div class="hb-flow" id="hb-flow"></div>
     </div>
   </section>
 
-  <section class="s-section" id="notes" aria-labelledby="hb-notes">
+  <section class="s-section--tight" id="notes" aria-labelledby="hb-notes">
     <div class="s-container">
-      <div class="s-section-head">
-        <div><span class="s-spec">Rationale</span><h2 id="hb-notes" class="t-h2">Design notes</h2></div>
-        <a class="s-btn s-btn--ghost" href="system/">Open the design system</a>
-      </div>
-      <details class="s-details"><summary>All design notes<small>the long version · kept from the kit · deliberate departures</small></summary>
+      <h2 id="hb-notes" class="s-sr">More on this page</h2>
+      <details class="s-details" id="tour"><summary>The 60-second tour<small>per app: what it shows, the one thing to try, its link</small></summary>
+      <ol class="hb-read__rows" id="hb-tour-list"></ol>
+      <ul class="hb-read__facts" id="hb-facts">
+        <li><b>Electric Foundation, as specified.</b> The official mark and wordmark, the kit's tokens, radii and type spec, and its components built live: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
+        <li><b>One dataset, traced across apps.</b> P-07 in <a href="deep/#P-07">Deep</a>, markets <a href="app/#m=2841">#2841</a> and <a href="app/#m=2842">#2842</a> in the explorer, <a href="futarchy/#LIP-31">LIP-31</a> in Futarchy; every cross-link resolves.</li>
+        <li><b>Seer's mechanics kept.</b> Reality.eth answers and bonds, Kleros arbitration, Kleros Curate, the six market states, conditional tokens (split, merge, redeem) and sDAI / xDAI / sUSDS per chain.</li>
+        <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no external requests; fonts self-hosted. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
+      </ul>
+      </details>
+      <details class="s-details" id="design-notes"><summary>All design notes<small>the long version · kept from the kit · deliberate departures</small></summary>
       <div class="hb-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
@@ -301,7 +295,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="hb-fid-head"><span class="s-spec">Kit → concept</span><p>Left, a crop of the Electric Foundation web frame. Right, the same component live from this concept's shared system, in whichever theme you are reading, with the kit's measurements under each pair.</p></div>
       <div class="hb-fid" id="hb-fid"></div>
       </details>
-      <div class="s-callout u-mt-6"><span data-icon="info"></span><span><b>About the data.</b> Every price, volume, address and name in these demos is sample data, made up to show the design. Organisations, proposals, agents and assets are fictional, and every address starts with 0x5eed. Nothing is live and nothing can be traded.</span></div>
     </div>
   </section>
 </main>
@@ -313,42 +306,33 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   // poster: six interfaces as six wedges converging on one point (one protocol)
   S.motif.wedges(document.getElementById("hb-wedges"), { weights: [1, 1, 1, 1, 1, 1], gap: 26, vp: [.98, .42], w: 800, h: 640, fade: true });
 
-  // six labelled demo cards
-  var cards = document.getElementById("hb-cards");
-  var MOTIF = {
-    home: function (n) { S.motif.wedges(n, { weights: D.market("2832").outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 10, w: 600, h: 300, vp: [.92, .5], fade: true }); },
-    app: function (n) { S.motif.dotgrid(n, { cols: 20, rows: 8, cell: 30, dissolve: .45 }); },
-    deep: function (n) { S.motif.waves(n, { count: 4, stroke: 20, w: 600, h: 330 }); },
-    futarchy: function (n) { S.motif.fork(n, { split: .4, w: 600, h: 300, ws: 5, wa: 5, wb: 5 }); },
-    opportunity: function (n) { var v = D.proposals.slice().sort(function (a, b) { return b.opp.pSelect - a.opp.pSelect; }).slice(0, 9).map(function (p) { return p.opp.pSelect; }); var w = S.el("div", { style: { position: "absolute", left: "16px", right: "16px", top: "42px", bottom: "18px" } }); n.appendChild(w); S.motif.barcode(w, { values: v, highlight: [0, 1, 2, 3, 4, 5, 6, 7], bar: 10, gap: 6 }); },
-    risk: function (n) { S.motif.stripes(n, { gap: 26, width: 2, w: 600, h: 300, opacity: .6 }); }
+  // the six interfaces: one card each, our screen with the live site today inset (captured October 2026)
+  var LINE = {
+    home: "Hero bands converge on one price; a map of the protocol.",
+    app: "Every market type and chain, with a full record per market.",
+    deep: "A 40-proposal scalar round as a ridge plot, for agents.",
+    futarchy: "A fork drawn to the TWAPs: information for the vote.",
+    opportunity: "A multi-winner market beside the reviewer queue.",
+    risk: "Default risk per asset on one log scale, in bands."
   };
+  var grid = document.getElementById("hb-grid");
   S.apps.forEach(function (a) {
-    var art = S.el("div", { class: "hb-card__art" }, S.el("span", { class: "hb-card__n", text: a.n + " · " + a.host }));
-    var host = S.el("div"); art.appendChild(host);
-    var card = S.el("article", { class: "hb-card" }, art, S.el("div", { class: "hb-card__body" },
-      S.el("h3", { class: "hb-card__name", html: S.glyph(a.id) }, a.name),
-      S.el("p", { class: "hb-card__blurb", text: a.blurb }),
-      S.el("div", { class: "hb-card__foot" },
-        S.el("a", { class: "s-btn s-btn--secondary", href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } }, "Open demo", S.el("span", { html: S.icon("arrow-right", 16) })))));
-    cards.appendChild(card);
-    MOTIF[a.id](a.id === "opportunity" ? art : host);
-  });
-
-  // today -> proposed: the live site (captured October 2026) over this concept's screen, one column per interface
-  var tg = document.getElementById("hb-today-grid");
-  S.apps.forEach(function (a) {
-    tg.appendChild(S.el("figure", { class: "hb-today__col" },
-      S.el("img", { class: "hb-today__img hb-today__img--now", attrs: { src: "assets/today/" + a.id + ".jpg", alt: "Today: " + a.host + " as it is in October 2026", width: "480", height: "300", loading: "eager", decoding: "async" } }),
-      S.el("span", { class: "hb-today__arrow", html: S.icon("chevron-down", 14), attrs: { "aria-hidden": "true" } }),
-      S.el("a", { href: a.path, attrs: { "aria-label": "Open the " + a.name + " demo" } },
-        S.el("img", { class: "hb-today__img", attrs: { src: "assets/ours/" + a.id + ".jpg", alt: "Proposed: " + a.name + " on the Electric Foundation identity", width: "480", height: "300", loading: "eager", decoding: "async" } })),
-      S.el("figcaption", { class: "hb-today__cap" }, S.el("b", { text: a.n }), " " + a.host)));
+    grid.appendChild(S.el("article", { class: "hb-tile" },
+      S.el("div", { class: "hb-tile__shot" },
+        S.el("img", { class: "hb-tile__img", attrs: { src: "assets/ours/" + a.id + ".jpg", alt: "Proposed: " + a.name + " on the Electric Foundation identity", width: "960", height: "600", loading: "eager", decoding: "async" } }),
+        S.el("figure", { class: "hb-tile__now" },
+          S.el("img", { attrs: { src: "assets/today/" + a.id + ".jpg", alt: "Today: " + a.host + " as it is in October 2026", width: "480", height: "300", loading: "lazy", decoding: "async" } }),
+          S.el("figcaption", { text: "Today" })),
+        S.el("span", { class: "hb-tile__n", text: a.n }, S.el("span", { class: "hb-tile__host", text: " · " + a.host }))),
+      S.el("div", { class: "hb-tile__body" },
+        S.el("h3", { class: "hb-tile__name" }, S.el("a", { href: a.path, html: S.glyph(a.id) }, a.name)),
+        S.el("span", { class: "hb-tile__open", attrs: { "aria-hidden": "true" } }, "Open", S.el("span", { html: S.icon("arrow-right", 14) })),
+        S.el("p", { class: "hb-tile__line", text: LINE[a.id] }))));
   });
 
   // the connected thread (all numbers from the shared sample dataset)
   var p = D.proposal(D.featuredProposal), f = D.futarchy[0], r4 = D.round4;
-  document.getElementById("hb-con-lede").textContent = r4.name + " is a fictional grants programme with " + D.proposals.length + " proposals, " + r4.slots + " funding slots and a five-person review panel. Follow one proposal, " + p.id + " (“" + p.title + "”), through four apps.";
+  document.getElementById("hb-con-lede").textContent = r4.name + ": " + D.proposals.length + " proposals, " + r4.slots + " funding slots, one review panel. Follow " + p.id + " (“" + p.title + "”) through four apps.";
   var steps = [
     ["deep", "Deep", "#2841", S.fmt.num(p.deep.marketScore, 2) + " / 10", "Agents forecast the panel's score. " + p.id + " ranks " + p.deep.rank + " of " + D.proposals.length + ", right on the funding line."],
     ["opportunity", "Opportunity", "#2842", S.fmt.pct0(p.opp.pSelect), "Traders price its chance of being funded. Reviewers read the borderline entries first; the panel decides."],
