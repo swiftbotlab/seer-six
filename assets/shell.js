@@ -1,4 +1,4 @@
-/* Seer · shared shell — ecosystem strip, product header, footer, theme, copy, toasts.
+/* Seer · shared shell — one product header (with the Apps menu and the sample-data badge), footer, theme, copy, toasts.
    Concept by Swift Bot Labs. Not affiliated with Seer.
 
    Include as the FIRST element inside <body>:
@@ -100,6 +100,7 @@
     user: '<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
     agent: '<rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M9 20.5h6"/>',
     trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7"/>',
+    apps: '<circle cx="5.5" cy="5.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="5.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="18.5" cy="5.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="5.5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="5.5" cy="18.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="18.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="18.5" cy="18.5" r="1.6" fill="currentColor" stroke="none"/>',
     layers: '<path d="m12 4 8.5 4.5L12 13 3.5 8.5Z"/><path d="m3.5 12.5 8.5 4.5 8.5-4.5M3.5 16.5 12 21l8.5-4.5"/>'
   };
   /* Seer.icon(name, size?, className?) -> SVG string */
@@ -114,8 +115,10 @@
   S.setTheme = function (t) {
     doc.documentElement.setAttribute("data-theme", t);
     try { localStorage.setItem("seer-theme", t); } catch (e) { /* private mode: fine */ }
-    var b = doc.querySelector(".s-theme-btn");
-    if (b) { b.innerHTML = S.icon(t === "light" ? "moon" : "sun", 15); b.setAttribute("aria-label", t === "light" ? "Switch to dark theme" : "Switch to light theme"); }
+    [].forEach.call(doc.querySelectorAll(".s-theme-btn"), function (b) {
+      b.innerHTML = S.icon(t === "light" ? "moon" : "sun", 16) + (b.hasAttribute("data-theme-label") ? "<span>" + (t === "light" ? "Dark theme" : "Light theme") + "</span>" : "");
+      b.setAttribute("aria-label", t === "light" ? "Switch to dark theme" : "Switch to light theme");
+    });
     doc.dispatchEvent(new CustomEvent("seer:theme", { detail: { theme: t } }));
   };
   (function initTheme() {
@@ -142,16 +145,22 @@
   var appId = (doc.body && doc.body.getAttribute("data-app")) || cfg.app || "index";
   var cur = S.app(appId);
 
-  function stripHTML() {
-    var apps = S.apps.map(function (a) {
-      return '<a class="s-strip__app" href="' + S.url(a.path) + '" title="' + esc(a.name) + '" aria-label="' + esc(a.name) + '"' + (a.id === appId ? ' aria-current="page"' : "") + ">" + S.glyph(a.id) + '<span class="s-strip__name">' + esc(a.label) + "</span></a>";
-    }).join("");
+  /* the six apps live behind one "Apps" button in the header (a disclosure, not a second nav bar) */
+  function appsHTML() {
     var theme = S.theme();
-    return '<div class="s-strip" role="navigation" aria-label="Seer ecosystem"><div class="s-container s-strip__in">' +
-      '<a class="s-strip__label" href="' + S.url("") + '" title="Seer protocol · about this concept" aria-label="Seer protocol: about this concept">' + S.logo("mark") + "</a>" +
-      '<div class="s-strip__apps">' + apps + "</div>" +
-      '<div class="s-strip__end"><span class="s-sample" title="Every figure on these pages is sample data. Nothing is live."><span>Sample<span class="s-sample__mid"> data</span><span class="s-sample__long"> · illustrative, not live</span></span></span>' +
-      '<button class="s-theme-btn" type="button" aria-label="' + (theme === "light" ? "Switch to dark theme" : "Switch to light theme") + '">' + S.icon(theme === "light" ? "moon" : "sun", 15) + "</button></div>" +
+    var rows = S.apps.map(function (a) {
+      var here = a.id === appId;
+      return '<a class="s-apps__app" href="' + S.url(a.path) + '"' + (here ? ' aria-current="page"' : "") + ">" + '<span class="s-apps__glyph">' + S.glyph(a.id) + "</span>" +
+        '<span class="s-apps__txt"><span class="s-apps__name">' + esc(a.name) + (here ? '<span class="s-apps__here">You are here</span>' : "") + "</span>" +
+        '<span class="s-apps__host">' + esc(a.host) + "</span></span></a>";
+    }).join("");
+    return '<div class="s-apps" data-apps>' +
+      '<button class="s-icon-btn s-apps__btn" type="button" aria-expanded="false" aria-controls="s-apps-panel" aria-label="Seer apps">' + S.icon("apps", 18) + '<span class="s-apps__lbl">Apps</span></button>' +
+      '<div class="s-apps__panel" id="s-apps-panel" hidden>' +
+        '<div class="s-apps__head"><span class="s-spec">Seer apps</span><a class="s-apps__all" href="' + S.url("") + '">All six, side by side' + S.icon("arrow-right", 14) + "</a></div>" +
+        '<nav class="s-apps__list" aria-label="Seer apps">' + rows + "</nav>" +
+        '<div class="s-apps__foot"><button class="s-theme-btn s-apps__theme" type="button" data-theme-label aria-label="' + (theme === "light" ? "Switch to dark theme" : "Switch to light theme") + '">' + S.icon(theme === "light" ? "moon" : "sun", 16) + "<span>" + (theme === "light" ? "Dark theme" : "Light theme") + "</span></button>" +
+        '<span class="t-meta">Sample data on every page</span></div>' +
       "</div></div>";
   }
 
@@ -160,15 +169,19 @@
     var homeHref = S.url("home/");
     var lock = '<a class="s-lockup__home" href="' + homeHref + '" aria-label="Seer home">' + S.logo("lockup", "s-lockup__logo") + "</a>";
     if (product) lock += '<span class="s-lockup__sep" aria-hidden="true"></span><a class="s-lockup__product" href="' + (cur ? S.url(cur.path) : S.url("")) + '">' + esc(product) + "</a>";
+    lock += '<span class="s-sample s-lockup__sample" title="Every figure on these pages is sample data. Nothing is live."><span>Sample<span class="s-sample__mid"> data</span></span></span>';
     var nav = (cfg.nav || []).map(function (n, i) {
       return '<a href="' + esc(n[1]) + '"' + (n[2] ? ' aria-current="true"' : "") + ">" + esc(n[0]) + "</a>";
     }).join("");
     var end = "";
     if (cfg.search) end += '<label class="s-search s-search--sm" data-shell-search>' + S.icon("search", 16) + '<span class="s-sr">Search</span><input type="search" placeholder="' + esc(cfg.search) + '" autocomplete="off"></label>';
     var hasCta = cfg.cta && cfg.cta[0];
-    if (cfg.connect !== false) end += '<button class="s-btn ' + (hasCta ? "s-btn--ghost s-hide-sm" : "") + '" type="button" aria-label="Connect wallet" data-demo="Wallet connection is not wired in this concept.">' + S.icon("wallet", 16) + '<span class="s-btn__txt">Connect<span class="s-btn__long"> wallet</span></span></button>';
+    if (cfg.connect !== false) end += '<button class="s-btn ' + (hasCta ? "s-btn--ghost s-hide-sm" : "") + '" type="button" aria-label="Connect wallet" title="Connect wallet" data-demo="Wallet connection is not wired in this concept.">' + S.icon("wallet", 16) + '<span class="s-btn__txt">Connect<span class="s-btn__long"> wallet</span></span></button>';
     if (hasCta) end += '<a class="s-btn" href="' + esc(cfg.cta[1] || "#") + '"' + (cfg.cta[1] ? "" : ' data-demo=""') + ">" + (cfg.cta[2] ? S.icon(cfg.cta[2], 16) : "") + '<span class="s-btn__long">' + esc(cfg.cta[0]) + "</span></a>";
-    return '<a class="s-skip" href="#main">Skip to content</a>' + stripHTML() +
+    var th = S.theme();
+    end += '<button class="s-icon-btn s-icon-btn--bare s-theme-btn s-header__theme" type="button" aria-label="' + (th === "light" ? "Switch to dark theme" : "Switch to light theme") + '">' + S.icon(th === "light" ? "moon" : "sun", 16) + "</button>";
+    end += appsHTML();
+    return '<a class="s-skip" href="#main">Skip to content</a>' +
       '<header class="s-header"><div class="s-container s-header__in">' + '<div class="s-lockup">' + lock + "</div>" +
       (nav ? '<nav class="s-nav" aria-label="' + esc(product || "Seer") + '">' + nav + "</nav>" : "") +
       '<div class="s-header__end">' + end + "</div></div></header>";
@@ -228,8 +241,20 @@
     // a link to the hash already in the URL fires no hashchange: open its fold anyway
     doc.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest('a[href^="#"]'); if (a && a.getAttribute("href") === location.hash) setTimeout(openDetails, 0); });
     [].forEach.call(doc.querySelectorAll(".s-table-wrap"), S.clipWatch);
-    var tb = doc.querySelector(".s-theme-btn");
-    if (tb) tb.addEventListener("click", function () { S.setTheme(S.theme() === "light" ? "dark" : "light"); });
+    [].forEach.call(doc.querySelectorAll(".s-theme-btn"), function (tb) { tb.addEventListener("click", function () { S.setTheme(S.theme() === "light" ? "dark" : "light"); }); });
+    // Apps menu: a disclosure. Opens on click, closes on Escape (focus back to the button), an outside click, or a link chosen
+    var ab = doc.querySelector(".s-apps__btn"), ap = doc.getElementById("s-apps-panel");
+    if (ab && ap) {
+      var setOpen = function (open, focusBtn) {
+        ab.setAttribute("aria-expanded", open ? "true" : "false"); ap.hidden = !open;
+        if (open) { var f = ap.querySelector('[aria-current="page"]') || ap.querySelector("a"); if (f) f.focus({ preventScroll: true }); }
+        else if (focusBtn) ab.focus();
+      };
+      ab.addEventListener("click", function () { setOpen(ap.hidden); });
+      doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && !ap.hidden) { setOpen(false, true); } });
+      doc.addEventListener("click", function (e) { if (!ap.hidden && !e.target.closest("[data-apps]")) setOpen(false); });
+      ap.addEventListener("focusout", function (e) { if (e.relatedTarget && !e.relatedTarget.closest("[data-apps]")) setOpen(false); });
+    }
     // shell search: pages may listen for `seer:search`
     var si = doc.querySelector("[data-shell-search] input");
     if (si) {
