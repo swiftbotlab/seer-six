@@ -264,7 +264,7 @@
       if (appId) {
         var a = S.app(appId), L = APP_LINE[appId], m = D.market(L[2]);
         read.appendChild(el("div", {}, el("span", { class: "s-spec", text: a.n + " · uses " + USES[appId].length + " of " + ALL.length + " building blocks" }), el("h3", { class: "u-mt-2", text: a.name + ": " + L[0] }), el("p", { text: L[1] })));
-        read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Example market · sample" }),
+        read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Example market" }),
           el("div", {}, el("a", { class: "hm-pill", href: "../app/#m=" + m.id }, el("span", { html: S.icon("search", 14), style: { display: "inline-flex" } }), "#" + m.id + " · " + (m.short || tname(m))), appLink(appId, "Open " + a.name))));
       } else if (primId) {
         var p = prims[primId].p, users = APPS.filter(function (x) { return USES[x.id].indexOf(primId) > -1; });
@@ -283,7 +283,7 @@
     var byRank = D.proposals.slice().sort(function (a, b) { return a.deep.rank - b.deep.rank; });
     var cut = (byRank[R.slots - 1].deep.marketScore + byRank[R.slots].deep.marketScore) / 2;
     var impact = (F.yesTwap - F.noTwap) / F.noTwap;
-    $("hm-thread-lede").textContent = R.org + " (fictional) has " + f.num(R.budget) + " " + R.collateral + " for " + R.slots + " grants and " + D.proposals.length +
+    $("hm-thread-lede").textContent = R.org + " has " + f.num(R.budget) + " " + R.collateral + " for " + R.slots + " grants and " + D.proposals.length +
       " proposals, scored 0–10 by " + R.panelSize + " human reviewers. Each app answers one part of the decision on the same markets. The example follows " + P.id + ", which sits exactly on the funding line.";
     var mDeep = D.market("2841"), mOpp = D.market("2842"), mFut = D.market("2843");
     function head(m, title, extra) {

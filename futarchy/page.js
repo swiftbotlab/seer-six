@@ -280,7 +280,7 @@
     ].map(function (s, i) { s.done = i < p.i; s.current = i === p.i; return s; });
     box.appendChild(el("div", { class: "ft-life__head" },
       el("div", {}, el("span", { class: "s-spec", text: "Lifecycle · " + m.id }), el("h2", { class: "t-h3", text: "The signal is fixed before the vote opens" })),
-      el("span", { class: "t-meta", text: "Sample snapshot · " + F.dateTime(NOW) })));
+      el("span", { class: "t-meta", text: "Signal snapshot · " + F.dateTime(NOW) })));
     box.appendChild(S.ui.timeline(steps));
     box.appendChild(el("p", { class: "t-meta ft-life__note", text: "The TWAP window closes half a day before the Snapshot vote opens, so voters see the final signal. Reality.eth then reports the vote's result on-chain, Kleros arbitrates any dispute, and the winning branch redeems." }));
   }
@@ -441,7 +441,7 @@
     sc.reset.disabled = rule;
     gauge(sc.gauge, imp, rule ? null : m.impact);
     sc.note.textContent = rule
-      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Signal window: the last 5 days of sample prices. The official window for " + m.id + " is " + range(m.wStart, m.wEnd) + "; the signal is published when it closes.")
+      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Signal window: the last 5 days of prices. The official window for " + m.id + " is " + range(m.wStart, m.wEnd) + "; the signal is published when it closes.")
       : "Your window: " + F.signed(imp) + " (" + REC[r].label.toLowerCase() + "). The 5-day signal window reads " + F.signed(m.impact) + ". Only the fixed 5-day window produces the published signal.";
   }
   function gauge(box, imp, ruleImp, mini) {
