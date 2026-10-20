@@ -8,6 +8,8 @@
   var D = window.SEER_SAMPLE, S = window.Seer;
   if (!D || !S || !S.ui) return;
   var F = S.fmt, el = S.el, sv = S.svgEl, $ = S.$, $$ = S.$$;
+  // token prices read to ~5 significant figures: 1.2842 LAT, 3.409 KST, 143.62 GNO (not 143.6200)
+  (function () { var p0 = F.price; F.price = function (v, d) { var a = Math.abs(v); return p0(v, d != null && a >= 100 ? Math.min(d, 2) : d != null && a >= 10 ? Math.min(d, 3) : d); }; })();
   var NOW = D.now, H = 3600e3, DAY = 24 * H;
   var RULE = D.futarchyRule; // 5-day TWAP; approve above +1%, reject below -1%
   var ORG = {}; D.orgs.forEach(function (o) { ORG[o.id] = o; });
@@ -20,7 +22,8 @@
     "LIP-29": "Cuts contributor stipends by 15% for two quarters to extend the treasury's runway.",
     "HIP-12": "Adds a 24-hour delay between a bridge upgrade being approved and taking effect, so users can exit before any change lands.",
     "HIP-11": "Retires the legacy relayer and routes every bridge message through the new relayer set.",
-    "KIP-7": "Opens a second cohort of the Kestrel research fellowship: six fellows for twelve months."
+    "KIP-7": "Opens a second cohort of the Kestrel research fellowship: six fellows for twelve months.",
+    "GIP-S1": "A sample in the shape of a GnosisDAO GIP: renew the Gnosis Chain builder grants for 2027, priced in GNO. GnosisDAO is real; this proposal and its prices are not."
   };
 
   /* ======================= maths ======================= */

@@ -176,7 +176,9 @@
   var orgs = [
     { id: "lattice", name: "Lattice DAO", token: "LAT", chain: "gnosis", proposals: 4, note: "Runs Lattice Builders Grants." },
     { id: "harbor", name: "Harbor DAO", token: "HRB", chain: "gnosis", proposals: 3, note: "Maintains a cross-chain bridge." },
-    { id: "kestrel", name: "Kestrel DAO", token: "KST", chain: "ethereum", proposals: 2, note: "Funds open research." }
+    { id: "kestrel", name: "Kestrel DAO", token: "KST", chain: "ethereum", proposals: 2, note: "Funds open research." },
+    // real-shaped: GnosisDAO is real and runs its futarchy on Seer; the proposal below (GIP-S1) and its prices are sample data
+    { id: "gnosisdao", name: "GnosisDAO", token: "GNO", chain: "gnosis", proposals: 1, note: "Governs Gnosis Chain. Real DAO, sample proposal.", sample: true }
   ];
   function twapSeries(key, yes, no, hours) {
     var r = rng("twap:" + key), out = [], y = yes * (1 - .03), n = no * (1 + .01);
@@ -224,7 +226,10 @@
       vote: { platform: "Snapshot", state: "not started" }, resolution: iso(NOW + 4 * D) }),
     fprop({ id: "KIP-7", org: "kestrel", title: "Open a second research fellowship cohort", metric: "KST price (sDAI), 5-day TWAP",
       status: "trading", yesSpot: 3.412, noSpot: 3.398, yesTwap: 3.409, noTwap: 3.401, volume: 8930, tvl: 10400,
-      vote: { platform: "Snapshot", state: "not started" }, resolution: iso(NOW + 12 * D) })
+      vote: { platform: "Snapshot", state: "not started" }, resolution: iso(NOW + 12 * D) }),
+    fprop({ id: "GIP-S1", org: "gnosisdao", title: "Renew the Gnosis Chain builder grants for 2027 (sample)", metric: "GNO price (sDAI), 5-day TWAP",
+      status: "trading", pair: "GNO/sDAI", yesSpot: 143.80, noSpot: 142.10, yesTwap: 143.62, noTwap: 141.95, volume: 64300, tvl: 88900,
+      vote: { platform: "Snapshot", state: "not started" }, resolution: iso(NOW + 6 * D) })
   ];
 
   /* ---------- Risk Pricing · Q4 2026 board (fictional assets) ---------- */
