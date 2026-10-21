@@ -1,5 +1,6 @@
-/* Opportunity Markets (05 · opportunity.seer.pm) — page script.
-   Concept by Swift Bot Labs. Not affiliated with Seer. Sample data only (window.SEER_SAMPLE).
+/* Opportunity Markets (05 · opportunity.seer.pm) — page script for the SAMPLE walkthrough.
+   Concept by Swift Bot Labs. Not affiliated with Seer. The hero above it is a real Seer market (real.js, its own file);
+   everything this script draws is sample data (window.SEER_SAMPLE), labelled as such, plus the settled Rebrand Contest.
    Market #2842 "Lattice Builders Grants R4: which proposals will the panel fund?" — 40 entries + Invalid,
    8 funding slots. Chance of selection = p.opp.pSelect; share price = p.opp.price (the shared dataset).
    All text is inserted via textContent (Seer.el). No fetch, no eval, no innerHTML of data. */
@@ -369,7 +370,7 @@
     // live (sample)
     var art = el("div", { class: "op-mk__art", attrs: { "aria-hidden": "true" } });
     var live = el("article", { class: "s-card s-card--pad op-mk" },
-      el("div", { class: "s-row s-row--between", style: { "--gap": "8px" } }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--violet s-tag--mono", text: "Live" }), U.stateBadge(M.state))),
+      el("div", { class: "s-row s-row--between", style: { "--gap": "8px" } }, el("span", { class: "s-row", style: { "--gap": "8px" } }, el("span", { class: "s-tag s-tag--violet s-tag--mono", text: "Sample" }), U.stateBadge(M.state))),
       el("div", {}, el("h3", { class: "t-title", text: R.name }), el("p", { class: "t-meta", text: R.org + " · " + SLOTS + " grants from " + F.num(R.budget) + " sDAI · #" + M.id })),
       art,
       U.kv([["Entries", el("span", { text: E.length + " proposals" })], ["Volume", el("span", { text: F.num(M.volume) + " sDAI" })], ["Panel decision", el("span", { text: F.date(R.panelReveal) })]]),

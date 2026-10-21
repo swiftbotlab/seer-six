@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Opportunity Markets · Triage by price (concept)</title>
-<meta name="description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -13,7 +14,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Opportunity Markets · Triage by price (concept)">
-<meta property="og:description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/opportunity/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
 <meta property="og:image:width" content="1200">
@@ -22,34 +23,79 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Opportunity Markets · Triage by price (concept)">
-<meta name="twitter:description" content="Opportunity Markets: traders forecast which of 40 grant proposals a review panel will fund, and the panel reads the close calls first. The final choice stays with the reviewers. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="opportunity">
-<script>window.SEER_PAGE = { nav: [["Round 4", "#field"], ["Review queue", "#queue"], ["Markets", "#markets"], ["How it works", "#how"]], search: "Search entries or teams", cta: ["Start a market", "#sponsors", "plus-square"] };</script>
+<script>window.SEER_PAGE = { nav: [["On Seer", "#on-seer"], ["Walkthrough", "#walkthrough"], ["Queue", "#queue"], ["How it works", "#how"]], search: "Search entries or teams", cta: ["Start a market", "#sponsors", "plus-square"] };</script>
 <script src="../assets/shell.js"></script>
+<!-- the real market: dated snapshot (snapshot.js, from opp_snap.py), then the live reader + hero renderer; it swaps the header's sample badge for a provenance chip before first paint -->
+<script src="snapshot.js"></script>
+<script src="real.js"></script>
 <main id="main" class="s-main">
 
-  <!-- 1. App head: the market question, every entry's chance beside it, then the field -->
-  <section class="s-apphead op-head" aria-labelledby="op-title">
+  <!-- 1. Hero: a REAL opportunity market on Seer, read live by real.js (snapshot.js is the dated fallback).
+       The settled Rebrand Contest follows, then the sample walkthrough (Lattice DAO, Round 4, P-07), labelled. -->
+  <section class="s-apphead op-head op-real" id="on-seer" aria-labelledby="op-title">
     <div class="s-container s-apphead__grid op-head__grid">
       <div class="s-apphead__copy">
-        <div class="s-hero__kicker s-specs"><span>05 · Opportunity</span><span>Builders Grants R4</span><span>Gnosis</span><span>sDAI</span></div>
-        <h1 class="s-apphead__title" id="op-title">Which proposals will the panel fund?</h1>
-        <p class="s-apphead__sub">Each of the 40 entries is an outcome, priced by its chance of selection. Reviewers get a reading order; the sponsor still picks the eight.</p>
+        <div class="s-hero__kicker s-specs"><span>05 · Opportunity</span><span>On Seer</span><span>Gnosis</span><span>sDAI</span></div>
+        <h1 class="s-apphead__title" id="op-title">Which name will Seer's AI job board adopt?</h1>
+        <p class="s-apphead__sub">A real opportunity market on Seer. Every name the community suggested is an outcome, and traders price the one that will be adopted. The chosen name earns its author $1,000.</p>
+        <dl class="op-facts" id="op-rfacts"></dl>
+        <p class="t-meta op-rnote" id="op-rnote"></p>
+        <div class="s-apphead__actions">
+          <a class="s-btn" id="op-rgo" href="https://app.seer.pm/markets/100/0x8b3c7f3f09f6a85353926d8ee0f12decc1c9a5e8" target="_blank" rel="noopener noreferrer" aria-label="Open this market on Seer (new tab)">Open on Seer<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          <a class="s-btn s-btn--ghost" href="#walkthrough">Sample walkthrough</a>
+        </div>
+      </div>
+      <div class="s-apphead__art op-hero__art">
+        <figure class="s-poster op-poster op-rposter" id="op-rposter" aria-busy="true">
+          <div class="op-poster__top">
+            <div class="s-specs" id="op-rspecs"><span>On Seer</span></div>
+            <span class="s-src" id="op-rsrc" data-state="loading"><i aria-hidden="true"></i>Loading from app.seer.pm</span>
+          </div>
+          <div class="op-board op-rboard" id="op-rboard" tabindex="0" role="group" aria-roledescription="chart" aria-label="Seer's prices for every suggested name" aria-describedby="op-rcap"></div>
+          <figcaption class="op-poster__cap" id="op-rcap" aria-live="polite"></figcaption>
+          <p class="op-rnote-m" id="op-rnote-m"></p>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settled on Seer: Seer's own Rebrand Contest, from its market page (dated snapshot), right under the live market -->
+  <section class="s-section--tight op-settled" id="settled" aria-labelledby="op-settled-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><div class="s-onseer__k op-set__k"><b>Settled on Seer</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot · app.seer.pm · 20 Oct 2026</span></div><h2 class="t-h3" id="op-settled-h">A settled round, for real</h2></div>
+      </div>
+      <div id="op-settled"></div>
+    </div>
+  </section>
+
+  <!-- 2. Walkthrough (sample): one proposal across the apps. Lattice DAO's Builders Grants Round 4, market #2842, P-07;
+       everything from here down is made up. -->
+  <section class="s-section--tight op-head op-walk" id="walkthrough" aria-labelledby="op-walk-t">
+    <div class="s-container op-walk__in">
+      <div class="op-walk__label"><span class="s-sample">Sample data</span><span class="t-meta">Everything from here down is made up</span></div>
+      <div class="s-apphead__grid op-head__grid">
+      <div class="s-apphead__copy">
+        <div class="s-hero__kicker s-specs"><span>Sample</span><span>Builders Grants R4</span><span>Mkt #2842</span></div>
+        <h2 class="t-h2 op-walk__t" id="op-walk-t">Walkthrough: one proposal across the apps (sample)</h2>
+        <p class="s-apphead__sub">A fictional Lattice DAO lists 40 grant proposals as the outcomes of one market, priced by their chance of selection. Reviewers get a reading order; the sponsor still picks the eight. Proposal P-07 recurs in Deep and Futarchy.</p>
         <dl class="op-facts" id="op-facts"></dl>
         <div class="s-apphead__actions">
-          <a class="s-btn" href="#field">Trade Round 4</a>
+          <a class="s-btn s-btn--secondary" href="#field">Trade Round 4 (sample)</a>
           <a class="s-btn s-btn--ghost" href="#queue">Open the review queue</a>
         </div>
       </div>
       <div class="s-apphead__art s-apphead__art--wide op-hero__art">
         <figure class="s-poster op-poster" id="op-poster">
           <div class="op-poster__top">
-            <div class="s-specs"><span>Mkt <b>#2842</b></span><span>Multi-categorical</span><span><b>40</b> entries</span></div>
+            <div class="s-specs"><span><b>Sample</b></span><span>Mkt <b>#2842</b></span><span><b>40</b> entries</span></div>
             <div class="s-specs op-hide-xs"><span>Status: <b>reports not open yet · trading</b></span></div>
           </div>
           <div class="op-board" id="op-board" tabindex="0" role="group" aria-roledescription="chart" aria-label="All 40 entries ranked by chance of selection, one bar each, on a square-root scale. Violet bars are inside the eight funding slots. Use the up and down arrow keys to read each entry; press Enter to open it." aria-describedby="op-cap"></div>
@@ -58,24 +104,16 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <figcaption class="op-poster__cap" id="op-cap" aria-live="polite"></figcaption>
         </figure>
       </div>
+      </div>
     </div>
   </section>
 
-  <!-- On Seer now: a settled round, for real: Seer's own Rebrand Contest, from its market page (dated snapshot), in the first screen -->
-  <section class="s-section--tight op-settled" id="settled" aria-labelledby="op-settled-h">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div><div class="s-onseer__k op-set__k"><b>On Seer now</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot · app.seer.pm · 20 Oct 2026</span></div><h2 class="t-h3" id="op-settled-h">A settled round, for real</h2></div>
-      </div>
-      <div id="op-settled"></div>
-    </div>
-  </section>
 
   <!-- 3. The field: every entry with its implied chance of selection -->
   <section class="s-section--tight" id="field" aria-labelledby="op-field-h">
     <div class="s-container">
       <div class="s-section-head">
-        <div><span class="s-spec">The field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its chance of selection</h2></div>
+        <div><span class="s-spec">Sample · the field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its chance of selection</h2></div>
         <div class="s-row" style="--gap:10px" id="op-view"></div>
       </div>
       <div class="op-tools">

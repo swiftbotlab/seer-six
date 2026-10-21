@@ -355,3 +355,79 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 @media (max-width: 640px) { .op-settled { padding-block: 4px 0; } }
 .op-set { position: relative; box-shadow: inset 0 0 0 1px var(--line); }
 .op-set::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 2px; border-radius: 2px; background: var(--violet-2); }
+
+/* ---------- r6 (2026-10-21): the hero is a REAL Seer market (real.js), read live; the sample follows as a walkthrough ---------- */
+/* header: provenance chip in place of the shell's sample badge (keeps the badge's metrics and responsive rules) */
+.s-lockup__sample.op-prov { border-color: var(--line-strong); background: var(--surface-2); color: var(--text); cursor: default; }
+.s-lockup__sample.op-prov::before { display: none; }
+.op-prov > i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+.op-prov[data-state="live"] > i { background: var(--live); box-shadow: 0 0 0 3px rgba(255, 75, 75, .18); }
+.op-prov[data-state="snapshot"] > i, .op-prov[data-state="loading"] > i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.op-prov[data-state="loading"] > i { animation: s-src-blink 1s var(--ease) infinite alternate; }
+
+/* hero: the market's names as the kit's poster, top names listed, every name in the barcode under them */
+.op-real .op-head__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+.op-real .s-apphead__title { max-width: 18ch; }
+.op-real .op-rposter { gap: 10px; padding: 16px 18px 14px; }
+.op-rposter .s-src { min-height: 22px; background: rgba(224, 226, 245, .06); box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .14); color: rgba(224, 226, 245, .78); }
+.op-rposter .s-src[data-state="live"] { color: #FFFFFF; }
+.op-rposter .s-src > i { background: rgba(224, 226, 245, .5); }
+.op-rposter .s-src[data-state="live"] > i { background: var(--live); }
+.op-rposter .s-src[data-state="snapshot"] > i, .op-rposter .s-src[data-state="loading"] > i { background: transparent; box-shadow: inset 0 0 0 1.5px rgba(224, 226, 245, .6); }
+.op-rboard { flex: 0 0 auto; cursor: default; }
+.op-rrows { display: flex; flex-direction: column; }
+.op-rrow { --tick: rgba(224, 226, 245, .08); display: grid; grid-template-columns: 22px minmax(0, 8.6em) minmax(0, 1fr) 44px; gap: 10px; align-items: center; height: 21px; cursor: pointer; }
+.op-rrow__n { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: rgba(224, 226, 245, .5); font-variant-numeric: tabular-nums; }
+.op-rrow__name { font-size: 13px; font-weight: 500; line-height: 1.2; color: rgba(224, 226, 245, .86); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.op-rrow__track, .op-raxis { position: relative; height: 100%; display: flex; align-items: center;
+  background: linear-gradient(to right, transparent calc(22.36% - .5px), var(--tick) calc(22.36% - .5px), var(--tick) calc(22.36% + .5px), transparent calc(22.36% + .5px), transparent calc(50% - .5px), var(--tick) calc(50% - .5px), var(--tick) calc(50% + .5px), transparent calc(50% + .5px), transparent calc(70.71% - .5px), var(--tick) calc(70.71% - .5px), var(--tick) calc(70.71% + .5px), transparent calc(70.71% + .5px)); }
+.op-rrow__track i { display: block; height: 9px; min-width: 3px; border-radius: 0 2px 2px 0; background: var(--violet-2); }
+.op-rrow__v { text-align: right; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .02em; color: rgba(224, 226, 245, .78); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.op-rrow.is-active .op-rrow__n, .op-rrow.is-active .op-rrow__name, .op-rrow.is-active .op-rrow__v { color: #FFFFFF; }
+.op-rrow.is-active .op-rrow__track i { background: #FFFFFF; }
+.op-rrow--axis { height: 18px; cursor: default; }
+.op-raxis { display: block; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: rgba(224, 226, 245, .5); font-variant-numeric: tabular-nums; }
+.op-raxis span { position: absolute; top: 3px; transform: translateX(-50%); white-space: nowrap; line-height: 1; }
+.op-raxis span:first-child { transform: none; } .op-raxis span:last-child { transform: translateX(-100%); }
+.op-raxis__name { text-align: right; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: rgba(224, 226, 245, .5); white-space: nowrap; overflow: hidden; }
+.op-rcode { margin-top: 12px; }
+.op-rcode__k { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: rgba(224, 226, 245, .6); white-space: nowrap; }
+.op-rcode__k span { overflow: hidden; text-overflow: ellipsis; }
+.op-rcode__svg { display: block; width: 100%; height: 40px; cursor: pointer; }
+.op-rcode__svg rect { fill: #4A4660; }
+.op-rcode__svg rect.is-top { fill: var(--violet-2); }
+.op-rcode__svg rect.is-on { fill: #FFFFFF; }
+.op-rboard:focus-visible { outline: 2px solid var(--lavender); outline-offset: 6px; }
+.op-real .op-poster__cap { min-height: 46px; padding-top: 10px; }
+.op-rnote { margin: 14px 0 0; max-width: 64ch; line-height: 1.5; text-wrap: pretty; }
+.op-rnote-m { display: none; margin: 0; font-size: 12px; line-height: 1.45; color: rgba(224, 226, 245, .62); text-wrap: pretty; }
+.op-prov__d { display: none; }
+.op-rnote__go { display: inline-flex; align-items: center; gap: 3px; color: #C9B6FF; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.op-rnote__go:hover { text-decoration: underline; text-underline-offset: 3px; }
+.op-rfail { margin: 24px 0; font-size: 14px; color: rgba(224, 226, 245, .78); }
+.op-rfail a { color: #C9B6FF; }
+@media (max-width: 960px) { .op-real .op-head__grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .op-rnote { display: none; }
+  .op-rnote-m { display: block; }
+  .op-prov .op-prov__long { display: none; }
+  .op-prov .op-prov__d { display: inline; }
+  .op-real .op-rposter { padding: 14px 14px 12px; gap: 8px; }
+  .op-rrow { grid-template-columns: 20px minmax(0, 7.4em) minmax(0, 1fr) 40px; gap: 8px; height: 22px; }
+  .op-rcode__svg { height: 34px; }
+  .op-real .s-apphead__sub { font-size: 14px; }
+}
+@media (max-width: 480px) { .op-rspec-x, .op-rsrc-x, .op-rcode__x { display: none; } }
+@media (max-width: 400px) { .op-rrow { grid-template-columns: 18px minmax(0, 6.6em) minmax(0, 1fr) 38px; } .op-raxis span:nth-child(4) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .op-prov > i { animation: none; } }
+
+/* walkthrough (sample): the Lattice round, under the real markets */
+.op-walk { padding-top: 32px; }
+.op-walk__in { border-top: 1px solid var(--line); padding-top: 22px; }
+.op-walk__label { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 12px; }
+.op-walk__t { text-wrap: balance; }
+.op-walk .s-hero__kicker { margin-bottom: 12px; }
+.op-walk .s-apphead__copy { justify-content: flex-start; }
+.op-walk .s-apphead__actions .s-btn { --h: 40px; }
+@media (max-width: 960px) { .op-walk .op-head__grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+@media (max-width: 640px) { .op-walk { padding-top: 24px; } .op-walk__in { padding-top: 16px; } .op-walk .s-apphead__copy > dl { display: none; } }
