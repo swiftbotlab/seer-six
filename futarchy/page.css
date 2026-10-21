@@ -60,7 +60,7 @@
 
 /* ---------- 2. figures + lifecycle ---------- */
 .ft-figures { padding-block: 4px 8px; }
-.ft-stats { --cols: 6; }
+.ft-stats { --cols: 4; }
 .ft-stats .s-stat__value { font-size: 22px; white-space: nowrap; }
 .ft-life { margin-top: 16px; padding: 18px 20px 18px; gap: 18px; }
 .ft-life__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
@@ -269,7 +269,7 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
-  .ft-stats { --cols: 3; }
+  .ft-stats { --cols: 4; }
   .ft-split { grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; }
   .ft-thread__cards { grid-template-columns: 1fr; }
   .ft-ov__grid { grid-template-columns: 1fr; }
@@ -346,3 +346,41 @@
 @media (max-width: 960px) { .ft-onseer { order: 1; } .ft-poster { order: 2; } }
 @media (max-width: 640px) { .ft-actions .s-btn--quiet { display: none; } }
 .ft-record__bar { flex-wrap: wrap; gap: 10px; }
+
+/* fix round 5 (2026-10-21): phone folds and a compact "On Seer now" card in the 390x844 first screen.
+   <details data-fold="sm"> is open with its summary hidden on wider screens (page.js keeps it open), folded on phones. */
+@media (min-width: 641px) { .ft-fold > summary { display: none; } }
+.ft-fold__t { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ft-fold__t b { font-weight: 600; }
+.s-details > summary .ft-fold__t small { margin: 0; padding: 0; font-size: var(--fs-meta); font-weight: 500; line-height: 1.4; color: var(--text-3); letter-spacing: 0; }
+@media (max-width: 640px) {
+  .ft-fold > summary { padding: 14px 16px; font-size: 15px; }
+  .ft-chartcard .ft-fold { margin-top: 12px; }
+  .ft-chartcard .ft-fold > summary { background: var(--surface-2); }
+  .ft-chartcard .ft-fold > summary:hover { background: var(--surface-3); }
+  .ft-fold--life { margin-top: 12px; }
+  .ft-fold--life .ft-life { margin-top: 0; }
+  .ft-fold--thread { margin-top: 20px; }
+  .ft-fold--thread .ft-thread { margin-top: 0; }
+  .ft-fold--list { margin-top: 4px; }
+  .ft-fold--list > summary { margin-bottom: 0; }
+  .ft-fold--list[open] > summary { margin-bottom: 14px; }
+  .ft-actions { margin-top: 16px; }
+  .ft-hero { padding-top: 16px; }
+  .ft-kicker { margin-bottom: 10px; }
+  .ft-hero__grid { gap: 16px; }
+  .ft-onseer .s-onseer { gap: 8px; padding: 11px 12px 11px 14px; }
+  .ft-onseer .s-onseer__l { gap: 4px; }
+  .ft-onseer .s-onseer__t { font-size: 15px; line-height: 19px; }
+  .ft-onseer .s-onseer__m { line-height: 1.4; }
+  .ft-onseer .s-onseer__cells { display: flex; gap: 5px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 2px; }
+  .ft-onseer .s-onseer__cells li, .ft-onseer .s-onseer__cells li:nth-child(n+5) { display: flex; flex: 1 0 auto; scroll-snap-align: start; }
+  .ft-onseer .s-onseer__c { padding: 6px 7px; gap: 1px; }
+  .ft-onseer .s-onseer__c > span { line-height: 16px; }
+  .ft-onseer .s-onseer__c > b { font-size: 14px; line-height: 18px; }
+  .ft-onseer .s-onseer__c > small { line-height: 14px; }
+  .ft-onseer .s-onseer__end { gap: 6px 10px; }
+}
+.ft-morewrap { display: flex; justify-content: center; margin-top: 16px; }
+/* the poster keeps one spec row top and bottom at every width (the status and band repeat the signal) */
+.ft-poster__top .s-specs + .s-specs, .ft-poster__foot .s-specs + .s-specs { display: none; }

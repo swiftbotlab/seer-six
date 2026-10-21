@@ -17,7 +17,7 @@
   var reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var ABOUT = { // fictional proposal summaries
-    "LIP-31": "Funds Round 4 of Lattice Builders Grants with 250,000 sDAI from the treasury. Forty proposals compete for eight grants, each scored 0–10 by five human reviewers. If LIP-31 fails, the round is postponed and the budget stays in the treasury.",
+    "LIP-31": "Forty proposals compete for eight grants, each scored 0–10 by five human reviewers. If LIP-31 fails, the budget stays in the treasury.",
     "LIP-30": "Moves 20% of the treasury's stablecoins into sDAI so idle funds earn the savings rate. The treasury multisig keeps instant withdrawal rights.",
     "LIP-29": "Cuts contributor stipends by 15% for two quarters to extend the treasury's runway.",
     "HIP-12": "Adds a 24-hour delay between a bridge upgrade being approved and taking effect, so users can exit before any change lands.",
@@ -28,6 +28,17 @@
 
   /* ======================= maths ======================= */
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  // phone folds (2026-10-21): <details data-fold="sm"> are open on wider screens (summary hidden by CSS) and closed on
+  // phones until opened; a reader's own toggle sticks until the layout crosses 640px.
+  var mqSm = window.matchMedia("(max-width: 640px)");
+  function syncFolds(root, force) {
+    $$("details[data-fold]", root || document).forEach(function (d) {
+      if (!d.dataset.foldBound) { d.dataset.foldBound = "1"; var su = d.querySelector("summary"); if (su) su.addEventListener("click", function () { d.dataset.touched = "1"; }); }
+      if (force) delete d.dataset.touched;
+      if (!d.dataset.touched) d.open = !mqSm.matches;
+    });
+  }
+  function unfold(d) { if (d && !d.open) { d.open = true; d.dataset.touched = "1"; } }
   // time-weighted average (trapezoid) of column `col` between indexes i0..i1
   function twap(s, i0, i1, col) {
     if (i1 <= i0) return s[i1][col];
@@ -158,16 +169,16 @@
     box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "04" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
     box.appendChild(el("h1", { class: "ft-title", attrs: { id: "ft-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent" }, "if ", el("span", { class: "u-nowrap", text: m.id }), " is approved?")));
     box.appendChild(el("p", { class: "ft-subtitle" }, el("b", { text: m.id }), " · " + m.title));
-    var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec", text: (m.resolved ? "Final 5-day TWAP · " : prov(m) ? "Signal so far · trailing 5-day TWAP · " : "Official 5-day TWAP · ") + m.pair }), statusTag(m));
+    var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec" }, m.resolved ? "Final 5-day TWAP" : prov(m) ? el("span", {}, "Signal so far · ", el("span", { class: "s-hide-sm", text: "trailing " }), "5-day TWAP") : "Official 5-day TWAP", el("span", { class: "s-hide-sm", text: " · " + m.pair })), statusTag(m));
     var grid = el("div", { class: "ft-signal__grid" },
       cell("If approved", F.price(m.yesTwap, 4), "YES_" + m.tok + " in YES_sDAI", "yes"),
       cell("If rejected", F.price(m.noTwap, 4), "NO_" + m.tok + " in NO_sDAI", "no"),
       cell("Forecast impact", F.signed(m.impact), el("span", { class: "ft-cell__sub" }, recTag(m.rec, true, prov(m)), prov(m) ? el("span", { class: "ft-prov", text: "Official window " + range(m.wStart, m.wEnd) }) : null), null, signCls(m.impact)));
     box.appendChild(el("div", { class: "ft-signal" }, head, grid));
-    var call = el("div", { class: "s-callout s-callout--violet ft-callout", html: S.icon("vote", 16) }), p = el("p");
+    var call = el("div", { class: "s-callout s-callout--violet ft-callout s-hide-sm", html: S.icon("vote", 16) }), p = el("p");
     if (!m.resolved) {
-      p.appendChild(el("b", { text: "Information for " + m.org.name + ", not the decision." }));
-      p.appendChild(document.createTextNode(" The Snapshot vote, " + range(m.vOpen, m.vClose) + ", decides. These markets only forecast what each outcome would mean for " + m.tok + "."));
+      p.appendChild(el("b", { text: "Information for " + m.org.name + ", not the decision:" }));
+      p.appendChild(document.createTextNode(" the Snapshot vote, " + range(m.vOpen, m.vClose) + ", decides."));
     } else {
       p.appendChild(el("b", { text: m.org.name + " decided on Snapshot: " + (m.approved ? "approved." : "rejected.") }));
       p.appendChild(document.createTextNode(" The market's final signal: " + REC[m.rec].label.toLowerCase() + " (" + F.signed(m.impact) + "). The vote, not the market, made the call."));
@@ -264,9 +275,7 @@
       : st("Chance of approval", F.pct0(m.pA), { note: m.dec ? "Decision market #" + m.dec.id : "Sample estimate" }));
     box.appendChild(st("Volume", F.compact(m.volume, 1), { unit: "sDAI", note: "Both branches" }));
     box.appendChild(st("TVL", m.tvl ? F.compact(m.tvl, 1) : "0", { unit: "sDAI", note: m.tvl ? "YES and NO pools" : "Pools closed" }));
-    box.appendChild(st("TWAP window", range(m.wStart, m.wEnd), { note: "5 days · closes before the vote" }));
     box.appendChild(st("Snapshot vote", range(m.vOpen, m.vClose), { note: m.resolved ? "Closed" : NOW < m.vOpen ? "Not started" : "Open" }));
-    box.appendChild(st("Resolution", F.date(m.resolution), { note: "Reality.eth · Kleros" }));
   }
   function renderLife(m) {
     var box = $("#ft-life"); S.clear(box); var p = phase(m);
@@ -282,7 +291,6 @@
       el("div", {}, el("span", { class: "s-spec", text: "Lifecycle · " + m.id }), el("h2", { class: "t-h3", text: "The signal is fixed before the vote opens" })),
       el("span", { class: "t-meta", text: "Signal snapshot · " + F.dateTime(NOW) })));
     box.appendChild(S.ui.timeline(steps));
-    box.appendChild(el("p", { class: "t-meta ft-life__note", text: "The TWAP window closes half a day before the Snapshot vote opens, so voters see the final signal. Reality.eth then reports the vote's result on-chain, Kleros arbitrates any dispute, and the winning branch redeems." }));
   }
 
   /* ======================= TWAP chart + window scrubber ======================= */
@@ -441,7 +449,7 @@
     sc.reset.disabled = rule;
     gauge(sc.gauge, imp, rule ? null : m.impact);
     sc.note.textContent = rule
-      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Signal window: the last 5 days of prices. The official window for " + m.id + " is " + range(m.wStart, m.wEnd) + "; the signal is published when it closes.")
+      ? (m.resolved ? "This is the official window: the final signal published before the vote." : "Last 5 days so far. The official window is " + range(m.wStart, m.wEnd) + "; the signal publishes when it closes.")
       : "Your window: " + F.signed(imp) + " (" + REC[r].label.toLowerCase() + "). The 5-day signal window reads " + F.signed(m.impact) + ". Only the fixed 5-day window produces the published signal.";
   }
   function gauge(box, imp, ruleImp, mini) {
@@ -483,7 +491,6 @@
       el("p", { class: "t-body ft-ov__about", text: ABOUT[m.id] || m.title }),
       S.ui.kv([
         ["Success measure", m.metric],
-        ["Signal band", "Leans approve above +1%, leans reject below −1%, otherwise neutral; the vote decides"],
         ["Decided by", m.org.name + " on Snapshot"],
         ["Result reported by", "Reality.eth, with Kleros arbitration"],
         ["Chain", S.ui.chainBadge(m.chain)]
@@ -493,24 +500,25 @@
       el("div", { class: "ft-dm__head" }, el("span", { class: "s-spec", text: m.dec ? "Decision market #" + m.dec.id : "Decision market" }), m.dec ? S.ui.stateBadge(m.dec.state) : null),
       el("h3", { class: "t-title", text: "Will " + m.org.name + " approve " + m.id + "?" }),
       el("div", { class: "s-orows" }, outs.map(function (o) { return S.ui.orow(o, { actions: false }); })),
-      el("p", { class: "t-meta", text: m.resolved ? "Resolved. Reality.eth reported the Snapshot result; the decision market paid out on it." : "This forecasts the vote, not the effect. An invalid answer resolves as not approved." }));
+      el("p", { class: "t-meta", text: m.resolved ? "Resolved. Reality.eth reported the Snapshot result; the decision market paid out on it." : "Forecasts the vote, not the effect." }));
     if (m.dec) dm.appendChild(el("a", { class: "s-link t-meta", href: "../app/#m=" + m.dec.id, text: "Trade #" + m.dec.id + " in App" }));
     wrap.appendChild(el("div", { class: "ft-ov__grid" }, left, dm));
     if (m.f.linkedRound) {
       var P7 = D.proposal(D.featuredProposal), R = D.round4;
       var links = [
-        ["deep", "Deep · #2841", "Agents forecast the human panel's score for all " + D.proposals.length + " proposals.", P7.id + " forecast " + F.num(P7.deep.marketScore, 2) + " / 10", "../deep/#" + P7.id],
-        ["opportunity", "Opportunity · #2842", "Traders forecast which " + R.slots + " proposals the panel will fund.", P7.id + " · " + F.pct0(P7.opp.pSelect) + " chance of selection", "../opportunity/#" + P7.id],
-        ["app", "App · #2843–#2845", "The decision market and both conditional markets in the explorer.", "Contracts, tokens, events", "../app/#m=2843"]
+        ["deep", "Deep · #2841", "", P7.id + " forecast " + F.num(P7.deep.marketScore, 2) + " / 10", "../deep/#" + P7.id],
+        ["opportunity", "Opportunity · #2842", "", P7.id + " · " + F.pct0(P7.opp.pSelect) + " chance of selection", "../opportunity/#" + P7.id],
+        ["app", "App · #2843–#2845", "", "Contracts, tokens, events", "../app/#m=2843"]
       ];
-      wrap.appendChild(el("div", { class: "ft-thread" },
-        el("div", { class: "ft-thread__head" }, el("span", { class: "s-spec", text: "Connected · " + R.name }),
-          el("p", { class: "t-body", text: m.id + " decides whether the round runs at " + F.num(R.budget) + " " + R.collateral + ". Futarchy informs that vote; Deep and Opportunity inform which proposals get the money." })),
+      var thread = el("details", { class: "s-details ft-fold ft-fold--thread", data: { fold: "sm" } },
+        el("summary", {}, el("span", { class: "ft-fold__t" }, el("b", { text: "Connected: " + R.name }), el("small", { text: "Deep, Opportunity and App markets on the same round" }))),
+        el("div", { class: "ft-thread" }, el("div", { class: "ft-thread__head" }, el("span", { class: "s-spec", text: "Connected · " + R.name })),
         el("div", { class: "ft-thread__cards" }, links.map(function (l) {
           return el("a", { class: "s-card ft-tcard", href: l[4] }, S.ui.avatar(l[0], "ink"),
-            el("span", { class: "ft-tcard__body" }, el("b", { text: l[1] }), el("span", { class: "t-meta", text: l[2] }), el("span", { class: "ft-tcard__fig t-num", text: l[3] })),
+            el("span", { class: "ft-tcard__body" }, el("b", { text: l[1] }), el("span", { class: "ft-tcard__fig t-num", text: l[3] })),
             el("span", { class: "ft-tcard__go", html: S.icon("arrow-right", 16) }));
         }))));
+      wrap.appendChild(thread); syncFolds(wrap);
     }
     return wrap;
   }
@@ -681,7 +689,6 @@
       });
     });
     p.appendChild(g);
-    p.appendChild(el("p", { class: "t-meta", text: "Bullish means you expect " + m.tok + " to be worth more if " + m.id + " passes than if it fails. The full bullish position buys YES_" + m.tok + " and sells NO_" + m.tok + "." }));
     box.appendChild(p);
   }
 
@@ -718,9 +725,10 @@
     var orgs = $("#ft-orgs"); S.clear(orgs);
     var items = [["all", "All", MODELS.length]].concat(D.orgs.map(function (o) { return [o.id, o.name, MODELS.filter(function (m) { return m.org.id === o.id; }).length]; }));
     chipRowBox = S.ui.chipRow(items, state.org, function (v) { state.org = v; renderList(); });
+    // the status filter sits above the phone fold: using it opens the list
     orgs.appendChild(chipRowBox);
     var st = $("#ft-status"); S.clear(st);
-    st.appendChild(S.ui.seg([["all", "All"], ["trading", "Trading"], ["resolved", "Resolved"]], state.status, function (v) { state.status = v; renderList(); }, "Status"));
+    st.appendChild(S.ui.seg([["all", "All"], ["trading", "Trading"], ["resolved", "Resolved"]], state.status, function (v) { state.status = v; renderList(); unfold($("#ft-archive")); }, "Status"));
   }
   function clearFilters() {
     state.org = "all"; state.status = "all"; state.q = "";
@@ -736,9 +744,23 @@
       if (state.status === "resolved" && !m.resolved) return false;
       return !q || (m.id + " " + m.title + " " + m.org.name + " " + m.tok).toLowerCase().indexOf(q) > -1;
     });
-    $("#ft-count").textContent = list.length + " of " + MODELS.length + " proposals" + (q ? " matching “" + state.q.trim() + "”" : "") + " · prices are 5-day TWAPs";
+    $("#ft-archive-n").textContent = MODELS.length + " proposals · " + D.orgs.length + " organisations · trading and resolved";
+    // unfiltered: one card per organisation, then "Show all" (2026-10-21 text diet)
+    var shown = list, few = !state.listAll && state.org === "all" && state.status === "all" && !q;
+    if (few) { var seen = {}; shown = list.filter(function (m) { if (seen[m.org.id]) return false; seen[m.org.id] = 1; return true; }); few = shown.length < list.length; }
+    $("#ft-count").textContent = (few ? shown.length + " of " + MODELS.length + " proposals, one per organisation" : list.length + " of " + MODELS.length + " proposals" + (q ? " matching “" + state.q.trim() + "”" : "")) + " · prices are 5-day TWAPs";
     if (!list.length) grid.appendChild(el("div", { class: "ft-empty" }, S.ui.empty({ title: "No proposals match", text: "Try another organisation, status or search.", motif: "fork", motifOpts: { split: .4, ws: 10, wa: 10, wb: 10 }, action: { label: "Clear filters", onClick: clearFilters } })));
-    list.forEach(function (m) { grid.appendChild(card(m)); });
+    shown.forEach(function (m) { grid.appendChild(card(m)); });
+    var mw = $("#ft-listmore"); if (mw) mw.parentNode.removeChild(mw);
+    if (few) {
+      var more = el("button", { class: "s-btn s-btn--ghost", attrs: { type: "button" }, text: "Show all " + list.length + " proposals" });
+      more.addEventListener("click", function () {
+        var had = shown.map(function (m) { return m.id; }); state.listAll = true; renderList();
+        var nx = $$(".ft-pcard", grid).filter(function (c) { return had.indexOf(c.dataset.id) < 0; })[0];
+        if (nx) { var a = nx.querySelector("a"); if (a) a.focus({ preventScroll: true }); }
+      });
+      grid.parentNode.insertBefore(el("div", { class: "ft-morewrap", attrs: { id: "ft-listmore" } }, more), grid.nextSibling);
+    }
   }
 
   /* ======================= roles + track record ======================= */
@@ -850,6 +872,8 @@
   S.onResize(ch.root, drawChart);
   S.onResize($("#ft-poster-art"), drawPoster);
   renderFilters(); renderList(); renderRecord();
+  syncFolds();
+  if (mqSm.addEventListener) mqSm.addEventListener("change", function () { syncFolds(null, true); });
   window.addEventListener("hashchange", fromHash);
-  document.addEventListener("seer:search", function (e) { state.q = (e.detail && e.detail.q) || ""; renderList(); });
+  document.addEventListener("seer:search", function (e) { state.q = (e.detail && e.detail.q) || ""; renderList(); if (state.q) unfold($("#ft-archive")); });
 })();
