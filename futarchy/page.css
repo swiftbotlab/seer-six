@@ -345,3 +345,4 @@
 .ft-onseer { grid-column: 1 / -1; min-width: 0; }
 @media (max-width: 960px) { .ft-onseer { order: 1; } .ft-poster { order: 2; } }
 @media (max-width: 640px) { .ft-actions .s-btn--quiet { display: none; } }
+.ft-record__bar { flex-wrap: wrap; gap: 10px; }

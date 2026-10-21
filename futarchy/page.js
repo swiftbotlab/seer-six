@@ -753,8 +753,42 @@
         el("div", {}, el("span", { class: "s-spec", text: String(i + 1).padStart(2, "0") }), el("b", { text: r[1] }), el("p", { class: "t-body", text: r[2] }))));
     });
     var box = $("#ft-record-table"); S.clear(box);
+    // Real on Seer: futarchy.seer.pm's closed proposals, read from its list and each market page on 21 Oct 2026, 09:25-09:29 UTC
+    var FT = "https://futarchy.seer.pm/markets/";
+    var REAL = [
+      ["GIP-153", "GnosisDAO", "Gnosis Chain transition into the Ethereum Economic Zone", 0.98, "yes", "23 Aug 2026", "0x4120de9931fd29c8a6effea4df57a7c8760c1677"],
+      ["GIP-152", "GnosisDAO", "Spin out the Gnosis App into an independent company", 0, "awaiting", "Ended 12 Aug 2026", "0xee8878d0a7136c5cd109554f06bb780e225badef"],
+      ["KIP-90", "Kleros", "Cooperative Spending Disclosure", 0.68, "yes", "20 Jul 2026", "0x84412fe9d088c1d8dd676a7be9a3d5d0291ab1cf"],
+      ["GIP-151", "GnosisDAO", "One-time pro-rata treasury redemption", 0, "yes", "3 Jul 2026", "0xece80208cb8376be311ce0f5ea4ef73850a0dcf0"],
+      ["KIP-88", "Kleros", "DAO Guidance to the Cooperative", 0.91, "yes", "9 Jun 2026", "0x0cae5e6f520e52e3d6a93c856bb6dbf7781f2e31"],
+      ["KIP-86", "Kleros", "Exclude PNK held by the Kleros Cooperative from KIP-66", 0.94, "yes", "5 Apr 2026", "0xb607bd7c7201e966e6a150cd6ef1d08db55cad5d"],
+      ["GIP-149", "GnosisDAO", "Fund continued support of Revoke.cash", -2.36, "no", "10 Mar 2026", "0x47c80f5f701ebc5f25cab64e660f0577890729c2"],
+      ["GIP-145", "GnosisDAO", "Advisory Futarchy Pilot with $100k temporary liquidity", 1.96, "yes", "17 Feb 2026", "0x45e1064348fd8a407d6d1f59fc64b05f633b28fc"],
+      ["KIP-81", "Kleros", "Priced the PNK level, not an impact", null, "no", "23 Nov 2025", "0x2c1e08674f3f78f8a1426a41c41b8bf546fa481a"]
+    ].map(function (r) { return { id: r[0], org: r[1], title: r[2], impact: r[3], res: r[4], date: r[5], href: FT + r[6] }; });
+    var realBox = el("div"), sampleBox = el("div", { attrs: { hidden: true } }), note = $(".ft-record__note");
+    var NOTES = {
+      real: "Impact as futarchy.seer.pm lists it; outcome as each market resolved. All six resolved markets with a non-zero gap leaned the way the DAO then voted. Correlation, not proof: the vote made each call. Snapshot of futarchy.seer.pm, 21 Oct 2026.",
+      sample: note ? note.textContent : ""
+    };
+    box.appendChild(el("div", { class: "s-row s-row--between ft-record__bar" },
+      el("span", { class: "s-src", attrs: { "data-state": "snapshot" } }, el("i", { attrs: { "aria-hidden": "true" } }), "Snapshot · futarchy.seer.pm · 21 Oct 2026"),
+      S.ui.seg([["real", "On Seer · real"], ["sample", "Lattice · sample"]], "real", function (v) {
+        realBox.hidden = v !== "real"; sampleBox.hidden = v === "real"; if (note) note.textContent = NOTES[v];
+      }, "Which track record")));
+    box.appendChild(realBox); box.appendChild(sampleBox);
+    if (note) note.textContent = NOTES.real;
+    S.ui.table(realBox, [
+      { key: "id", label: "Proposal", render: function (r) { return el("span", { class: "ft-rec__p" }, el("a", { href: r.href, attrs: { rel: "noopener", target: "_blank", "aria-label": r.id + ", " + r.title + " (opens on Seer)" } }, el("b", { text: r.id })), el("span", { class: "t-meta u-clamp-1", text: r.org + " · " + r.title })); } },
+      { key: "impact", label: "Impact listed", render: function (r) { return r.impact == null ? el("span", { class: "t-meta", text: "Level market" }) : el("b", { class: "t-num " + signCls(r.impact), text: (r.impact > 0 ? "+" : r.impact < 0 ? "−" : "+") + Math.abs(r.impact).toFixed(2) + "%" }); } },
+      { key: "res", label: "Resolved", render: function (r) { return r.res === "awaiting" ? el("span", { class: "s-tag", text: "Awaiting" }) : el("span", { class: "s-tag " + (r.res === "yes" ? "s-tag--pos" : "s-tag--neg"), text: r.res === "yes" ? "Yes · approved" : "No · rejected" }); } },
+      { key: "read", label: "Reading", render: function (r) {
+        var t = r.impact == null ? "Not comparable: priced a level" : r.res === "awaiting" ? "No gap; resolution pending" : r.impact === 0 ? "No gap; decided on other grounds" : (r.impact > 0) === (r.res === "yes") ? "Leaned the way the DAO voted" : "Leaned against the vote";
+        return el("span", { class: "t-2" }, t, el("span", { class: "t-meta", text: " · " + r.date }));
+      } }
+    ], { rows: REAL, caption: "Closed futarchy proposals on Seer: listed impact versus how each resolved" });
     var rows = MODELS.filter(function (m) { return m.resolved; });
-    S.ui.table(box, [
+    S.ui.table(sampleBox, [
       { key: "id", label: "Proposal", render: function (m) { return el("span", { class: "ft-rec__p" }, el("b", { text: m.id }), el("span", { class: "t-meta u-clamp-1", text: m.title })); } },
       { key: "impact", label: "Market signal", render: function (m) { return el("span", { class: "s-row s-row--nowrap", style: { "--gap": "8px" } }, el("b", { class: "t-num " + signCls(m.impact), text: F.signed(m.impact) }), recTag(m.rec, false)); } },
       { key: "approved", label: "DAO vote", render: function (m) { return el("span", { class: "s-tag " + (m.approved ? "s-tag--pos" : "s-tag--neg"), text: m.approved ? "Approved" : "Rejected" }); } },
