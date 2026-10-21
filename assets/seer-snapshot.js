@@ -16,6 +16,9 @@ window.SEER_SNAPSHOT = {
     {"id": "0xcef8554bad70c8f46b4242662286d0f03ce77899", "chain": 100, "title": "Will a court rule against Polymarket in a lawsuit over an incorrect market resolution by the end of 2026?", "liq": 1083.49, "outcomes": [["Yes", 10], ["No", 90]]},
     {"id": "0xe659d844b813ae908473e9d0f0981a5c33cf638f", "chain": 100, "title": "Will Polymarket distribute a transferable Polymarket cryptocurrency token to existing users before January 1st 2027?", "liq": 1028.23, "outcomes": [["Yes", 14.9], ["No", 85.1]]}
   ],
+  // every open market on Seer (no verification filter), the Home page's fallback count: markets-search with
+  // {marketStatusList:["open"], limit:1} returned count 2137 on 21 Oct 2026, 10:31 UTC
+  open: { count: 2137, when: "21 Oct 2026, 10:31 UTC" },
   // the settled Seer Rebrand Contest, read from its market page on 20 Oct 2026
   rebrand: { url: "https://app.seer.pm/markets/100/0xe7850b0d928aa40ab8732bd323fa4f6ef3c24b8a", archive: "https://opportunity.seer.pm/archive" }
 };

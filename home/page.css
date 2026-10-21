@@ -270,7 +270,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
 @media (max-width: 1180px) {
   .hm-hero__grid { gap: 36px; }
   .hm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
-  .hm-facts > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .hm-facts > div:nth-child(4) { padding-left: 0; border-left: 0; }
   .hm-layer__groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .hm-types__grid { grid-template-columns: 280px minmax(0, 1fr); }
   .hm-types__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -283,7 +283,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-facts { margin-top: 0; }
   .hm-hero__title { max-width: 11ch; }
   .hm-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .hm-facts > div:nth-child(3) { padding-left: 14px; border-left: 1px solid var(--line); }
+  .hm-facts > div:nth-child(4) { padding-left: 14px; border-left: 1px solid var(--line); }
   .hm-map__apps { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .hm-app { flex-direction: row; align-items: stretch; }
   .hm-app__sel { flex-direction: row; align-items: center; gap: 14px; padding: 12px 14px; border-radius: var(--r-card) 0 0 var(--r-card); }
@@ -321,7 +321,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-hero__actions .s-btn { flex: 1 1 auto; --h: 50px; padding: 0 16px; }
   .hm-hero__grid { row-gap: 24px; }
   .hm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hm-facts > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .hm-facts > div:nth-child(4) { padding-left: 0; border-left: 0; }
   .hm-facts dd { font-size: 16px; }
   .hm-price { padding: 18px 16px 16px; border-radius: 18px; }
   .hm-price__q { font-size: 16px; }
@@ -358,3 +358,18 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
 }
 .hm-app__txt { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .hm-chart { min-width: 0; }
+
+/* fix round 5 (2026-10-21): "Open on Seer now", the real open-market count, first in the fact row (home/live.js) */
+.hm-facts > .hm-live { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; padding: 12px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+.hm-facts > .hm-live + div { padding-left: 0; border-left: 0; }
+.hm-live dd { margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; font-size: 18px; }
+.hm-live__n { display: inline-flex; align-items: baseline; gap: 6px; color: var(--text); text-decoration: none; font-weight: 600; }
+.hm-live__n b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.hm-live__n svg { align-self: center; color: var(--text-3); }
+.hm-live__n:hover { text-decoration: underline; text-underline-offset: 3px; }
+.hm-live__n:hover svg { color: var(--text); }
+.hm-live__n:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+/* .hm-facts dd span would make the chip a block: restate the chip here */
+.hm-live dd .s-src { display: inline-flex; margin-top: 0; font-size: var(--fs-micro); font-weight: 500; letter-spacing: .05em; color: var(--text-2); white-space: nowrap; }
+.hm-live dd .s-src[data-state="live"] { color: var(--text); }
+@media (max-width: 640px) { .hm-live dd { font-size: 16px; } .hm-live dd .s-src { white-space: normal; } }

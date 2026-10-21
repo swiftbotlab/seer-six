@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Seer · Decision infrastructure (concept)</title>
 <meta name="description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
@@ -59,6 +60,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </figcaption>
       </figure>
       <dl class="hm-facts" aria-label="Protocol facts">
+        <!-- Open on Seer now: the real count of open markets, read live by live.js from Seer's public API, dated snapshot as fallback -->
+        <div class="hm-live"><dt>Open on Seer now</dt><dd><a class="hm-live__n" href="https://app.seer.pm/" rel="noopener noreferrer" target="_blank" aria-describedby="hm-live-src"><b id="hm-live-n" class="t-num">2,137</b> markets<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="s-src" id="hm-live-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · 21 Oct 2026, 10:31 UTC</span></dd></div>
         <div><dt>Market types</dt><dd>4 <span>+ conditional</span></dd></div>
         <div><dt>Answers</dt><dd>Reality.eth <span>+ Kleros</span></dd></div>
         <div><dt>Collateral</dt><dd>sDAI <span>xDAI · sUSDS</span></dd></div>
@@ -223,5 +226,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
 <script src="page.js"></script>
+<script src="../assets/seer-snapshot.js"></script>
+<script src="live.js"></script>
 </body>
 </html>
