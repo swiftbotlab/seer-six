@@ -415,3 +415,29 @@ html.rk-noscroll { overflow: hidden; }
 .rk-expandwrap { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; padding: 12px 16px 14px; border-top: 1px solid var(--line); }
 @media (max-width: 640px) { .rk-expandwrap { padding: 10px 12px 12px; } }
 .rk-ghead__more { border: 1px solid var(--line-strong); }
+
+/* r6 (2026-10-21): the hero is Seer's real board (risk.seer.pm, live, dated snapshot fallback); the sample follows as a walkthrough */
+.rk-srcrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 14px; }
+.rk-srclink { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; color: var(--violet-3); white-space: nowrap; }
+.rk-srclink:hover { color: var(--text); }
+.rk-srclink:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+/* header chip: where the hero's numbers come from (replaces the shell's sample-data badge on this page) */
+.rk-prov { display: inline-flex; align-items: center; gap: 7px; height: 21px; padding: 0 9px; border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--text); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; cursor: default; }
+.rk-prov > i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+.rk-prov[data-state="live"] > i { background: var(--live); box-shadow: 0 0 0 3px rgba(255, 75, 75, .18); }
+.rk-prov[data-state="snapshot"] > i, .rk-prov[data-state="loading"] > i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.rk-prov[data-state="loading"] > i { animation: s-src-blink 1s var(--ease) infinite alternate; }
+@media (max-width: 1200px) { .rk-prov__mid { display: none; } }
+@media (prefers-reduced-motion: reduce) { .rk-prov > i { animation: none; } }
+/* walkthrough (sample) header, where the quarter tabs were */
+#board.rk-boardsec { padding-top: 28px; }
+.rk-walkbar { padding-block: 10px 12px; }
+.rk-walk { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; min-width: 0; }
+.rk-walk__t { font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -.01em; color: var(--text); }
+.rk-walk__m { margin-top: 10px; max-width: 96ch; }
+@media (max-width: 1180px) { .rk-cap__q { display: none; } }
+@media (max-width: 640px) {
+  #board.rk-boardsec { padding-top: 20px; }
+  .rk-walk__t { font-size: 16px; }
+  .rk-head .rk-hero__art { margin-top: 2px; }
+}

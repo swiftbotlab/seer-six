@@ -1,7 +1,8 @@
 /* Risk Pricing (risk.seer.pm) — page script. Prefix rk- (see SYSTEM.md).
    Concept by Swift Bot Labs · not affiliated with Seer.
-   Every figure is SAMPLE DATA from assets/sample-data.js (window.SEER_SAMPLE): 33 fictional assets on
-   board #2850. Values derived here are deterministic and marked "derived": the traders' range around each
+   The hero is REAL: Seer's own Risk Pricing board, read live from risk.seer.pm's public API, with the dated
+   snapshot in risk/snapshot.js as the fallback (section 1). Everything under it (the walkthrough) is SAMPLE DATA
+   from assets/sample-data.js (window.SEER_SAMPLE): 33 fictional assets on board #2850. Values derived here are deterministic and marked "derived": the traders' range around each
    price (seeded by asset, wider where liquidity is thin), the 12-week change, hazard shares for No to All.
    Seer facts restated as published: the Risk Pricing default definition, the quarterly token mechanics,
    the four bands and the annual <-> quarterly conversion. All text goes in via textContent. */
@@ -120,17 +121,87 @@
     renderAll();
   }
 
-  /* ======================= 1. hero poster: the board on one axis ======================= */
+  /* ======================= 1. hero: Seer's own Risk Pricing board (real data) ======================= */
+  // The hero is Seer's market, not the sample: risk.seer.pm's public API (/api/v1/risk-pricing + /markets, CORS *),
+  // read live as the page loads. The dated snapshot in risk/snapshot.js is painted at once, labelled as such, and kept
+  // if Seer can't be reached (after 4 s; a late live answer until 12 s still replaces it). API answers are untrusted:
+  // every field is type- and range-checked, a name must be one of the 33 assets risk.seer.pm lists (groups as its filter
+  // chips show them, 21 Oct 2026), control and bidi characters are stripped, text goes in with textContent only, and
+  // the one market link is built here from a validated chain id and 0x address. Anything odd -> the snapshot stays.
+  var RAPI = "https://risk.seer.pm/api/v1/risk-pricing", RMKTS = RAPI + "/markets", RHOME = "https://risk.seer.pm/";
+  var RFALL_MS = 4000, RABORT_MS = 12000, RMAX = 200000; // a whole answer is ~7 KB
+  var RGROUP = {
+    weETH: "ETH", stETH: "ETH", "ETH+": "ETH", bsdETH: "ETH", rETH: "ETH", pufETH: "ETH", avETH: "ETH",
+    PYUSD: "USD", RLUSD: "USD", USDC: "USD", USD1: "USD", USDS: "USD", USDT: "USD", RUSD: "USD", USDF: "USD", avUSD: "USD", NUSD: "USD", iUSD: "USD", "satUSD+": "USD", USDO: "USD",
+    BTCB: "BTC", solvBTC: "BTC", tBTC: "BTC", cbBTC: "BTC", LBTC: "BTC", UBTC: "BTC",
+    "GACLO-1": "Funds", "BUIDL-I": "Funds", JAAA: "Funds", JTRSY: "Funds", "mF-ONE": "Funds", STAC: "Funds", U: "Funds"
+  };
+  var ADDR = /^0x[0-9a-fA-F]{40}$/, QRE = /^(\d{4})-Q([1-4])$/;
+  var BADCH = /[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u2069\uFEFF]/g; // controls, zero-width, bidi, BOM
+  function clean(s, max) { if (typeof s !== "string") return ""; s = s.replace(BADCH, " ").replace(/\s+/g, " ").trim(); return s.length > max ? s.slice(0, max) : s; }
+  function fin(x, lo, hi) { return typeof x === "number" && isFinite(x) && x >= lo && x <= hi; }
+  function own(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  // API answers (or the snapshot, read through the same checks) -> the hero board, or null if anything is off
+  function readBoard(rp, mk) {
+    if (!rp || typeof rp !== "object" || !mk || typeof mk !== "object") return null;
+    if (rp.chainId !== 100 || mk.chainId !== 100 || typeof rp.marketId !== "string" || !ADDR.test(rp.marketId)) return null;
+    if (!Array.isArray(rp.assets) || rp.assets.length < 20 || rp.assets.length > 60 || !Array.isArray(mk.markets) || mk.markets.length > 40) return null;
+    var out = [], seen = {};
+    for (var i = 0; i < rp.assets.length; i++) {
+      var a = rp.assets[i]; if (!a || typeof a !== "object") return null;
+      var n = clean(a.name, 16);
+      if (!own(RGROUP, n) || own(seen, n)) return null; seen[n] = 1;
+      if (!fin(a.pdYearly, 0, .999) || !fin(a.pdQuarterly, 0, .999)) return null;
+      if (Math.abs(1 - Math.pow(1 - a.pdQuarterly, 4) - a.pdYearly) > 1e-4) return null; // yearly and quarterly must agree
+      out.push({ id: n, sym: n, group: RGROUP[n], y: a.pdYearly, q: a.pdQuarterly, band: D.bandOf(a.pdYearly).id });
+    }
+    var nta = rp.noToAll && rp.noToAll.probability; if (!fin(nta, 0, 1)) return null;
+    var cur = null, listed = {};
+    for (var k = 0; k < mk.markets.length; k++) {
+      var m = mk.markets[k]; if (!m || typeof m !== "object") return null;
+      if (typeof m.id !== "string" || !ADDR.test(m.id) || typeof m.quarter !== "string" || !QRE.test(m.quarter) || !fin(m.startTime, 1.6e9, 2.2e9) || !fin(m.endTime, 1.6e9, 2.2e9)) return null;
+      listed[m.quarter] = 1;
+      if (m.current === true && m.id.toLowerCase() === rp.marketId.toLowerCase()) cur = m;
+    }
+    if (!cur) return null;
+    var qm = QRE.exec(cur.quarter), yr = +qm[1], qn = +qm[2], ny = qn === 4 ? yr + 1 : yr, nq = qn === 4 ? 1 : qn + 1;
+    return { assets: out, nta: nta, id: rp.marketId.toLowerCase(), chain: 100, quarter: "Q" + qn + " " + yr, next: "Q" + nq + " " + ny,
+      nextListed: own(listed, ny + "-Q" + nq), end: cur.endTime * 1000 };
+  }
+  var XS = window.SEER_RISK_SNAPSHOT, XB = null, XWHEN = "", XDAY = "";
+  try {
+    XB = readBoard({ chainId: XS.chainId, marketId: XS.marketId, noToAll: { probability: XS.noToAll }, assets: XS.assets.map(function (r) { return { name: r[0], pdYearly: r[1], pdQuarterly: r[2] }; }) }, { chainId: XS.chainId, markets: XS.markets });
+    var xt = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(XS.fetchedAt) ? Date.parse(XS.fetchedAt) : NaN;
+    if (!isFinite(xt)) XB = null; else { XDAY = F.dayMon(xt) + " " + new Date(xt).getUTCFullYear(); XWHEN = XDAY + ", " + hhmm(new Date(xt)); }
+  } catch (e) { XB = null; }
+  function hhmm(d) { var p = function (n) { return (n < 10 ? "0" : "") + n; }; return p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + " UTC"; }
+
+  var HB = null, HM = {}, HBYP = [], hs = { active: "", state: "loading", when: "" };
+  var HDOM = [0.0002, 0.4];                       // real estimates run from 0.04% to 16% a year
+  function hdom(h) { return [hv(HDOM[0], h), hv(HDOM[1], h)]; }
+  function hpos(p, h) { var d = hdom(h), a = log10(d[0]), b = log10(d[1]); return clamp((log10(Math.max(p, 1e-9)) - a) / (b - a), 0, 1); }
+  function hval(a, h) { return h === "q" ? a.q : a.y; }
+  function ntaH(h) { return HB ? (h === "q" ? Math.pow(HB.nta, .25) : HB.nta) : NaN; } // risk.seer.pm: 46.52% a year = 82.59% a quarter
+  function setBoard(b, state, when) {
+    HB = b; HM = {}; b.assets.forEach(function (a) { HM[a.id] = a; });
+    HBYP = b.assets.slice().sort(function (x, y) { return x.y - y.y; });
+    if (!HM[hs.active]) hs.active = HBYP[HBYP.length - 1].id;
+    hs.state = state; hs.when = when;
+    renderHero(); drawPlot();
+  }
+  function setState(state) { hs.state = state; renderProv(); }
+
   var plot = $("#rk-plot"), cap = $("#rk-cap"), geo = null;
   var LANE_GAPS = [26, 15, 9, 5.5], LANE_OPS = [.12, .17, .23, .32];
   function drawPlot() {
+    if (!HB) return;
     var W = Math.round(plot.clientWidth), H = Math.round(plot.clientHeight); if (!W || !H) return;
-    var narrow = W < 520, mid = W < 760, h = st.h;
+    var narrow = W < 520, mid = W < 760, h = st.h, HA = HB.assets;
     var ml = narrow ? 44 : 70, mr = narrow ? 8 : 14, mt = 30, mb = 42, pw = W - ml - mr, ph = H - mt - mb, laneH = ph / GROUPS.length;
-    var X = function (p) { return ml + pos(p, h) * pw; };
+    var X = function (p) { return ml + hpos(p, h) * pw; };
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
     var defs = sv("defs"); svg.appendChild(defs);
-    var d = dom(h), ed = [d[0]].concat(edges(h), [d[1]]), bandTx = [];
+    var d = hdom(h), ed = [d[0]].concat(edges(h), [d[1]]), bandTx = [];
     // band zones: 45° stripes whose density rises with the band (the motif carries the scale)
     BANDS.forEach(function (b, i) {
       var x0 = X(ed[i]), x1 = X(ed[i + 1]), cid = "rk-zc" + i;
@@ -149,12 +220,12 @@
     GROUPS.forEach(function (g, i) {
       var y0 = mt + laneH * i;
       if (i) svg.appendChild(sv("line", { class: "rk-p-lane", x1: 0, x2: W - mr, y1: y0, y2: y0 }));
-      var n = A.filter(function (a) { return a.group === g.id; }).length;
+      var n = HA.filter(function (a) { return a.group === g.id; }).length;
       var t = sv("text", { class: "rk-p-lanelbl", x: 0, y: y0 + laneH / 2 - (narrow ? 0 : 3) }); t.textContent = g.id === "Funds" ? "FUNDS" : g.id; svg.appendChild(t);
       if (!narrow) { var t2 = sv("text", { class: "rk-p-lanen", x: 0, y: y0 + laneH / 2 + 11 }); t2.textContent = n + " assets"; svg.appendChild(t2); }
     });
     // ticks
-    ticks(h).forEach(function (t) {
+    TICKS.filter(function (t) { return t >= d[0] * .999 && t <= d[1] * 1.001; }).forEach(function (t) {
       var m = mant(t); if (narrow && m !== 1) return; if (mid && !narrow && m === 2) return;
       var tx = sv("text", { class: "rk-p-tick", x: X(t), y: H - 10, "text-anchor": "middle" }); tx.textContent = tickF(t); svg.appendChild(tx);
     });
@@ -163,8 +234,8 @@
     var r = narrow ? 4.6 : 6, step = r * 2 + 1.5, P = {};
     GROUPS.forEach(function (g, gi) {
       var yc = mt + laneH * (gi + .5), maxOff = laneH / 2 - r - 3, placed = [];
-      A.filter(function (a) { return a.group === g.id; }).sort(function (a, b) { return a.y - b.y; }).forEach(function (a) {
-        var x = X(hv(a.y, h)), best = 0;
+      HA.filter(function (a) { return a.group === g.id; }).sort(function (a, b) { return a.y - b.y; }).forEach(function (a) {
+        var x = X(hval(a, h)), best = 0;
         for (var k = 0; k < 9; k++) {
           var off = (k % 2 ? 1 : -1) * Math.ceil(k / 2) * step; if (Math.abs(off) > maxOff) continue;
           var ok = placed.every(function (p) { var dx = p.x - x, dy = p.y - (yc + off); return dx * dx + dy * dy >= step * step; });
@@ -174,26 +245,15 @@
       });
     });
     var gd = sv("g", { class: "rk-p-dots" });
-    A.forEach(function (a) {
-      var p = P[a.id], c = sv("circle", { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: r, class: "rk-p-dot" });
-      gd.appendChild(c);
-      if (edited(a)) {
-        var mx = X(hv(est(a), h));
-        gd.appendChild(sv("line", { class: "rk-p-link", x1: p.x, x2: mx, y1: p.y, y2: p.y }));
-        gd.appendChild(sv("circle", { class: "rk-p-mine", cx: mx.toFixed(1), cy: p.y.toFixed(1), r: r - .5 }));
-      }
-    });
+    HA.forEach(function (a) { var p = P[a.id]; gd.appendChild(sv("circle", { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: r, class: "rk-p-dot" })); });
     svg.appendChild(gd);
-    // active asset: range whisker + ring + label
-    var act = AM[st.active] || BYP[BYP.length - 1], ap = P[act.id];
+    // active asset: ring + label (Seer publishes one price per asset, so no range whisker here)
+    var act = HM[hs.active] || HBYP[HBYP.length - 1], ap = P[act.id], lt = null;
     if (ap) {
-      var x10 = X(hv(act.p10, h)), x90 = X(hv(act.p90, h)), ga = sv("g", { class: "rk-p-act" });
-      ga.appendChild(sv("line", { class: "rk-p-rng", x1: x10, x2: x90, y1: ap.y, y2: ap.y }));
-      ga.appendChild(sv("line", { class: "rk-p-rng", x1: x10, x2: x10, y1: ap.y - 6, y2: ap.y + 6 }));
-      ga.appendChild(sv("line", { class: "rk-p-rng", x1: x90, x2: x90, y1: ap.y - 6, y2: ap.y + 6 }));
+      var ga = sv("g", { class: "rk-p-act" });
       ga.appendChild(sv("circle", { class: "rk-p-dot is-on", cx: ap.x, cy: ap.y, r: r + 3 }));
-      var lt = sv("text", { class: "rk-p-lbl", x: ap.x, y: ap.y - r - 10, "text-anchor": ap.x > W - 90 ? "end" : ap.x < ml + 50 ? "start" : "middle" });
-      lt.textContent = act.sym + " " + pdF(hv(act.y, h)); ga.appendChild(lt);
+      lt = sv("text", { class: "rk-p-lbl", x: ap.x, y: ap.y - r - 10, "text-anchor": ap.x > W - 90 ? "end" : ap.x < ml + 50 ? "start" : "middle" });
+      lt.textContent = act.sym + " " + pdF(hval(act, h)); ga.appendChild(lt);
       svg.appendChild(ga);
     }
     S.clear(plot).appendChild(svg);
@@ -210,13 +270,13 @@
       if (over > 0 && !last && over <= 10) push = over;
       else if (over > 0 && chipsOn) o.t.textContent = "";
     });
-    // the active asset's label sits above its dot, unless that crowds the band names in the top margin (obETH, top
-    // lane): then it goes under the dot, if no other dot is there
+    // the active asset's label sits above its dot, unless that crowds the band names in the top margin (top lane):
+    // then it goes under the dot, if no other dot is there
     if (lt) {
       var bb = null; try { bb = lt.getBBox(); } catch (e) { /* not laid out */ }
       if (bb && bb.width && bb.y < mt + 2) {
         var yb = ap.y + r + 16, top = yb - bb.height * .8, bot = yb + bb.height * .3;
-        var hit = A.some(function (a) { var p = P[a.id]; return a.id !== act.id && p.x + r > bb.x - 2 && p.x - r < bb.x + bb.width + 2 && p.y + r > top && p.y - r < bot; });
+        var hit = HA.some(function (a) { var p = P[a.id]; return a.id !== act.id && p.x + r > bb.x - 2 && p.x - r < bb.x + bb.width + 2 && p.y + r > top && p.y - r < bot; });
         if (!hit && bot < mt + ph) lt.setAttribute("y", yb);
       }
     }
@@ -231,14 +291,14 @@
     n.style.fill = "var(--band-" + band + ")"; return n;
   }
   function renderCap() {
-    var a = AM[st.active]; if (!a) return; var h = st.h, o = h === "q" ? "y" : "q";
+    var a = HM[hs.active]; if (!a) return; var h = st.h, o = h === "q" ? "y" : "q", rank = HBYP.length - HBYP.indexOf(a);
     S.clear(cap);
     cap.appendChild(el("div", { class: "rk-cap__l" },
-      el("b", { text: a.sym + " · " + a.name }),
-      el("span", { class: "rk-cap__meta" }, el("span", { text: GLABEL[a.group] }), bandChip(a.band), el("span", { text: "Traders' range " + pdF(hv(a.p10, h)) + "–" + pdF(hv(a.p90, h)) }))));
-    cap.appendChild(el("div", { class: "rk-cap__r" }, el("span", { class: "rk-cap__num", text: pdF(hv(a.y, h)) }), el("small", { text: hWord(h) + " · " + pdF(hv(a.y, o)) + " " + hWord(o).replace("per ", "/ ") })));
+      el("b", { text: a.sym + " · " + GLABEL[a.group] }),
+      el("span", { class: "rk-cap__meta" }, bandChip(a.band), el("span", { text: (rank === 1 ? "Riskiest" : "#" + rank + " by risk") + " of " + HBYP.length }), el("span", { class: "rk-cap__q", text: HB.quarter + " · on Seer" }))));
+    cap.appendChild(el("div", { class: "rk-cap__r" }, el("span", { class: "rk-cap__num", text: pdF(hval(a, h)) }), el("small", { text: hWord(h) + " · " + pdF(hval(a, o)) + " " + hWord(o).replace("per ", "/ ") })));
   }
-  function setActive(id) { if (!AM[id] || st.active === id) return; st.active = id; drawPlot(); renderFormula(); }
+  function setActive(id) { if (!HM[id] || hs.active === id) return; hs.active = id; drawPlot(); }
   plot.addEventListener("pointermove", function (e) {
     if (!geo) return; var bb = plot.getBoundingClientRect(), x = e.clientX - bb.left, y = e.clientY - bb.top, best = null, bd = 18 * 18;
     for (var id in geo.P) { var p = geo.P[id], dx = p.x - x, dy = p.y - y, dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = id; } }
@@ -247,28 +307,88 @@
   });
   plot.addEventListener("click", function (e) {
     if (!geo) return; var bb = plot.getBoundingClientRect(), x = e.clientX - bb.left, y = e.clientY - bb.top;
-    for (var id in geo.P) { var p = geo.P[id]; if ((p.x - x) * (p.x - x) + (p.y - y) * (p.y - y) < 20 * 20) { setActive(id); openDrawer(id); return; } }
+    for (var id in geo.P) { var p = geo.P[id]; if ((p.x - x) * (p.x - x) + (p.y - y) * (p.y - y) < 20 * 20) { setActive(id); return; } }
   });
   plot.addEventListener("keydown", function (e) {
-    var i = BYP.indexOf(AM[st.active]);
-    if (e.key === "ArrowRight" || e.key === "ArrowUp") i = Math.min(BYP.length - 1, i + 1);
+    var i = HBYP.indexOf(HM[hs.active]); if (i < 0) return;
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") i = Math.min(HBYP.length - 1, i + 1);
     else if (e.key === "ArrowLeft" || e.key === "ArrowDown") i = Math.max(0, i - 1);
-    else if (e.key === "Home") i = 0; else if (e.key === "End") i = BYP.length - 1;
-    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(st.active); return; }
+    else if (e.key === "Home") i = 0; else if (e.key === "End") i = HBYP.length - 1;
     else return;
-    e.preventDefault(); setActive(BYP[i].id);
+    e.preventDefault(); setActive(HBYP[i].id);
   });
 
+  // the words around the board: quarter, state, facts, source; all from the validated board
+  function mktURL() { return "https://app.seer.pm/markets/" + HB.chain + "/" + HB.id; } // chain + id validated in readBoard
+  function stateText() {
+    if (HB.end > Date.now()) return HB.quarter + " trades until " + F.dayMon(HB.end) + ".";
+    return HB.quarter + " closed on " + F.dayMon(HB.end) + "; these are its closing prices. " + HB.next +
+      (HB.nextListed ? " is listed on Seer." : hs.state === "live" ? " is not open yet." : " was not open on " + XDAY + ".");
+  }
   function renderFacts() {
-    var f = $("#rk-facts"); S.clear(f);
-    var crit = A.filter(function (a) { return a.band === "crit"; }).length, nta = A.reduce(function (acc, a) { return acc * (1 - hv(a.y, st.h)); }, 1);
-    [["No to All", pdF(nta), st.h === "q" ? "this quarter" : "per year"], ["Assets", "33", "in 4 groups"], ["Critical", String(crit), "assets"], ["Closes", F.dayMon(CLOSES), "in " + daysTo(CLOSES) + "d"]].forEach(function (x) {
+    var f = $("#rk-facts"); S.clear(f); if (!HB) return;
+    var h = st.h, top = HBYP[HBYP.length - 1], crit = HB.assets.filter(function (a) { return a.band === "crit"; }).length;
+    var last = HB.end > Date.now() ? ["Closes", F.dayMon(HB.end), "in " + Math.max(0, Math.round((HB.end - Date.now()) / DAY)) + "d"]
+      : [HB.next, HB.nextListed ? "Listed" : "Not open", HB.nextListed ? "on Seer" : hs.state === "live" ? "yet" : "on " + F.dayMon(Date.parse(XS.fetchedAt))];
+    [["No to All", pdF(ntaH(h)), h === "q" ? "a quarter" : "per year"], ["Highest", pdF(hval(top, h)), top.sym], ["Critical", String(crit), crit === 1 ? "asset" : "assets"], last].forEach(function (x) {
       f.appendChild(el("div", {}, el("dt", { text: x[0] }), el("dd", {}, x[1], el("small", { text: x[2] }))));
     });
   }
+  function renderProv() {
+    var live = hs.state === "live", src = $("#rk-src");
+    var txt = live ? "Live · risk.seer.pm · " + hs.when : "Snapshot · risk.seer.pm · " + XWHEN;
+    if (src) { src.setAttribute("data-state", hs.state); S.clear(src).appendChild(el("i", { attrs: { "aria-hidden": "true" } })); src.appendChild(document.createTextNode(txt)); }
+    var st2 = $("#rk-state"); if (st2 && HB) st2.textContent = stateText();
+    renderFacts();
+    // the header chip names where the hero's numbers come from (replaces the shell's sample-data badge on this page)
+    var chip = $(".rk-prov") || $(".s-lockup__sample");
+    if (!chip) return;
+    if (!chip.classList.contains("rk-prov")) { var nc = el("span", { class: "rk-prov s-lockup__sample" }); chip.parentNode.replaceChild(nc, chip); chip = nc; }
+    chip.setAttribute("data-state", hs.state);
+    chip.setAttribute("title", (live ? "Live: the board at the top is read from risk.seer.pm's public API, " + hs.when : "Snapshot: the board at the top is risk.seer.pm's public API as read " + XWHEN) + ". The walkthrough under it is sample data.");
+    S.clear(chip).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+    chip.appendChild(el("span", { text: live ? "Live" : "Snapshot" }));
+    chip.appendChild(el("span", { class: "rk-prov__mid", text: live ? " · risk.seer.pm" : " · " + F.dayMon(Date.parse(XS.fetchedAt)) }));
+    chip.appendChild(el("span", { class: "s-sr", text: live ? ": the top board, read from risk.seer.pm; the walkthrough below is sample data" : ": the top board, a dated snapshot of risk.seer.pm; the walkthrough below is sample data" }));
+  }
+  function renderHero() {
+    $$("[data-rk-quarter]").forEach(function (n) { n.textContent = HB.quarter; });
+    var ps = $("#rk-pspecs"); if (ps) { S.clear(ps); ps.appendChild(el("span", { text: "Seer" })); ps.appendChild(el("span", { text: HB.quarter })); ps.appendChild(el("span", {}, el("b", { text: String(HB.assets.length) }), " assets")); }
+    plot.setAttribute("aria-label", "Seer's " + HB.quarter + " Risk Pricing board: " + HB.assets.length + " assets on one log scale of default probability, in four groups, over Seer's four risk bands. Use the arrow keys to read each asset.");
+    $$("[data-rk-mkt]").forEach(function (a) { a.setAttribute("href", mktURL()); });
+    renderProv();
+  }
+  // paint the snapshot at once (labelled), then read Seer live
+  (function () {
+    if (XB) setBoard(XB, "loading", XWHEN);
+    var settled = false, timer = setTimeout(function () { if (!settled && HB) setState("snapshot"); }, RFALL_MS);
+    var ctl = typeof AbortController === "function" ? new AbortController() : null;
+    var kill = setTimeout(function () { if (ctl) ctl.abort(); }, RABORT_MS);
+    function fail(e) {
+      settled = true; clearTimeout(timer); clearTimeout(kill);
+      if (hs.state === "live") return; // a render error after a good live read must not relabel it
+      var s = $("#rk-src"); if (s) s.setAttribute("data-why", String((e && e.name) || "error").slice(0, 40));
+      if (HB) setState("snapshot"); else { var m = $("#rk-src"); if (m) { m.setAttribute("data-state", "snapshot"); m.textContent = "Seer's Risk Pricing API is unavailable right now"; } }
+    }
+    function get(u) {
+      return fetch(u, { method: "GET", mode: "cors", credentials: "omit", cache: "no-store", referrerPolicy: "no-referrer", redirect: "error", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          if (!/^application\/json/i.test(r.headers.get("content-type") || "")) throw new Error("not JSON");
+          if (+(r.headers.get("content-length") || 0) > RMAX) throw new Error("too big");
+          return r.text();
+        }).then(function (t) { if (t.length > RMAX) throw new Error("too big"); return JSON.parse(t); });
+    }
+    if (typeof fetch !== "function" || typeof Promise !== "function") { fail({ name: "nofetch" }); return; }
+    Promise.all([get(RAPI), get(RMKTS)]).then(function (res) {
+      var b = readBoard(res[0], res[1]); if (!b) throw new Error("bad shape");
+      settled = true; clearTimeout(timer); clearTimeout(kill);
+      setBoard(b, "live", hhmm(new Date()));
+    }).catch(fail);
+  })();
 
   /* ======================= 2. board ======================= */
-  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "<b>Trading</b>" }]));
+  $("#rk-qspecs").appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, { text: "33 assets + No to All", class: "s-hide-sm" }, { html: "<b>Sample</b>" }]));
   (function () { var lg = $("#rk-plotlegend"); BANDS.forEach(function (b) { lg.appendChild(bandChip(b.id)); }); })();
   function renderStats() {
     var box = $("#rk-stats"), h = st.h; S.clear(box);
@@ -381,7 +501,7 @@
     row.appendChild(el("div", { class: "rk-row__band" }, bandChip(a.band)));
     row.appendChild(el("div", { class: "rk-row__chg" }, spark(a), changeEl(a.change)));
     row.addEventListener("click", function (e) { if (e.target.closest("input,label,button,a")) return; openDrawer(a.id); });
-    row.addEventListener("pointerenter", function () { if (st.active !== a.id) { st.active = a.id; drawPlot(); renderFormula(); } });
+    row.addEventListener("pointerenter", function () { if (st.active !== a.id) { st.active = a.id; renderFormula(); } });
     return row;
   }
   var GLIM = 3; // by group: the three riskiest per group; "Show all" opens a group, "Expand all" the board
@@ -505,7 +625,6 @@
       var id = r.dataset.id, on = st.cmp.indexOf(id) > -1, cb = $("input", r), sw = $(".rk-row__sw", r);
       r.classList.toggle("is-cmp", on); if (cb) cb.checked = on; if (sw) sw.style.background = on ? PAL[st.cmpColor[id]] : "";
     });
-    drawPlot();
     if (drawerId) renderDrawer(drawerId);
   }
   var cmpDist = null, cmpLine = null;
@@ -780,7 +899,7 @@
     r.row.classList.toggle("is-edited", ed);
     r.reset.style.visibility = ed ? "visible" : "hidden";
   }
-  var lateBoard = later(function () { renderBoard(); drawPlot(); if (cmpAssets().some(edited)) renderCompare(); }, 120);
+  var lateBoard = later(function () { renderBoard(); if (cmpAssets().some(edited)) renderCompare(); }, 120);
   function setMine(id, v, src) {
     var a = AM[id]; if (!a) return;
     if (v == null) delete st.mine[id];
@@ -965,7 +1084,7 @@
     if (!drawerId) lastFocus = document.activeElement;
     drawerId = a.id; st.active = a.id;
     drawer.classList.add("is-open"); drawer.setAttribute("aria-hidden", "false"); document.documentElement.classList.add("rk-noscroll");
-    renderDrawer(a.id); drawPlot(); renderFormula();
+    renderDrawer(a.id); renderFormula();
     try { history.replaceState(null, "", "#" + a.id); } catch (e) { }
     var c = $(".rk-dr__close", panel); if (c) c.focus();
   }
