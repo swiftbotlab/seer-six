@@ -197,7 +197,7 @@
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
       '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
       '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and JS. No trackers.</p></div>' +
-      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Each app opens on Seer&rsquo;s own markets, read live from Seer&rsquo;s public APIs, with a dated snapshot as the fallback (Deep: a dated snapshot of deep.seer.pm). The walkthrough under them is sample data, made up to show the design and labelled. Nothing here is tradable.</p></div>' +
+      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Each app opens on Seer&rsquo;s own markets, read live from Seer&rsquo;s public APIs, with a snapshot refreshed every hour as the fallback (Deep: an hourly snapshot of deep.seer.pm). The walkthrough under them is sample data, made up to show the design and labelled. Nothing here is tradable. For agents: <a href="' + ROOT + 'llms.txt">llms.txt</a>.</p></div>' +
       "</div>" +
       '<div class="s-footer__base"><span class="s-footer__credit">Concept by Swift Bot Labs · not affiliated with Seer</span>' +
       '<span class="s-specs"><span>Concept, not tradable</span><span>@swiftbotlab</span></span></div>' +

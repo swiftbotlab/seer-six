@@ -382,3 +382,5 @@ ol.dp-notelist { list-style: decimal; }
   .dp-walk__in { padding-top: 16px; }
 }
 @media (max-width: 960px) { #r3-all { scroll-margin-top: 24px; } }
+/* r6 item 6: the agent card points at the same data as JSON (data/deep.json, tools/refresh.py) */
+.dp-agent__data { margin: 10px 0 0; font-size: var(--fs-meta); line-height: 1.45; font-weight: 500; color: var(--text-2); text-wrap: pretty; }

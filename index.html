@@ -36,6 +36,20 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-poster__title .t-accent { color: #A57BFF; }
 .hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 50ch; margin-top: 18px; }
 .hb-poster__art { position: relative; min-height: 320px; color: var(--violet); }
+/* real Seer data in the first screen (from assets/seer-snapshot.js, rewritten hourly by tools/refresh.py) */
+.hb-poster__since { margin-top: 14px; font-size: 14px; line-height: 1.5; font-weight: 500; color: rgba(224, 226, 245, .78); max-width: 54ch; }
+.hb-poster__since b { color: #fff; font-weight: 600; }
+.hb-live { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-block: 1px solid rgba(224, 226, 245, .16); font-size: 14px; line-height: 1.35; color: rgba(224, 226, 245, .78); max-width: 60ch; }
+.hb-live[hidden] { display: none; }
+.hb-live .s-src { background: rgba(224, 226, 245, .08); box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .2); color: rgba(224, 226, 245, .9); }
+.hb-live .s-src > i { box-shadow: inset 0 0 0 1.5px rgba(224, 226, 245, .7); }
+.hb-live__n { font-weight: 500; }
+.hb-live__n b { color: #fff; font-size: 17px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.hb-live__top { min-width: 0; color: #C9B6FF; font-weight: 500; text-decoration: none; }
+.hb-live__top:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.hb-live__top svg { display: inline-block; vertical-align: -1px; margin-left: 4px; }
+.s-header .hb-prov { border-color: var(--line-strong); background: var(--surface-2); color: var(--text); cursor: default; }
+.s-header .hb-prov::before { width: 7px; height: 7px; border-radius: 50%; transform: none; background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
 .hb-poster__art .hb-wedges { position: absolute; inset: 0; }
 .hb-poster__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .hb-poster .s-btn--secondary { background: rgba(125, 51, 255, .18); color: #E0D2FF; }
@@ -187,7 +201,9 @@ main > .s-section--tight { padding-block: 32px; }
         <div>
           <div class="s-specs"><span>Concept</span><span>Electric Foundation identity</span><span><b>6</b> interfaces</span></div>
           <h1 id="hb-title" class="hb-poster__title u-mt-6">Every opinion <span class="t-accent">has a price.</span></h1>
-          <p class="hb-poster__lede">Seer's six interfaces, redesigned on the Electric Foundation identity: each opens on Seer's own markets, then one shared sample walkthrough traces a single made-up market from app to app.</p>
+          <p class="hb-poster__lede">Seer's six interfaces, redesigned on the Electric Foundation identity and run on Seer's own markets: every app opens on real data, then one labelled sample walkthrough follows a single made-up proposal from app to app.</p>
+          <p class="hb-poster__since"><b>Since the claim (21 Oct):</b> every app opens on real Seer markets, read live where Seer allows it and refreshed hourly.</p>
+          <p class="hb-live" id="hb-live" hidden></p>
         </div>
         <div class="hb-poster__foot">
           <div class="s-row">
@@ -247,8 +263,9 @@ main > .s-section--tight { padding-block: 32px; }
         <section class="hb-kc hb-proof__card" aria-labelledby="hb-data-h">
           <h3 class="t-h3" id="hb-data-h">Where the data comes from</h3>
           <ul>
-            <li class="hb-kc--keep"><b>Live:</b> the top of Home (the most liquid open market), the App&#39;s &ldquo;On Seer now&rdquo; strip, Futarchy&#39;s EIP-8363, Opportunity&#39;s AI Job Board Name market and Risk&#39;s Q3 2026 board read Seer&#39;s public APIs as the page loads. If Seer can&#39;t be reached, each shows a dated snapshot and says so.</li>
-            <li class="hb-kc--keep"><b>Dated snapshots, linked to the source:</b> Deep&#39;s Round 3 field, all 98 repositories (deep.seer.pm, whose feed allows no cross-site reads), and Futarchy&#39;s nine closed proposals (futarchy.seer.pm), read 21 Oct 2026, plus the settled Rebrand Contest on Opportunity (app.seer.pm, 20 Oct).</li>
+            <li class="hb-kc--keep"><b>Live:</b> the top of Home (the most liquid open market), the App&#39;s &ldquo;On Seer now&rdquo; strip, Futarchy&#39;s EIP-8363, Opportunity&#39;s AI Job Board Name market and Risk&#39;s Q3 2026 board read Seer&#39;s public APIs as the page loads. If Seer can&#39;t be reached, each shows its snapshot and says so.</li>
+            <li class="hb-kc--keep"><b>Refreshed every hour, server side:</b> every snapshot above and Deep&#39;s Round 3 field, all 98 repositories (deep.seer.pm, whose feed allows no cross-site reads), read by a scheduled job (<a href="https://github.com/swiftbotlab/seer-six/blob/main/tools/refresh.py" rel="noopener">tools/refresh.py</a>) with the pages&#39; own checks; a source that fails keeps its last good copy. Fixed records, linked to the source: Futarchy&#39;s nine closed proposals (futarchy.seer.pm, read 21 Oct 2026) and the settled Rebrand Contest on Opportunity (app.seer.pm, 20 Oct).</li>
+            <li class="hb-kc--keep"><b>For agents:</b> <a href="llms.txt">llms.txt</a> lists the six apps and what each shows; <a href="data/index.json">data/*.json</a> holds the same Seer data with its source, fetch time and mode.</li>
             <li><b>Sample:</b> the walkthrough under each real hero is one made-up thread (Lattice DAO, P-07, #2841) followed across all six apps, labelled &ldquo;Sample&rdquo;; every sample address starts with 0x5eed.</li>
           </ul>
         </section>
@@ -268,7 +285,7 @@ main > .s-section--tight { padding-block: 32px; }
   <section class="s-section--tight" id="connect" aria-labelledby="hb-con">
     <div class="s-container">
       <div class="s-section-head hb-head">
-        <div><span class="s-spec">One market, followed across apps</span><h2 id="hb-con" class="t-h2">How they connect</h2></div>
+        <div><span class="s-spec">Sample walkthrough · one proposal, followed across apps</span><h2 id="hb-con" class="t-h2">How they connect</h2></div>
         <p id="hb-con-lede"></p>
       </div>
       <div class="hb-flow" id="hb-flow"></div>
@@ -284,7 +301,7 @@ main > .s-section--tight { padding-block: 32px; }
         <li><b>Electric Foundation, as specified.</b> The official mark and wordmark, the kit's tokens, radii and type spec, and its components built live: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
         <li><b>One dataset, traced across apps.</b> P-07 in <a href="deep/#P-07">Deep</a>, markets <a href="app/#m=2841">#2841</a> and <a href="app/#m=2842">#2842</a> in the explorer, <a href="futarchy/#LIP-31">LIP-31</a> in Futarchy; every cross-link resolves.</li>
         <li><b>Seer's mechanics kept.</b> Reality.eth answers and bonds, Kleros arbitration, Kleros Curate, the six market states, conditional tokens (split, merge, redeem) and sDAI / xDAI / sUSDS per chain.</li>
-        <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no external requests; fonts self-hosted. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
+        <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no requests except to Seer&#39;s own public APIs; fonts self-hosted. For agents: <a href="llms.txt">llms.txt</a> and the same data as JSON in <a href="data/index.json">data/</a>. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
       </ul>
       </details>
       <details class="s-details" id="design-notes"><summary>All design notes<small>the long version · kept from the kit · deliberate departures</small></summary>
@@ -323,21 +340,66 @@ main > .s-section--tight { padding-block: 32px; }
   </section>
 </main>
 <script src="assets/sample-data.js"></script>
+<script src="assets/seer-snapshot.js"></script>
 <script src="assets/ui.js"></script>
 <script>
 (function () {
   var S = window.Seer, D = window.SEER_SAMPLE;
+
+  /* first screen: real Seer data from the hourly snapshot (assets/seer-snapshot.js, tools/refresh.py), and the header chip
+     that says so. Market titles and answers on Seer are written by whoever created the market: type- and range-checked,
+     control and bidi characters stripped, clamped, set with textContent only; the link is built from a validated chain
+     id and 0x address. */
+  (function () {
+    var X = window.SEER_SNAPSHOT, box = document.getElementById("hb-live");
+    var BAD = /[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u2069\uFEFF]/g, ADDR = /^0x[0-9a-fA-F]{40}$/, CH = { 1: 1, 10: 1, 100: 1, 8453: 1 };
+    var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    function clean(s, n) { if (typeof s !== "string") return ""; s = s.replace(BAD, " ").replace(/\s+/g, " ").trim(); return s.length > n ? s.slice(0, n) : s; }
+    function okCount(c) { return typeof c === "number" && isFinite(c) && c >= 1 && c < 1e7 && Math.round(c) === c; }
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    function clip(s, n) { if (s.length <= n) return s; var c = s.slice(0, n), sp = c.lastIndexOf(" "); return (sp > n * .6 ? c.slice(0, sp) : c).replace(/[\s,;:(]+$/, "") + "…"; }
+    if (!S || !X || !box || !X.open || !okCount(X.open.count)) return;
+    var at = typeof X.at === "number" && isFinite(X.at) && X.at > 1.7e12 && X.at < Date.now() + 864e5 ? X.at : null;
+    if (!at) { var r = typeof X.when === "string" && /^(\d{1,2}) ([A-Z][a-z]{2}) (\d{4}), (\d\d):(\d\d) UTC$/.exec(X.when), mo = r ? MON.indexOf(r[2]) : -1; at = mo < 0 ? null : Date.UTC(+r[3], mo, +r[1], +r[4], +r[5]); }
+    if (!at) return;
+    var d = new Date(at), hm = pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) + " UTC", day = d.getUTCDate() + " " + MON[d.getUTCMonth()];
+    var s = Math.max(0, (Date.now() - at) / 1000), ago = s < 3600 ? Math.max(1, Math.round(s / 60)) + " min ago" : s < 172800 ? Math.round(s / 3600) + " h ago" : Math.round(s / 86400) + " days ago";
+    var top = null, m = Array.isArray(X.markets) ? X.markets[0] : null;
+    if (m && typeof m.id === "string" && ADDR.test(m.id) && CH[m.chain] === 1 && Array.isArray(m.outcomes)) {
+      var title = clean(m.title, 200), lead = null;
+      m.outcomes.slice(0, 3).forEach(function (o) {
+        var n = Array.isArray(o) ? clean(o[0], 40) : "";
+        if (n && n.toLowerCase() !== "invalid" && typeof o[1] === "number" && isFinite(o[1]) && o[1] >= 0 && o[1] <= 100 && (!lead || o[1] > lead[1])) lead = [n, o[1]];
+      });
+      if (title.length >= 8 && lead) top = { title: title, lead: lead, href: "https://app.seer.pm/markets/" + m.chain + "/" + m.id.toLowerCase() };
+    }
+    var el = S.el;
+    box.appendChild(el("span", { class: "s-src", attrs: { "data-state": "snapshot", title: "Read from Seer's public markets API at " + hm + " on " + day + " by the hourly refresh" } },
+      el("i", { attrs: { "aria-hidden": "true" } }), el("span", { text: "Seer data · updated " + ago })));
+    box.appendChild(el("span", { class: "hb-live__n" }, el("b", { text: X.open.count.toLocaleString("en-US") }), " markets open on Seer"));
+    if (top) box.appendChild(el("a", { class: "hb-live__top", href: top.href, attrs: { rel: "noopener noreferrer", target: "_blank", title: top.title, "aria-label": "Most liquid verified market: " + top.title + " (opens on Seer)" } },
+      el("span", { text: "Most liquid: " + clip(top.title, 60) + " · " + clip(top.lead[0], 24) + " " + (Math.round(top.lead[1] * 10) / 10) + "%" }), el("span", { html: S.icon("external", 13) })));
+    box.hidden = false;
+    // header: the chip says where the first screen's numbers come from (the shell's badge said "Sample data")
+    var old = document.querySelector(".s-header .s-lockup__sample");
+    if (old) {
+      var c = el("span", { class: "s-sample s-lockup__sample hb-prov", attrs: { "data-state": "snapshot", title: "The numbers at the top of this page: Seer's public markets API, read " + ago + " (" + day + ", " + hm + ") by the hourly refresh. The screens below show each app; their walkthrough is sample data." } },
+        el("span", {}, "Seer data", el("span", { class: "s-sample__mid", text: " · " + hm })), el("span", { class: "s-sr", text: ": the numbers at the top of this page are Seer's own, refreshed hourly" }));
+      old.parentNode.replaceChild(c, old);
+    }
+  })();
+
   // poster: six interfaces as six wedges converging on one point (one protocol)
   S.motif.wedges(document.getElementById("hb-wedges"), { weights: [1, 1, 1, 1, 1, 1], gap: 26, vp: [.98, .42], w: 800, h: 640, fade: true });
 
   // the six interfaces: one card each, our screen with the live site today inset (captured October 2026)
-  var LINE = {
-    home: "Hero bands converge on one price; a map of the protocol.",
-    app: "Every market type and chain, with a full record per market.",
-    deep: "A 40-proposal scalar round as a ridge plot, for agents.",
-    futarchy: "A fork drawn to the TWAPs: information for the vote.",
-    opportunity: "A multi-winner market beside the reviewer queue.",
-    risk: "Default risk per asset on one log scale, in bands."
+  var LINE = {   // what each app opens on (real Seer data), then what its sample walkthrough shows
+    home: "Opens on the most liquid market on Seer, its bands converging on one price.",
+    app: "Real markets up top; every type and chain, with a full record per market.",
+    deep: "Round 3 Originality's 98 repos by UP price, then a sample round for agents.",
+    futarchy: "EIP-8363's two conditional prices on a fork drawn to the TWAPs.",
+    opportunity: "The AI Job Board Name market, every name priced, beside a reviewer queue.",
+    risk: "Seer's Q3 2026 board: default risk per asset on one log scale, in bands."
   };
   var grid = document.getElementById("hb-grid");
   S.apps.forEach(function (a) {
