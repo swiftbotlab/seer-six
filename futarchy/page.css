@@ -346,7 +346,6 @@
 
 /* On Seer now: the real futarchy proposals, under the sample proposal; on one-column layouts it comes before the poster */
 .ft-onseer { grid-column: 1 / -1; min-width: 0; }
-@media (max-width: 960px) { .ft-onseer { order: 1; } .ft-poster { order: 2; } }
 @media (max-width: 640px) { .ft-actions .s-btn--quiet { display: none; } }
 .ft-record__bar { flex-wrap: wrap; gap: 10px; }
 
@@ -387,3 +386,52 @@
 .ft-morewrap { display: flex; justify-content: center; margin-top: 16px; }
 /* the poster keeps one spec row top and bottom at every width (the status and band repeat the signal) */
 .ft-poster__top .s-specs + .s-specs, .ft-poster__foot .s-specs + .s-specs { display: none; }
+
+/* r6 (2026-10-21): the hero is a REAL market, EIP-8363 on futarchy.seer.pm (eip8363.js: live, dated snapshot as the fallback).
+   The sample proposal moves into "Walkthrough … (sample)" right under it. */
+/* header provenance chip (index.html swaps the shell's "Sample data" badge for it): what the top of the page shows */
+.s-header .ft-hsrc { margin-left: 2px; min-height: 21px; padding: 0 9px 0 8px; gap: 6px; font-size: 11.5px; white-space: nowrap; border-radius: var(--r-sm); box-shadow: inset 0 0 0 1px var(--line-strong); max-width: none; } /* same box as the other pages' header chips */
+@media (max-width: 640px) { .s-header .ft-hsrc { padding: 0 7px; margin-left: 0; letter-spacing: .04em; } .s-header .ft-hsrc .ft-hsrc__when { display: none; } }
+@media (max-width: 374px) { .s-header .ft-hsrc > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .s-header .ft-hsrc { gap: 0; } }
+
+/* hero copy: the signal head carries the source chip and the market state */
+.ft-real .ft-signal__head .s-src { min-width: 0; }
+.ft-real__twap { margin-top: 10px; }
+.ft-real__twap b { color: var(--text-2); font-weight: 500; }
+.ft-real .ft-rec svg { margin-right: 1px; }
+
+/* the real poster: both conditional prices since 8 Oct, the ±1% band around NO, the official TWAP window */
+.ft-rposter { min-height: 440px; container-type: inline-size; }
+@container (max-width: 600px) { .ft-rp-opt { display: none; } }
+@container (max-width: 420px) { .ft-rp-opt2 { display: none; } }
+.ft-rp-grid { stroke: var(--lavender); stroke-width: 1; opacity: .12; }
+.ft-rp-ylab { fill-opacity: .62; paint-order: stroke; stroke: var(--ink); stroke-width: 4px; stroke-linejoin: round; }
+.ft-rp-win { fill: var(--violet); opacity: .16; }
+.ft-rp-winl { fill-opacity: .82; }
+.ft-rp-band { opacity: .14; }
+.ft-rp-line { stroke-width: 2; }
+.ft-rp-line--no { stroke-width: 4; opacity: .9; }
+.ft-rp-tick { stroke: var(--lavender); stroke-width: 1; opacity: .4; }
+.ft-rp-x { stroke: var(--lavender); stroke-width: 1; opacity: .55; }
+.ft-rp .ft-pt-end { stroke-width: 2.5; }
+.ft-rp-read { fill-opacity: .9; }
+
+/* walkthrough: the sample, labelled once, then the same proposal header the page used to open on */
+.ft-walk { padding-block: 28px 8px; border-top: 1px solid var(--line); margin-top: 8px; }
+.ft-walk__head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 18px; }
+.ft-walk__t { font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -.015em; margin: 0; }
+.ft-walk__m { flex: 1 0 100%; width: 100%; margin: 0; }
+.ft-walk .ft-title { font-size: clamp(22px, 1.9vw, 28px); }
+@media (max-width: 640px) {
+  .ft-walk { padding-block: 22px 4px; }
+  .ft-walk__t { font-size: 17px; }
+  .ft-walk__head { margin-bottom: 12px; }
+  .ft-walk .ft-title { font-size: 22px; }
+  .ft-walk .ft-kicker { display: none; }
+  .ft-walk .ft-poster { display: none; } /* phones: the sample's chart right below draws the same two futures */
+  .ft-walk .ft-subtitle, .ft-walk .ft-actions { display: none; } /* the h3 names LIP-31; its ticket follows the chart */
+  .ft-real .ft-actions .s-btn { padding-inline: 16px; }
+  .ft-rposter { min-height: 320px; }
+}
+.ft-sm-only { display: none; }
+@media (max-width: 640px) { .ft-sm-only { display: inline; } }

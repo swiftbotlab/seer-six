@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.futarchy.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Futarchy · Conditional markets (concept)</title>
-<meta name="description" content="Conditional markets forecast a success measure if a proposal passes and if it does not: information for the DAO, not the decision. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -13,45 +14,71 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Futarchy · Conditional markets (concept)">
-<meta property="og:description" content="Conditional markets forecast a success measure if a proposal passes and if it does not: information for the DAO, not the decision. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/futarchy/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/futarchy.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Futarchy · Conditional markets (concept): Electric Foundation poster with sample data">
+<meta property="og:image:alt" content="Futarchy · Conditional markets (concept): Electric Foundation poster">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Futarchy · Conditional markets (concept)">
-<meta name="twitter:description" content="Conditional markets forecast a success measure if a proposal passes and if it does not: information for the DAO, not the decision. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/futarchy.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="futarchy">
-<script>window.SEER_PAGE = { nav: [["Proposal", "#top"], ["All proposals", "#proposals"], ["Track record", "#record"], ["How it works", "#how"]], search: "Search proposals", cta: ["Trade this proposal", "#ft-ticket-box", "swap"] };</script>
+<script>window.SEER_PAGE = { nav: [["EIP-8363", "#top"], ["Walkthrough", "#walkthrough"], ["Track record", "#record"], ["How it works", "#how"]], search: "Search proposals", cta: ["Open on Seer", "https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa", "external"] };</script>
 <script src="../assets/shell.js"></script>
+<script src="eip8363-data.js"></script>
+<script>/* the header says where the top of this page comes from (the shell's badge says "Sample data"; the hero is a real market):
+   eip8363.js keeps this chip in step with the hero, Live or Snapshot. The header CTA opens the real market on Seer. */
+(function(){var b=document.querySelector(".s-lockup__sample");if(b){var c=document.createElement("span"),x=window.FT_EIP8363,d=x&&typeof x.at==="number"?new Date(x.at):null,w=d?d.getUTCDate()+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()]:"";c.className="s-src s-lockup__src ft-hsrc";c.id="ft-hsrc";c.setAttribute("data-state","loading");c.setAttribute("role","note");c.title="Top of this page: EIP-8363, a real market on futarchy.seer.pm, read live from Seer's public candles API (a dated snapshot if it does not answer). The walkthrough below it is sample data.";c.innerHTML='<i aria-hidden="true"></i><span class="ft-hsrc__k">Snapshot</span><span class="ft-hsrc__when"></span>';c.lastChild.textContent=w?" · "+w:"";b.parentNode.replaceChild(c,b)}var a=document.querySelector('.s-header__end a.s-btn[href^="https://futarchy.seer.pm/"]');if(a){a.target="_blank";a.rel="noopener";a.setAttribute("aria-label","Open EIP-8363 on Seer (new tab)")}})();</script>
 <main id="main" class="s-main">
 
-  <!-- 1. Proposal header: the two futures and the signal, first screen -->
-  <section class="ft-hero" id="top" aria-labelledby="ft-title">
+  <!-- 1. Hero: EIP-8363, a REAL futarchy market on futarchy.seer.pm. eip8363.js reads both conditional pools live from Seer's
+       candles API (numbers only, validated) and falls back to the dated snapshot in eip8363-data.js; the values below are
+       that snapshot, so the page reads right without scripts. -->
+  <section class="ft-hero ft-real" id="top" aria-labelledby="ft-title">
     <div class="s-container ft-hero__grid">
-      <div class="ft-hero__copy" id="ft-hero-copy"></div>
-      <figure class="s-poster ft-poster" id="ft-poster">
-        <div class="ft-poster__art" id="ft-poster-art"></div>
-        <div class="ft-poster__top" id="ft-poster-top"></div>
-        <figcaption class="ft-poster__foot" id="ft-poster-foot"></figcaption>
+      <div class="ft-hero__copy" id="ft-real" aria-busy="true">
+        <div class="s-hero__kicker s-specs ft-kicker"><span>04</span><span>On Seer</span><span class="s-hide-sm">Ethereum</span><span><b>EIP-8363</b></span></div>
+        <h1 class="ft-title" id="ft-title">What happens to ETH <span class="t-accent">if <span class="u-nowrap">EIP-8363</span> is scheduled?</span></h1>
+        <p class="ft-subtitle"><b>EIP-8363</b> · Tapered Issuance Burn, for the Hegotá upgrade<span class="s-hide-sm">. Two pools price ETH in USDS: one that pays if it is scheduled, one if not</span>.</p>
+        <div class="ft-signal">
+          <div class="ft-signal__head">
+            <span class="s-src" id="ft-real-src" data-state="loading"><i aria-hidden="true"></i>Snapshot<span class="s-hide-sm"> · futarchy.seer.pm</span> · 21 Oct 2026, 16:47 UTC</span>
+            <span class="s-state" id="ft-real-state" data-state="open">Trading until 24 Oct</span>
+          </div>
+          <div class="ft-signal__grid">
+            <div class="ft-cell"><span class="ft-cell__label"><i class="ft-key" aria-hidden="true"></i>If scheduled</span><span class="ft-cell__value t-num" id="ft-real-y">2,498.89</span><span class="ft-cell__sub">YES_WETH in YES_USDS</span></div>
+            <div class="ft-cell"><span class="ft-cell__label"><i class="ft-key ft-key--no" aria-hidden="true"></i>If not</span><span class="ft-cell__value t-num" id="ft-real-n">2,498.75</span><span class="ft-cell__sub">NO_WETH in NO_USDS</span></div>
+            <div class="ft-cell"><span class="ft-cell__label" id="ft-real-gap-l">Impact (spot)</span><span class="ft-cell__value t-num" id="ft-real-gap">&lt;0.01%</span><span class="ft-cell__sub"><span class="s-tag ft-rec" id="ft-real-rec"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/></svg>Inside ±1% · neutral</span></span></div>
+          </div>
+          <p class="ft-prov ft-real__twap" id="ft-real-twap"><span class="s-hide-sm">Signal: </span>5-day TWAP, 9–14 Oct: <b>≈ +0.06% · neutral</b></p>
+        </div>
+        <div class="s-callout s-callout--violet ft-callout s-hide-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13.5 7.5 9h9l3.5 4.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M4 13.5h16M9.5 9V4.5h5V9"/></svg><p><b>Information for Ethereum's core developers, not the decision:</b> they decide on the ACDC call whether EIP-8363 ships in Hegotá. Reality.eth reports it; unresolved by 24 Oct 00:00 UTC, the market resolves No.</p></div>
+        <div class="s-hero__actions ft-actions">
+          <a class="s-btn" href="https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa" rel="noopener" target="_blank"><span>Open <span class="s-hide-sm">EIP-8363 </span>on Seer</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8.5 7H17v8.5"/></svg></a>
+          <a class="s-btn s-btn--ghost" href="#walkthrough"><span><span class="s-hide-sm">Sample w</span><span class="ft-sm-only">W</span>alkthrough</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+        </div>
+      </div>
+      <figure class="s-poster ft-poster ft-rposter" id="ft-rposter">
+        <div class="ft-poster__art" id="ft-rp-art"></div>
+        <div class="ft-poster__top"><div class="s-specs"><span>EIP-8363</span><span>WETH/USDS</span><span>Hourly<span class="ft-rp-opt"> since 8 Oct</span></span></div></div>
+        <figcaption class="ft-poster__foot"><div class="s-specs"><span>±1% band around NO</span><span class="ft-rp-opt2">Shaded: TWAP window</span><span class="ft-rp-opt">Ethereum</span></div></figcaption>
       </figure>
-      <!-- On Seer now: real futarchy proposals, a dated snapshot of futarchy.seer.pm (21 Oct 2026); static except the EIP-8363 state line,
-           which page.js derives from data-closes (trading ends 24 Oct 2026 00:00 UTC) and the real clock -->
+      <!-- Closed on Seer: real futarchy proposals, a dated snapshot of futarchy.seer.pm (21 Oct 2026, 09:27 UTC), each verified on its market page -->
       <div class="ft-onseer">
         <aside class="s-onseer" id="ft-onseer" aria-labelledby="ft-onseer-t">
           <div class="s-onseer__l">
-            <div class="s-onseer__k"><b>On Seer now</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot<span class="s-hide-sm"> · futarchy.seer.pm</span> · 21 Oct<span class="s-hide-sm"> 2026</span>, 09:27 UTC</span></div>
-            <h2 class="s-onseer__t" id="ft-onseer-t"><a href="https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa" rel="noopener" target="_blank">EIP-8363: ETH price if it is scheduled for Hegotá</a></h2>
-            <p class="s-onseer__m"><span id="ft-onseer-state" data-closes="2026-10-24T00:00:00Z">Trading until 24 Oct</span>: ETH at 2,461.31 USDS if scheduled, 2,461.22 if not, neutral<span class="s-hide-sm"> (under 0.01%)</span>. Closed <span class="s-hide-sm">GnosisDAO and Kleros </span>proposals<span class="s-hide-sm">, impact as listed, then the result</span>:</p>
+            <div class="s-onseer__k"><b>Closed on Seer</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot<span class="s-hide-sm"> · futarchy.seer.pm</span> · 21 Oct<span class="s-hide-sm"> 2026</span>, 09:27 UTC</span></div>
+            <h2 class="s-onseer__t" id="ft-onseer-t">GnosisDAO and Kleros proposals: impact as listed, then the result</h2>
+            <p class="s-onseer__m">Each listed impact pointed the way its market resolved<span class="s-hide-sm">. The vote made every call: correlation, not proof</span>.</p>
           </div>
-          <ul class="s-onseer__cells" style="--n:5" aria-label="EIP-8363: ETH price if it is scheduled for Hegotá: highlights">
+          <ul class="s-onseer__cells" style="--n:5" aria-label="Closed futarchy proposals on Seer">
             <li><a class="s-onseer__c is-pos" href="https://futarchy.seer.pm/markets/0x4120de9931fd29c8a6effea4df57a7c8760c1677" rel="noopener" target="_blank" aria-label="GIP-153: impact +0.98%, resolved yes, approved (opens on Seer)"><span title="GIP-153">GIP-153</span><b>+0.98%</b><small><span class="s-hide-sm">Resolved </span>yes</small></a></li>
             <li><a class="s-onseer__c is-pos" href="https://futarchy.seer.pm/markets/0x84412fe9d088c1d8dd676a7be9a3d5d0291ab1cf" rel="noopener" target="_blank" aria-label="KIP-90: impact +0.68%, resolved yes, approved (opens on Seer)"><span title="KIP-90">KIP-90</span><b>+0.68%</b><small><span class="s-hide-sm">Resolved </span>yes</small></a></li>
             <li><a class="s-onseer__c is-pos" href="https://futarchy.seer.pm/markets/0x0cae5e6f520e52e3d6a93c856bb6dbf7781f2e31" rel="noopener" target="_blank" aria-label="KIP-88: impact +0.91%, resolved yes, approved (opens on Seer)"><span title="KIP-88">KIP-88</span><b>+0.91%</b><small><span class="s-hide-sm">Resolved </span>yes</small></a></li>
@@ -59,16 +86,35 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <li><a class="s-onseer__c is-pos" href="https://futarchy.seer.pm/markets/0x45e1064348fd8a407d6d1f59fc64b05f633b28fc" rel="noopener" target="_blank" aria-label="GIP-145: impact +1.96%, resolved yes, approved (opens on Seer)"><span title="GIP-145">GIP-145</span><b>+1.96%</b><small><span class="s-hide-sm">Resolved </span>yes</small></a></li>
           </ul>
           <div class="s-onseer__end">
-            <a class="s-btn s-btn--sm s-btn--secondary" href="https://futarchy.seer.pm/" rel="noopener" target="_blank">Open Futarchy on Seer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <span class="t-meta s-hide-sm">Real proposals, not the Lattice sample.</span>
+            <a class="s-btn s-btn--sm s-btn--secondary" href="https://futarchy.seer.pm/" rel="noopener" target="_blank">All proposals on Seer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+            <span class="t-meta s-hide-sm">Nine closed ones in the track record below.</span>
           </div>
         </aside>
       </div>
     </div>
   </section>
 
+  <!-- 1b. Walkthrough: the SAMPLE proposal (Lattice DAO, LIP-31) the other five interfaces follow; page.js renders it -->
+  <section class="ft-hero ft-walk" id="walkthrough" aria-labelledby="ft-walk-title">
+    <div class="s-container">
+      <div class="ft-walk__head">
+        <span class="s-sample"><span>Sample</span></span>
+        <h2 class="ft-walk__t" id="ft-walk-title">Walkthrough: one proposal across the apps (sample)</h2>
+        <p class="t-meta ft-walk__m">Lattice DAO and LIP-31 are made up<span class="s-hide-sm">, the same proposal the other five interfaces follow</span>. Every figure from here to the track record is sample data.</p>
+      </div>
+    </div>
+    <div class="s-container ft-hero__grid">
+      <div class="ft-hero__copy" id="ft-hero-copy"></div>
+      <figure class="s-poster ft-poster" id="ft-poster">
+        <div class="ft-poster__art" id="ft-poster-art"></div>
+        <div class="ft-poster__top" id="ft-poster-top"></div>
+        <figcaption class="ft-poster__foot" id="ft-poster-foot"></figcaption>
+      </figure>
+    </div>
+  </section>
+
   <!-- 2. Prices, TWAP window, details + ticket: the trading tools, right under the proposal -->
-  <section class="s-section--tight" aria-label="Prices and trading">
+  <section class="s-section--tight" aria-label="Prices and trading (sample)">
     <div class="s-container ft-split">
       <article class="s-card ft-chartcard" aria-labelledby="ft-chart-title">
         <header class="ft-chartcard__head" id="ft-chart-head"></header>
@@ -180,7 +226,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
               </ol>
             </div>
           </div>
-          <p class="t-meta ft-notes__data">Sample data: Lattice, Harbor and Kestrel DAOs are fictional. GIP-S1 is a sample shaped like a GnosisDAO proposal, not a real GIP. LIP-31 is the same proposal the other five interfaces reference.</p>
+          <p class="t-meta ft-notes__data">Real: the EIP-8363 market at the top (read live from Seer, a dated snapshot as the fallback) and the closed proposals beside it. Sample data: Lattice, Harbor and Kestrel DAOs are fictional. GIP-S1 is a sample shaped like a GnosisDAO proposal, not a real GIP. LIP-31 is the same proposal the other five interfaces reference.</p>
         </div>
       </section>
       </details>
@@ -192,6 +238,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 </main>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
+<script src="eip8363.js"></script>
 <script src="page.js"></script>
 </body>
 </html>

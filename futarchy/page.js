@@ -1,6 +1,6 @@
-/* Futarchy · conditional markets — page script (prefix ft-).
+/* Futarchy · conditional markets — page script (prefix ft-): the sample walkthrough under the real hero (eip8363.js).
    Concept by Swift Bot Labs · not affiliated with Seer.
-   Every figure is SAMPLE DATA from assets/sample-data.js (window.SEER_SAMPLE). Values derived here
+   Every figure here is SAMPLE DATA from assets/sample-data.js (window.SEER_SAMPLE). Values derived here
    (calibrated hourly series, vote/TWAP dates for proposals without them, pool depth, conditional
    token addresses) are deterministic and marked "derived" in the comments. */
 (function () {
@@ -178,8 +178,9 @@
   }
   function renderHero(m) {
     var box = $("#ft-hero-copy"); S.clear(box);
-    box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "04" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
-    box.appendChild(el("h1", { class: "ft-title", attrs: { id: "ft-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent" }, "if ", el("span", { class: "u-nowrap", text: m.id }), " is approved?")));
+    // the sample sits under the real EIP-8363 hero, in the walkthrough (2026-10-21 r6): its title is an h3 under that heading
+    box.appendChild(el("div", { class: "s-hero__kicker s-specs ft-kicker" }, el("span", { text: "Sample" }), el("span", { text: m.org.name }), el("span", {}, el("b", { text: m.id }))));
+    box.appendChild(el("h3", { class: "ft-title", attrs: { id: "ft-s-title" } }, "What happens to " + m.tok + " ", el("span", { class: "t-accent" }, "if ", el("span", { class: "u-nowrap", text: m.id }), " is approved?")));
     box.appendChild(el("p", { class: "ft-subtitle" }, el("b", { text: m.id }), " · " + m.title));
     var head = el("div", { class: "ft-signal__head" }, el("span", { class: "s-spec" }, m.resolved ? "Final 5-day TWAP" : prov(m) ? el("span", {}, "Signal so far · ", el("span", { class: "s-hide-sm", text: "trailing " }), "5-day TWAP") : "Official 5-day TWAP", el("span", { class: "s-hide-sm", text: " · " + m.pair })), statusTag(m));
     var grid = el("div", { class: "ft-signal__grid" },
@@ -886,7 +887,6 @@
     renderChartHead(m); drawChart(); renderScrub(m); updateReadout();
     renderTabs(m); renderTicket(m); renderView(m); renderHow(m);
     $$(".ft-pcard").forEach(function (c) { var on = c.dataset.id === m.id; c.classList.toggle("is-current", on); if (on) c.setAttribute("aria-current", "true"); else c.removeAttribute("aria-current"); });
-    document.title = m.id + " · Futarchy · Conditional markets (concept)";
   }
   function select(id) {
     if (!BY[id]) return false;
@@ -897,20 +897,12 @@
   function open(id) {
     if (id !== state.id) select(id);
     try { history.replaceState(null, "", "#" + id); } catch (e) { /* file:// in some browsers */ }
-    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    var wk = $("#walkthrough"); // the sample proposal lives in the walkthrough, under the real market
+    if (wk) wk.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
   }
   function fromHash() { var h = decodeURIComponent(location.hash.replace(/^#/, "")); return BY[h] ? select(h) : false; }
 
-  /* ======================= On Seer band: the real EIP-8363 market's state ======================= */
-  // futarchy.seer.pm showed "Remaining Time 2d 14h 32m" at 21 Oct 2026 09:27 UTC, so trading ends 24 Oct 00:00 UTC
-  // (data-closes in index.html). The prices stay the dated snapshot; only the state line follows the real clock.
-  (function () {
-    var s = $("#ft-onseer-state"), t = s ? Date.parse(s.getAttribute("data-closes") || "") : NaN;
-    if (!isFinite(t) || Date.now() < t) return;
-    S.clear(s).appendChild(document.createTextNode("Trading closed " + F.dayMon(t) + ", resolving"));
-    s.appendChild(el("span", { class: "s-hide-sm", text: " on Reality.eth" }));
-    s.appendChild(document.createTextNode(". At the snapshot"));
-  })();
+  /* the real EIP-8363 market (hero, live + dated snapshot, state from the real clock) lives in eip8363.js */
 
   /* ======================= boot ======================= */
   ch.root = el("div", { class: "s-chart ft-chart" });
