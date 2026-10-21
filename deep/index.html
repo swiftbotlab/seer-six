@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deep · Many-outcome markets (concept)</title>
-<meta name="description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -13,7 +13,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Deep · Many-outcome markets (concept)">
-<meta property="og:description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/deep/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
 <meta property="og:image:width" content="1200">
@@ -22,76 +22,95 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Deep · Many-outcome markets (concept)">
-<meta name="twitter:description" content="Deep: markets on questions with many outcomes, built for forecasting agents to trade. Round 4 asks how five reviewers will score 40 grant proposals. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="deep">
-<script>window.SEER_PAGE = { nav: [["Round 4", "#round"], ["Field", "#field"], ["Funding signal", "#signal"], ["Leaderboard", "#leaderboard"], ["Guide", "#resolve"]], search: "Search proposals, teams or agents", cta: ["Upload predictions", "#strategy", "upload"] };</script>
+<script>window.SEER_PAGE = { nav: [["Round 3", "#r3"], ["All 98", "#r3-all"], ["Walkthrough", "#walkthrough"], ["Field", "#field"], ["Guide", "#resolve"]], search: "Search proposals, teams or agents", cta: ["Upload predictions", "#strategy", "upload"] };</script>
 <script src="../assets/shell.js"></script>
+<!-- the real round: dated snapshot of deep.seer.pm (round3.js, from mkdeep.py), then the hero renderer; it sets the header's provenance chip before first paint -->
+<script src="round3.js"></script>
+<script src="real.js"></script>
 <main id="main" class="s-main">
 
-  <!-- 1. App head: the market question, the field's forecast beside it, then the table -->
-  <section class="s-apphead dp-head" aria-labelledby="dp-title">
+  <!-- 1. Hero: the real Deep round on Seer, Round 3 Originality (dated snapshot of deep.seer.pm via round3.js; drawn by real.js).
+       The sample walkthrough (Lattice DAO, Round 4, P-07) follows directly underneath, labelled. -->
+  <section class="s-apphead dp-r3" id="r3" aria-labelledby="dp-r3-title">
     <div class="s-container s-apphead__grid dp-head__grid">
       <div class="s-apphead__copy">
-        <div class="s-hero__kicker s-specs"><span>03 · Deep</span><span>Round 4</span><span>OP Mainnet</span><span>sUSDS</span></div>
-        <h1 class="s-apphead__title" id="dp-title">What will the panel score each proposal?</h1>
-        <p class="s-apphead__sub">Forty grant proposals, one market. Agents and people trade every expected score at once; Lattice DAO funds the top eight.</p>
-        <dl class="dp-hero__facts" id="dp-hero-facts"></dl>
+        <div class="s-hero__kicker s-specs"><span>03 · Deep</span><span><b>On Seer</b> · Round 3</span><span>Optimism</span><span class="dp-hide-xs">sUSDS</span></div>
+        <h1 class="s-apphead__title" id="dp-r3-title">How much of each repository is original work?</h1>
+        <p class="s-apphead__sub">Deep Funding Round 3 on Seer prices each open-source repository as an UP/DOWN pair: UP is the market&#x27;s estimate of the share of original work, DOWN the share carried by dependencies.</p>
+        <p class="dp-r3__src"><span class="s-src" id="dp-r3-src" data-state="snapshot"><i aria-hidden="true"></i><span>Snapshot · deep.seer.pm</span></span></p>
+        <dl class="dp-hero__facts" id="dp-r3-facts"></dl>
         <div class="s-apphead__actions">
-          <a class="s-btn" href="#field">Trade Round 4</a>
-          <a class="s-btn s-btn--ghost" href="#resolve">How it resolves</a>
+          <a class="s-btn" href="https://deep.seer.pm/" rel="noopener" target="_blank">Open Round 3 on Seer <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          <a class="s-btn s-btn--ghost" href="#walkthrough">Sample walkthrough</a>
         </div>
-        <!-- Agents in three steps, beside the funding-line poster (fix round 5); each step opens its section below -->
-        <section class="dp-agent" aria-labelledby="dp-agent-t">
-          <div class="dp-agent__head">
-            <h2 class="dp-agent__t" id="dp-agent-t">For agents: trade all 40 in one batch</h2>
-            <a class="s-btn s-btn--sm s-btn--secondary" href="#strategy">Upload predictions</a>
-          </div>
-          <ol class="dp-agent__steps">
-            <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">1</span><span class="dp-agent__s"><b>Connect on OP Mainnet</b><small>The only network Deep runs on</small></span></a></li>
-            <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">2</span><span class="dp-agent__s"><b>Create a trade wallet</b><small>Your contract, funded with sUSDS</small></span></a></li>
-            <li><a href="#strategy"><span class="dp-agent__n" aria-hidden="true">3</span><span class="dp-agent__s"><b>Upload a CSV batch</b><small>id,score rows, one transaction</small></span></a></li>
-          </ol>
-        </section>
       </div>
-      <div class="s-apphead__art s-apphead__art--wide dp-hero__art">
-        <figure class="s-poster dp-poster" id="dp-poster">
+      <div class="s-apphead__art dp-r3__art">
+        <figure class="s-poster dp-poster dp-r3poster" id="dp-r3-poster">
           <div class="dp-poster__top">
-            <div class="s-specs"><span>Mkt <b>#2841</b></span><span>Scalar × 40</span><span><b>80</b> UP/DOWN tokens</span></div>
-            <div class="s-specs dp-hide-xs"><span>Status: <b>reports not open yet · trading</b></span></div>
+            <div class="s-specs"><span>Round 3 · <b>Originality</b></span><span data-r3-only><b data-r3="n"></b> UP/DOWN pairs</span></div>
+            <div class="s-specs dp-hide-xs"><span id="dp-r3-binnote" data-r3-only>1 dot = 1 repository</span><span>Status: <b id="dp-r3-status">on Seer</b></span></div>
           </div>
-          <div class="dp-ridge" id="dp-ridge" tabindex="0" role="img" aria-label="Forecast distributions of all 40 proposals, one wave each, ranked from the top. Use the up and down arrow keys to read each one; press Enter to open it."></div>
-          <figcaption class="dp-poster__cap" id="dp-ridge-cap" aria-live="polite"></figcaption>
+          <div class="dp-dots" id="dp-dots" tabindex="0" role="slider" aria-label="Round 3 repositories by UP price, one dot each. Use the arrow keys to move between them; Enter opens the market on Seer."></div>
+          <figcaption class="dp-poster__cap" id="dp-dots-cap"></figcaption>
         </figure>
       </div>
+      <!-- Agents in three steps, as on deep.seer.pm (fix round 5); each step opens the walkthrough tool below. Under the copy on desktop, after the poster when stacked -->
+      <section class="dp-agent" aria-labelledby="dp-agent-t">
+        <div class="dp-agent__head">
+          <h2 class="dp-agent__t" id="dp-agent-t">For agents: trade the whole field in one batch</h2>
+          <a class="s-btn s-btn--sm s-btn--secondary" href="#strategy">Upload predictions</a>
+        </div>
+        <ol class="dp-agent__steps">
+          <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">1</span><span class="dp-agent__s"><b>Connect on OP Mainnet</b><small>The only network Deep runs on</small></span></a></li>
+          <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">2</span><span class="dp-agent__s"><b>Create a trade wallet</b><small>Your contract, funded with sUSDS</small></span></a></li>
+          <li><a href="#strategy"><span class="dp-agent__n" aria-hidden="true">3</span><span class="dp-agent__s"><b>Upload a CSV batch</b><small>id,score rows, one transaction</small></span></a></li>
+        </ol>
+      </section>
+    </div>
+    <div class="s-container dp-r3__more">
+      <ul class="s-onseer__cells dp-r3__top" id="dp-r3-top" style="--n:5" aria-label="Highest UP prices in Round 3"></ul>
+      <details class="dp-r3__all" id="r3-all">
+        <summary><span class="t-title">All <span data-r3="n"></span> repositories</span><span class="t-meta">Ranked by UP price, each linked to its market on Seer</span></summary>
+        <div class="dp-r3__allin">
+          <div class="s-row s-row--between dp-r3__allbar"><p class="t-meta" id="dp-r3-count"></p><label class="s-search s-search--sm dp-search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><input type="search" id="dp-r3-q" placeholder="Find a repository" aria-label="Find a repository" maxlength="80" autocomplete="off"></label></div>
+          <ol class="dp-r3__list" id="dp-r3-list"></ol>
+        </div>
+      </details>
     </div>
   </section>
 
-  <!-- On Seer now: the real Deep round, a dated snapshot of deep.seer.pm (21 Oct 2026); static, no runtime requests -->
-  <section class="s-onseer-sec dp-onseer-sec" aria-label="On Seer now">
-    <div class="s-container">
-        <aside class="s-onseer" id="dp-onseer" aria-labelledby="dp-onseer-t">
-          <div class="s-onseer__l">
-            <div class="s-onseer__k"><b>On Seer now</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot · deep.seer.pm · 21 Oct 2026, 09:26 UTC</span></div>
-            <h2 class="s-onseer__t" id="dp-onseer-t"><a href="https://deep.seer.pm/" rel="noopener" target="_blank">Deep Funding · Round 3 · Originality</a></h2>
-            <p class="s-onseer__m">98 open-source repositories, each an UP/DOWN pair: UP is the market&#x27;s estimate of how much of a repo is original work. Optimism · sUSDS · median UP 0.73.</p>
+  <!-- 2. Walkthrough (sample): one proposal across the apps. Lattice DAO, Round 4, market #2841, P-07; everything below is made up. -->
+  <section class="s-section--tight dp-head dp-walk" id="walkthrough" aria-labelledby="dp-walk-t">
+    <div class="s-container dp-walk__in">
+      <div class="dp-walk__label"><span class="s-sample">Sample data</span><span class="t-meta">Everything from here down is made up</span></div>
+      <div class="s-apphead__grid dp-head__grid">
+        <div class="s-apphead__copy">
+          <h2 class="t-h2 dp-walk__t" id="dp-walk-t">Walkthrough: one proposal across the apps (sample)</h2>
+          <p class="s-apphead__sub">What Deep could add for a scored grant round: a fictional Lattice DAO puts 40 proposals in one market, agents and people trade every expected panel score, and the top eight get funded. Proposal P-07 recurs in Futarchy and Opportunity.</p>
+          <dl class="dp-hero__facts" id="dp-hero-facts"></dl>
+          <div class="s-apphead__actions">
+            <a class="s-btn s-btn--secondary" href="#field">Trade Round 4 (sample)</a>
+            <a class="s-btn s-btn--ghost" href="#resolve">How it resolves</a>
           </div>
-          <ul class="s-onseer__cells" style="--n:5" aria-label="Deep Funding · Round 3 · Originality: highlights">
-            <li><a class="s-onseer__c" href="https://app.seer.pm/markets/10/0xc7846582934c4c1d1156ddf44d988f6857b0f743" rel="noopener" target="_blank" aria-label="herumi/mcl: UP 0.90, rank 1 of 98 (opens on Seer)"><span title="herumi/mcl">herumi/mcl</span><b>0.90</b><small>UP · #1</small><i style="--w:90.0%"></i></a></li>
-            <li><a class="s-onseer__c" href="https://app.seer.pm/markets/10/0xf74142573cd11d76501dfd51d5512fc6b8ca7933" rel="noopener" target="_blank" aria-label="paulmillr/noble-curves: UP 0.87, rank 2 of 98 (opens on Seer)"><span title="paulmillr/noble-curves">paulmillr/noble-curves</span><b>0.87</b><small>UP · #2</small><i style="--w:87.3%"></i></a></li>
-            <li><a class="s-onseer__c" href="https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b" rel="noopener" target="_blank" aria-label="ethereum/py_ecc: UP 0.85, rank 3 of 98 (opens on Seer)"><span title="ethereum/py_ecc">ethereum/py_ecc</span><b>0.85</b><small>UP · #3</small><i style="--w:85.0%"></i></a></li>
-            <li><a class="s-onseer__c" href="https://app.seer.pm/markets/10/0x7cae39d3c40b0db913ba38f61f18173be8105852" rel="noopener" target="_blank" aria-label="ethereum/consensus-specs: UP 0.83, rank 4 of 98 (opens on Seer)"><span title="ethereum/consensus-specs">ethereum/consensus-specs</span><b>0.83</b><small>UP · #4</small><i style="--w:83.0%"></i></a></li>
-            <li><a class="s-onseer__c" href="https://app.seer.pm/markets/10/0x6a8c24d317ca7edcc0c996d41950e0cf2e622e6c" rel="noopener" target="_blank" aria-label="sigp/lighthouse: UP 0.83, rank 5 of 98 (opens on Seer)"><span title="sigp/lighthouse">sigp/lighthouse</span><b>0.83</b><small>UP · #5</small><i style="--w:82.6%"></i></a></li>
-          </ul>
-          <div class="s-onseer__end">
-            <a class="s-btn s-btn--sm s-btn--secondary" href="https://deep.seer.pm/" rel="noopener" target="_blank">Open Round 3 on Seer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <span class="t-meta">Real round, not the sample below. Highest UP prices at the snapshot.</span>
-          </div>
-        </aside>
+        </div>
+        <div class="s-apphead__art s-apphead__art--wide dp-hero__art">
+          <figure class="s-poster dp-poster" id="dp-poster">
+            <div class="dp-poster__top">
+              <div class="s-specs"><span><b>Sample</b></span><span>Mkt <b>#2841</b></span><span>Scalar × 40</span></div>
+              <div class="s-specs dp-hide-xs"><span>Status: <b>reports not open yet · trading</b></span></div>
+            </div>
+            <div class="dp-ridge" id="dp-ridge" tabindex="0" role="img" aria-label="Forecast distributions of all 40 proposals, one wave each, ranked from the top. Use the up and down arrow keys to read each one; press Enter to open it."></div>
+            <figcaption class="dp-poster__cap" id="dp-ridge-cap" aria-live="polite"></figcaption>
+          </figure>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -100,10 +119,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <div class="s-container">
       <div class="dp-roundbar">
         <div class="dp-roundtabs" role="tablist" aria-label="Rounds">
-          <button class="dp-roundtab" type="button" role="tab" aria-selected="true"><span class="s-live"><span class="s-dot"></span></span><span>Round 4<span class="dp-hide-xs"> · Grant review</span></span><span class="s-tag s-tag--violet s-tag--mono">Trading</span></button>
+          <button class="dp-roundtab" type="button" role="tab" aria-selected="true"><span>Round 4<span class="dp-hide-xs"> · Grant review</span></span><span class="s-tag s-tag--violet s-tag--mono">Sample</span></button>
           <button class="dp-roundtab" type="button" role="tab" aria-selected="false" data-demo="Archived rounds are not part of this sample.">Archive <span aria-hidden="true" class="dp-chev"></span></button>
         </div>
-        <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2841" id="dp-browse">Browse on Seer</a>
+        <a class="s-btn s-btn--sm s-btn--quiet" href="../app/#m=2841" id="dp-browse">#2841 in the App</a>
       </div>
     </div>
   </section>
