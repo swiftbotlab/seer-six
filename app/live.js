@@ -118,9 +118,11 @@
     src.appendChild(document.createTextNode(state === "live" ? "Live · app.seer.pm · " + when : "Snapshot · " + when));
     if (meta) meta.textContent = state === "live"
       ? "Top " + list.length + " of " + count + " open, Kleros-verified markets by liquidity, read from Seer's public API just now."
+      : state === "loading" ? "Dated snapshot while live prices load from Seer's public API…"
       : "Seer's API couldn't be reached just now, so this is the dated snapshot: top " + list.length + " of " + count + " open, Kleros-verified markets by liquidity.";
-    host.setAttribute("aria-busy", "false");
-    shown = state; railButtons();
+    host.setAttribute("aria-busy", state === "loading" ? "true" : "false");
+    if (state !== "loading") shown = state;
+    railButtons();
   }
   function fallback() {
     if (shown) return;
@@ -130,6 +132,8 @@
   function hhmm(d) { var p = function (n) { return (n < 10 ? "0" : "") + n; }; return p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + " UTC"; }
 
   /* ---------- fetch ---------- */
+  // paint the dated snapshot at once (labelled as such), so the strip is never empty while Seer answers
+  if (X && Array.isArray(X.markets) && X.markets.length) render(X.markets.slice(0, SHOW), "loading", X.when, X.count);
   var timer = setTimeout(fallback, FALLBACK_MS);
   var ctl = typeof AbortController === "function" ? new AbortController() : null;
   var kill = setTimeout(function () { if (ctl) ctl.abort(); }, ABORT_MS);

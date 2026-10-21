@@ -131,6 +131,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-kc li b { color: var(--text); font-weight: 600; }
 @media (max-width: 1100px) { .hb-ka { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .hb-kc { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 24px; } }
 @media (max-width: 640px) { .hb-ka { grid-template-columns: minmax(0, 1fr); gap: 12px; } .hb-kc { grid-template-columns: minmax(0, 1fr); } }
+/* proof blocks under the kit: data sources and the QA actually run */
+.hb-proof { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+.hb-proof__card { gap: 0; }
+@media (max-width: 760px) { .hb-proof { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 12px; } }
 /* section heads with a one-line note on the right */
 .hb-head { margin-bottom: 18px; }
 .hb-head p { color: var(--text-2); font-size: 14px; line-height: 1.5; font-weight: 500; max-width: 60ch; }
@@ -221,7 +225,7 @@ main > .s-section--tight { padding-block: 32px; }
           <div>
             <h3 class="t-h3">Kept</h3>
             <ul>
-              <li class="hb-kc--keep"><b>The mark.</b> The designer&#39;s own vectors, recoloured.</li>
+              <li class="hb-kc--keep"><b>The mark.</b> The EF entry&#39;s own vector files, path data unchanged: not a redraw.</li>
               <li class="hb-kc--keep"><b>Tokens.</b> #101013 · #1A1A1E · #7D33FF; radius 9 · 22 · 8.</li>
               <li class="hb-kc--keep"><b>Components.</b> Pill search, chips, outcome rows, bet slip.</li>
             </ul>
@@ -237,6 +241,26 @@ main > .s-section--tight { padding-block: 32px; }
             </ul>
           </div>
         </div>
+      </div>
+      <!-- proof blocks: where the data comes from, and the checks actually run -->
+      <div class="hb-proof">
+        <section class="hb-kc hb-proof__card" aria-labelledby="hb-data-h">
+          <h3 class="t-h3" id="hb-data-h">Where the data comes from</h3>
+          <ul>
+            <li class="hb-kc--keep"><b>Live:</b> the App&#39;s &ldquo;On Seer now&rdquo; strip reads Seer&#39;s public markets API as the page loads (open, Kleros-verified, by liquidity). If it can&#39;t, it shows a dated snapshot and says so.</li>
+            <li class="hb-kc--keep"><b>Dated snapshots, linked to the source:</b> Deep&#39;s Round 3 (deep.seer.pm), Futarchy&#39;s EIP-8363 and nine closed proposals (futarchy.seer.pm) and Risk&#39;s Q3 2026 market (risk.seer.pm), all read 21 Oct 2026, plus the settled Rebrand Contest on Opportunity (app.seer.pm, 20 Oct).</li>
+            <li><b>Sample:</b> everything else is one made-up thread (Lattice DAO, P-07, #2841) followed across all six apps, badged &ldquo;Sample data&rdquo;; every sample address starts with 0x5eed.</li>
+          </ul>
+        </section>
+        <section class="hb-kc hb-proof__card" aria-labelledby="hb-qa-h">
+          <h3 class="t-h3" id="hb-qa-h">Accessibility and QA</h3>
+          <ul>
+            <li class="hb-kc--keep"><b>Contrast:</b> every text colour is at least 4.6:1 on the page, card and row surfaces, in dark and light (WCAG AA), computed from the tokens.</li>
+            <li class="hb-kc--keep"><b>Keyboard:</b> a skip link is the first Tab stop, every control shows a focus ring, and data tables are real tables with headers.</li>
+            <li class="hb-kc--keep"><b>Reduced motion:</b> transitions and animations drop to near zero when the system asks.</li>
+            <li class="hb-kc--keep"><b>Tested:</b> all seven pages at 360, 390, 768, 1024 and 1440 px, dark and light at 390 and 1440: no console errors and no sideways scroll.</li>
+          </ul>
+        </section>
       </div>
     </div>
   </section>
@@ -281,7 +305,7 @@ main > .s-section--tight { padding-block: 32px; }
           <ol>
             <li><b>Motifs carry data.</b> Wedge widths are outcome shares, waves are forecast distributions, the 45° fork is a futarchy decision, data bars are a field of entries.</li>
             <li><b>Typefaces.</b> PP Neue Montreal and Suisse Int'l Mono are used when installed; everyone else gets licensed stand-ins, Geist and Geist Mono (it keeps the slashed zero). Headlines use one sans: the accent words are violet, not a second, serif face.</li>
-            <li><b>Contrast.</b> Small muted text is lifted from #67676F to #8A8A94 in dark mode and from #8E8E99 to #6E6E79 in light mode, so 12px labels pass WCAG AA.</li>
+            <li><b>Contrast.</b> Small muted text is lifted from #67676F to #8A8A94 in dark mode and from #8E8E99 to #686873 in light mode, so 12px labels pass WCAG AA.</li>
             <li><b>Semantic colour, used sparingly.</b> The kit has no green, amber or red. We add them only for price moves and risk bands, always next to a sign or a label. Futarchy's NO branch is the kit's lavender, so "rejected" never reads as a positive colour.</li>
             <li><b>A chart palette.</b> Six colours, violet first, checked for colour-vision deficiency in both themes. Anything past six becomes "Other".</li>
             <li><b>Small kit fixes.</b> The kit's bet slip shows Yes 69¢ and No 37¢, which add up to 106; our binary prices add up to 100. "$100,00" is written "$100.00".</li>

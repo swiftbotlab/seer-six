@@ -143,7 +143,7 @@
   --line-strong: #D6D6DE;
   --text: #17171C;          /* [kit] */
   --text-2: #5C5C66;        /* [kit] */
-  --text-3: #6E6E79;        /* [dep] kit #8E8E99 is 3.2:1 on white; lifted to 5.0:1 */
+  --text-3: #686873;        /* [dep] kit #8E8E99 is 3.2:1 on white; lifted to 5.5:1 (4.6:1 on the chip surface) */
   --text-kit-muted: #8E8E99;
   --violet: #7D33FF;
   --violet-2: #8F55F7;
@@ -158,9 +158,9 @@
   --shadow-pop: 0 18px 50px rgba(23, 23, 28, .14), 0 0 0 1px rgba(23, 23, 28, .06);
   --scrim: rgba(23, 23, 28, .36);
 
-  --pos: #12805A;  --pos-wash: rgba(18, 128, 90, .10);
-  --neg: #C8323C;  --neg-wash: rgba(200, 50, 60, .09);
-  --warn: #9A6A00; --warn-wash: rgba(214, 152, 20, .12);
+  --pos: #0F7752;  --pos-wash: rgba(15, 119, 82, .10);  /* AA on every light surface */
+  --neg: #BB2D37;  --neg-wash: rgba(200, 50, 60, .09);
+  --warn: #855C00; --warn-wash: rgba(214, 152, 20, .12);
   --live: #E5322D;
   --band-low: #23894D; --band-mod: #D1960F; --band-high: #DB6A3A; --band-crit: #C93636;
 
