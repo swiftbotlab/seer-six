@@ -17,13 +17,14 @@ Live demos: https://swiftbotlab.github.io/seer-six/
 Design system: https://swiftbotlab.github.io/seer-six/system/
 
 Plain HTML, CSS and JavaScript. No build step, no external scripts, no tracking.
-Every figure is **sample data**, made up to show the design: organisations, proposals,
-agents and assets are fictional, and every address starts with `0x5eed`.
-The panels marked "On Seer" are real instead. The Home page's "Open on Seer now" count and the App's "On Seer now" strip read Seer's public markets API
-(app.seer.pm) when the page loads and fall back to a dated snapshot (`assets/seer-snapshot.js`), saying which
-one it shows. Deep, Futarchy and Risk each open with one dated snapshot of Seer's own app (deep.seer.pm,
-futarchy.seer.pm, risk.seer.pm; 21 Oct 2026), and Opportunity with the settled Rebrand Contest from its market
-page (20 Oct 2026). Each links to its source on Seer; none of those three pages makes a runtime request.
+Each app page opens on Seer's own markets. Home (the most liquid open market and the open-market count),
+the App ("On Seer now"), Futarchy (EIP-8363's two conditional pools), Opportunity (the "AI Job Board Name"
+market) and Risk (the Q3 2026 board) read Seer's public APIs (app.seer.pm, api.futarchy.seer.pm,
+risk.seer.pm) when the page loads and fall back to a dated snapshot, saying which one they show. Deep opens
+on a dated snapshot of Round 3 Originality from deep.seer.pm (its feed allows no cross-site reads).
+Futarchy's nine closed proposals and Opportunity's settled Rebrand Contest are dated snapshots too.
+Everything under them is a **sample walkthrough**, labelled as such and made up to show the design:
+organisations, proposals, agents and assets are fictional, and every sample address starts with `0x5eed`.
 
 Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name, mark and the
 Electric Foundation identity belong to their owners and are used here only to present
