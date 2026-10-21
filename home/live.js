@@ -78,6 +78,10 @@
       liq: Math.round((num(m.liquidityUSD, 1e10) || 0) * 100) / 100, vol: Math.round((num(m.volumeUSD, 1e10) || 0) * 100) / 100 };
     var c = typeof m.collateralToken === "string" && ADDR.test(m.collateralToken) ? COLL[m.chainId + ":" + m.collateralToken.toLowerCase()] : null;
     if (c) o.coll = c;
+    // who asked: the creator's address and the creation block's time (page.js checks both again)
+    if (typeof m.creator === "string" && ADDR.test(m.creator) && m.creator !== ZERO) o.creator = m.creator.toLowerCase();
+    var ts = typeof m.blockTimestamp === "number" ? m.blockTimestamp : typeof m.blockTimestamp === "string" && /^\d{9,11}$/.test(m.blockTimestamp) ? +m.blockTimestamp : null;
+    if (ts != null && isFinite(ts) && ts > 1.5e9 && ts * 1000 < Date.now() + 864e5) o.created = ts * 1000;
     return o;
   }
   (function hero() {

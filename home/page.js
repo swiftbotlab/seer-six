@@ -25,7 +25,8 @@
   }
 
   /* ======================================================================
-     1. HERO — a REAL market: the most liquid open, Kleros-verified market on Seer, drawn as the kit's converging wedges.
+     1. HERO — a REAL market: the most liquid open, Kleros-verified market on Seer, drawn ONE -> MANY (Seer's Part II
+        line direction): the question enters from the left as one line and fans out into one band per answer.
         live.js reads it from Seer's public markets API; hero-snapshot.js is the dated fallback, painted at once.
         Titles and answers on Seer are written by whoever created the market, so every field is validated again here
         (types, ranges, control and bidi characters stripped, lengths clamped) and only ever set with textContent.
@@ -64,7 +65,10 @@
     outs.sort(function (a, b) { return b.pct - a.pct; });
     return { id: m.id.toLowerCase(), chain: m.chain, title: title, multi: m.tpl === "3", outs: outs, inv: inv, sum: r1(sum),
       liq: okNum(m.liq, 0, 1e10) ? m.liq : null, vol: okNum(m.vol, 0, 1e10) ? m.vol : null,
-      coll: typeof m.coll === "string" && COLL.indexOf(m.coll) > -1 ? m.coll : null };
+      coll: typeof m.coll === "string" && COLL.indexOf(m.coll) > -1 ? m.coll : null,
+      // who asked: the market's creator address and creation time, when the data carries them (the live API does)
+      creator: typeof m.creator === "string" && ADDR.test(m.creator) && !/^0x0{40}$/.test(m.creator) ? m.creator.toLowerCase() : null,
+      created: okNum(m.created, 1.5e12, Date.now() + 864e5) ? m.created : null };
   }
   function pctTxt(v) { return f.num(v, Math.round(v * 10) % 10 ? 1 : 0) + "%"; }
   function centTxt(v) { return f.num(v, 1) + "¢"; }
@@ -108,11 +112,33 @@
         ? "Several answers can win and split the payout, so each price is a share of 1 " + col + ", not a chance. Seer's prices add up to " + centTxt(m.sum) + "."
         : "Each band's width is the price traders give an answer on Seer. A full set of outcome tokens redeems for 1 " + col + ", so the prices add up to about 1: here " + centTxt(m.sum) +
           (m.inv == null && m.sum < 99 ? ", and the other " + centTxt(r1(100 - m.sum)) + " is left to Invalid" : "") + ".";  // the rows shown add up to exactly this sum
+      askBlock(m);
       var href = "https://app.seer.pm/markets/" + m.chain + "/" + m.id; // chain + address validated above
       var go = $("hm-price-go"); go.setAttribute("href", href); go.setAttribute("aria-label", "Open this market on Seer (new tab): " + clipTxt(m.title, 90));
       if (rebuild) buildPolys(); else st.items.forEach(function (o, i) { var t = st.polys[i].firstChild; if (t) t.textContent = o.name + " · " + val(o.price * 100); });
       buildLegend(); focus();
       if (animate) run(); else if (st.t >= 1) draw();                           // a running animation picks up the new prices
+    }
+    // "Asked by · Prices · Use the signal": who is asking, what the market prices, how to read it. Only from the market's
+    // own data: the creator's address (never a guessed organisation), its type, its answers and Seer's prices.
+    function askBlock(m) {
+      var by = $("hm-ask-by"), pr = $("hm-ask-prices"), use = $("hm-ask-use"); if (!by || !pr || !use) return;
+      var col = m.coll || "unit of collateral", n = m.outs.length, a = m.outs[0], b = m.outs[1];
+      S.clear(by);
+      if (m.creator) {
+        var d = m.created ? new Date(m.created) : null;
+        by.appendChild(el("span", { class: "qa-ask__addr", text: m.creator.slice(0, 6) + "…" + m.creator.slice(-4), attrs: { title: m.creator } }));
+        by.appendChild(document.createTextNode(", who created it on " + CHAINS[m.chain] + (d ? " on " + d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear() : "")));
+      } else by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page";
+      pr.textContent = m.multi
+        ? "Each answer's share of 1 " + col + ": several of its " + n + " answers can win, so a price is not a chance"
+        : "The chance of each of its " + n + " answers; one wins, and a full set pays 1 " + col;
+      var an = clipTxt(a.name, 28);
+      use.textContent = m.multi
+        ? "Read " + an + " at " + centTxt(a.pct) + " as its expected share of the payout today, not a certainty"
+        : b && a.pct - b.pct < 5
+          ? "Read " + an + " at " + pctTxt(a.pct) + " and " + clipTxt(b.name, 24) + " at " + pctTxt(b.pct) + " as a near tie today, not a forecast of either"
+          : "Read " + an + " at " + pctTxt(a.pct) + " as today's odds, not a certainty; weigh it against other sources";
     }
     function meta() {
       var box = $("hm-price-meta"); if (!box || !cur) return;
@@ -148,12 +174,13 @@
     }
     function buildPolys() {
       S.clear(svg); st.polys = []; st.texts = [];
+      st.stem = S.svgEl("rect", { x: 0, y: 0, width: 0, height: 0, fill: "#8F55F7", class: "hm-wedges__stem" }); svg.appendChild(st.stem); // the question
       st.items.forEach(function (o, i) {
-        var p = S.svgEl("polygon", {});
+        var p = S.svgEl("path", {});
         var t = S.svgEl("title"); t.textContent = o.name + " · " + val(o.price * 100); p.appendChild(t);
         p.addEventListener("pointerenter", function () { st.hover = { idx: [i], one: i }; focus(); });
         svg.appendChild(p); st.polys.push(p);
-        var tx = S.svgEl("text", {}); svg.appendChild(tx); st.texts.push(tx);
+        var tx = S.svgEl("text", { "text-anchor": "end" }); svg.appendChild(tx); st.texts.push(tx);
       });
       st.vp = S.svgEl("g", {});
       st.vp.appendChild(S.svgEl("circle", { r: 13, fill: "none", stroke: "rgba(224,226,245,.35)", "stroke-width": 1 }));
@@ -199,6 +226,9 @@
       }
       rv.textContent = val(v); rn.textContent = name; rn.title = name; rp.textContent = sub;
     }
+    // ONE -> MANY, left to right (the direction Seer's Part II brief asks for): the question enters from the left as one
+    // line, forks at the node, and fans out into one band per answer that runs on, parallel, to the right edge. Each band's
+    // width at the right is its price; inside the stem the bands share the line's width in the same proportions.
     function draw() {
       var W = art.clientWidth, H = art.clientHeight; if (!W || !H || !st.m) return;
       svg.setAttribute("viewBox", "0 0 " + W + " " + H);
@@ -206,20 +236,26 @@
       var span = H - padY * 2 - gap * (n - 1);
       var hs = st.items.map(function (o) { return Math.max(1.2, o.price * span); }), hsum = hs.reduce(function (a, b) { return a + b; }, 0);
       hs = hs.map(function (h) { return h * span / hsum; });
-      var vx = Math.round(W * (W > 520 ? .7 : W > 400 ? .66 : .62)), vy = H / 2;
-      var e = st.t < 1 ? 1 - Math.pow(1 - st.t, 3) : 1, y = padY;
+      var wide = W > 520, sx = Math.round(W * (wide ? .36 : .37)), fx = Math.round(W * (wide ? .64 : .66)), vy = Math.round(H / 2), T = wide ? 4 : 3;
+      var k = (fx - sx) / 2, e = st.t < 1 ? 1 - Math.pow(1 - st.t, 3) : 1, y = padY, s = vy - T / 2;
+      st.stem.setAttribute("y", (vy - T / 2).toFixed(2)); st.stem.setAttribute("width", String(sx)); st.stem.setAttribute("height", String(T));
       st.items.forEach(function (o, i) {
-        var y0 = y, y1 = y + hs[i], r0 = y0 + (vy - y0) * e, r1 = y1 + (vy - y1) * e;
-        st.polys[i].setAttribute("points", "0," + y0.toFixed(2) + " 0," + y1.toFixed(2) + " " + vx + "," + r1.toFixed(2) + " " + vx + "," + r0.toFixed(2));
+        var t0 = s, t1 = s + T * hs[i] / span;                                 // this answer's share of the stem
+        var y0 = t0 + (y - t0) * e, y1 = t1 + (y + hs[i] - t1) * e;            // fanning out from the stem as the bands grow in
+        st.polys[i].setAttribute("d", "M" + sx + "," + t0.toFixed(2) + "C" + (sx + k) + "," + t0.toFixed(2) + " " + (fx - k) + "," + y0.toFixed(2) + " " + fx + "," + y0.toFixed(2) +
+          "L" + W + "," + y0.toFixed(2) + "L" + W + "," + y1.toFixed(2) + "L" + fx + "," + y1.toFixed(2) +
+          "C" + (fx - k) + "," + y1.toFixed(2) + " " + (sx + k) + "," + t1.toFixed(2) + " " + sx + "," + t1.toFixed(2) + "Z");
         var tx = st.texts[i];
-        if (hs[i] >= 17 && !o.invalid) { tx.setAttribute("x", 12); tx.setAttribute("y", (y0 + hs[i] / 2 + 3.5).toFixed(1)); tx.textContent = pad2(i + 1); }
+        if (hs[i] >= 17 && !o.invalid) { tx.setAttribute("x", W - 12); tx.setAttribute("y", (y0 + (y1 - y0) / 2 + 3.5).toFixed(1)); tx.textContent = pad2(i + 1); }
         else tx.textContent = "";
-        y += hs[i] + gap;
+        s = t1; y += hs[i] + gap;
       });
-      st.vp.setAttribute("transform", "translate(" + vx + " " + vy + ")");
-      st.vp.style.opacity = String(Math.max(0, (e - .7) / .3));
-      read.style.left = (vx + 22) + "px";
-      read.style.maxWidth = Math.max(60, W - vx - 34) + "px";
+      st.vp.setAttribute("transform", "translate(" + sx + " " + vy + ")");
+      // the readout sits above the stem, left of the fork, where the bands have not yet spread
+      var lx = wide ? 24 : 16;
+      read.style.left = lx + "px";
+      read.style.bottom = (H - vy + 18) + "px";
+      read.style.maxWidth = Math.max(60, Math.round(sx + (fx - sx) * .28 - lx)) + "px";
       read.style.opacity = String(Math.max(0, (e - .5) / .5));
     }
     function run() {
@@ -238,6 +274,7 @@
     }
     function empty() {
       $("hm-price-q").textContent = "Seer's markets could not be loaded just now.";
+      var ab = $("hm-ask"); if (ab) ab.hidden = true;
       $("hm-price-cap").textContent = "Open the App to browse every market on Seer.";
       var go = $("hm-price-go"); go.setAttribute("href", "https://app.seer.pm/"); go.setAttribute("aria-label", "Open Seer (new tab)");
     }

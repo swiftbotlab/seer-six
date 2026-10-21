@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://risk.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Risk Pricing · Default estimates, side by side (concept)</title>
-<meta name="description" content="Risk Pricing: Seer's own market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side so anyone weighing exposure can compare them, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,23 +14,23 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Risk Pricing · Default estimates, side by side (concept)">
-<meta property="og:description" content="Risk Pricing: Seer's own market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side so anyone weighing exposure can compare them, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/risk/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/risk.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Risk Pricing · Default estimates, side by side (concept): Electric Foundation poster with sample data">
+<meta property="og:image:alt" content="Risk Pricing · Default estimates, side by side (concept): its first screen, opening on real Seer data, beside its headline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Risk Pricing · Default estimates, side by side (concept)">
-<meta name="twitter:description" content="Risk Pricing: Seer's own market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:description" content="Risk Pricing: market estimates of the yearly probability of default for 33 DeFi assets, read live from risk.seer.pm and drawn side by side so anyone weighing exposure can compare them, then a sample walkthrough of the tools. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/risk.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="risk">
-<script>window.SEER_PAGE = { nav: [["Walkthrough", "#board"], ["No to All", "#exposure"], ["Participate", "#participate"], ["Method", "#method"]], search: "Search assets", cta: ["Set estimates", "#participate", "sliders"] };</script>
+<script>window.SEER_PAGE = { product: "Risk Pricing", nav: [["Walkthrough", "#board"], ["No to All", "#exposure"], ["Participate", "#participate"], ["Method", "#method"]], search: "Search assets", cta: ["Set estimates", "#participate", "sliders"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
@@ -38,9 +38,18 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   <section class="s-apphead rk-head" aria-labelledby="rk-title">
     <div class="s-container s-apphead__grid rk-head__grid">
       <div class="s-apphead__copy">
-        <div class="s-hero__kicker s-specs"><span>06 · Risk</span><span data-rk-quarter>Q3 2026</span><span>Gnosis</span><span>sDAI</span></div>
+        <!-- Product name: "Risk Pricing" stays primary; "Barometer" is our name proposal for Seer (poidh #39), shown as a subtle label -->
+        <div class="rk-kick"><div class="s-hero__kicker s-specs"><span>06 · Risk Pricing</span><span class="rk-kx" data-rk-quarter>Q3 2026</span><span class="rk-kx">Gnosis</span><span class="rk-kx">sDAI</span></div><span class="rk-alias" title="Our proposed name for this app (poidh #39): a barometer is the instrument you read to see pressure building before the weather turns.">proposed name: Barometer</span></div>
         <h1 class="s-apphead__title" id="rk-title">How likely is each asset to default?</h1>
-        <p class="s-apphead__sub">Seer's own market: traders price a yearly probability of default (PD) for each of 33 DeFi assets, side by side. <span id="rk-state">Q3 2026 closed on 30 Sep; these are its closing prices.</span></p>
+        <p class="s-apphead__sub">Seer's own market estimates of default risk: traders price a yearly probability of default (PD) for each of 33 DeFi assets, side by side. <span id="rk-state">Q3 2026 closed on 30 Sep; these are its closing prices.</span></p>
+        <!-- Who asks, what is priced, how to use it: from the market's own data (Seer's markets API, 22 Oct 2026: market
+             0xc84786b06390f11ded0dd362e27fc881b540e6f2 on Gnosis, creator 0x00dc3e0acadb8dba21bb08ff30540222ff8836e0, question "What is
+             the Probability of Default (PD) for the following DeFi assets ...", 33 assets + No to All) and risk.seer.pm -->
+        <dl class="qa-ask" id="rk-ask">
+          <div><dt>Asked by</dt><dd>Seer's Risk Pricing app, risk.seer.pm · creator <span class="qa-ask__addr" title="0x00dc3e0acadb8dba21bb08ff30540222ff8836e0">0x00dc…36e0</span></dd></div>
+          <div><dt>Prices</dt><dd>Each asset's yearly probability of default (PD); No to All, the chance none of them defaults</dd></div>
+          <div><dt>Use the signal</dt><dd>Compare estimates across protocols and bands, not one yes/no price in isolation</dd></div>
+        </dl>
         <div class="rk-srcrow"><span class="s-src" id="rk-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · risk.seer.pm</span><a class="rk-srclink" data-rk-mkt href="https://app.seer.pm/markets/100/0xc84786b06390f11ded0dd362e27fc881b540e6f2" rel="noopener noreferrer" target="_blank">The market on Seer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
         <dl class="rk-facts" id="rk-facts"></dl>
         <div class="s-apphead__actions">
@@ -274,7 +283,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
               <div>
                 <h3 class="rk-notes__h">Departures</h3>
                 <ol class="rk-notes__list rk-notes__list--n">
-                  <li><b>Stripes carry data.</b> The EF 45° line field is the risk motif. In the hero its density rises with each band; in No to All each stripe is one asset, as wide as its share of the board's risk.</li>
+                  <li><b>Lines carry data.</b> The hero's EF line runs the way Seer's Part II brief draws it: one stem enters from the left (the question) and fans out into one lane per asset group, each as thick as its share of the 33 assets; the estimates sit on those lanes. The 45° line field marks the bands, its density rising with each band; in No to All each stripe is one asset, as wide as its share of the board's risk.</li>
+                  <li><b>Name.</b> Risk Pricing stays the product name, so it reads as Seer's app. The small "proposed name: Barometer" label is our name proposal for Seer (poidh #39): a barometer is the instrument you read to see pressure building before the weather turns.</li>
                   <li><b>A log scale, not bars from zero.</b> Estimates run from 0.07% to 14%. On a linear axis most of the board sits in one pixel; on a log scale twice as risky is always the same step.</li>
                   <li><b>Ranges next to every price.</b> Each estimate carries the 10th–90th percentile of the estimates traders set when they trade (size-weighted), so a 10% asset with a wide range reads differently from a tight one.</li>
                   <li><b>Band colours, used once.</b> The kit has no status colours. Green to red marks the four bands only, always beside a label and a distinct shape. Prices stay violet.</li>

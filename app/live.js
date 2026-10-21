@@ -68,9 +68,15 @@
         pairs.push([name, odds[i]]);
       }
       if (pairs.length < 2) return null;
+      o.n = pairs.length;
       if (pairs.length > 3) pairs = pairs.sort(function (a, b) { return b[1] - a[1]; }).slice(0, 3);
       o.outcomes = pairs; if (m.templateId === "3") o.multi = true;
     } else return null;                                                       // multi-scalar etc.: skip rather than mislabel
+    // who asked: the creator's address and the creation block's time (only ever shown as text)
+    if (typeof m.creator === "string" && ADDR.test(m.creator) && m.creator !== ZERO) o.creator = m.creator.toLowerCase();
+    var ts = typeof m.blockTimestamp === "number" ? m.blockTimestamp : typeof m.blockTimestamp === "string" && /^\d{9,11}$/.test(m.blockTimestamp) ? +m.blockTimestamp : null;
+    if (ts != null && isFinite(ts) && ts > 1.5e9 && ts * 1000 < Date.now() + 864e5) o.created = ts * 1000;
+    if (m.verification && typeof m.verification === "object" && m.verification.status === "verified") o.verified = true;
     return o;
   }
 
@@ -183,9 +189,39 @@
     c.appendChild(el("span", { class: "s-sr", text: live ? ": the top of this page is read live from app.seer.pm; the explorer below is sample data" : ": the top of this page is a dated snapshot of app.seer.pm; the explorer below is sample data" }));
   }
 
+  /* ---------- the question-asker block in the bar: who asked the strip's first market, what it prices, how to use it ----------
+     Only from the market's own data: the creator's address (never a guessed organisation), its type and Seer's prices. */
+  function leadOf(m) { var o = m.outcomes.slice().sort(function (a, b) { return b[1] - a[1]; }); return o; }
+  function isYes(m) { return !m.multi && m.outcomes.length === 2 && /^yes$/i.test(m.outcomes[0][0]) && /^no$/i.test(m.outcomes[1][0]); }
+  function askBlock(m) {
+    var by = document.getElementById("ap-ask-by"), pr = document.getElementById("ap-ask-prices"), use = document.getElementById("ap-ask-use");
+    if (!by || !pr || !use || !m) return;
+    S.clear(by);
+    if (m.creator) {
+      by.appendChild(el("span", { class: "qa-ask__addr", text: m.creator.slice(0, 6) + "…" + m.creator.slice(-4), attrs: { title: m.creator } }));
+      by.appendChild(document.createTextNode(", who created it on " + CHAINS[m.chain] + (m.created ? " on " + dayMon(m.created) + " " + new Date(m.created).getUTCFullYear() : "")));
+    } else by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page";
+    var t = clip(m.title, 50), c, u;
+    if (m.scalar) {
+      var sc = m.scalar, unit = sc.unit ? " " + sc.unit : "";
+      c = "“" + t + "”: the expected value on a range of " + num(sc.min) + " to " + num(sc.max) + unit;
+      u = "Read " + num(sc.value) + unit + " as the market's estimate today; the ends of the range are the limits it can pay";
+    } else if (isYes(m)) {
+      var y = m.outcomes[0][1];
+      c = "“" + t + "”: the chance it resolves Yes";
+      u = "Read " + pct(y) + " as today's odds of Yes, not a certainty; search a topic to compare markets on it";
+    } else {
+      var L = leadOf(m), a = L[0];
+      c = "“" + t + "”: " + (m.multi ? "each answer's share of the payout (several can win)" : (m.n ? "the chance of each of its " + m.n + " answers" : "the chance of each answer"));
+      u = "Read " + clip(a[0], 28) + " at " + (m.multi ? (Math.round(a[1] * 10) / 10) + "¢" : pct(a[1])) + " as today's " + (m.multi ? "expected share" : "odds") + ", not a certainty; search a topic to compare";
+    }
+    pr.textContent = c; use.textContent = u;
+  }
+
   var shown = null; // "live" | "snapshot"
   function render(list, state, when, count) {
     S.clear(host);
+    askBlock(list[0]);
     list.forEach(function (m) { host.appendChild(card(m)); });
     host.appendChild(allCard());
     src.setAttribute("data-state", state);
@@ -257,6 +293,68 @@
       if (n) n.textContent = openN.toLocaleString("en-US");
       if (a) a.setAttribute("aria-label", openN.toLocaleString("en-US") + " open markets: browse on Seer (opens app.seer.pm)");
     }).catch(function () { clearTimeout(k2); });                           // the snapshot count stays
+  })();
+
+  /* ---------- topic search: what do Seer's real markets say about a word? ----------
+     page.js's search box asks window.AP_TOPIC.peek(query, onReady) for word queries (3+ letters; numbers, #ids, P-07 and 0x
+     stay on the sample). One POST {marketName, open, limit 24} to the same endpoint, 350 ms after the typing stops, the
+     previous request aborted; the answer goes through normalize() above, is sorted by liquidity and cut to 4 rows. Rows are
+     returned as plain values (page.js renders them with textContent); links are built here from validated chain + 0x id. */
+  window.AP_TOPIC = (function () {
+    var cache = {}, keys = [], timer = null, ctl2 = null;
+    function key(v) { return clean(String(v || ""), 60).toLowerCase(); }
+    function eligible(k) { return k.length >= 3 && /[a-z\u00c0-\u024f]{3}/i.test(k) && !/^0x/i.test(k) && !/^#?\d+$/.test(k) && !/^p-?\d{1,2}$/i.test(k.replace(/\s+/g, "")); }
+    function lead(m) {
+      if (m.scalar) return num(m.scalar.value) + (m.scalar.unit ? " " + m.scalar.unit : "");
+      var a = leadOf(m)[0]; return clip(a[0], 18) + " " + (m.multi ? (Math.round(a[1] * 10) / 10) + "¢" : pct(a[1]));
+    }
+    function keep(k, r) { if (!cache[k]) { keys.push(k); if (keys.length > 40) delete cache[keys.shift()]; } cache[k] = r; }
+    function ask2(k, onReady) {
+      if (ctl2) ctl2.abort();
+      var c = typeof AbortController === "function" ? new AbortController() : null, kill2 = setTimeout(function () { if (c) c.abort(); }, ABORT_MS);
+      ctl2 = c;
+      fetch(API, {
+        method: "POST", mode: "cors", credentials: "omit", cache: "no-store", referrerPolicy: "no-referrer", redirect: "error",
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify({ marketName: k, marketStatusList: ["open"], limit: 24, page: 1 }),
+        signal: c ? c.signal : undefined
+      }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        if (!/application\/json/i.test(r.headers.get("content-type") || "")) throw new Error("not JSON");
+        if (+(r.headers.get("content-length") || 0) > MAX_BYTES) throw new Error("too big");
+        return r.text();
+      }).then(function (t) {
+        clearTimeout(kill2);
+        if (t.length > MAX_BYTES) throw new Error("too big");
+        var d = JSON.parse(t);
+        if (!d || !Array.isArray(d.markets)) throw new Error("bad shape");
+        var seen = {}, list = d.markets.slice(0, 24).map(normalize).filter(function (m) {
+          if (!m) return false; var tk = m.title.toLowerCase(); if (seen[tk]) return false; seen[tk] = 1; return true;
+        }).sort(function (a, b) { return b.liq - a.liq; }).slice(0, 4);
+        var n = typeof d.count === "number" && isFinite(d.count) && d.count >= 0 && d.count < 1e7 ? Math.round(d.count) : list.length;
+        keep(k, { state: "ok", q: k, count: Math.max(n, list.length), rows: list.map(function (m) {
+          return { label: clip(m.title, 110), title: m.title, sub: usd(m.liq) + " liq · " + CHAINS[m.chain] + (m.verified ? " · Kleros-verified" : " · not verified"), val: lead(m), href: link(m) };
+        }) });
+        if (ctl2 === c) ctl2 = null;
+        onReady(k);
+      }).catch(function (e) {
+        clearTimeout(kill2);
+        if (e && e.name === "AbortError" && ctl2 !== c) return;              // replaced by a newer query
+        if (ctl2 === c) ctl2 = null;
+        cache[k] = { state: "error", q: k, at: Date.now() }; onReady(k);
+      });
+    }
+    return {
+      ok: function (raw) { return typeof fetch === "function" && eligible(key(raw)); },
+      peek: function (raw, onReady) {
+        var k = key(raw);
+        if (!eligible(k) || typeof fetch !== "function") return null;
+        var r = cache[k];
+        if (r && !(r.state === "error" && Date.now() - r.at > 30000)) return r;
+        clearTimeout(timer);
+        timer = setTimeout(function () { ask2(k, onReady); }, 350);
+        return { state: "loading", q: k };
+      }
+    };
   })();
 
   /* ---------- rail arrows ---------- */

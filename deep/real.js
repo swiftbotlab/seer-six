@@ -147,54 +147,62 @@
       filt();
     }
 
-    // the poster: one dot per repository at its UP price (dot plot, 0.01 bins)
+    // the poster: the EF line run ONE -> MANY, left to right (Seer's Part II brief). One line, the round's question, enters
+    // on the left and fans out into one branch per repository; each branch runs right to its UP price and ends in a dot.
+    // Branches are ranked top to bottom (rank 1 on top), so their ends trace the whole field's prices.
     if (!box || !cap) return;
     var lo = Math.floor((rows[n - 1].up - .005) * 20) / 20, hi = Math.ceil((rows[0].up + .005) * 20) / 20;
-    var TOP = Math.min(10, n), cur = 0, sel = 0, dots = [], svg = null, geo = null;
+    var TOP = Math.min(10, n), cur = 0, sel = 0, ends = [], svg = null, geo = null;
     function color(i) { return i < TOP ? "rgba(143,85,247," + (1 - i * .035).toFixed(2) + ")" : "rgba(191,191,230," + (.62 - (i - TOP) / Math.max(1, n - TOP) * .34).toFixed(2) + ")"; }
     function draw() {
       var W = box.clientWidth, H = box.clientHeight;
       if (!W || !H) return;
-      var gut = 6, axisH = 26, top = 30, right = 6;
-      var X = function (v) { return gut + (v - lo) / (hi - lo) * (W - gut - right); };
-      var base = H - axisH, avail = base - top - 10, best = null;
-      // bin width: the step (0.005 / 0.01 / 0.02 of UP) that gives the largest dots that still fit both ways
-      [.005, .01, .02].forEach(function (w) {
-        var bins = {}, maxStack = 1, binPx = (W - gut - right) / ((hi - lo) / w);
-        rows.forEach(function (r) { var b = Math.round(r.up / w); (bins[b] = bins[b] || []).push(r); maxStack = Math.max(maxStack, bins[b].length); });
-        var rad = Math.min(binPx * .44, (avail / maxStack) / 2.3, 10);
-        if (!best || rad > best.rad + .4) best = { w: w, bins: bins, rad: rad };
-      });
-      var bins = best.bins, bw = best.w, rad = Math.max(2.2, best.rad), pitch = rad * 2.3;
-      box.setAttribute("data-bin", String(bw));
-      var bn = doc.getElementById("dp-r3-binnote"); if (bn) bn.textContent = "1 dot = 1 repo · " + bw + " steps";
+      var small = W < 480, gut = 2, right = 8, axisH = 26, top = 30;
+      var base = H - axisH, y0 = top + 4, y1 = base - 10, ym = (y0 + y1) / 2;
+      var pitch = (y1 - y0) / Math.max(1, n - 1);
+      var xs = gut + W * (small ? .15 : .14), xe = gut + W * (small ? .34 : .32), cx = (xs + xe) / 2;
+      var X = function (v) { return xe + (v - lo) / (hi - lo) * (W - right - xe); };
+      var sw = Math.max(.7, Math.min(1.6, pitch * .5)), rad = Math.max(1.4, Math.min(3, pitch * .55));
+      var bn = doc.getElementById("dp-r3-binnote"); if (bn) bn.textContent = "1 line = 1 repo · ends at its UP";
       svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
-      // axis
-      svg.appendChild(sv("line", { class: "dp-d-base", x1: gut, x2: W - right, y1: base + .5, y2: base + .5 }));
+      // UP axis under the straight runs
+      svg.appendChild(sv("line", { class: "dp-d-base", x1: xe, x2: W - right, y1: base + .5, y2: base + .5 }));
       var stepT = W < 480 ? .1 : .05;
       for (var t = Math.ceil(lo / stepT - 1e-9) * stepT; t <= hi + 1e-9; t += stepT) {
         var tx = X(t), first = t - lo < 1e-9, last = hi - t < 1e-9;
         svg.appendChild(sv("line", { class: "dp-d-tick", x1: tx, x2: tx, y1: base + 1, y2: base + 5 }));
         var lb = sv("text", { class: "dp-d-axis", x: tx, y: H - 4, "text-anchor": first ? "start" : last ? "end" : "middle" }); lb.textContent = t.toFixed(2); svg.appendChild(lb);
       }
+      var ux = sv("text", { class: "dp-d-axis", x: gut, y: H - 4 }); ux.textContent = "UP →"; svg.appendChild(ux);
       // median rule
       var mx = X(R.median);
       svg.appendChild(sv("line", { class: "dp-d-med", x1: mx, x2: mx, y1: top - 8, y2: base }));
       var ml = sv("text", { class: "dp-d-medlbl", x: mx - 8, y: top - 12, "text-anchor": "end" }); ml.textContent = "MEDIAN " + d2(R.median); svg.appendChild(ml);
       var tl = sv("text", { class: "dp-d-medlbl dp-d-toplbl", x: W - right, y: top - 12, "text-anchor": "end" }); tl.textContent = "TOP " + TOP + " BY UP"; svg.appendChild(tl);
-      // dots, stacked from the baseline; a bin's highest price sits at the bottom
-      dots = []; geo = { rad: rad };
-      var g = sv("g", {});
-      Object.keys(bins).forEach(function (b) {
-        bins[b].forEach(function (r, k) {
-          var cx = X(b * bw), cy = base - rad - 2 - k * pitch;
-          var c = sv("circle", { cx: cx.toFixed(1), cy: cy.toFixed(1), r: rad.toFixed(2), fill: color(r.rank - 1), class: "dp-d-dot" });
-          g.appendChild(c); dots[r.rank - 1] = { x: cx, y: cy, el: c };
-        });
-      });
+      // the branches, lowest rank first so the violet top ten draw over the rest
+      ends = []; geo = { rad: rad };
+      var g = sv("g", { class: "dp-d-fan" }), dg = sv("g", {});
+      function branch(i) {
+        var r = rows[i], yi = y0 + i * pitch, x2 = X(r.up);
+        var tail = "C" + cx.toFixed(1) + " " + ym.toFixed(1) + " " + cx.toFixed(1) + " " + yi.toFixed(1) + " " + xe.toFixed(1) + " " + yi.toFixed(1) + "H" + x2.toFixed(1);
+        return { d: "M" + gut + " " + ym.toFixed(1) + "H" + xs.toFixed(1) + tail, sel: "M" + xs.toFixed(1) + " " + ym.toFixed(1) + tail, x: x2, y: yi };
+      }
+      for (var i = n - 1; i >= 0; i--) {
+        var b = branch(i);
+        g.appendChild(sv("path", { d: b.d, stroke: color(i), "stroke-width": sw.toFixed(2), class: "dp-d-br" }));
+        dg.appendChild(sv("circle", { cx: b.x.toFixed(1), cy: b.y.toFixed(1), r: rad.toFixed(2), fill: color(i), class: "dp-d-dot" }));
+        ends[i] = b;
+      }
       svg.appendChild(g);
+      // the one line in: the round's question
+      svg.appendChild(sv("line", { class: "dp-d-stem", x1: gut, x2: xs + 1, y1: ym, y2: ym }));
+      var q1 = sv("text", { class: "dp-d-medlbl", x: gut, y: ym - 10 }); q1.textContent = "1 QUESTION"; svg.appendChild(q1);
+      var q2 = sv("text", { class: "dp-d-axis", x: gut, y: ym + 20 }); q2.textContent = n + " REPOS"; svg.appendChild(q2);
+      svg.appendChild(dg);
+      geo.sel = sv("path", { class: "dp-d-sel", d: "M0 0" });
       geo.ring = sv("circle", { class: "dp-d-ring", r: (rad + 3).toFixed(2), cx: -20, cy: -20 });
-      svg.appendChild(geo.ring);
+      svg.appendChild(geo.sel); svg.appendChild(geo.ring);
+      geo.y0 = y0; geo.pitch = pitch;
       while (box.firstChild) box.removeChild(box.firstChild);
       box.appendChild(svg);
       cur = -1; on(sel);
@@ -202,8 +210,8 @@
     function on(i) {
       if (!svg || i === cur) return;
       cur = i;
-      var r = rows[i], d = dots[i];
-      if (d) { geo.ring.setAttribute("cx", d.x.toFixed(1)); geo.ring.setAttribute("cy", d.y.toFixed(1)); }
+      var r = rows[i], d = ends[i];
+      if (d) { geo.ring.setAttribute("cx", d.x.toFixed(1)); geo.ring.setAttribute("cy", d.y.toFixed(1)); geo.sel.setAttribute("d", d.sel); }
       while (cap.firstChild) cap.removeChild(cap.firstChild);
       var l = mk("div"); l.style.minWidth = "0";
       l.appendChild(mk("b", null, r.name));
@@ -214,10 +222,10 @@
       box.setAttribute("aria-valuenow", String(r.rank));
       box.setAttribute("aria-valuetext", r.name + ": UP " + d2(r.up) + ", DOWN " + d2(r.down) + ", rank " + r.rank + " of " + n);
     }
-    function nearest(e) {
-      var bb = box.getBoundingClientRect(), x = e.clientX - bb.left, y = e.clientY - bb.top, best = -1, bd = 1e9;
-      for (var i = 0; i < dots.length; i++) { var d = dots[i]; if (!d) continue; var q2 = (d.x - x) * (d.x - x) + (d.y - y) * (d.y - y) * .6; if (q2 < bd) { bd = q2; best = i; } }
-      return bd <= 26 * 26 ? best : -1;
+    function nearest(e) { // the branch whose row is closest to the pointer (rows are evenly spaced)
+      if (!geo) return -1;
+      var bb = box.getBoundingClientRect(), y = e.clientY - bb.top;
+      return Math.max(0, Math.min(n - 1, Math.round((y - geo.y0) / Math.max(.5, geo.pitch))));
     }
     box.setAttribute("aria-valuemin", "1"); box.setAttribute("aria-valuemax", String(n));
     box.addEventListener("pointermove", function (e) { var i = nearest(e); if (i >= 0) on(i); });

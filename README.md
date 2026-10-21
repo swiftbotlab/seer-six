@@ -1,7 +1,13 @@
 # Seer · six interfaces, one protocol (concept)
 
-A connected redesign of Seer's six interfaces on the Electric Foundation identity:
-the homepage, the App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing.
+A connected redesign of Seer's six interfaces for Information Finance, on the Electric Foundation identity:
+the homepage, the App explorer, Deep, Futarchy, Opportunity Markets and Risk Pricing. Someone asks a question,
+traders price each possible answer, and whoever needs to know (a DAO, a grant team, a risk desk, an agent)
+reads the signal; each first screen says who is asking, what the market prices and how to use the signal.
+
+Updated 21-22 Oct 2026: every interface now opens on live Seer data (Deep: an hourly snapshot); the line
+direction (one line in from the left, fanning out into many to the right, `Seer.motif.fan` in `assets/ui.js`)
+and the Information Finance framing follow the Seer team's Part II brief.
 
 Live demos: https://swiftbotlab.github.io/seer-six/
 

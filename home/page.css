@@ -26,9 +26,10 @@
 .hm-price__q { font-size: 18px; line-height: 1.32; font-weight: 500; letter-spacing: -.01em; color: var(--fog); max-width: 40ch; min-height: 2.64em; }
 .hm-price__art { position: relative; height: 268px; margin-inline: -24px; }
 .hm-wedges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
-.hm-wedges polygon { transition: fill var(--dur) var(--ease); cursor: pointer; }
+.hm-wedges path { transition: fill var(--dur) var(--ease); cursor: pointer; }
+.hm-wedges__stem { pointer-events: none; }
 .hm-wedges text { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; fill: rgba(12, 10, 22, .78); pointer-events: none; }
-.hm-readout { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; min-width: 0; pointer-events: none; }
+.hm-readout { position: absolute; display: flex; flex-direction: column; gap: 4px; min-width: 0; pointer-events: none; }
 .hm-readout__v { font-size: clamp(34px, 3.6vw, 46px); font-weight: 600; letter-spacing: -.035em; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
 .hm-readout__n { font-size: var(--fs-ui); font-weight: 500; color: var(--lavender); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hm-readout__p { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: rgba(224, 226, 245, .6); line-height: 1.4; }
@@ -399,3 +400,47 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
 /* r6 item 7: the hero starts at the shared top line (assets/system.css --hero-top), copy column top-aligned */
 .hm-hero { padding-top: var(--hero-top); }
 .hm-hero__copy { align-self: start; }
+
+/* ---------- question-asker block: who asks · what is priced · how to use the signal ----------
+   The same <dl class="qa-ask"> markup sits in every interface's hero; here it is on the ink poster, under the question. */
+.qa-ask { display: grid; gap: 5px; margin: -2px 0 0; padding: 10px 0 2px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.qa-ask > div { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 12px; align-items: baseline; min-width: 0; }
+.qa-ask dt { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: rgba(224, 226, 245, .62); white-space: nowrap; }
+.qa-ask dd { margin: 0; min-width: 0; font-size: 13.5px; line-height: 1.45; font-weight: 500; color: rgba(233, 234, 250, .88); }
+.qa-ask__addr { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .01em; color: #fff; }
+@media (max-width: 640px) {
+  .qa-ask { gap: 8px; }
+  .qa-ask > div { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; }
+  .qa-ask dt { white-space: normal; }
+  .qa-ask dd { font-size: 13px; }
+}
+
+/* the information seeker's path, under the hero actions */
+.hm-seek { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; font-size: var(--fs-ui); font-weight: 500; line-height: 1.4; }
+.hm-seek__k { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.hm-seek a { display: inline-flex; align-items: center; gap: 5px; color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 45%, transparent); border-radius: 4px; }
+.hm-seek a:hover { color: var(--text); text-decoration-color: currentColor; }
+.hm-seek a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.hm-seek svg { flex: none; }
+@media (max-width: 640px) { .hm-seek { margin-top: 14px; gap: 6px 14px; } .hm-seek__k { flex-basis: 100%; } }
+
+/* for agents: one row under the protocol map */
+.hm-agents { margin-top: 16px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 2.1fr); gap: 12px 28px; align-items: center; background: var(--surface); border-radius: var(--r-panel); padding: 18px 20px; }
+.hm-agents__head { min-width: 0; }
+.hm-agents__t { font-size: 17px; font-weight: 600; letter-spacing: -.015em; margin: 4px 0 4px; }
+.hm-agents__head p { color: var(--text-2); font-size: 13.5px; line-height: 1.5; font-weight: 500; }
+.hm-agents__list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.hm-agents__list li { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--r-card); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.hm-agents__list a { font-size: 14px; font-weight: 600; letter-spacing: -.01em; color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 40%, transparent); align-self: flex-start; border-radius: 4px; }
+.hm-agents__list a:hover { color: var(--text); }
+.hm-agents__list a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.hm-agents__list small { font-size: 13px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+@media (max-width: 1100px) { .hm-agents { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .hm-agents__list { grid-template-columns: minmax(0, 1fr); } .hm-agents { padding: 16px; } }
+@media (max-width: 640px) {
+  .hm-agents { gap: 10px; }
+  .hm-agents__head p { display: none; }
+  .hm-agents__list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hm-agents__list li { padding: 8px 12px; }
+  .hm-agents__list small { display: none; }
+}

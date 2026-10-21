@@ -266,31 +266,71 @@
       } else if (e.key === "Enter") {
         e.preventDefault();
         var it = sugState.items[sugState.i >= 0 ? sugState.i : 0];
-        if (it && !sugBox.hidden) { closeSuggest(); go(it.href); }
+        if (it && !sugBox.hidden) pick(it);
         else { closeSuggest(); var t = $("#markets"); if (t) t.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); }
       } else if (e.key === "Escape") { closeSuggest(); }
     });
-    document.addEventListener("click", function (e) { if (!e.target.closest("#ap-search-wrap")) closeSuggest(); });
+    document.addEventListener("click", function (e) { if (!e.target.closest("#ap-search-wrap") && !e.target.closest("#ap-seek-read")) closeSuggest(); });
+    // the information seeker's path under the search: focus it and say what a word search reads (real markets on Seer)
+    var seek = $("#ap-seek-read");
+    if (seek) seek.addEventListener("click", function () { qInput.focus(); if (qInput.value.trim()) openSuggest(); else hintSuggest(); });
   }
-  function openSuggest() {
-    var res = suggest(qInput.value);
-    sugState = { items: res.items, i: res.items.length ? 0 : -1 };
+  // a suggestion row: a sample record (hash route), a real market on Seer (new tab), or a topic to search for
+  function pick(it) {
+    if (it.q) { setQuery(it.q); qInput.focus(); openSuggest(); return; }
+    closeSuggest();
+    if (it.ext) { window.open(it.ext, "_blank", "noopener,noreferrer"); return; }
+    go(it.href);
+  }
+  function sugRow(it, i) {
+    var row = el("div", { class: "ap-sug" + (it.live ? " ap-sug--live" : ""), attrs: { role: "option", id: "ap-sug-" + i, "aria-selected": String(i === sugState.i), title: it.title || null } },
+      el("span", { class: "ap-sug__kind", text: it.kind }),
+      el("span", { class: "ap-sug__main" }, el("span", { class: "ap-sug__label", text: it.label }), it.sub ? el("span", { class: "ap-sug__sub", text: it.sub }) : null),
+      el("span", { class: "ap-sug__val", text: it.val || "" }));
+    row.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    row.addEventListener("click", function () { pick(it); });
+    return row;
+  }
+  var CREATE_URL = "https://app.seer.pm/create-market";   // Seer's own create flow (checked: it answers 200, unknown paths 404)
+  function hintSuggest() {
+    S.clear(sugBox);
+    sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: "Type a topic: words search Seer's real open markets, live. Market numbers, P-07 and 0x addresses search the sample explorer." }));
+    var items = [{ kind: "Try a topic", label: "election", sub: "Real markets on Seer about elections", q: "election" },
+      { kind: "Try a topic", label: "ethereum", sub: "Real markets on Seer about Ethereum", q: "ethereum" },
+      { kind: "Ask on Seer", label: "Ask your own question on Seer", sub: "app.seer.pm/create-market · opens in a new tab", ext: CREATE_URL, live: true }];
+    sugState = { items: items, i: 0 };
+    items.forEach(function (it, i) { sugBox.appendChild(sugRow(it, i)); });
+    sugBox.hidden = false; qInput.setAttribute("aria-expanded", "true");
+    paintSel();
+  }
+  function openSuggest(refresh) {
+    var res = suggest(qInput.value), keepI = refresh && !sugBox.hidden ? sugState.i : 0;
+    // word queries also read Seer's real open markets (live.js); the rows arrive a moment later and re-render this box
+    var live = window.AP_TOPIC && typeof window.AP_TOPIC.peek === "function"
+      ? window.AP_TOPIC.peek(qInput.value, function () { if (!sugBox.hidden) openSuggest(true); }) : null;
+    var items = res.items.slice(), nSample = items.length;
+    if (live && live.state !== "loading") {
+      if (live.state === "ok") live.rows.forEach(function (r) { items.push({ kind: "On Seer", label: r.label, title: r.title, sub: r.sub, val: r.val, ext: r.href, live: true }); });
+      items.push({ kind: "Ask on Seer", label: live.state !== "ok" ? "Ask your own question on Seer" : live.rows.length ? "Not quite your question? Ask your own on Seer" : live.count ? "None priced yet: ask your own question about “" + live.q + "” on Seer" : "No market on it yet: ask your own question about “" + live.q + "” on Seer",
+        sub: "app.seer.pm/create-market · opens in a new tab", ext: CREATE_URL, live: true });
+    }
+    sugState = { items: items, i: items.length ? Math.min(Math.max(keepI, 0), items.length - 1) : -1 };
     S.clear(sugBox);
     if (!qInput.value.trim()) { closeSuggest(); return; }
-    if (!res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: "Nothing in the sample matches. Try a market number, an outcome or an address that starts with 0x5eed." }));
-    res.items.forEach(function (it, i) {
-      var row = el("div", { class: "ap-sug", attrs: { role: "option", id: "ap-sug-" + i, "aria-selected": String(i === sugState.i) } },
-        el("span", { class: "ap-sug__kind", text: it.kind }),
-        el("span", { class: "ap-sug__main" }, el("span", { class: "ap-sug__label", text: it.label }), it.sub ? el("span", { class: "ap-sug__sub", text: it.sub }) : null),
-        el("span", { class: "ap-sug__val", text: it.val || "" }));
-      row.addEventListener("mousedown", function (e) { e.preventDefault(); });
-      row.addEventListener("click", function () { closeSuggest(); go(it.href); });
-      sugBox.appendChild(row);
-    });
+    if (!res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: live ? "Nothing in the sample matches; real markets on Seer are below." : "Nothing in the sample matches. Try a market number, an outcome or an address that starts with 0x5eed." }));
+    res.items.forEach(function (it, i) { sugBox.appendChild(sugRow(it, i)); });
     var qq = qInput.value.trim().toLowerCase();
     if (/^0x/.test(qq) && "0x5eed".indexOf(qq) === 0 || qq === "0x5eed") sugBox.appendChild(el("div", { class: "ap-suggest__foot", text: "Every sample address starts with 0x5eed · keep typing to narrow " + res.total + " matches" }));
     else if (res.total > res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__foot", text: "Showing " + res.items.length + " of " + res.total + " matches · press Enter for the first" }));
-    else if (res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__foot", text: res.total + " match" + (res.total === 1 ? "" : "es") + " · ↑↓ to move · Enter to open" }));
+    else if (res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__foot", text: res.total + " match" + (res.total === 1 ? "" : "es") + " in the sample · ↑↓ to move · Enter to open" }));
+    if (live) {
+      var hd = el("div", { class: "ap-suggest__live" }, el("b", { text: "On Seer now · live" }),
+        el("span", { text: live.state === "loading" ? "Reading Seer's open markets…" : live.state === "error" ? "Seer's API didn't answer just now"
+          : live.rows.length ? F.num(live.count) + " open market" + (live.count === 1 ? "" : "s") + " mention “" + live.q + "”"
+          : live.count ? F.num(live.count) + " open market" + (live.count === 1 ? "" : "s") + " mention “" + live.q + "”, none with prices to show" : "No open market on Seer mentions “" + live.q + "”" }));
+      sugBox.appendChild(hd);
+      items.slice(nSample).forEach(function (it, j) { sugBox.appendChild(sugRow(it, nSample + j)); });
+    }
     sugBox.hidden = false; qInput.setAttribute("aria-expanded", "true");
     paintSel();
   }
@@ -417,7 +457,7 @@
     S.clear(tg); tg.insertAdjacentHTML("beforeend", S.icon("filter", 14)); tg.appendChild(document.createTextNode("Filters")); if (nf) tg.appendChild(el("span", { class: "s-count", text: String(nf) }));
     S.clear(res);
     if (!list.length) {
-      res.appendChild(U.empty({ title: "No markets match", text: "Nothing in the sample fits these filters. Clear them, or search for a market number, an outcome or a 0x address.", action: { label: "Clear filters", onClick: clearAll }, motif: "dotgrid", motifOpts: { cols: 12, rows: 6, cell: 20, dissolve: .55 } }));
+      res.appendChild(U.empty({ title: "No markets match", text: "Nothing in the sample fits these filters. Clear them, or search for a market number, an outcome or a 0x address." + (FS.q && window.AP_TOPIC && window.AP_TOPIC.ok(FS.q) ? " Real markets on Seer for “" + FS.q.trim().slice(0, 40) + "” are listed under the search box." : ""), action: { label: "Clear filters", onClick: clearAll }, motif: "dotgrid", motifOpts: { cols: 12, rows: 6, cell: 20, dissolve: .55 } }));
       return;
     }
     if (FS.view === "table") return renderTable(res, list);

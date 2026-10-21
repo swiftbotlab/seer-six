@@ -152,10 +152,41 @@
     });
   }
 
+  // The Electric Foundation line, in the direction Seer's Part II brief asks for: ONE stem enters from the left and fans
+  // out into MANY lines that run off to the right. The stem is the question; each branch is one of the top N names, as
+  // thick as its price (band width = price), in the same order as the rows under it; the active name's branch turns
+  // white with its bar. A fixed 1000-unit-wide viewBox is stretched to the poster's width at the box's own pixel height,
+  // and the strokes don't scale, so every width is in px. Prices are validated numbers; nothing here is text from the API.
+  function fan(d, N) {
+    var H = mq && mq.matches ? 40 : 56, W = 1000, rows = d.rows.slice(0, N), tot = 0;
+    rows.forEach(function (r) { tot += r.p || 0; });
+    var box = mk("div", "op-rfan"), k = mk("div", "op-rfan__k");
+    box.setAttribute("aria-hidden", "true");
+    k.appendChild(mk("span", null, "One question, its top " + N + " answers")); k.appendChild(mk("span", "op-rfan__x", "line width = price"));
+    box.appendChild(k);
+    var svg = sv("svg", { class: "op-rfan__svg", viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", focusable: "false" });
+    svg.style.height = H + "px";
+    var defs = sv("defs"), lg = sv("linearGradient", { id: "op-rfan-in", x1: "0", y1: "0", x2: "1", y2: "0" });
+    [[0, 0], [.75, 1]].forEach(function (s) { lg.appendChild(sv("stop", { offset: s[0], "stop-color": "currentColor", "stop-opacity": s[1] })); });
+    defs.appendChild(lg); svg.appendChild(defs);
+    var stem = Math.min(H * .36, 20), sx = W * .24, ox = W * .5, cx = (sx + ox) / 2, cy = H / 2, top = 2.5, step = N > 1 ? (H - 5) / (N - 1) : 0, acc = 0;
+    svg.appendChild(sv("rect", { class: "op-rfan__stem", x: "0", y: (cy - stem / 2).toFixed(2), width: (sx + 1).toFixed(1), height: stem.toFixed(2), fill: "url(#op-rfan-in)" }));
+    var paths = rows.map(function (r, i) {
+      var bw = tot ? Math.max(.8, stem * (r.p || 0) / tot) : stem / N, y0 = cy - stem / 2 + acc + bw / 2, yi = top + step * i;
+      acc += bw;
+      var p = sv("path", { d: "M" + sx.toFixed(1) + " " + y0.toFixed(2) + "C" + cx.toFixed(1) + " " + y0.toFixed(2) + " " + cx.toFixed(1) + " " + yi.toFixed(2) + " " + ox.toFixed(1) + " " + yi.toFixed(2) + "H" + W,
+        "stroke-width": bw.toFixed(2), "vector-effect": "non-scaling-stroke", fill: "none" });
+      svg.appendChild(p); return p;
+    });
+    box.appendChild(svg);
+    return { el: box, paths: paths };
+  }
+
   function board(d) {
     var host = $("op-rboard"); if (!host) return;
     clear(host);
     var N = Math.min(topN(), d.rows.length), max = scaleMax(d.rows[0].p);
+    var fn = fan(d, N); host.appendChild(fn.el);
     host.setAttribute("aria-label", "Seer's prices for all " + d.total + " suggested names, highest first. The top " + N + " are listed; the strip below draws every name as one bar, on the same square-root scale. Use the arrow keys to read each name.");
     var rows = mk("div", "op-rrows"), rowEls = [];
     for (var i = 0; i < N; i++) {
@@ -192,7 +223,7 @@
     });
     code.appendChild(svg);
     host.appendChild(code);
-    ui = { rows: rowEls, rects: rects, svg: svg, n: n };
+    ui = { rows: rowEls, rects: rects, svg: svg, n: n, fan: fn.paths };
 
     function at(ev) {
       var row = ev.target.closest && ev.target.closest(".op-rrow[data-i]");
@@ -223,9 +254,11 @@
     if (!cur || !ui || i === active) return;
     if (ui.rects[active]) ui.rects[active].classList.remove("is-on");
     if (ui.rows[active]) ui.rows[active].classList.remove("is-active");
+    if (ui.fan[active]) ui.fan[active].classList.remove("is-on");
     active = i;
     if (ui.rects[i]) ui.rects[i].classList.add("is-on");
     if (ui.rows[i]) ui.rows[i].classList.add("is-active");
+    if (ui.fan[i]) ui.fan[i].classList.add("is-on");
     var d = cur.d, r = d.rows[i], cap = $("op-rcap"); if (!cap) return;
     clear(cap);
     var l = mk("div", "op-cap__l");
@@ -238,6 +271,8 @@
 
   function note(d) {
     var off = Math.abs(d.sum - 100) > 3, sum = Math.round(d.sum);
+    var ap = $("op-ask-prices"); // the question-asker block: what is priced (the count is a validated integer)
+    if (ap) ap.textContent = "Which of the " + d.total + " names is adopted: a share of that name pays 1 sDAI";
     var p = $("op-rnote");
     if (p) p.textContent = d.total + " names in three linked markets on " + CHAIN_NAME + ": each market's Other outcome buys into the next. " +
       (off ? "Every name trades in its own small pool, so the prices add up to " + sum + "¢, not 100¢: read them as a ranking, not as chances."

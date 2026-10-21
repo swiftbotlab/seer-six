@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://api.futarchy.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Futarchy · Conditional markets (concept)</title>
-<meta name="description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="What happens to the metric if a proposal passes, and if it doesn't? Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, a signal for the decision rather than the decision. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,16 +14,16 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Futarchy · Conditional markets (concept)">
-<meta property="og:description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:description" content="What happens to the metric if a proposal passes, and if it doesn't? Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, a signal for the decision rather than the decision. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/futarchy/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/futarchy.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Futarchy · Conditional markets (concept): Electric Foundation poster">
+<meta property="og:image:alt" content="Futarchy · Conditional markets (concept): its first screen, opening on real Seer data, beside its headline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Futarchy · Conditional markets (concept)">
-<meta name="twitter:description" content="Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, and the ±1% signal band. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:description" content="What happens to the metric if a proposal passes, and if it doesn't? Opens on EIP-8363, a real futarchy market on futarchy.seer.pm read live from Seer: ETH priced if the EIP is scheduled and if not, a signal for the decision rather than the decision. A sample proposal walks through the tools below. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/futarchy.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
@@ -46,7 +46,15 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="ft-hero__copy" id="ft-real" aria-busy="true">
         <div class="s-hero__kicker s-specs ft-kicker"><span>04</span><span>On Seer</span><span class="s-hide-sm">Ethereum</span><span><b>EIP-8363</b></span></div>
         <h1 class="ft-title" id="ft-title">What happens to ETH <span class="t-accent">if <span class="u-nowrap">EIP-8363</span> is scheduled?</span></h1>
-        <p class="ft-subtitle"><b>EIP-8363</b> · Tapered Issuance Burn, for the Hegotá upgrade<span class="s-hide-sm">. Two pools price ETH in USDS: one that pays if it is scheduled, one if not</span>.</p>
+        <p class="ft-subtitle"><b>EIP-8363</b> · Tapered Issuance Burn, for the Hegotá upgrade<span class="s-hide-sm">. Two prices, one decision left to Ethereum&#x27;s core developers</span>.</p>
+        <!-- Who asks, what is priced, how to use it: from the market's own text on futarchy.seer.pm (read 21 Oct 2026): its TWAP
+             window ends "before ACDC #189 (Oct 15) so the market recommendation is available ahead of the Scheduled-for-Inclusion
+             decision"; "include if YES > NO by more than 1%, exclude if NO > YES by more than 1%, neutral within the band" -->
+        <dl class="qa-ask">
+          <div><dt>Asked by</dt><dd>Created on futarchy.seer.pm for the <span class="u-nowrap">EIP-8363</span> inclusion call; its signal was due before <span class="u-nowrap">ACDC #189</span></dd></div>
+          <div><dt>Prices</dt><dd>ETH in USDS twice: if <span class="u-nowrap">EIP-8363</span> is scheduled for Hegotá, and if it is not</dd></div>
+          <div><dt>Use the signal</dt><dd>YES over NO by 1%+ reads include, under by 1%+ exclude; the core devs decide</dd></div>
+        </dl>
         <div class="ft-signal">
           <div class="ft-signal__head">
             <span class="s-src" id="ft-real-src" data-state="loading"><i aria-hidden="true"></i>Snapshot<span class="s-hide-sm"> · futarchy.seer.pm</span> · 21 Oct 2026, 16:47 UTC</span>
@@ -59,7 +67,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           </div>
           <p class="ft-prov ft-real__twap" id="ft-real-twap"><span class="s-hide-sm">Signal: </span>5-day TWAP, 9–14 Oct: <b>≈ +0.06% · neutral</b></p>
         </div>
-        <div class="s-callout s-callout--violet ft-callout s-hide-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13.5 7.5 9h9l3.5 4.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M4 13.5h16M9.5 9V4.5h5V9"/></svg><p><b>Information for Ethereum's core developers, not the decision:</b> they decide on the ACDC call whether EIP-8363 ships in Hegotá. Reality.eth reports it; unresolved by 24 Oct 00:00 UTC, the market resolves No.</p></div>
+        <p class="t-meta ft-real__res s-hide-sm">Reality.eth reports the outcome; unresolved by 24 Oct 00:00 UTC, the market resolves No.</p>
         <div class="s-hero__actions ft-actions">
           <a class="s-btn" href="https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa" rel="noopener" target="_blank"><span>Open <span class="s-hide-sm">EIP-8363 </span>on Seer</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8.5 7H17v8.5"/></svg></a>
           <a class="s-btn s-btn--ghost" href="#walkthrough"><span><span class="s-hide-sm">Sample w</span><span class="ft-sm-only">W</span>alkthrough</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
@@ -68,7 +76,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <figure class="s-poster ft-poster ft-rposter" id="ft-rposter">
         <div class="ft-poster__art" id="ft-rp-art"></div>
         <div class="ft-poster__top"><div class="s-specs"><span>EIP-8363</span><span>WETH/USDS</span><span>Hourly<span class="ft-rp-opt"> since 8 Oct</span></span></div></div>
-        <figcaption class="ft-poster__foot"><div class="s-specs"><span>±1% band around NO</span><span class="ft-rp-opt2">Shaded: TWAP window</span><span class="ft-rp-opt">Ethereum</span></div></figcaption>
+        <figcaption class="ft-poster__foot"><div class="s-specs"><span>±1% band around NO</span><span>Fork: not to scale</span><span class="ft-rp-opt">Shaded: TWAP window</span><span class="ft-rp-opt">Ethereum</span></div></figcaption>
       </figure>
       <!-- Closed on Seer: real futarchy proposals, a dated snapshot of futarchy.seer.pm (21 Oct 2026, 09:27 UTC), each verified on its market page -->
       <div class="ft-onseer">
@@ -217,6 +225,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <div class="s-card s-card--pad">
               <h3 class="t-h3">Departures on this page</h3>
               <ol class="ft-list ft-list--num">
+                <li><b>The line runs one to many, left to right</b>, the direction Seer&#x27;s Part II brief asks for. On EIP-8363 both pools&#x27; history runs to today as one line, then forks into its two outcomes; that last split is drawn for legibility, not to scale, and the labels carry the prices.</li>
                 <li><b>The fork is a chart.</b> Its two branches end at the real 5-day TWAPs on a true price scale, and the ±1% band around the NO price is drawn in, so the signal reads before any number does.</li>
                 <li><b>The serif accent marks the condition</b> (“if … is approved?”), the same clause the live product highlights.</li>
                 <li><b>Prices are in conditional sDAI, not cents.</b> Each pool trades YES_LAT against YES_sDAI (and NO_LAT against NO_sDAI), not a probability, so the kit's ¢ tiles carry four-decimal prices and a colour key per branch.</li>

@@ -431,3 +431,26 @@ html.op-lock, html.op-lock body { overflow: hidden; }
 .op-walk .s-apphead__actions .s-btn { --h: 40px; }
 @media (max-width: 960px) { .op-walk .op-head__grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 @media (max-width: 640px) { .op-walk { padding-top: 24px; } .op-walk__in { padding-top: 16px; } .op-walk .s-apphead__copy > dl { display: none; } }
+
+/* ---------- Information Finance alignment (Seer's Part II brief) ---------- */
+/* question-asker block: who asks · what is priced · how to use the signal. The same <dl class="qa-ask"> markup sits in
+   every interface's hero, under the hero question; kit mono labels for dt, body text for dd */
+.qa-ask { margin: 16px 0 0; display: flex; flex-direction: column; gap: 7px; max-width: 720px; }
+.qa-ask > div { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 12px; align-items: baseline; min-width: 0; }
+.qa-ask dt { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); font-weight: 400; }
+.qa-ask dd { margin: 0; min-width: 0; font-size: 14px; line-height: 1.45; font-weight: 500; color: var(--text-2); text-wrap: pretty; }
+.qa-ask__addr { font-family: var(--font-mono); font-size: .9em; letter-spacing: .02em; color: var(--text); white-space: nowrap; }
+.op-real .s-apphead__copy > dl.qa-ask { display: flex; } /* system.css hides hero fact lists on phones; this one stays */
+@media (max-width: 640px) { .qa-ask { margin-top: 12px; gap: 8px; } .qa-ask > div { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; } .qa-ask dd { font-size: 13.5px; } }
+
+/* the EF line, fanned the way the brief draws it: one stem in from the left, many branches out to the right
+   (the question -> its top answers; line width = price). Ink poster, so the colours hold in both themes. */
+.op-rfan { margin: 2px 0 10px; color: var(--violet-2); }
+.op-rfan__k { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: rgba(224, 226, 245, .6); white-space: nowrap; }
+.op-rfan__k span { overflow: hidden; text-overflow: ellipsis; }
+.op-rfan__svg { display: block; width: 100%; overflow: visible; }
+.op-rfan__svg path { stroke: var(--violet-2); stroke-linecap: butt; transition: stroke .15s; }
+.op-rfan__svg path.is-on { stroke: #FFFFFF; }
+@media (max-width: 640px) { .op-rfan { margin-bottom: 8px; } }
+@media (max-width: 480px) { .op-rfan__x { display: none; } }
+@media (prefers-reduced-motion: reduce) { .op-rfan__svg path { transition: none; } }

@@ -563,15 +563,71 @@
     svg.style.width = "100%"; svg.style.height = "100%";
     clear(container).appendChild(svg); return svg;
   }
-  // Converging wedges: weights -> wedge widths on the open edge, all meeting at one vanishing point (= one price).
-  // opt: {weights:[...], colors:[...], gap:6, from:"left", focus:index, vp:[x,y] in 0..1, w, h}
+  // Fan-out lines, the direction Seer's Part II brief asks for: ONE line enters from the left and branches into MANY
+  // lines that run off to the right. Read left to right: one question -> its priced answers; one protocol -> its apps.
+  // Without weights every branch is as thick as the stem and leaves from one point. With weights the stem is a ribbon
+  // that splits: each branch leaves from its own slice of the stem and is as thick as its share (band width = price).
+  // opt: {n:7 | weights:[...], stem:10 (px; the ribbon's thickness with weights), split:.36 (x where the stem branches),
+  //       open:.62 (x where the branches run parallel), y:.5, spread:.78 (share of the height the branches cover),
+  //       maxSpread (px cap, so a tall box keeps gentle curves), colors:[...], fade:true, focus:i, titles:[...], labels:[...], stemLabel:"", glow:true,
+  //       fit:true (draw in the box's own pixels and redraw on resize), w, h, par}
+  var fanSeq = 0;
+  motif.fan = function (container, opt) {
+    opt = opt || {}; var gid = "s-fan-glow-" + (++fanSeq), out = null;
+    function draw() {
+      var cw = container.clientWidth, ch = container.clientHeight, fit = opt.fit && cw > 0 && ch > 0;
+      var w = fit ? cw : opt.w || 1000, h = fit ? ch : opt.h || 640, svg = frame(container, w, h, fit ? "none" : opt.par);
+      var ws = Array.isArray(opt.weights) && opt.weights.length ? opt.weights.map(function (v) { return typeof v === "number" && isFinite(v) && v > 0 ? v : 0; }) : null;
+      var n = ws ? ws.length : Math.max(2, Math.min(24, opt.n || 7)), tot = ws ? ws.reduce(function (a, b) { return a + b; }, 0) || 1 : n;
+      var sx = w * (opt.split == null ? .36 : opt.split), ox = w * (opt.open == null ? .62 : opt.open), cy = h * (opt.y == null ? .5 : opt.y);
+      var sp = Math.min(h * (opt.spread == null ? .78 : opt.spread), opt.maxSpread || Infinity), step = n > 1 ? sp / (n - 1) : 0, top = cy - sp / 2, mid = (n - 1) / 2;
+      var stem = opt.stem || 10, cx = sx + (ox - sx) * .5, acc = 0;
+      if (!ws && n > 1) stem = Math.max(3, Math.min(stem, step * .55)); // small boxes: keep a gap between parallel branches
+      var g = sv("g", { fill: "none", "stroke-linecap": "butt" }), defs = sv("defs"); svg.appendChild(defs);
+      if (opt.glow !== false) {
+        var rg = sv("radialGradient", { id: gid });
+        [[0, .5], [.45, .16], [1, 0]].forEach(function (s) { rg.appendChild(sv("stop", { offset: s[0], "stop-color": "currentColor", "stop-opacity": s[1] })); });
+        defs.appendChild(rg);
+        svg.appendChild(sv("circle", { cx: sx.toFixed(1), cy: cy.toFixed(1), r: Math.max(48, stem * 7, (ws ? stem : 0) * 1.4).toFixed(1), fill: "url(#" + gid + ")" }));
+      }
+      var trunk = sv("path", { d: "M-4 " + cy.toFixed(1) + "H" + (sx + 1).toFixed(1), "stroke-width": stem });
+      if (opt.stemFade) { // the stem arrives from off-canvas: transparent at the left edge, full strength before the split
+        var lg = sv("linearGradient", { id: gid + "-in", gradientUnits: "userSpaceOnUse", x1: "0", y1: "0", x2: (sx * .7).toFixed(1), y2: "0" });
+        [[0, 0], [1, 1]].forEach(function (s) { lg.appendChild(sv("stop", { offset: s[0], "stop-color": "currentColor", "stop-opacity": s[1] })); });
+        defs.appendChild(lg); trunk.setAttribute("stroke", "url(#" + gid + "-in)");
+      } else trunk.style.stroke = "currentColor";
+      g.appendChild(trunk);
+      for (var i = 0; i < n; i++) {
+        var bw = ws ? stem * ws[i] / tot : stem, y0 = ws ? cy - stem / 2 + acc + bw / 2 : cy, yi = n > 1 ? top + step * i : cy;
+        acc += bw; if (ws && bw < .4) continue;
+        var p = sv("path", { d: "M" + sx.toFixed(1) + " " + y0.toFixed(1) + "C" + cx.toFixed(1) + " " + y0.toFixed(1) + " " + cx.toFixed(1) + " " + yi.toFixed(1) + " " + ox.toFixed(1) + " " + yi.toFixed(1) + "H" + (w + 4), "stroke-width": bw.toFixed(2) });
+        p.style.stroke = (opt.colors && opt.colors[i]) || "currentColor";
+        if (opt.focus != null) p.style.opacity = i === opt.focus ? "1" : ".34";
+        else if (opt.fade !== false) p.style.opacity = String((1 - Math.abs(i - mid) / (mid || 1) * .42).toFixed(2));
+        if (opt.titles && opt.titles[i]) { var t = sv("title"); t.textContent = opt.titles[i]; p.appendChild(t); }
+        g.appendChild(p);
+        if (opt.labels && opt.labels[i] && step >= 26) {
+          var lb = sv("text", { x: (w - 14).toFixed(1), y: (yi - bw / 2 - 7).toFixed(1), "text-anchor": "end", class: "s-motif-lbl" }); lb.textContent = String(opt.labels[i]); g.appendChild(lb);
+        }
+      }
+      if (opt.stemLabel && sx >= 120) { var sl = sv("text", { x: "14", y: (cy - stem / 2 - 9).toFixed(1), class: "s-motif-lbl" }); sl.textContent = String(opt.stemLabel); g.appendChild(sl); }
+      svg.appendChild(g); out = svg; return svg;
+    }
+    draw();
+    if (opt.fit && S.onResize) S.onResize(container, draw);
+    return out;
+  };
+  // Wedges, in the fan-out direction: a stem enters from the left, and from its tip one wedge per weight opens to the
+  // right edge (wedge height on the open edge = share). Kept for callers of the kit's wedge shape; Seer's Part II brief
+  // reverses the kit's original converge-to-a-point direction. opt: {weights, colors, gap, focus, fade, titles, vp:[x,y], stem, w, h}
   motif.wedges = function (container, opt) {
     opt = opt || {}; var w = opt.w || 1000, h = opt.h || 640, svg = frame(container, w, h, opt.par);
-    var ws = opt.weights || [.18, .1, .14, .08, .2, .06, .12, .12], tot = ws.reduce(function (a, b) { return a + b; }, 0);
+    var ws = opt.weights || [.18, .1, .14, .08, .2, .06, .12, .12], tot = ws.reduce(function (a, b) { return a + b; }, 0) || 1;
     var gap = opt.gap == null ? 10 : opt.gap, span = h - gap * (ws.length - 1), y = 0;
-    var vp = opt.vp || [1, .5], vx = vp[0] * w, vy = vp[1] * h, x0 = opt.from === "right" ? w : 0;
+    var vp = opt.vp || [.3, .5], vx = vp[0] * w, vy = vp[1] * h, x1 = w;
+    if (opt.stem !== 0) { var st = sv("path", { d: "M-4 " + vy + "H" + (vx + 2), fill: "none", "stroke-width": opt.stem || 8 }); st.style.stroke = "currentColor"; svg.appendChild(st); }
     ws.forEach(function (v, i) {
-      var hh = v / tot * span, poly = sv("polygon", { points: x0 + "," + y.toFixed(1) + " " + x0 + "," + (y + hh).toFixed(1) + " " + vx + "," + vy });
+      var hh = v / tot * span, poly = sv("polygon", { points: vx + "," + vy + " " + x1 + "," + y.toFixed(1) + " " + x1 + "," + (y + hh).toFixed(1) });
       poly.style.fill = (opt.colors && opt.colors[i]) || "currentColor";
       if (opt.focus != null) poly.style.opacity = i === opt.focus ? 1 : .32; else if (opt.fade) poly.style.opacity = String(1 - i / ws.length * .6);
       if (opt.titles && opt.titles[i]) { var t = sv("title"); t.textContent = opt.titles[i]; poly.appendChild(t); }

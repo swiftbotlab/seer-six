@@ -441,3 +441,27 @@ html.rk-noscroll { overflow: hidden; }
   .rk-walk__t { font-size: 16px; }
   .rk-head .rk-hero__art { margin-top: 2px; }
 }
+
+/* ---------- Information Finance alignment (Seer's Part II brief) ---------- */
+/* product name: "Risk Pricing" primary; our poidh #39 name proposal as a quiet label beside the kicker */
+.rk-kick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.rk-kick .s-hero__kicker { margin-bottom: 0; } /* keep s-specs' negative left margin (it hides the leading separator) */
+.rk-alias { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: var(--r-sm); border: 1px dashed var(--line-strong); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .04em; color: var(--text-3); white-space: nowrap; cursor: help; }
+/* the kicker's own bottom spacing (system.css: 14px) moves to the row, so the title keeps its place */
+.rk-head .rk-kick { margin-bottom: 14px; }
+/* question-asker block: who asks · what is priced · how to use the signal. The same <dl class="qa-ask"> markup sits in
+   every interface's hero, under the hero question; kit mono labels for dt, body text for dd */
+.qa-ask { margin: 16px 0 0; display: flex; flex-direction: column; gap: 7px; max-width: 720px; }
+.qa-ask > div { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 12px; align-items: baseline; min-width: 0; }
+.qa-ask dt { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); font-weight: 400; }
+.qa-ask dd { margin: 0; min-width: 0; font-size: 14px; line-height: 1.45; font-weight: 500; color: var(--text-2); text-wrap: pretty; }
+.qa-ask__addr { font-family: var(--font-mono); font-size: .9em; letter-spacing: .02em; color: var(--text); white-space: nowrap; }
+.rk-head .s-apphead__copy > dl.qa-ask { display: flex; } /* system.css hides hero fact lists on phones; this one stays */
+@media (max-width: 640px) { .qa-ask { margin-top: 12px; gap: 8px; } .qa-ask > div { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; } .qa-ask dd { font-size: 13.5px; } }
+/* hero: the EF line fans out from one stem on the left into one lane per asset group; ink poster in both themes */
+.rk-plot svg { color: #8F55F7; }
+.rk-plot .rk-fan-on { color: #FFFFFF; }
+.rk-plot .rk-p-lanelbl { paint-order: stroke; stroke: var(--ink); stroke-width: 3px; stroke-linejoin: round; }
+.rk-plot .rk-p-lanelbl .rk-p-lanen { stroke: none; }
+@media (max-width: 640px) { .rk-head .s-apphead__sub { font-size: 14px; } }
+@media (max-width: 480px) { .rk-kick .rk-kx { display: none; } } /* phones: "06 · Risk Pricing" + the name label on one line; the quarter is on the poster */

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Opportunity Markets · Triage by price (concept)</title>
-<meta name="description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="Opportunity Markets: Seer is crowdsourcing the name of its AI job board, and traders price which of 235 suggestions it will adopt, so reviewers know where to start. Read live from Seer, then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,16 +14,16 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Opportunity Markets · Triage by price (concept)">
-<meta property="og:description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:description" content="Opportunity Markets: Seer is crowdsourcing the name of its AI job board, and traders price which of 235 suggestions it will adopt, so reviewers know where to start. Read live from Seer, then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/opportunity/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Opportunity Markets · Triage by price (concept): Electric Foundation poster with sample data">
+<meta property="og:image:alt" content="Opportunity Markets · Triage by price (concept): its first screen, opening on real Seer data, beside its headline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Opportunity Markets · Triage by price (concept)">
-<meta name="twitter:description" content="Opportunity Markets: opens on a real Seer market, read live: which of 235 community-suggested names Seer&#x27;s AI job board will adopt, each priced by traders. Then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:description" content="Opportunity Markets: Seer is crowdsourcing the name of its AI job board, and traders price which of 235 suggestions it will adopt, so reviewers know where to start. Read live from Seer, then a labelled sample walkthrough of a 40-proposal grant round. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/opportunity.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
@@ -44,7 +44,15 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="s-apphead__copy">
         <div class="s-hero__kicker s-specs"><span>05 · Opportunity</span><span>On Seer</span><span>Gnosis</span><span>sDAI</span></div>
         <h1 class="s-apphead__title" id="op-title">Which name will Seer's AI job board adopt?</h1>
-        <p class="s-apphead__sub">A real opportunity market on Seer. Every name the community suggested is an outcome, and traders price the one that will be adopted. The chosen name earns its author $1,000.</p>
+        <p class="s-apphead__sub">Seer is crowdsourcing the name of its AI job board. Every suggestion is an outcome, and the prices show which names the market expects Seer to adopt. The chosen name earns its author $1,000.</p>
+        <!-- Who asks, what is priced, how to use it: from the market's own data (Seer's markets API, 22 Oct 2026: creator
+             0x4edca105188a0783ab3a6f09c50567d1e3f8591d, the question names Seer's AI job board) and opportunity.seer.pm
+             ("Seer is crowdsourcing the name of its AI job board"; "sponsors prioritize review on only top rated submissions") -->
+        <dl class="qa-ask" id="op-ask">
+          <div><dt>Asked by</dt><dd>Seer, crowdsourcing a name for its AI job board · creator <span class="qa-ask__addr" title="0x4edca105188a0783ab3a6f09c50567d1e3f8591d">0x4edc…591d</span></dd></div>
+          <div><dt>Prices</dt><dd id="op-ask-prices">Which suggested name is adopted: a share of that name pays 1 sDAI</dd></div>
+          <div><dt>Use the signal</dt><dd>Reviewers start with the names traders rank highest; Seer still makes the choice</dd></div>
+        </dl>
         <dl class="op-facts" id="op-rfacts"></dl>
         <p class="t-meta op-rnote" id="op-rnote"></p>
         <div class="s-apphead__actions">
@@ -298,6 +306,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <div class="s-card s-card--pad">
               <h3 class="t-title">Departures on this page, and why</h3>
               <ol class="op-notelist op-notelist--num">
+                <li><b>The EF line runs one to many.</b> As Seer's Part II brief asks, the line at the top of the real board enters as one stem on the left (the question) and fans out to the right into its top names, each as thick as its price, in the order of the rows under it.</li>
                 <li><b>The barcode carries data.</b> Each bar in the board at the top is one entry; its length is the chance of selection, on a square-root scale so the long tail stays visible. Violet bars sit inside the eight funding slots, and the dashed rule is the selection line.</li>
                 <li><b>Two numbers per entry.</b> In a market with several winners, price and probability differ, so each card shows the chance of selection first and the share price second.</li>
                 <li><b>Buy and Sell replace Yes and No.</b> Each entry is one outcome token, as in Seer's live Opportunity ticket. The +1 / +5 / +10 / +100 chips and 0.5% slippage come from that ticket too.</li>

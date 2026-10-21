@@ -448,3 +448,42 @@
 /* r6 item 7: the explorer bar starts at the shared top line (assets/system.css --hero-top), copy and search top-aligned */
 .ap-bar { padding-top: var(--hero-top); }
 .ap-bar__in { align-items: start; }
+
+/* ---------- explorer bar: lede, question-asker block, information seeker's path ---------- */
+.ap-bar__in { grid-template-areas: "copy search" "ask ask"; row-gap: 14px; }
+.ap-bar__copy { grid-area: copy; padding-bottom: 0; }
+.ap-bar__search { grid-area: search; }
+.ap-bar__ask { grid-area: ask; min-width: 0; }
+.ap-bar__lede { margin-top: 10px; max-width: 58ch; font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
+.ap-ask__k { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--violet-3); margin-bottom: 6px; }
+/* the same <dl class="qa-ask"> markup sits in every interface's hero */
+.qa-ask { display: grid; gap: 4px; margin: 0; max-width: 760px; }
+.qa-ask > div { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 12px; align-items: baseline; min-width: 0; }
+.qa-ask dt { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+.qa-ask dd { margin: 0; min-width: 0; font-size: 13.5px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+.qa-ask__addr { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .01em; color: var(--text); }
+.qa-ask b { font-weight: 600; color: var(--text); }
+.ap-seek-path { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; font-size: var(--fs-ui); font-weight: 500; line-height: 1.4; }
+.ap-seek-path__k { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.ap-seek-path a, .ap-seek-path__b { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; font: inherit; color: var(--violet-3); cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 45%, transparent); border-radius: 4px; }
+.ap-seek-path a:hover, .ap-seek-path__b:hover { color: var(--text); text-decoration-color: currentColor; }
+.ap-seek-path a:focus-visible, .ap-seek-path__b:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ap-seek-path svg { flex: none; }
+@media (max-width: 960px) { .ap-bar__in { grid-template-areas: "copy" "search" "ask"; } }
+@media (max-width: 640px) {
+  .ap-bar__lede { font-size: 14px; margin-top: 8px; }
+  .qa-ask { gap: 8px; }
+  .qa-ask > div { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; }
+  .qa-ask dt { white-space: normal; }
+  .qa-ask dd { font-size: 13px; }
+  .ap-seek-path { margin-top: 10px; gap: 6px 14px; }
+  .ap-seek-path__k { flex-basis: 100%; }
+}
+
+/* search: real markets on Seer for a word query ("On Seer · live" rows, from live.js) */
+.ap-suggest__live { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; padding: 10px 12px 6px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); border-top: 1px solid var(--line); margin-top: 4px; }
+.ap-suggest__live b { font-weight: 400; color: var(--violet-3); }
+.ap-sug--live .ap-sug__kind { color: var(--violet-3); }
+.ap-suggest__ask { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 12px 10px; font-size: var(--fs-ui); font-weight: 500; color: var(--text-2); }
+.ap-suggest__ask a { color: var(--violet-3); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ap-suggest__ask a:hover { color: var(--text); }

@@ -820,11 +820,14 @@ button.s-orow:hover { background: var(--surface-hover); }
 
 /* 8. MOTIFS ---------------------------------------------------------------------
    EF graphic language, rendered by Seer.motif.* in ui.js. Each motif carries data:
-   wedges = outcome shares converging to one price · waves = forecast distributions ·
+   fan = one line in from the left branching into many to the right (one question -> its priced answers; the
+   direction Seer's Part II brief asks for; wedges open the same way) · waves = forecast distributions ·
    dot->line grid = uncertainty becoming structure · 45° fork = futarchy branches ·
    barcode = a field of entries · stripes = risk / caution field. */
 .s-motif { position: relative; width: 100%; height: 100%; color: var(--violet-2); }
 .s-motif svg { width: 100%; height: 100%; }
+.s-motif-lbl { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; fill: var(--text-2); }
+.s-poster .s-motif-lbl { fill: rgba(224, 226, 245, .74); }
 .s-poster { position: relative; overflow: hidden; border-radius: var(--r-panel); background: var(--ink); color: var(--lavender); isolation: isolate; --c-no: #BFBFE6; }
 .s-poster--violet { background: var(--violet); color: var(--logo-on-violet); }
 .s-poster .s-specs, .s-poster .s-spec { color: rgba(224, 226, 245, .66); }

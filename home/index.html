@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Seer · Decision infrastructure (concept)</title>
-<meta name="description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
+<title>Seer · Information finance protocol (concept)</title>
+<meta name="description" content="Seer is the information-finance protocol beneath five apps: one question format, one oracle and one set of outcome tokens. Someone asks, traders price every answer, anyone reads the signal. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -13,17 +13,17 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <link rel="preload" href="../assets/ui.js" as="script">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
-<meta property="og:title" content="Seer · Decision infrastructure (concept)">
-<meta property="og:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:title" content="Seer · Information finance protocol (concept)">
+<meta property="og:description" content="Seer is the information-finance protocol beneath five apps: one question format, one oracle and one set of outcome tokens. Someone asks, traders price every answer, anyone reads the signal. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/home/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/home.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Seer · Decision infrastructure (concept): Electric Foundation poster with sample data">
+<meta property="og:image:alt" content="Seer · Information finance protocol (concept): its first screen, opening on real Seer data, beside its headline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
-<meta name="twitter:title" content="Seer · Decision infrastructure (concept)">
-<meta name="twitter:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:title" content="Seer · Information finance protocol (concept)">
+<meta name="twitter:description" content="Seer is the information-finance protocol beneath five apps: one question format, one oracle and one set of outcome tokens. Someone asks, traders price every answer, anyone reads the signal. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/home.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
@@ -38,18 +38,21 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script>(function(){var b=document.querySelector(".s-lockup__sample");if(!b)return;var x=window.HM_HERO_SNAPSHOT,d=x&&typeof x.at==="number"&&isFinite(x.at)?new Date(x.at):null,c=document.createElement("span");c.className="s-src s-lockup__src hm-hsrc";c.id="hm-hsrc";c.setAttribute("data-state","loading");c.setAttribute("role","note");c.title="Top of this page: the most liquid open market on Seer, read live from Seer's public markets API (a dated snapshot if it does not answer). The walkthrough below it is sample data.";var i=document.createElement("i");i.setAttribute("aria-hidden","true");c.appendChild(i);function sp(k,t){var s=document.createElement("span");s.className=k;s.textContent=t;c.appendChild(s)}sp("hm-hsrc__k","Snapshot");sp("hm-hsrc__src"," · app.seer.pm");if(d)sp("hm-hsrc__when"," · "+d.getUTCDate()+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()]);b.parentNode.replaceChild(c,b)})();</script>
 <main id="main" class="s-main">
 
-  <!-- 1. HERO: a REAL Seer market, the most liquid open Kleros-verified one, drawn as the kit's converging wedges.
+  <!-- 1. HERO: a REAL Seer market, the most liquid open Kleros-verified one, drawn ONE -> MANY: the question enters from the left
+       as one line and fans out into its answers on the right (band width = price), as Seer's Part II brief asks.
        live.js reads it from Seer's public markets API; hero-snapshot.js is the dated fallback, painted at once. -->
   <section class="hm-hero" aria-labelledby="hm-title">
     <div class="s-container hm-hero__grid">
       <div class="hm-hero__copy">
-        <div class="s-specs hm-hero__kicker"><span>Seer protocol</span><span>Decision infrastructure</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
-        <h1 id="hm-title" class="hm-hero__title">See what the markets <span class="t-accent">believe.</span></h1>
-        <p class="t-lede hm-hero__lede">Seer is an open protocol for prediction markets. Ask a question, let traders price every answer, and read one clear signal. Five apps share the same markets, tokens and oracle, each for a different kind of decision.</p>
+        <div class="s-specs hm-hero__kicker"><span>Seer protocol</span><span>Information finance</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
+        <h1 id="hm-title" class="hm-hero__title">Questions in. <span class="t-accent">Priced answers out.</span></h1>
+        <p class="t-lede hm-hero__lede">Seer is the information-finance protocol beneath five apps: one question format, one oracle, one set of outcome tokens. Someone asks, traders price every answer, and a DAO, a grant team, a risk desk or an agent reads the signal.</p>
         <div class="hm-hero__actions">
           <a class="s-btn s-btn--lg" href="../app/">Explore markets</a>
           <a class="s-btn s-btn--lg s-btn--secondary" href="#protocol">How Seer works</a>
         </div>
+        <!-- the information seeker's path, beside the trader's: read what a market says, or ask a new question on Seer's real create flow -->
+        <p class="hm-seek"><span class="hm-seek__k">Have a question?</span><a href="../app/#on-seer">Read what a market says</a><a href="https://app.seer.pm/create-market" target="_blank" rel="noopener noreferrer">Ask your own on Seer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></p>
         <!-- Open on Seer now: the real count of open markets, read live by live.js from Seer's public API, dated snapshot as fallback -->
         <p class="hm-live"><span class="hm-live__k">Open on Seer now</span><a class="hm-live__n" href="https://app.seer.pm/" rel="noopener noreferrer" target="_blank" aria-describedby="hm-live-src"><b id="hm-live-n" class="t-num">2,137</b> markets<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="s-src" id="hm-live-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · 21 Oct 2026, 10:31 UTC</span></p>
       </div>
@@ -60,6 +63,12 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <span class="s-src hm-price__src" id="hm-price-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · app.seer.pm</span>
         </div>
         <p class="hm-price__q" id="hm-price-q"></p>
+        <!-- who is asking, what is priced, how to use it: filled by page.js from the market's own data (creator address, type, prices) -->
+        <dl class="qa-ask" id="hm-ask" aria-label="About this question">
+          <div><dt>Asked by</dt><dd id="hm-ask-by">Whoever created it on Seer: anyone can, without permission</dd></div>
+          <div><dt>Prices</dt><dd id="hm-ask-prices">The chance of each answer; a full set of answers pays 1 unit of collateral</dd></div>
+          <div><dt>Use the signal</dt><dd id="hm-ask-use">Read the top price as the market's odds today, not a certainty</dd></div>
+        </dl>
         <div class="hm-price__art" id="hm-price-art"></div>
         <div class="hm-price__legend" id="hm-price-legend" role="group" aria-label="Answers, with Seer's prices"></div>
         <figcaption class="hm-price__foot">
@@ -125,6 +134,15 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           </div>
         </div>
       </details>
+      <!-- for agents: what software can read here today (same three things the hub lists) -->
+      <div class="hm-agents" role="group" aria-labelledby="hm-ag-h">
+        <div class="hm-agents__head"><span class="s-spec">Agentic economy</span><h3 class="hm-agents__t" id="hm-ag-h">For agents</h3><p>The same protocol, read by software: no key, no sign-up.</p></div>
+        <ul class="hm-agents__list">
+          <li><a href="../llms.txt">llms.txt</a><small>The six interfaces and every Seer endpoint they read</small></li>
+          <li><a href="../data/home.json">data/home.json</a><small>This page's market and open count, with source and fetch time</small></li>
+          <li><a href="../deep/#strategy">Deep's agent path</a><small>Connect, create a trade wallet, upload one CSV batch (designed here)</small></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -204,7 +222,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           </div>
                 <div class="hm-notes__grid">
             <ol class="hm-notes__list">
-              <li><b>Wedges carry real prices.</b> The kit's converging wedges are drawn from the most liquid open market on Seer, read live: band width is an answer's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
+              <li><b>One question, many priced answers.</b> The kit's line motif runs the way Seer's Part II brief asks: one line enters from the left and fans out to the right. It is drawn from the most liquid open market on Seer, read live: the line is the question, each band an answer, and a band's width is its price (a full set of outcome tokens is worth 1 collateral, so the widths add up to the whole).</li>
               <li><b>A protocol map replaces the marketing grid.</b> The raven art, the category pill cloud and the feature cards become one diagram: five apps above the building blocks they share.</li>
               <li><b>One worked example instead of claims.</b> A fictional grant round is followed through four apps with the same market IDs they use. No invented protocol totals.</li>
             </ol>
@@ -227,11 +245,11 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <div class="s-container hm-proof__grid">
       <div class="s-card s-card--pad hm-rebrand" id="hm-rebrand"></div>
       <div class="s-poster s-poster--violet hm-cta">
-        <div class="s-specs hm-cta__specs"><span>Every opinion has a price</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
+        <div class="s-specs hm-cta__specs"><span>Information finance</span><span class="s-hide-sm">Est. on Gnosis Chain</span></div>
         <h2 id="hm-proof-title" class="hm-cta__title">Ask a question. <span class="t-accent">Read the answer.</span></h2>
         <div class="hm-cta__actions">
           <a class="s-btn s-btn--lg hm-btn-ink" href="../app/">Open the App</a>
-          <button class="s-btn s-btn--lg hm-btn-fog" type="button" data-demo="Market creation is not wired in this concept.">Create a market</button>
+          <a class="s-btn s-btn--lg hm-btn-fog" href="https://app.seer.pm/create-market" target="_blank" rel="noopener noreferrer">Ask your own on Seer<span class="s-sr"> (opens app.seer.pm)</span></a>
         </div>
         <div class="hm-cta__word" id="hm-cta-word" aria-hidden="true"></div>
       </div>

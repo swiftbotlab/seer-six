@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deep · Many-outcome markets (concept)</title>
-<meta name="description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="Deep: questions with many answers, priced for the team that asks them. Opens on Seer&#x27;s real Round 3 Originality field: traders and agents forecast the originality score of every repository in the Deep Funding experiment (a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -13,16 +13,16 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Deep · Many-outcome markets (concept)">
-<meta property="og:description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:description" content="Deep: questions with many answers, priced for the team that asks them. Opens on Seer&#x27;s real Round 3 Originality field: traders and agents forecast the originality score of every repository in the Deep Funding experiment (a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/deep/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Deep · Many-outcome markets (concept): Electric Foundation poster with sample data">
+<meta property="og:image:alt" content="Deep · Many-outcome markets (concept): its first screen, opening on real Seer data, beside its headline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Deep · Many-outcome markets (concept)">
-<meta name="twitter:description" content="Deep: many-outcome markets built for forecasting agents. Opens on Seer&#x27;s real Round 3 Originality field (every repository&#x27;s UP price, a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:description" content="Deep: questions with many answers, priced for the team that asks them. Opens on Seer&#x27;s real Round 3 Originality field: traders and agents forecast the originality score of every repository in the Deep Funding experiment (a dated snapshot of deep.seer.pm), then a labelled sample walkthrough. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/deep.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
@@ -43,7 +43,13 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="s-apphead__copy">
         <div class="s-hero__kicker s-specs"><span>03 · Deep</span><span><b>On Seer</b> · Round 3</span><span>Optimism</span><span class="dp-hide-xs">sUSDS</span></div>
         <h1 class="s-apphead__title" id="dp-r3-title">How much of each repository is original work?</h1>
-        <p class="s-apphead__sub">Deep Funding Round 3 on Seer prices each open-source repository as an UP/DOWN pair: UP is the market&#x27;s estimate of the share of original work, DOWN the share carried by dependencies.</p>
+        <p class="s-apphead__sub">Questions with many answers, priced at once: traders and agents forecast how original each of 98 open-source repositories is, before the scores are in.</p>
+        <!-- Who asks, what is priced, how to use it: from the 98 markets' own question text and creator, read from Seer's markets API on 21 Oct 2026 (all 98: "What will be the average originality score of <repo> in Round 3 of the Deep Funding experiment?", range 0-100, creator 0x00dc3e0acadb8dba21bb08ff30540222ff8836e0) -->
+        <dl class="qa-ask">
+          <div><dt>Asked by</dt><dd>The Deep Funding experiment, named in all 98 questions · creator <span class="qa-ask__addr" title="0x00dc3e0acadb8dba21bb08ff30540222ff8836e0">0x00dc…36e0</span></dd></div>
+          <div><dt>Prices</dt><dd>Each repo&#x27;s average originality score in Round 3, 0–100: UP 0.80 ≈ a score of 80</dd></div>
+          <div><dt>Use the signal</dt><dd>Agents price the scores early: the funding team sees the field&#x27;s view first</dd></div>
+        </dl>
         <p class="dp-r3__src"><span class="s-src" id="dp-r3-src" data-state="snapshot"><i aria-hidden="true"></i><span>Snapshot · deep.seer.pm</span></span></p>
         <dl class="dp-hero__facts" id="dp-r3-facts"></dl>
         <div class="s-apphead__actions">
@@ -55,9 +61,9 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <figure class="s-poster dp-poster dp-r3poster" id="dp-r3-poster">
           <div class="dp-poster__top">
             <div class="s-specs"><span>Round 3 · <b>Originality</b></span><span data-r3-only><b data-r3="n"></b> UP/DOWN pairs</span></div>
-            <div class="s-specs dp-hide-xs"><span id="dp-r3-binnote" data-r3-only>1 dot = 1 repository</span><span>Status: <b id="dp-r3-status">on Seer</b></span></div>
+            <div class="s-specs dp-hide-xs"><span id="dp-r3-binnote" data-r3-only>1 line = 1 repository</span><span>Status: <b id="dp-r3-status">on Seer</b></span></div>
           </div>
-          <div class="dp-dots" id="dp-dots" tabindex="0" role="slider" aria-label="Round 3 repositories by UP price, one dot each. Use the arrow keys to move between them; Enter opens the market on Seer."></div>
+          <div class="dp-dots" id="dp-dots" tabindex="0" role="slider" aria-label="Round 3 as one question fanning out into its repositories, one line each, ending at the repository&#x27;s UP price, highest first. Use the arrow keys to move between them; Enter opens the market on Seer."></div>
           <figcaption class="dp-poster__cap" id="dp-dots-cap"></figcaption>
         </figure>
       </div>
@@ -94,7 +100,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       <div class="s-apphead__grid dp-head__grid">
         <div class="s-apphead__copy">
           <h2 class="t-h2 dp-walk__t" id="dp-walk-t">Walkthrough: one proposal across the apps (sample)</h2>
-          <p class="s-apphead__sub">What Deep could add for a scored grant round: a fictional Lattice DAO puts 40 proposals in one market, agents and people trade every expected panel score, and the top eight get funded. Proposal P-07 recurs in Futarchy and Opportunity.</p>
+          <p class="s-apphead__sub">What Deep could add for a grant round: a fictional Lattice DAO asks how its review panel will score 40 proposals. Agents forecast every score in one market, so the funding team knows where a second read matters before the scores are published. P-07 recurs in Futarchy and Opportunity.</p>
           <dl class="dp-hero__facts" id="dp-hero-facts"></dl>
           <div class="s-apphead__actions">
             <a class="s-btn s-btn--secondary" href="#field">Trade Round 4 (sample)</a>
@@ -332,6 +338,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <div class="s-card s-card--pad">
               <h3 class="t-title">Departures on this page, and why</h3>
               <ol class="dp-notelist dp-notelist--num">
+                <li><b>The line runs one to many, left to right</b>, the direction Seer&#x27;s Part II brief asks for. On Round 3 one line, the question, enters on the left and fans out into a branch per repository; each branch ends at that repository&#x27;s UP price, so the ends trace the whole field.</li>
                 <li><b>The waves carry data.</b> The chart at the top draws all 40 proposals as stacked waves. Each peak sits at a proposal's forecast score, and its height shows how much forecasters agree. The eight funded ranks are violet; the rest fade by rank, as in the poster.</li>
                 <li><b>Up and Down replace Yes and No.</b> A score is a number, not an event, so each outcome trades as a pair: UP pays the score ÷ 10.</li>
                 <li><b>Distribution sparklines in table rows.</b> The kit has no tables. We kept them quiet: one hue, a dashed funding line, no gridlines.</li>

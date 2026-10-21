@@ -156,7 +156,8 @@
     if (!m || !box || !box.clientWidth) return;
     var W = box.clientWidth, Hh = box.clientHeight || 420, small = W < 560;
     var top = small ? 58 : 66, bot = small ? 58 : 66, x0 = small ? 16 : 24;
-    var labW = small ? 92 : 132, ex = W - labW - (small ? 10 : 20), ph = Hh - top - bot;
+    // ex = "now", where the price history ends; right of it the one proposal FORKS into its two outcomes (EF line, one -> many)
+    var labW = small ? 92 : 116, fk = small ? 30 : 56, ex = W - labW - fk - (small ? 10 : 18), ph = Hh - top - bot;
     var hs = m.hours, t0 = m.start, t1 = m.end, winLabels = [], yLabels = [];
     var lo = Infinity, hi = -Infinity;
     hs.forEach(function (r) { if (r[2] != null) { lo = Math.min(lo, r[2] * (1 - BAND)); hi = Math.max(hi, r[2] * (1 + BAND)); } if (r[1] != null) { lo = Math.min(lo, r[1]); hi = Math.max(hi, r[1]); } });
@@ -165,7 +166,7 @@
     var Y = function (v) { return top + (hi - v) / (hi - lo) * ph; };
     var Yy = Y(m.py), Yn = Y(m.pn);
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + Hh, width: W, height: Hh, class: "ft-poster__svg ft-rp", role: "img",
-      "aria-label": "EIP-8363 on Seer, hourly since " + dayMon(t0) + ": ETH " + usd(m.py) + " USDS if scheduled, " + usd(m.pn) + " if not, a gap of " + gapTxt(m.gap) + ", inside the ±1% band." +
+      "aria-label": "EIP-8363 on Seer, hourly since " + dayMon(t0) + ", then the proposal forks into its two outcomes: ETH " + usd(m.py) + " USDS if scheduled, " + usd(m.pn) + " if not, a gap of " + gapTxt(m.gap) + ", inside the ±1% band." +
         (m.twapGap != null ? " 5-day TWAP, 9 to 14 Oct: about " + gapTxt(m.twapGap) + ", neutral." : "") });
     // construction grid on 45°, through the end node (the EF logo sheet's lines)
     var g = sv("g", { class: "ft-pt-grid" }), gap = 46, cA = ex + Yn, cB = ex - Yn;
@@ -211,11 +212,19 @@
     var cg = sv("g", { class: "ft-pt-circles" });
     cg.appendChild(sv("circle", { cx: ex, cy: (Yy + Yn) / 2, r: small ? 22 : 30 })); cg.appendChild(sv("circle", { cx: ex, cy: (Yy + Yn) / 2, r: small ? 44 : 60 }));
     svg.appendChild(cg);
-    [["no", Yn], ["yes", Yy]].forEach(function (b) { svg.appendChild(sv("circle", { class: "ft-pt-end ft-pt-end--" + b[0], cx: ex, cy: b[1], r: small ? 5 : 6 })); });
     // end labels, de-overlapped: the higher branch above
-    var hiB = Yy <= Yn ? "yes" : "no", minSep = small ? 34 : 44, yTop = Math.min(Yy, Yn), yBot = Math.max(Yy, Yn);
+    var hiB = Yy <= Yn ? "yes" : "no", minSep = small ? 40 : 60, yTop = Math.min(Yy, Yn), yBot = Math.max(Yy, Yn);
     if (yBot - yTop < minSep) { var mid = (yTop + yBot) / 2; yTop = mid - minSep / 2; yBot = mid + minSep / 2; }
-    var lx = ex + (small ? 12 : 18), vs = small ? 17 : 22;
+    // the fork: from today's prices each branch turns 45° to its outcome (the spread is drawn for legibility, not to the
+    // price scale: the labels carry the values), NO under YES as in the history
+    var fx = ex + fk, yEnd = { yes: hiB === "yes" ? yTop : yBot, no: hiB === "yes" ? yBot : yTop };
+    [["no", Yn], ["yes", Yy]].forEach(function (b) {
+      var y1 = yEnd[b[0]], dx = Math.min(fk - 8, Math.abs(y1 - b[1]));
+      svg.appendChild(sv("path", { class: "ft-pt-branch ft-pt-branch--" + b[0] + " ft-rp-line ft-rp-line--" + b[0] + " ft-rp-fork", d: "M" + ex.toFixed(1) + " " + b[1].toFixed(1) + "L" + (ex + dx).toFixed(1) + " " + y1.toFixed(1) + "H" + fx.toFixed(1) }));
+    });
+    if (Math.abs(Yy - Yn) < 3) svg.appendChild(sv("circle", { class: "ft-pt-node ft-rp-node", cx: ex, cy: (Yy + Yn) / 2, r: small ? 4 : 5 }));
+    [["no", yEnd.no], ["yes", yEnd.yes]].forEach(function (b) { svg.appendChild(sv("circle", { class: "ft-pt-end ft-pt-end--" + b[0], cx: fx, cy: b[1], r: small ? 5 : 6 })); });
+    var lx = fx + (small ? 10 : 14), vs = small ? 17 : 22;
     function endLabel(br, yv, above) {
       var val = br === "yes" ? m.py : m.pn, name = br === "yes" ? (small ? "If yes" : "If scheduled") : (small ? "If no" : "If not");
       var vt = sv("text", { class: "ft-pt-value", x: lx, y: yv + vs * .36, style: "font-size:" + vs + "px" }); vt.textContent = usd(val); svg.appendChild(vt);

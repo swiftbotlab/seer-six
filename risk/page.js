@@ -197,7 +197,8 @@
     if (!HB) return;
     var W = Math.round(plot.clientWidth), H = Math.round(plot.clientHeight); if (!W || !H) return;
     var narrow = W < 520, mid = W < 760, h = st.h, HA = HB.assets;
-    var ml = narrow ? 44 : 70, mr = narrow ? 8 : 14, mt = 30, mb = 42, pw = W - ml - mr, ph = H - mt - mb, laneH = ph / GROUPS.length;
+    // the left margin holds the fan (the EF line, one stem in from the left -> one lane per group); lane names sit in the lanes
+    var ml = narrow ? 40 : 62, mr = narrow ? 8 : 14, mt = 30, mb = 42, pw = W - ml - mr, ph = H - mt - mb, laneH = ph / GROUPS.length;
     var X = function (p) { return ml + hpos(p, h) * pw; };
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
     var defs = sv("defs"); svg.appendChild(defs);
@@ -216,14 +217,32 @@
       else { var tx = sv("text", { x: x0 + 20, y: mt - 12 }); tx.textContent = b.label.toUpperCase(); gl.appendChild(tx); gl.appendChild(shape(b.id, x0 + 11, mt - 15.5, 7)); bandTx.push({ t: tx, g: gl, id: b.id, x: x0 + 20 }); }
       svg.appendChild(gl);
     });
-    // lanes
+    // lanes, drawn as the EF line in the direction Seer's Part II brief asks for: ONE stem enters from the left (the
+    // question) and fans out into MANY lines that run to the right, one lane per asset group, each as thick as its share
+    // of the assets; the estimates sit on those lines. The active asset's lane is drawn bright.
+    var act0 = HM[hs.active] || HBYP[HBYP.length - 1], cnt = GROUPS.map(function (g) { return HA.filter(function (a) { return a.group === g.id; }).length; });
+    var tot = cnt.reduce(function (s, n) { return s + n; }, 0) || 1, stem = narrow ? 7 : 10, sx = Math.round(ml * .26), ox = ml - 4, fx = (sx + ox) / 2, cy = mt + ph / 2, acc = 0;
+    function grad(id, x1, x2, stops) {
+      var lg = sv("linearGradient", { id: id, gradientUnits: "userSpaceOnUse", x1: x1, y1: 0, x2: x2, y2: 0 });
+      stops.forEach(function (o) { lg.appendChild(sv("stop", { offset: o[0], "stop-color": "currentColor", "stop-opacity": o[1] })); }); defs.appendChild(lg); return lg;
+    }
+    grad("rk-fan-in", 0, sx + 1, [[0, 0], [1, 1]]);
+    grad("rk-fan-out", ox, ox + 70, [[0, 1], [1, .26]]);
+    grad("rk-fan-on", ox, ox + 70, [[0, 1], [1, .5]]).setAttribute("class", "rk-fan-on");
+    var fan = sv("g", { class: "rk-p-fan", fill: "none" });
+    fan.appendChild(sv("rect", { x: 0, y: (cy - stem / 2).toFixed(1), width: sx + 1, height: stem, fill: "url(#rk-fan-in)" }));
+    var laneTx = [];
     GROUPS.forEach(function (g, i) {
-      var y0 = mt + laneH * i;
-      if (i) svg.appendChild(sv("line", { class: "rk-p-lane", x1: 0, x2: W - mr, y1: y0, y2: y0 }));
-      var n = HA.filter(function (a) { return a.group === g.id; }).length;
-      var t = sv("text", { class: "rk-p-lanelbl", x: 0, y: y0 + laneH / 2 - (narrow ? 0 : 3) }); t.textContent = g.id === "Funds" ? "FUNDS" : g.id; svg.appendChild(t);
-      if (!narrow) { var t2 = sv("text", { class: "rk-p-lanen", x: 0, y: y0 + laneH / 2 + 11 }); t2.textContent = n + " assets"; svg.appendChild(t2); }
+      var y0 = mt + laneH * i, yc = y0 + laneH / 2, bw = Math.max(1, stem * cnt[i] / tot), ys = cy - stem / 2 + acc + bw / 2, on = act0 && act0.group === g.id;
+      acc += bw;
+      fan.appendChild(sv("path", { class: on ? "is-on" : "", "stroke-width": bw.toFixed(2), stroke: on ? "url(#rk-fan-on)" : "url(#rk-fan-out)",
+        d: "M" + sx + " " + ys.toFixed(1) + "C" + fx.toFixed(1) + " " + ys.toFixed(1) + " " + fx.toFixed(1) + " " + yc.toFixed(1) + " " + ox + " " + yc.toFixed(1) + "H" + (W - mr) }));
+      var t = sv("text", { class: "rk-p-lanelbl", x: ml + 4, y: (y0 + (narrow ? 11 : 12)).toFixed(1) }); t.textContent = g.id === "Funds" ? "FUNDS" : g.id;
+      if (!narrow) { var t2 = sv("tspan", { class: "rk-p-lanen", dx: "8" }); t2.textContent = cnt[i] + " assets"; t.appendChild(t2); }
+      laneTx.push(t);
     });
+    svg.appendChild(fan);
+    laneTx.forEach(function (t) { svg.appendChild(t); });
     // ticks
     TICKS.filter(function (t) { return t >= d[0] * .999 && t <= d[1] * 1.001; }).forEach(function (t) {
       var m = mant(t); if (narrow && m !== 1) return; if (mid && !narrow && m === 2) return;
@@ -274,7 +293,10 @@
     // then it goes under the dot, if no other dot is there
     if (lt) {
       var bb = null; try { bb = lt.getBBox(); } catch (e) { /* not laid out */ }
-      if (bb && bb.width && bb.y < mt + 2) {
+      var lane = null; // ... or when it would sit on a lane's name (a low estimate at the far left)
+      laneTx.forEach(function (t) { var lb = null; try { lb = t.getBBox(); } catch (e) { /* not laid out */ }
+        if (bb && lb && lb.width && bb.x < lb.x + lb.width + 2 && bb.x + bb.width > lb.x - 2 && bb.y < lb.y + lb.height && bb.y + bb.height > lb.y) lane = t; });
+      if (bb && bb.width && (bb.y < mt + 2 || lane)) {
         var yb = ap.y + r + 16, top = yb - bb.height * .8, bot = yb + bb.height * .3;
         var hit = HA.some(function (a) { var p = P[a.id]; return a.id !== act.id && p.x + r > bb.x - 2 && p.x - r < bb.x + bb.width + 2 && p.y + r > top && p.y - r < bot; });
         if (!hit && bot < mt + ph) lt.setAttribute("y", yb);

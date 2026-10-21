@@ -44,6 +44,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .sy-box > .s-spec { margin-bottom: 2px; }
 .sy-motif { height: 180px; border-radius: var(--r-card); background: var(--ink); color: var(--violet-2); overflow: hidden; position: relative; }
 .sy-motif > div { position: absolute; inset: 0; }
+/* the key-value demo sits in a third-width box: a narrower label column so addresses fit at 1024 */
+.sy-box .s-kv { grid-template-columns: minmax(88px, 116px) minmax(0, 1fr); }
 @media (max-width: 960px) { .sy-demo { --c: 2 !important; } }
 @media (max-width: 640px) { .sy-demo { --c: 1 !important; } .sy-type > div { grid-template-columns: 1fr; gap: 4px; } }
 </style>
@@ -73,7 +75,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <div class="sy-type">
       <div><code>.t-display</code><span class="t-display">seer</span></div>
       <div><code>.t-h1 + .t-accent</code><span class="t-h1">See what the <span class="t-accent">markets</span> believe.</span></div>
-      <div><code>.t-caps</code><span class="t-caps" style="font-size:44px">Every opinion has a price</span></div>
+      <div><code>.t-caps</code><span class="t-caps" style="font-size:44px">One question in, every answer priced</span></div>
       <div><code>.t-h2</code><span class="t-h2">Interface heading</span></div>
       <div><code>.t-h3</code><span class="t-h3">Section heading</span></div>
       <div><code>.t-title (Bold 16/24)</code><span class="t-title">Will ETH close above $5,000 on 31 Dec 2026?</span></div>
@@ -205,7 +207,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   ["2831", "2832", "2840"].forEach(function (id, i) { var w = S.el("span", { class: "s-row t-meta", style: { "--gap": "8px" } }, "#" + id); w.appendChild(S.chart.spark(D.history(id, 0, { points: 30 }).map(function (x) { return x[1]; }), { color: S.chart.palette[i] })); $("#sy-spark").appendChild(w); });
   // motifs
   var mot = [
-    ["home", "Converging wedges", "Outcome shares converging on one price", function (n) { S.motif.wedges(n, { weights: m.outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), gap: 8, w: 600, h: 300, fade: true }); }],
+    ["home", "Fan-out lines", "One question in from the left, its answers out to the right, each branch as thick as its price", function (n) { S.motif.fan(n, { weights: m.outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.price; }), stem: 32, split: .26, open: .64, spread: .76, fit: true, stemFade: true, titles: m.outcomes.filter(function (o) { return !o.invalid; }).map(function (o) { return o.name + " " + Math.round(o.price * 100) + "%"; }) }); }],
     ["app", "Dot grid to line grid", "Uncertainty becoming the explorer's structure", function (n) { S.motif.dotgrid(n, { cols: 20, rows: 6, cell: 30, dissolve: .5 }); }],
     ["deep", "Stacked waves", "Forecast distributions for a field", function (n) { S.motif.waves(n, { count: 4, stroke: 18, w: 600, h: 300 }); }],
     ["futarchy", "45° fork", "One proposal, two priced futures", function (n) { S.motif.fork(n, { w: 600, h: 300, ws: 5, wa: 5, wb: 5 }); }],

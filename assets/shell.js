@@ -21,11 +21,11 @@
   /* ---- the six interfaces (single source of truth) ---- */
   S.apps = [
     { id: "home", n: "01", name: "Seer", label: "Seer", product: "", path: "home/", host: "seer.pm", motif: "wedges",
-      blurb: "The protocol beneath every interface: one oracle, one token standard, one set of markets." },
+      blurb: "The protocol beneath the apps: one question format, one oracle, six ways to use the answer." },
     { id: "app", n: "02", name: "Seer App", label: "App", product: "App", path: "app/", host: "app.seer.pm", motif: "grid",
-      blurb: "The explorer for every Seer market. Find, inspect and trade across all market types." },
+      blurb: "Seer's Etherscan: every market in one explorer, to read what it says, inspect it or trade." },
     { id: "deep", n: "03", name: "Deep", label: "Deep", product: "Deep", path: "deep/", host: "deep.seer.pm", motif: "waves",
-      blurb: "Questions with many outcomes, in markets built for agents to trade." },
+      blurb: "Questions with many answers: agents forecast how evaluators will score each entry." },
     { id: "futarchy", n: "04", name: "Futarchy", label: "Futarchy", product: "Futarchy", path: "futarchy/", host: "futarchy.seer.pm", motif: "fork",
       blurb: "Conditional markets that forecast a proposal's effect. Information for a DAO, not the decision." },
     { id: "opportunity", n: "05", name: "Opportunity Markets", label: "Opportunity", product: "Opportunity", path: "opportunity/", host: "opportunity.seer.pm", motif: "barcode",
@@ -47,7 +47,8 @@
 
   /* ---- product glyphs: each interface owns one EF motif (16px grid, currentColor) ---- */
   var GLYPHS = {
-    wedges: '<path d="M1 1.6 15 8 1 5.1Z"/><path d="M1 6.6 15 8 1 9.4Z"/><path d="M1 10.9 15 8 1 14.4Z"/>',
+    /* home: one line in from the left, branching into three on the right (Seer's Part II line direction) */
+    wedges: '<path d="M.8 8H5.4M5.4 8C8.2 8 8.2 2.4 11 2.4H15.2M5.4 8H15.2M5.4 8C8.2 8 8.2 13.6 11 13.6H15.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.4" cy="8" r="1.5"/>',
     grid: '<circle cx="2.2" cy="2.4" r="1.2"/><circle cx="2.2" cy="8" r="1.2"/><circle cx="2.2" cy="13.6" r="1.2"/><circle cx="6" cy="2.4" r="1.05" opacity=".75"/><circle cx="6" cy="13.6" r="1.05" opacity=".75"/><path d="M9.6 1v14M14 1v14M8 5.2h7.4M8 10.8h7.4" fill="none" stroke="currentColor" stroke-width="1.3"/>',
     waves: '<path d="M.8 10.6c3.4 0 4.4-7.4 7.2-7.4s3.8 7.4 7.2 7.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M.8 14.4c3.4 0 4.4-5.2 7.2-5.2s3.8 5.2 7.2 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>',
     fork: '<path d="M1 8h5.6L13 1.6M6.6 8 13 14.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13.6" cy="2" r="1.7"/><circle cx="13.6" cy="14" r="1.7" opacity=".55"/>',
@@ -191,7 +192,7 @@
     var apps = S.apps.map(function (a) { return '<a href="' + S.url(a.path) + '">' + a.n + "&nbsp;&nbsp;" + esc(a.name) + "</a>"; }).join("");
     return '<footer class="s-footer"><div class="s-container s-footer__in">' +
       '<div class="s-footer__brand">' + S.logo("lockup") +
-      '<p class="t-body" style="max-width:34ch">Decision infrastructure. One protocol beneath six interfaces.</p>' +
+      '<p class="t-body" style="max-width:34ch">Information Finance: someone asks, markets price the answers, anyone reads the signal. One protocol beneath six interfaces.</p>' +
       '</div>' +
       '<div class="s-footer__cols">' +
       "<div><h4>Interfaces</h4>" + apps + "</div>" +

@@ -438,3 +438,13 @@
 /* r6 item 7: the hero starts at the shared top line (assets/system.css --hero-top) */
 .ft-hero { padding-top: var(--hero-top); }
 @media (min-width: 641px) { .ft-hero .ft-kicker { margin-bottom: 14px; } }  /* the H1 then sits where the other apps' H1 sits */
+
+/* Who asks, what is priced, how to use it: the question-asker block every interface's hero carries (same markup on all six) */
+.qa-ask { margin: 16px 0 0; display: flex; flex-direction: column; gap: 7px; }
+.qa-ask > div { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.qa-ask dt { font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); font-weight: 400; }
+.qa-ask dd { margin: 0; min-width: 0; font-size: 14px; line-height: 1.45; font-weight: 500; color: var(--text-2); }
+@media (max-width: 640px) { .qa-ask { margin-top: 12px; gap: 8px; } .qa-ask > div { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; } .qa-ask dd { font-size: 13.5px; } }
+.ft-real .ft-signal { margin-top: 20px; }
+.ft-real__res { margin-top: 12px; }
+.ft-rp-fork.ft-rp-line--yes { stroke-width: 3; }
