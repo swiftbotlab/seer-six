@@ -45,10 +45,6 @@
 .hm-price__cap { font-size: var(--fs-meta); font-weight: 500; line-height: 1.45; color: rgba(224, 226, 245, .7); max-width: 46ch; }
 .hm-price__cap a { color: #D5C2FF; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .hm-price__cap a:hover { color: #fff; }
-.hm-price .s-seg { background: rgba(255, 255, 255, .06); }
-.hm-price .s-seg button { color: rgba(224, 226, 245, .72); }
-.hm-price .s-seg button:hover { color: #fff; }
-.hm-price .s-seg button[aria-pressed="true"], :root[data-theme="light"] .hm-price .s-seg button[aria-pressed="true"] { background: var(--violet); color: #fff; box-shadow: none; }
 
 /* ---------- shared section bits ---------- */
 .hm-head-note { max-width: 46ch; }
@@ -270,7 +266,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
 @media (max-width: 1180px) {
   .hm-hero__grid { gap: 36px; }
   .hm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
-  .hm-facts > div:nth-child(4) { padding-left: 0; border-left: 0; }
+  .hm-facts > div:nth-child(3) { padding-left: 0; border-left: 0; } /* 2 columns: the 3rd fact starts row 2 */
   .hm-layer__groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .hm-types__grid { grid-template-columns: 280px minmax(0, 1fr); }
   .hm-types__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -283,7 +279,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-facts { margin-top: 0; }
   .hm-hero__title { max-width: 11ch; }
   .hm-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .hm-facts > div:nth-child(4) { padding-left: 14px; border-left: 1px solid var(--line); }
+  .hm-facts > div:nth-child(3) { padding-left: 14px; border-left: 1px solid var(--line); }
   .hm-map__apps { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .hm-app { flex-direction: row; align-items: stretch; }
   .hm-app__sel { flex-direction: row; align-items: center; gap: 14px; padding: 12px 14px; border-radius: var(--r-card) 0 0 var(--r-card); }
@@ -321,7 +317,7 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-hero__actions .s-btn { flex: 1 1 auto; --h: 50px; padding: 0 16px; }
   .hm-hero__grid { row-gap: 24px; }
   .hm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hm-facts > div:nth-child(4) { padding-left: 0; border-left: 0; }
+  .hm-facts > div:nth-child(3) { padding-left: 0; border-left: 0; } /* 2 columns: the 3rd fact starts row 2 */
   .hm-facts dd { font-size: 16px; }
   .hm-price { padding: 18px 16px 16px; border-radius: 18px; }
   .hm-price__q { font-size: 16px; }
@@ -329,8 +325,6 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-price__legend { gap: 2px 12px; min-height: 100px; }
   .hm-lg { gap: 8px; font-size: 12.5px; }
   .hm-price__foot { flex-direction: column; align-items: stretch; }
-  .hm-price .s-seg { display: flex; }
-  .hm-price .s-seg button { flex: 1 1 auto; padding: 0 6px; }
   .hm-app__blurb { -webkit-line-clamp: 1; font-size: var(--fs-meta); }
   .hm-app__name { font-size: 17px; }
   .hm-app__foot { padding: 10px 12px; }
@@ -359,17 +353,46 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
 .hm-app__txt { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .hm-chart { min-width: 0; }
 
-/* fix round 5 (2026-10-21): "Open on Seer now", the real open-market count, first in the fact row (home/live.js) */
-.hm-facts > .hm-live { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; padding: 12px 0; border-left: 0; border-bottom: 1px solid var(--line); }
-.hm-facts > .hm-live + div { padding-left: 0; border-left: 0; }
-.hm-live dd { margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; font-size: 18px; }
-.hm-live__n { display: inline-flex; align-items: baseline; gap: 6px; color: var(--text); text-decoration: none; font-weight: 600; }
+/* fix round 5 (2026-10-21), moved in r6: "Open on Seer now", the real open-market count (home/live.js), last in the hero copy
+   so it sits in the first screen at every width; the protocol facts follow it (beside the poster on desktop, under it below 960) */
+.hm-live { margin-top: 44px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 18px; line-height: 1.15; }
+.hm-live__k { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.hm-hero__copy + .hm-price + .hm-facts { margin-top: 0; border-top: 0; }
+.hm-live__n { display: inline-flex; align-items: baseline; gap: 6px; color: var(--text); text-decoration: none; font-weight: 600; letter-spacing: -.015em; }
 .hm-live__n b { font-weight: 600; font-variant-numeric: tabular-nums; }
 .hm-live__n svg { align-self: center; color: var(--text-3); }
 .hm-live__n:hover { text-decoration: underline; text-underline-offset: 3px; }
 .hm-live__n:hover svg { color: var(--text); }
 .hm-live__n:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
-/* .hm-facts dd span would make the chip a block: restate the chip here */
-.hm-live dd .s-src { display: inline-flex; margin-top: 0; font-size: var(--fs-micro); font-weight: 500; letter-spacing: .05em; color: var(--text-2); white-space: nowrap; }
-.hm-live dd .s-src[data-state="live"] { color: var(--text); }
-@media (max-width: 640px) { .hm-live dd { font-size: 16px; } .hm-live dd .s-src { white-space: normal; } }
+.hm-live .s-src { font-weight: 500; }
+@media (max-width: 960px) { .hm-live { margin-top: 28px; } .hm-hero__copy + .hm-price + .hm-facts { border-top: 1px solid var(--line); } }
+@media (max-width: 640px) { .hm-live { margin-top: 16px; padding: 10px 0; gap: 4px 10px; font-size: 16px; } .hm-live .s-src { white-space: normal; } .hm-hero__grid { row-gap: 18px; } .hm-price { padding-top: 16px; } }
+
+/* ---- r6: the hero is a REAL Seer market (live.js / hero-snapshot.js); the walkthrough under it is labelled sample ---- */
+/* header: the provenance chip that replaces the shell's "Sample data" badge */
+.s-header .hm-hsrc { margin-left: 2px; min-height: 21px; padding: 0 9px 0 8px; gap: 6px; font-size: 11.5px; white-space: nowrap; border-radius: var(--r-sm); box-shadow: inset 0 0 0 1px var(--line-strong); max-width: none; } /* same box as the other pages' header chips */
+@media (max-width: 1200px) { .s-header .hm-hsrc .hm-hsrc__src { display: none; } }
+@media (max-width: 640px) { .s-header .hm-hsrc { padding: 0 7px; margin-left: 0; letter-spacing: .04em; } .s-header .hm-hsrc .hm-hsrc__when { display: none; } }
+@media (max-width: 374px) { .s-header .hm-hsrc > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .s-header .hm-hsrc { gap: 0; } }
+/* poster: source chip, market facts, the link to Seer */
+.hm-price .s-src { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); color: rgba(224, 226, 245, .78); }
+.hm-price .s-src[data-state="live"] { color: #fff; }
+.hm-price .s-src[data-state="snapshot"] > i { box-shadow: inset 0 0 0 1.5px rgba(224, 226, 245, .6); }
+.hm-price__q { min-height: 0; }
+.hm-price__legend { min-height: 0; }
+.hm-price__about { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 300px; }
+.hm-price__meta { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; line-height: 1.45; color: rgba(224, 226, 245, .66); }
+.hm-price__meta:empty { display: none; }
+.hm-price__go { flex: none; gap: 8px; background: rgba(255, 255, 255, .08); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); }
+.hm-price__go:hover { background: var(--violet); color: #fff; }
+.hm-price__go:focus-visible { outline: 2px solid #D5C2FF; outline-offset: 2px; }
+/* walkthrough: says it is sample data in its head */
+.hm-thread__tag { color: var(--text-3); font-weight: 400; }
+.hm-thread .s-section-head { align-items: flex-end; }
+.hm-thread__sample { flex: none; }
+@media (max-width: 640px) {
+  .hm-price__top .s-specs { display: none; } /* the source chip carries "on Seer"; the caption says the market type */
+  .hm-price__legend { min-height: 0; }
+  .hm-price__go { width: 100%; justify-content: center; }
+}
+@media (max-width: 420px) { .hm-price__src .hm-price__src-t { display: none; } }

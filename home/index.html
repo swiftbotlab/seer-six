@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Seer · Decision infrastructure (concept)</title>
-<meta name="description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,7 +14,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Seer · Decision infrastructure (concept)">
-<meta property="og:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta property="og:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/home/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/home.png">
 <meta property="og:image:width" content="1200">
@@ -23,18 +23,23 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Seer · Decision infrastructure (concept)">
-<meta name="twitter:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Concept by Swift Bot Labs; sample data, not affiliated with Seer.">
+<meta name="twitter:description" content="Seer is an open protocol for prediction markets: one market format, one set of outcome tokens and one oracle beneath five apps. Opens on a real Seer market, read live from Seer's public API; the walkthrough is sample data. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/home.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="home">
-<script>window.SEER_PAGE = { product: "", nav: [["Protocol", "#protocol"], ["Worked example", "#connect"], ["Market types", "#types"], ["Resolution", "#resolution"], ["Builders", "#builders"]], cta: ["Open the App", "../app/", "arrow-right"], connect: false };</script>
+<script>window.SEER_PAGE = { product: "", nav: [["Walkthrough", "#connect"], ["Protocol", "#protocol"], ["Market types", "#types"], ["Resolution", "#resolution"], ["Builders", "#builders"]], cta: ["Open the App", "../app/", "arrow-right"], connect: false };</script>
 <script src="../assets/shell.js"></script>
+<!-- the hero's dated snapshot (a real Seer market), then the header chip that says where the top of this page comes from:
+     it replaces the shell's "Sample data" badge before first paint; page.js keeps it in step with the hero (Live or Snapshot) -->
+<script src="hero-snapshot.js"></script>
+<script>(function(){var b=document.querySelector(".s-lockup__sample");if(!b)return;var x=window.HM_HERO_SNAPSHOT,d=x&&typeof x.at==="number"&&isFinite(x.at)?new Date(x.at):null,c=document.createElement("span");c.className="s-src s-lockup__src hm-hsrc";c.id="hm-hsrc";c.setAttribute("data-state","loading");c.setAttribute("role","note");c.title="Top of this page: the most liquid open market on Seer, read live from Seer's public markets API (a dated snapshot if it does not answer). The walkthrough below it is sample data.";var i=document.createElement("i");i.setAttribute("aria-hidden","true");c.appendChild(i);function sp(k,t){var s=document.createElement("span");s.className=k;s.textContent=t;c.appendChild(s)}sp("hm-hsrc__k","Snapshot");sp("hm-hsrc__src"," · app.seer.pm");if(d)sp("hm-hsrc__when"," · "+d.getUTCDate()+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()]);b.parentNode.replaceChild(c,b)})();</script>
 <main id="main" class="s-main">
 
-  <!-- 1. HERO: how a price forms ------------------------------------------------ -->
+  <!-- 1. HERO: a REAL Seer market, the most liquid open Kleros-verified one, drawn as the kit's converging wedges.
+       live.js reads it from Seer's public markets API; hero-snapshot.js is the dated fallback, painted at once. -->
   <section class="hm-hero" aria-labelledby="hm-title">
     <div class="s-container hm-hero__grid">
       <div class="hm-hero__copy">
@@ -45,23 +50,27 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <a class="s-btn s-btn--lg" href="../app/">Explore markets</a>
           <a class="s-btn s-btn--lg s-btn--secondary" href="#protocol">How Seer works</a>
         </div>
+        <!-- Open on Seer now: the real count of open markets, read live by live.js from Seer's public API, dated snapshot as fallback -->
+        <p class="hm-live"><span class="hm-live__k">Open on Seer now</span><a class="hm-live__n" href="https://app.seer.pm/" rel="noopener noreferrer" target="_blank" aria-describedby="hm-live-src"><b id="hm-live-n" class="t-num">2,137</b> markets<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="s-src" id="hm-live-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · 21 Oct 2026, 10:31 UTC</span></p>
       </div>
 
-      <figure class="s-poster hm-price" aria-labelledby="hm-price-q">
+      <figure class="s-poster hm-price" aria-labelledby="hm-price-q" aria-describedby="hm-price-meta">
         <div class="hm-price__top">
-          <div class="s-specs" id="hm-price-specs"></div>
+          <div class="s-specs" id="hm-price-specs"><span>On Seer now</span></div>
+          <span class="s-src hm-price__src" id="hm-price-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · app.seer.pm</span>
         </div>
         <p class="hm-price__q" id="hm-price-q"></p>
         <div class="hm-price__art" id="hm-price-art"></div>
-        <div class="hm-price__legend" id="hm-price-legend" role="group" aria-label="Outcomes"></div>
+        <div class="hm-price__legend" id="hm-price-legend" role="group" aria-label="Answers, with Seer's prices"></div>
         <figcaption class="hm-price__foot">
-          <div id="hm-price-seg"></div>
-          <p class="hm-price__cap" id="hm-price-cap"></p>
+          <div class="hm-price__about">
+            <p class="hm-price__meta" id="hm-price-meta"></p>
+            <p class="hm-price__cap" id="hm-price-cap"></p>
+          </div>
+          <a class="s-btn hm-price__go" id="hm-price-go" href="https://app.seer.pm/" target="_blank" rel="noopener noreferrer">Open on Seer<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
         </figcaption>
       </figure>
       <dl class="hm-facts" aria-label="Protocol facts">
-        <!-- Open on Seer now: the real count of open markets, read live by live.js from Seer's public API, dated snapshot as fallback -->
-        <div class="hm-live"><dt>Open on Seer now</dt><dd><a class="hm-live__n" href="https://app.seer.pm/" rel="noopener noreferrer" target="_blank" aria-describedby="hm-live-src"><b id="hm-live-n" class="t-num">2,137</b> markets<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="s-src" id="hm-live-src" data-state="loading"><i aria-hidden="true"></i>Snapshot · 21 Oct 2026, 10:31 UTC</span></dd></div>
         <div><dt>Market types</dt><dd>4 <span>+ conditional</span></dd></div>
         <div><dt>Answers</dt><dd>Reality.eth <span>+ Kleros</span></dd></div>
         <div><dt>Collateral</dt><dd>sDAI <span>xDAI · sUSDS</span></dd></div>
@@ -70,7 +79,25 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </div>
   </section>
 
-  <!-- 2. ECOSYSTEM MAP: one protocol beneath five apps ------------------------- -->
+  <!-- 2. WALKTHROUGH (sample): one made-up grant round followed through four apps, directly under the real hero -->
+  <section class="s-section hm-thread" id="connect" aria-labelledby="hm-thread-title">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div>
+          <span class="s-spec">Walkthrough · Lattice Builders Grants · Round 4</span>
+          <h2 id="hm-thread-title" class="t-h2">One proposal across the apps <span class="hm-thread__tag">(sample)</span></h2>
+        </div>
+        <span class="s-sample hm-thread__sample" title="A made-up grant round: every figure in this walkthrough is sample data."><span>Sample data</span></span>
+      </div>
+      <p class="t-body hm-thread__lede" id="hm-thread-lede"></p>
+      <div class="hm-thread__grid">
+        <div class="hm-steps" id="hm-steps" role="tablist" aria-label="Apps in the thread" aria-orientation="vertical"></div>
+        <section class="s-panel hm-stage" id="hm-stage" role="tabpanel"></section>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ECOSYSTEM MAP: one protocol beneath five apps ------------------------- -->
   <section class="s-section hm-eco" id="protocol" aria-labelledby="hm-eco-title">
     <div class="s-container">
       <div class="s-section-head">
@@ -91,23 +118,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <div class="hm-layer__groups" id="hm-layer-groups"></div>
           <div class="hm-layer__read" id="hm-layer-read" aria-live="polite"></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. ONE QUESTION, FOUR APPS ------------------------------------------------ -->
-  <section class="s-section hm-thread" id="connect" aria-labelledby="hm-thread-title">
-    <div class="s-container">
-      <div class="s-section-head">
-        <div>
-          <span class="s-spec">One thread · Lattice Builders Grants · Round 4</span>
-          <h2 id="hm-thread-title" class="t-h2">One grant round, four apps, one set of markets</h2>
-        </div>
-      </div>
-      <p class="t-body hm-thread__lede" id="hm-thread-lede"></p>
-      <div class="hm-thread__grid">
-        <div class="hm-steps" id="hm-steps" role="tablist" aria-label="Apps in the thread" aria-orientation="vertical"></div>
-        <section class="s-panel hm-stage" id="hm-stage" role="tabpanel"></section>
       </div>
     </div>
   </section>
@@ -188,7 +198,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           </div>
                 <div class="hm-notes__grid">
             <ol class="hm-notes__list">
-              <li><b>Wedges carry prices.</b> The kit's converging wedges are drawn from sample prices: band width is an outcome's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
+              <li><b>Wedges carry real prices.</b> The kit's converging wedges are drawn from the most liquid open market on Seer, read live: band width is an answer's price, and the bands meet in one point because a full set of outcome tokens is worth 1 collateral.</li>
               <li><b>A protocol map replaces the marketing grid.</b> The raven art, the category pill cloud and the feature cards become one diagram: five apps above the building blocks they share.</li>
               <li><b>One worked example instead of claims.</b> A fictional grant round is followed through four apps with the same market IDs they use. No invented protocol totals.</li>
             </ol>

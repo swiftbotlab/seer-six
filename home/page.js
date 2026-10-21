@@ -1,7 +1,8 @@
 /* Seer homepage (seer.pm concept) — page script.
-   Concept by Swift Bot Labs. Not affiliated with Seer. All figures are SAMPLE DATA
-   from assets/sample-data.js except the rebrand result (source: "public").
-   All text is inserted with textContent (Seer.el). No network, no storage. */
+   Concept by Swift Bot Labs. Not affiliated with Seer. The hero is a REAL Seer market (live.js reads Seer's public
+   markets API, hero-snapshot.js is the dated fallback) and so is the rebrand result; everything else is SAMPLE DATA
+   from assets/sample-data.js, labelled as such (the walkthrough). All text is inserted with textContent (Seer.el).
+   No network here (live.js does it), no storage. */
 (function () {
   "use strict";
   var S = window.Seer, D = window.SEER_SAMPLE, el = S.el, f = S.fmt;
@@ -15,7 +16,6 @@
     var a = [99, 64, 196], b = [52, 38, 99];
     return "rgb(" + a.map(function (v, j) { return Math.round(v + (b[j] - v) * k); }).join(",") + ")";
   }
-  function pctSmart(p) { return f.pct(p, p < .1 ? 1 : 0); }
   var TYPE = { "categorical": "Categorical", "multi-categorical": "Multi-categorical", "scalar": "Scalar", "multi-scalar": "Multi-scalar" };
   function tname(m) { return S.ui.typeName ? S.ui.typeName(m) : TYPE[m.type]; }
   var APPS = S.apps.filter(function (a) { return a.id !== "home"; });
@@ -25,13 +25,54 @@
   }
 
   /* ======================================================================
-     1. HERO — converging wedges drawn from sample prices
+     1. HERO — a REAL market: the most liquid open, Kleros-verified market on Seer, drawn as the kit's converging wedges.
+        live.js reads it from Seer's public markets API; hero-snapshot.js is the dated fallback, painted at once.
+        Titles and answers on Seer are written by whoever created the market, so every field is validated again here
+        (types, ranges, control and bidi characters stripped, lengths clamped) and only ever set with textContent.
+        The link to Seer is built from the validated chain id and 0x address, never taken from the data.
      ====================================================================== */
-  var HERO = [
-    ["2832", "Categorical", 0, "Each band's width is an outcome's price. A full set of outcome tokens is always worth 1 sDAI, so the prices add up to 1 and every band meets in one point."],
-    ["2843", "Yes / No", 0, "A yes/no question is a categorical market with two answers, plus Invalid in case the question cannot be answered as posed."],
-    ["2842", "Multi-categorical", "P-07", "Eight proposals will be funded and split the payout, so each price is a share of 1 sDAI, not a chance: chance ≈ price × 8. 41 bands, one point."]
-  ];
+  var CHAINS = { 1: "Ethereum", 10: "OP Mainnet", 100: "Gnosis", 8453: "Base" };
+  var ADDR = /^0x[0-9a-fA-F]{40}$/;
+  var BAD = /[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u2069\uFEFF]/g; // C0/C1, zero-width, bidi, BOM
+  var COLL = ["sDAI", "xDAI", "sUSDS"];
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function clean(s, max) {
+    if (typeof s !== "string") return "";
+    s = s.replace(BAD, " ").replace(/\s+/g, " ").trim();
+    return s.length > max ? s.slice(0, max) : s;
+  }
+  function okNum(x, lo, hi) { return typeof x === "number" && isFinite(x) && x >= lo && x <= hi; }
+  function r1(x) { return Math.round(x * 10) / 10; }
+  // {id, chain, title, tpl, outcomes:[[name, odds %]], invalid, liq, vol, coll} -> the hero's market, or null if anything is off
+  function heroMarket(m) {
+    if (!m || typeof m !== "object") return null;
+    if (typeof m.id !== "string" || !ADDR.test(m.id) || typeof m.chain !== "number" || !Object.prototype.hasOwnProperty.call(CHAINS, m.chain)) return null;
+    if (m.tpl !== "2" && m.tpl !== "3") return null;                       // categorical / multi-categorical only
+    var title = clean(m.title, 200);
+    if (title.length < 8 || !Array.isArray(m.outcomes) || m.outcomes.length < 2 || m.outcomes.length > 40) return null;
+    var outs = [];
+    for (var i = 0; i < m.outcomes.length; i++) {
+      var r = m.outcomes[i];
+      if (!Array.isArray(r)) return null;
+      var name = clean(r[0], 80);
+      if (!name || name.toLowerCase() === "invalid" || !okNum(r[1], 0, 100)) return null;
+      outs.push({ name: name, pct: r1(r[1]) });
+    }
+    var inv = okNum(m.invalid, 0, 100) ? r1(m.invalid) : null;
+    var sum = outs.reduce(function (a, o) { return a + o.pct; }, 0) + (inv || 0);
+    if (sum < 50 || sum > 150) return null;                                    // not a price set we can draw honestly
+    outs.sort(function (a, b) { return b.pct - a.pct; });
+    return { id: m.id.toLowerCase(), chain: m.chain, title: title, multi: m.tpl === "3", outs: outs, inv: inv, sum: r1(sum),
+      liq: okNum(m.liq, 0, 1e10) ? m.liq : null, vol: okNum(m.vol, 0, 1e10) ? m.vol : null,
+      coll: typeof m.coll === "string" && COLL.indexOf(m.coll) > -1 ? m.coll : null };
+  }
+  function pctTxt(v) { return f.num(v, Math.round(v * 10) % 10 ? 1 : 0) + "%"; }
+  function centTxt(v) { return f.num(v, 1) + "¢"; }
+  function usdTxt(n) { return n >= 1e6 ? "$" + f.num(n / 1e6, 2) + "M" : n >= 1e3 ? "$" + f.num(n / 1e3, 1) + "K" : "$" + f.num(n, 0); }
+  function clipTxt(t, n) { if (t.length <= n) return t; var c = t.slice(0, n), sp = c.lastIndexOf(" "); return (sp > n * .6 ? c.slice(0, sp) : c).replace(/[\s,;:(]+$/, "") + "…"; }
+  function hhmm(ms) { var d = new Date(ms); return pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + " UTC"; }
+  function dayMon(ms) { var d = new Date(ms); return d.getUTCDate() + " " + MON[d.getUTCMonth()]; }
+
   function heroPrice() {
     var art = $("hm-price-art"), legend = $("hm-price-legend");
     var svg = S.svgEl("svg", { class: "hm-wedges", "aria-hidden": "true", focusable: "false" });
@@ -39,44 +80,76 @@
     var read = el("div", { class: "hm-readout", attrs: { "aria-hidden": "true" } }, rv, rn, rp);
     art.appendChild(svg); art.appendChild(read);
     var st = { m: null, items: [], polys: [], texts: [], vp: null, entries: [], pin: 0, hover: null, t: 1, run: 0 };
+    var cur = null; // { m, state, at, verified }
 
-    function setMarket(cfg, animate) {
-      var m = D.market(cfg[0]);
-      var outs = m.outcomes.filter(function (o) { return !o.invalid; }).sort(function (a, b) { return b.price - a.price; });
-      var inv = m.outcomes.filter(function (o) { return o.invalid; });
-      st.m = m; st.items = outs.concat(inv);
-      // legend entries: <=5 outcomes -> all; otherwise top 3 + featured + Other + Invalid
-      var E = [], n = outs.length;
-      if (n <= 5) outs.forEach(function (o, i) { E.push({ label: o.name, rank: i + 1, idx: [i] }); });
+    function val(v) { return st.m && st.m.multi ? centTxt(v) : pctTxt(v); }
+    function setMarket(m, animate) {
+      var items = m.outs.map(function (o) { return { name: o.name, price: o.pct / 100 }; });
+      if (m.inv != null) items.push({ name: "Invalid", price: m.inv / 100, invalid: true });
+      var rebuild = !st.m || items.length !== st.items.length;
+      st.m = m; st.items = items;
+      // legend entries: <=5 answers -> all; otherwise the top 3 + Other (n); Invalid last when Seer prices it
+      var E = [], n = m.outs.length;
+      if (n <= 5) m.outs.forEach(function (o, i) { E.push({ label: o.name, rank: i + 1, idx: [i] }); });
       else {
-        var feat = -1; outs.forEach(function (o, i) { if (o.proposal === cfg[2]) feat = i; });
-        var keep = [0, 1, 2]; if (feat > 2) keep.push(feat); else keep.push(3);
-        keep.forEach(function (i) { E.push({ label: outs[i].name, rank: i + 1, idx: [i] }); });
-        var rest = []; for (var i = 0; i < n; i++) if (keep.indexOf(i) < 0) rest.push(i);
-        E.push({ label: "Other (" + rest.length + ")", rank: null, idx: rest, other: true });
+        [0, 1, 2].forEach(function (i) { E.push({ label: m.outs[i].name, rank: i + 1, idx: [i] }); });
+        var rest = []; for (var i = 3; i < n; i++) rest.push(i);
+        E.push({ label: "Other " + rest.length + " answers", rank: null, idx: rest, other: true });
       }
-      inv.forEach(function (o, k) { E.push({ label: "Invalid", rank: null, idx: [n + k], invalid: true }); });
-      E.forEach(function (e) { e.value = e.idx.reduce(function (a, i) { return a + st.items[i].price; }, 0); });
-      st.entries = E;
-      st.pin = 0;
-      if (typeof cfg[2] === "string") E.forEach(function (e, k) { if (e.idx.length === 1 && st.items[e.idx[0]].proposal === cfg[2]) st.pin = k; });
-      st.hover = null;
-      // spec line + question + caption
+      if (m.inv != null) E.push({ label: "Invalid", rank: null, idx: [n], invalid: true });
+      E.forEach(function (e) { e.value = r1(e.idx.reduce(function (a, i) { return a + st.items[i].price * 100; }, 0)); });
+      st.entries = E; st.pin = 0; st.hover = null;
+      // spec line + question + caption, all as text
       var sp = $("hm-price-specs"); S.clear(sp);
-      ["Mkt #" + m.id, tname(m), D.chain(m.chain).name].forEach(function (x, k) { sp.appendChild(el("span", { text: x, class: k >= 2 ? "s-hide-sm" : null })); });
-      $("hm-price-q").textContent = m.question;
-      var cap = $("hm-price-cap"); S.clear(cap);
-      var sum = st.items.reduce(function (a, o) { return a + o.price; }, 0);
-      cap.appendChild(document.createTextNode(cfg[3] + " Sum: " + f.num(sum * 100, 1) + "¢. "));
-      cap.appendChild(el("a", { href: "../app/#m=" + m.id, text: "Inspect #" + m.id + " in the App" }));
-      buildPolys(); buildLegend(); focus();
-      if (animate) run(); else { st.t = 1; draw(); }
+      [["On Seer now", null], [m.multi ? "Multi-categorical" : "Categorical", null], [CHAINS[m.chain], "s-hide-sm"]].forEach(function (x) { sp.appendChild(el("span", { text: x[0], class: x[1] })); });
+      var q = $("hm-price-q"); q.textContent = clipTxt(m.title, 150); q.title = m.title.length > 150 ? m.title : "";
+      var col = m.coll || "unit of collateral";
+      $("hm-price-cap").textContent = m.multi
+        ? "Several answers can win and split the payout, so each price is a share of 1 " + col + ", not a chance. Seer's prices add up to " + centTxt(m.sum) + "."
+        : "Each band's width is the price traders give an answer on Seer. A full set of outcome tokens redeems for 1 " + col + ", so the prices add up to about 1: here " + centTxt(m.sum) + ".";
+      var href = "https://app.seer.pm/markets/" + m.chain + "/" + m.id; // chain + address validated above
+      var go = $("hm-price-go"); go.setAttribute("href", href); go.setAttribute("aria-label", "Open this market on Seer (new tab): " + clipTxt(m.title, 90));
+      if (rebuild) buildPolys(); else st.items.forEach(function (o, i) { var t = st.polys[i].firstChild; if (t) t.textContent = o.name + " · " + val(o.price * 100); });
+      buildLegend(); focus();
+      if (animate) run(); else if (st.t >= 1) draw();                           // a running animation picks up the new prices
+    }
+    function meta() {
+      var box = $("hm-price-meta"); if (!box || !cur) return;
+      var parts = [];
+      if (cur.m.liq != null) parts.push(usdTxt(cur.m.liq) + " liquidity");
+      if (cur.m.vol != null) parts.push(usdTxt(cur.m.vol) + " volume");
+      parts.push(cur.verified ? "Most liquid of " + f.num(cur.verified) + " open, Kleros-verified markets" : "Most liquid open, Kleros-verified market");
+      box.textContent = parts.join(" · ");
+    }
+    // where the hero comes from, on the poster and in the header (index.html swaps the shell's "Sample data" badge for #hm-hsrc)
+    function provenance() {
+      var s = cur ? cur.state : "snapshot", live = s === "live", at = cur && cur.at;
+      var when = at ? (live ? hhmm(at) : dayMon(at) + ", " + hhmm(at)) : "";
+      var src = $("hm-price-src");
+      if (src) {
+        src.setAttribute("data-state", s); S.clear(src).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+        if (!cur) src.appendChild(document.createTextNode("Seer's API is unavailable right now"));
+        else {
+          // one text run (the chip's flex gap would split the parts); a snapshot's time of day is dropped on narrow screens
+          var w = el("span", { text: (live ? "Live" : "Snapshot") + " · app.seer.pm" + (at ? " · " + (live ? hhmm(at) : dayMon(at)) : "") });
+          if (at && !live) w.appendChild(el("span", { class: "hm-price__src-t", text: ", " + hhmm(at) }));
+          src.appendChild(w);
+        }
+      }
+      var hd = $("hm-hsrc");
+      if (hd) {
+        hd.setAttribute("data-state", s); S.clear(hd).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+        hd.appendChild(el("span", { class: "hm-hsrc__k", text: !cur ? "Seer offline" : live ? "Live" : "Snapshot" }));
+        if (cur) hd.appendChild(el("span", { class: "hm-hsrc__src", text: " · app.seer.pm" }));
+        if (at) hd.appendChild(el("span", { class: "hm-hsrc__when", text: " · " + (live ? hhmm(at) : dayMon(at)) }));
+        hd.title = "Top of this page: the most liquid open market on Seer, " + (live ? "read live from Seer's public markets API at " + when : "a dated snapshot of Seer's public markets API" + (when ? " (" + when + ")" : "")) + ". The walkthrough further down is sample data.";
+      }
     }
     function buildPolys() {
       S.clear(svg); st.polys = []; st.texts = [];
       st.items.forEach(function (o, i) {
         var p = S.svgEl("polygon", {});
-        var t = S.svgEl("title"); t.textContent = o.name + " · " + pctSmart(o.price); p.appendChild(t);
+        var t = S.svgEl("title"); t.textContent = o.name + " · " + val(o.price * 100); p.appendChild(t);
         p.addEventListener("pointerenter", function () { st.hover = { idx: [i], one: i }; focus(); });
         svg.appendChild(p); st.polys.push(p);
         var tx = S.svgEl("text", {}); svg.appendChild(tx); st.texts.push(tx);
@@ -94,7 +167,7 @@
         var b = el("button", { class: "hm-lg", attrs: { type: "button", "aria-pressed": String(k === st.pin) } },
           el("span", { class: "hm-lg__r", text: e.rank ? pad2(e.rank) : "—" }),
           el("span", { class: "hm-lg__n", text: e.label, title: e.label }),
-          el("span", { class: "hm-lg__v", text: st.m && st.m.type === "multi-categorical" ? f.num(e.value * 100, 1) + "¢" : pctSmart(e.value) }));
+          el("span", { class: "hm-lg__v", text: val(e.value) }));
         b.addEventListener("click", function () { st.pin = k; st.hover = null; S.$$(".hm-lg", legend).forEach(function (x, j) { x.setAttribute("aria-pressed", String(j === k)); }); focus(); });
         b.addEventListener("pointerenter", function () { st.hover = { idx: e.idx, entry: k }; focus(); });
         b.addEventListener("pointerleave", function () { st.hover = null; focus(); });
@@ -108,6 +181,7 @@
       return { idx: st.entries[st.pin].idx, entry: st.pin };
     }
     function focus() {
+      if (!st.m) return;
       var a = active(), on = {}, n = st.items.length;
       a.idx.forEach(function (i) { on[i] = 1; });
       st.polys.forEach(function (p, i) {
@@ -115,22 +189,21 @@
         p.style.fill = o.invalid ? (on[i] ? "#8B86A8" : "#4A4660") : on[i] ? "#8F55F7" : ramp(n > 1 ? i / (n - 1) : 0);
       });
       S.$$(".hm-lg", legend).forEach(function (b, k) { b.classList.toggle("is-on", a.entry === k || (a.one != null && st.entries[k].idx.indexOf(a.one) > -1)); });
-      // readout
       var v, name, sub;
       if (a.one != null || a.idx.length === 1) {
         var i = a.one != null ? a.one : a.idx[0], o = st.items[i];
-        v = o.price; name = o.name; sub = (o.invalid ? "Invalid" : "Rank " + pad2(i + 1)) + " · " + (o.chance != null && !o.invalid ? "≈" + f.pct0(o.chance) + " chance" : f.num(o.price * 100, 1) + "¢");
+        v = r1(o.price * 100); name = o.name; sub = o.invalid ? "Invalid" : "Rank " + pad2(i + 1) + " of " + st.m.outs.length;
       } else {
-        var e = st.entries[a.entry]; v = e.value; name = e.label; sub = e.idx.length + " outcomes";
+        var e = st.entries[a.entry]; v = e.value; name = e.label; sub = e.idx.length + " answers";
       }
-      rv.textContent = st.m && st.m.type === "multi-categorical" ? f.num(v * 100, 1) + "¢" : pctSmart(v); rn.textContent = name; rn.title = name; rp.textContent = sub;
+      rv.textContent = val(v); rn.textContent = name; rn.title = name; rp.textContent = sub;
     }
     function draw() {
-      var W = art.clientWidth, H = art.clientHeight; if (!W || !H) return;
+      var W = art.clientWidth, H = art.clientHeight; if (!W || !H || !st.m) return;
       svg.setAttribute("viewBox", "0 0 " + W + " " + H);
       var n = st.items.length, gap = n > 20 ? 1.5 : n > 4 ? 9 : 14, padY = 2;
-      var span = H - padY * 2 - gap * (n - 1), tot = st.items.reduce(function (a, o) { return a + o.price; }, 0) || 1;
-      var hs = st.items.map(function (o) { return Math.max(1.2, o.price / tot * span); }), hsum = hs.reduce(function (a, b) { return a + b; }, 0);
+      var span = H - padY * 2 - gap * (n - 1);
+      var hs = st.items.map(function (o) { return Math.max(1.2, o.price * span); }), hsum = hs.reduce(function (a, b) { return a + b; }, 0);
       hs = hs.map(function (h) { return h * span / hsum; });
       var vx = Math.round(W * (W > 520 ? .7 : W > 400 ? .66 : .62)), vy = H / 2;
       var e = st.t < 1 ? 1 - Math.pow(1 - st.t, 3) : 1, y = padY;
@@ -162,12 +235,33 @@
       requestAnimationFrame(step);
       setTimeout(function () { if (me === st.run && st.t < 1) { st.t = 1; draw(); } }, dur + 300); // rAF can stall in background tabs
     }
-    var seg = S.ui.seg(HERO.map(function (h) { return [h[0], h[1]]; }), HERO[0][0], function (id) {
-      HERO.forEach(function (h) { if (h[0] === id) setMarket(h, true); });
-    }, "Example market");
-    $("hm-price-seg").appendChild(seg);
-    setMarket(HERO[0], true);
+    function empty() {
+      $("hm-price-q").textContent = "Seer's markets could not be loaded just now.";
+      $("hm-price-cap").textContent = "Open the App to browse every market on Seer.";
+      var go = $("hm-price-go"); go.setAttribute("href", "https://app.seer.pm/"); go.setAttribute("aria-label", "Open Seer (new tab)");
+    }
+    // live.js hands over markets from Seer's API; the snapshot comes first. Anything that fails validation is ignored.
+    window.HM_HERO = {
+      set: function (raw, opt) {
+        var m = heroMarket(raw); if (!m) return false;
+        opt = opt || {};
+        var state = opt.state === "live" ? "live" : opt.state === "loading" ? "loading" : "snapshot";
+        var same = !!cur && cur.m.id === m.id && cur.m.chain === m.chain && cur.m.outs.length === m.outs.length;
+        cur = { m: m, state: state, at: okNum(opt.at, 1.6e12, 4.1e12) ? opt.at : null,
+          verified: okNum(opt.verified, 1, 1e7) && Math.round(opt.verified) === opt.verified ? opt.verified : null };
+        setMarket(m, !same); meta(); provenance();
+        return true;
+      },
+      // keep what is drawn, settle its label: "snapshot" after Seer's API failed or stayed silent
+      state: function (s) {
+        if (!cur) { provenance(); return; }
+        if (cur.state === "live") return;
+        cur.state = s === "live" ? "live" : "snapshot"; provenance();
+      }
+    };
     S.onResize(art, draw);
+    var X = window.HM_HERO_SNAPSHOT;
+    if (!(X && typeof X === "object" && window.HM_HERO.set(X.market, { state: "loading", at: X.at, verified: X.verified }))) { empty(); provenance(); }
   }
 
   /* ======================================================================
@@ -264,7 +358,7 @@
       if (appId) {
         var a = S.app(appId), L = APP_LINE[appId], m = D.market(L[2]);
         read.appendChild(el("div", {}, el("span", { class: "s-spec", text: a.n + " · uses " + USES[appId].length + " of " + ALL.length + " building blocks" }), el("h3", { class: "u-mt-2", text: a.name + ": " + L[0] }), el("p", { text: L[1] })));
-        read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Example market" }),
+        read.appendChild(el("div", { class: "hm-layer__uses" }, el("span", { class: "s-spec", text: "Sample market" }),
           el("div", {}, el("a", { class: "hm-pill", href: "../app/#m=" + m.id }, el("span", { html: S.icon("search", 14), style: { display: "inline-flex" } }), "#" + m.id + " · " + (m.short || tname(m))), appLink(appId, "Open " + a.name))));
       } else if (primId) {
         var p = prims[primId].p, users = APPS.filter(function (x) { return USES[x.id].indexOf(primId) > -1; });
@@ -283,7 +377,7 @@
     var byRank = D.proposals.slice().sort(function (a, b) { return a.deep.rank - b.deep.rank; });
     var cut = (byRank[R.slots - 1].deep.marketScore + byRank[R.slots].deep.marketScore) / 2;
     var impact = (F.yesTwap - F.noTwap) / F.noTwap;
-    $("hm-thread-lede").textContent = R.org + " has " + f.num(R.budget) + " " + R.collateral + " for " + R.slots + " grants and " + D.proposals.length +
+    $("hm-thread-lede").textContent = "A made-up example, so every figure in it is sample data. " + R.org + " has " + f.num(R.budget) + " " + R.collateral + " for " + R.slots + " grants and " + D.proposals.length +
       " proposals, scored 0–10 by " + R.panelSize + " human reviewers. Each app answers one part of the decision on the same markets. The example follows " + P.id + ", which sits exactly on the funding line.";
     var mDeep = D.market("2841"), mOpp = D.market("2842"), mFut = D.market("2843");
     function head(m, title, extra) {
