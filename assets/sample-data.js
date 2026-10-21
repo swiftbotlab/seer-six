@@ -13,12 +13,16 @@
 
    Rules: organisations, proposals, teams, agents, traders and assets are FICTIONAL.
    Every address starts with 0x5eed so it can never be mistaken for a real contract.
-   All times are relative to SEER_SAMPLE.now (a fixed snapshot), never Date.now(),
-   so pages and screenshots are stable. Items marked source:"public" restate figures
-   shown on Seer's own public pages (finalised results only). */
+   Time: the sample calendar (round dates, when each market was created and when its
+   reports open) is fixed to SEER_SAMPLE.epoch, so a date printed in a question stays
+   true. The clock is real: SEER_SAMPLE.now is the reader's current time (to the minute),
+   so countdowns, "ago" times and states are measured from today, and price series end now.
+   Items marked source:"public" restate figures shown on Seer's own public pages
+   (finalised results only). */
 (function () {
   "use strict";
-  var NOW = Date.parse("2026-10-19T12:00:00Z");
+  var EPOCH = Date.parse("2026-10-19T12:00:00Z");
+  var NOW = Math.max(EPOCH, Math.floor(Date.now() / 60e3) * 60e3); // a clock set before the epoch reads as the epoch
   var H = 3600e3, D = 24 * H;
 
   /* ---------- deterministic helpers ---------- */
@@ -87,7 +91,7 @@
   var round4 = {
     id: "LBG-R4", name: "Lattice Builders Grants · Round 4", org: "Lattice DAO", budget: 250000, collateral: "sDAI",
     slots: 8, panelSize: 5, scoreScale: [0, 10],
-    opens: iso(NOW - 12 * D), closes: iso(Date.parse("2026-11-07T23:59:00Z")), panelReveal: iso(Date.parse("2026-11-14T16:00:00Z")),
+    opens: iso(EPOCH - 12 * D), closes: iso(Date.parse("2026-11-07T23:59:00Z")), panelReveal: iso(Date.parse("2026-11-14T16:00:00Z")),
     note: "Five human reviewers score each proposal 0-10. Deep forecasts those scores; Opportunity forecasts the funded shortlist; Futarchy informs the vote on the budget."
   };
   var PROPOSALS = [
@@ -286,8 +290,9 @@
       var inv = o.invalidPrice != null ? o.invalidPrice : .004;
       o.outcomes.push({ name: "Invalid", index: o.outcomes.length, token: addr("token:" + o.id + ":inv"), symbol: "INVALID", price: inv, invalid: true });
     }
-    o.created = iso(NOW - (o.ageDays || 10) * D);
-    o.openingDate = o.openingDate || iso(NOW + (o.opensInDays != null ? o.opensInDays : 20) * D);
+    o.created = iso(EPOCH - (o.ageDays || 10) * D);
+    o.openingDate = o.openingDate || iso(EPOCH + (o.opensInDays != null ? o.opensInDays : 20) * D);
+    if (o.state === "not-open" && Date.parse(o.openingDate) <= NOW) o.state = "open"; // its reports-open date has passed
     o.holders = o.holders || Math.round(40 + r() * 900);
     o.openInterest = o.openInterest || Math.round(o.liquidity * (1.2 + r() * 1.8));
     o.change24h = o.change24h != null ? o.change24h : round((r() - .5) * .08, 3);
@@ -326,7 +331,7 @@
     // Multi-categorical, 34 outcomes + Invalid: 1 sDAI is split equally between the assets that default in the
     // quarter; No to All pays 1 sDAI if none do. A token is worth a little less than its quarterly PD because
     // the payout is shared when several default: price = quarterly PD x riskScale, so all prices sum to 1.
-    mk({ id: "2850", appId: "risk", type: "multi-categorical", chain: "ethereum", collateral: "sDAI", category: "Risk",
+    mk({ id: "2850", appId: "risk", type: "multi-categorical", chain: "gnosis", collateral: "sDAI", category: "Risk",
       question: "Which of these 33 DeFi assets will default during Q4 2026? No to All pays if none do", short: "Q4 2026 · default board",
       state: "not-open", verify: "verified", liquidity: 72400, volume: 318200, ageDays: 18, opensInDays: 74, invalidPrice: RISK_INV, riskScale: RISK_SCALE,
       outcomes: riskAssets.map(function (a) { return { name: a.symbol + " · " + a.name, asset: a.id, price: round(a.pdQuarterly * RISK_SCALE, 4), chance: a.pdQuarterly, pdAnnual: a.pdAnnual, symbol: a.symbol.toUpperCase().slice(0, 6) }; })
@@ -460,7 +465,7 @@
       note: "Every figure is made up to demonstrate the design. Organisations, proposals, teams, agents, traders and assets are fictional. Addresses start with 0x5eed and do not exist.",
       snapshot: iso(NOW), addressPrefix: "0x5eed"
     },
-    now: NOW,
+    now: NOW, epoch: EPOCH,
     chains: chains, collateral: collateral, marketTypes: marketTypes, states: states, verification: verification, lifecycle: lifecycle, tiers: tiers,
     markets: markets, round4: round4, proposals: proposals, featuredProposal: featuredProposal, agents: agents, traders: traders,
     orgs: orgs, futarchy: futarchyProposals, futarchyRule: { window: "5-day TWAP", approveAbove: .01, rejectBelow: -.01, note: "Information for the DAO, not the decision. The vote decides." },

@@ -130,7 +130,7 @@
     var X = function (p) { return ml + pos(p, h) * pw; };
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
     var defs = sv("defs"); svg.appendChild(defs);
-    var d = dom(h), ed = [d[0]].concat(edges(h), [d[1]]);
+    var d = dom(h), ed = [d[0]].concat(edges(h), [d[1]]), bandTx = [];
     // band zones: 45° stripes whose density rises with the band (the motif carries the scale)
     BANDS.forEach(function (b, i) {
       var x0 = X(ed[i]), x1 = X(ed[i + 1]), cid = "rk-zc" + i;
@@ -142,7 +142,7 @@
       var rail = sv("line", { class: "rk-p-rail", x1: x0 + (i ? 2 : 0), x2: x1 - 2, y1: mt + ph + 7, y2: mt + ph + 7 }); rail.style.stroke = "var(--band-" + b.id + ")"; svg.appendChild(rail);
       var gl = sv("g", { class: "rk-p-band" });
       if (narrow) gl.appendChild(shape(b.id, (x0 + x1) / 2, mt - 14, 7)); // labels move to the legend under the plot
-      else { var tx = sv("text", { x: x0 + 20, y: mt - 12 }); tx.textContent = b.label.toUpperCase(); gl.appendChild(tx); gl.appendChild(shape(b.id, x0 + 11, mt - 15.5, 7)); }
+      else { var tx = sv("text", { x: x0 + 20, y: mt - 12 }); tx.textContent = b.label.toUpperCase(); gl.appendChild(tx); gl.appendChild(shape(b.id, x0 + 11, mt - 15.5, 7)); bandTx.push({ t: tx, g: gl, id: b.id, x: x0 + 20 }); }
       svg.appendChild(gl);
     });
     // lanes
@@ -197,6 +197,29 @@
       svg.appendChild(ga);
     }
     S.clear(plot).appendChild(svg);
+    // fit the band names (2026-10-21: the HIGH mark sat on MODERATE's last letter at 1440): a name that would reach the
+    // next band's mark shortens (MOD., CRIT.); what still overlaps pushes the next name right by up to 10 px; past that,
+    // the mark stands alone when the chips under the plot carry the names
+    var SHORT = { mod: "MOD.", crit: "CRIT." }, chips = $("#rk-plotlegend"), chipsOn = chips && getComputedStyle(chips).display !== "none", push = 0;
+    function tw(t) { try { return t.getComputedTextLength(); } catch (e) { return 0; } }
+    bandTx.forEach(function (o, k) {
+      if (push) o.g.setAttribute("transform", "translate(" + push + " 0)");
+      var x = o.x + push, w = tw(o.t), last = k === bandTx.length - 1, nx = last ? W - mr : bandTx[k + 1].x - 14; // next mark's left edge
+      if (w && x + w + 8 > nx && SHORT[o.id]) { o.t.textContent = SHORT[o.id]; w = tw(o.t); }
+      var over = w ? x + w + 8 - nx : 0; push = 0;
+      if (over > 0 && !last && over <= 10) push = over;
+      else if (over > 0 && chipsOn) o.t.textContent = "";
+    });
+    // the active asset's label sits above its dot, unless that crowds the band names in the top margin (obETH, top
+    // lane): then it goes under the dot, if no other dot is there
+    if (lt) {
+      var bb = null; try { bb = lt.getBBox(); } catch (e) { /* not laid out */ }
+      if (bb && bb.width && bb.y < mt + 2) {
+        var yb = ap.y + r + 16, top = yb - bb.height * .8, bot = yb + bb.height * .3;
+        var hit = A.some(function (a) { var p = P[a.id]; return a.id !== act.id && p.x + r > bb.x - 2 && p.x - r < bb.x + bb.width + 2 && p.y + r > top && p.y - r < bot; });
+        if (!hit && bot < mt + ph) lt.setAttribute("y", yb);
+      }
+    }
     geo = { P: P, r: r };
     renderCap();
   }
@@ -850,7 +873,7 @@
       if (list.length > 6) legs.appendChild(el("p", { class: "t-meta", text: "and " + (list.length - 6) + " more" }));
     }
     slip.appendChild(legs);
-    slip.appendChild(el("p", { class: "t-meta", text: "Pay with sDAI on Ethereum. Sample prices; nothing is traded." }));
+    slip.appendChild(el("p", { class: "t-meta", text: "Pay with sDAI on Gnosis. Sample prices; nothing is traded." }));
     renderSlipRows();
     if (focusAmt) { slipIn.focus(); var l = slipIn.value.length; try { slipIn.setSelectionRange(l, l); } catch (e) { } }
   }
@@ -963,7 +986,7 @@
     panel.appendChild(el("div", { class: "rk-dr__head" },
       el("div", { class: "rk-dr__id" }, S.ui.avatar("risk", "ink"), el("div", {}, el("h2", { class: "t-h3", attrs: { id: "rk-dr-title" }, text: a.sym }), el("p", { class: "t-meta", text: a.name + " · " + GLABEL[a.group] }))),
       nav));
-    panel.appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, "Outcome " + (D.riskAssets.findIndex(function (x) { return x.id === a.id; }) + 1) + " of 34", "Ethereum · sDAI"]));
+    panel.appendChild(S.ui.specs([{ html: "Mkt <b>#" + MKT.id + "</b>" }, "Outcome " + (D.riskAssets.findIndex(function (x) { return x.id === a.id; }) + 1) + " of 34", "Gnosis · sDAI"]));
     var stats = el("div", { class: "s-stats", style: { "--cols": "3" } });
     stats.appendChild(S.ui.stat("Per year", pdF(a.y), { note: BAND[a.band].label + " band" }));
     stats.appendChild(S.ui.stat("Per quarter", pdF(q), { note: "Q4 2026" }));

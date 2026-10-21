@@ -312,10 +312,13 @@
 
 /* ---- finisher additions ---- */
 .ft-rec--prov { color: var(--text-2); }
-/* long signal chip ("Signal: leans approve · the vote decides"): wraps as two units in narrow cells */
+/* long signal chip ("Signal: leans approve · the vote decides"): one line where it fits; page.js marks a wrapped chip
+   .is-wrapped, and then the tail takes its own line under the text, without the dot */
 .ft-rec--long { flex-wrap: wrap; height: auto; min-height: 22px; padding-block: 4px; column-gap: 5px; row-gap: 3px; line-height: 1.25; white-space: normal; max-width: 100%; }
 .ft-rec--long svg { flex: none; }
 .ft-rec__tail { white-space: nowrap; color: var(--text-3); }
+.ft-rec--long.is-wrapped .ft-rec__tail { flex-basis: 100%; }
+.ft-rec--long.is-wrapped .ft-rec__sep { display: none; }
 /* gauge zone labels ("Leans reject · Neutral · Leans approve"): outer labels sit on the track's ends in the mini gauge;
    on phones they take their own row under the % ticks so the two never collide */
 .ft-gauge--mini .ft-gauge__ticks .ft-gauge__zl--first { left: 0 !important; transform: none; }

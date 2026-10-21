@@ -42,13 +42,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div class="ft-poster__top" id="ft-poster-top"></div>
         <figcaption class="ft-poster__foot" id="ft-poster-foot"></figcaption>
       </figure>
-      <!-- On Seer now: real futarchy proposals, a dated snapshot of futarchy.seer.pm (21 Oct 2026); static -->
+      <!-- On Seer now: real futarchy proposals, a dated snapshot of futarchy.seer.pm (21 Oct 2026); static except the EIP-8363 state line,
+           which page.js derives from data-closes (trading ends 24 Oct 2026 00:00 UTC) and the real clock -->
       <div class="ft-onseer">
         <aside class="s-onseer" id="ft-onseer" aria-labelledby="ft-onseer-t">
           <div class="s-onseer__l">
             <div class="s-onseer__k"><b>On Seer now</b><span class="s-src" data-state="snapshot"><i aria-hidden="true"></i>Snapshot<span class="s-hide-sm"> · futarchy.seer.pm</span> · 21 Oct<span class="s-hide-sm"> 2026</span>, 09:27 UTC</span></div>
             <h2 class="s-onseer__t" id="ft-onseer-t"><a href="https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa" rel="noopener" target="_blank">EIP-8363: ETH price if it is scheduled for Hegotá</a></h2>
-            <p class="s-onseer__m">Trading until 24 Oct: ETH at 2,461.31 USDS if scheduled, 2,461.22 if not, neutral<span class="s-hide-sm"> (under 0.01%)</span>. Closed <span class="s-hide-sm">GnosisDAO and Kleros </span>proposals<span class="s-hide-sm">, impact as listed, then the result</span>:</p>
+            <p class="s-onseer__m"><span id="ft-onseer-state" data-closes="2026-10-24T00:00:00Z">Trading until 24 Oct</span>: ETH at 2,461.31 USDS if scheduled, 2,461.22 if not, neutral<span class="s-hide-sm"> (under 0.01%)</span>. Closed <span class="s-hide-sm">GnosisDAO and Kleros </span>proposals<span class="s-hide-sm">, impact as listed, then the result</span>:</p>
           </div>
           <ul class="s-onseer__cells" style="--n:5" aria-label="EIP-8363: ETH price if it is scheduled for Hegotá: highlights">
             <li><a class="s-onseer__c is-pos" href="https://futarchy.seer.pm/markets/0x4120de9931fd29c8a6effea4df57a7c8760c1677" rel="noopener" target="_blank" aria-label="GIP-153: impact +0.98%, resolved yes, approved (opens on Seer)"><span title="GIP-153">GIP-153</span><b>+0.98%</b><small><span class="s-hide-sm">Resolved </span>yes</small></a></li>

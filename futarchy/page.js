@@ -66,9 +66,21 @@
   // Signal language only: the market leans one way; the DAO vote decides.
   function recTag(r, long, prov) {
     var c = REC[r], t = el("span", { class: "s-tag ft-rec " + (prov ? "s-tag--outline ft-rec--prov" : c.cls), html: S.icon(prov ? "clock" : c.icon, 12) });
-    if (prov && long) { t.classList.add("ft-rec--long"); t.appendChild(el("span", { text: "Signal: " + c.label.toLowerCase() })); t.appendChild(el("span", { class: "ft-rec__tail", text: "· the vote decides" })); return t; }
+    if (prov && long) { t.classList.add("ft-rec--long"); t.appendChild(el("span", { class: "ft-rec__head", text: "Signal: " + c.label.toLowerCase() })); t.appendChild(el("span", { class: "ft-rec__tail" }, el("span", { class: "ft-rec__sep", text: "· " }), "the vote decides")); return t; }
     t.appendChild(document.createTextNode(prov ? c.label + " · so far" : (long ? "Signal: " + c.label.toLowerCase() : c.label)));
     return t;
+  }
+  // the long chip reads on one line where it fits; where it wraps, its tail takes a line of its own without the dot
+  // (2026-10-21: "· the vote decides" wrapped with an orphaned leading dot at 1440)
+  function fitChips() {
+    $$(".ft-rec--long").forEach(function (t) {
+      var h = $(".ft-rec__head", t), tl = $(".ft-rec__tail", t); if (!h || !tl) return;
+      t.classList.remove("is-wrapped"); tl.style.paddingLeft = "";
+      if (tl.offsetTop <= h.offsetTop + 2) return;
+      t.classList.add("is-wrapped");
+      var ic = $("svg", t), a = ic && ic.getBoundingClientRect(), b = h.getBoundingClientRect(); // indent under the text when it sits beside the icon
+      tl.style.paddingLeft = a && b.top < a.bottom - 2 ? Math.max(0, Math.round(b.left - a.left)) + "px" : "0px";
+    });
   }
   function prov(m) { return !m.resolved && NOW < m.wEnd; }
   function range(a, b) {
@@ -174,7 +186,7 @@
       cell("If approved", F.price(m.yesTwap, 4), "YES_" + m.tok + " in YES_sDAI", "yes"),
       cell("If rejected", F.price(m.noTwap, 4), "NO_" + m.tok + " in NO_sDAI", "no"),
       cell("Forecast impact", F.signed(m.impact), el("span", { class: "ft-cell__sub" }, recTag(m.rec, true, prov(m)), prov(m) ? el("span", { class: "ft-prov", text: "Official window " + range(m.wStart, m.wEnd) }) : null), null, signCls(m.impact)));
-    box.appendChild(el("div", { class: "ft-signal" }, head, grid));
+    box.appendChild(el("div", { class: "ft-signal" }, head, grid)); fitChips();
     var call = el("div", { class: "s-callout s-callout--violet ft-callout s-hide-sm", html: S.icon("vote", 16) }), p = el("p");
     if (!m.resolved) {
       p.appendChild(el("b", { text: "Information for " + m.org.name + ", not the decision:" }));
@@ -233,9 +245,13 @@
     svg.appendChild(cg);
     // neutral band: NO price ±1% — YES must clear it for an approve or reject signal
     svg.appendChild(sv("rect", { class: "ft-pt-band", x: sx, y: Y(up), width: ex - sx, height: Y(dn) - Y(up) }));
-    [[up, "+1% · leans approve above " + F.price(up, 4), Y(up) + 15], [dn, "−1% · leans reject below " + F.price(dn, 4), Y(dn) - 7]].forEach(function (l) {
+    // each label has a long, a shorter and a bare form; after drawing, a label that would reach a branch or the
+    // stem labels steps down a form (2026-10-21: "36% REJECT+1% · LEANS APPROVE…" ran together at 1440)
+    var bandLbl = [[up, "+1%", "approve above", Y(up) + 15], [dn, "−1%", "reject below", Y(dn) - 7]].map(function (l) {
       svg.appendChild(sv("line", { class: "ft-pt-rule", x1: sx, x2: ex, y1: Y(l[0]), y2: Y(l[0]) }));
-      var t = sv("text", { class: "ft-pt-micro", x: ex - 10, y: l[2], "text-anchor": "end" }); t.textContent = small ? l[1].split(" · ")[0] : l[1].toUpperCase(); svg.appendChild(t);
+      var px = F.price(l[0], 4), forms = small ? [l[1]] : [l[1] + " · leans " + l[2] + " " + px, l[1] + " · " + l[2] + " " + px, l[1]];
+      var t = sv("text", { class: "ft-pt-micro", x: ex - 10, y: l[3], "text-anchor": "end" }); t.textContent = forms[0].toUpperCase(); svg.appendChild(t);
+      return { t: t, y: l[3], forms: forms };
     });
     // stem + branches (45°, then flat)
     svg.appendChild(sv("path", { class: "ft-pt-stem", d: "M" + x0 + " " + Ys + "H" + sx }));
@@ -264,8 +280,28 @@
     // stem labels
     var s1 = sv("text", { class: "ft-pt-micro", x: x0, y: Ys - 14 }); s1.textContent = (small ? m.tok + " now" : m.tok + " · one price").toUpperCase(); svg.appendChild(s1);
     var s2 = sv("text", { class: "ft-pt-micro", x: x0, y: Ys + 22 });
-    s2.textContent = (m.resolved ? (small ? "" : "Decided · ") + (m.approved ? "approved" : "rejected") : F.pct0(m.pA) + " approve" + (small ? "" : " · " + F.pct0(1 - m.pA) + " reject")).toUpperCase(); svg.appendChild(s2);
+    (m.resolved ? [(small ? "" : "Decided · ") + (m.approved ? "approved" : "rejected")] : small ? [F.pct0(m.pA) + " approve"] : [F.pct0(m.pA) + " approve", F.pct0(1 - m.pA) + " reject"])
+      .forEach(function (line, i) { var ts = sv("tspan", { x: x0, dy: i ? 15 : 0 }); ts.textContent = line.toUpperCase(); s2.appendChild(ts); });
+    svg.appendChild(s2);
     S.clear(box).appendChild(svg);
+    // fit the band labels: a label's left end stays right of where a 45° branch crosses its line and of the stem labels
+    var stems = [s1, s2].map(function (t) { try { var b = t.getBBox(); return b.width ? { top: b.y, bot: b.y + b.height, right: b.x + b.width } : null; } catch (e) { return null; } });
+    var form = 0; // both labels end up in the same form, the shortest either one needs
+    bandLbl.forEach(function (b) {
+      var top = b.y - 10, bot = b.y + 3, minL = sx + 12;
+      [Yy, Yn].forEach(function (yEnd) { // the 45° part of a branch spans Ys..yEnd; find where it is nearest this label's line
+        var lo = Math.max(top, Math.min(Ys, yEnd)), hi = Math.min(bot, Math.max(Ys, yEnd));
+        if (lo <= hi) minL = Math.max(minL, sx + (lo <= Ys && Ys <= hi ? 0 : Math.min(Math.abs(lo - Ys), Math.abs(hi - Ys))) + 12);
+      });
+      stems.forEach(function (r) { if (r && top < r.bot && bot > r.top) minL = Math.max(minL, r.right + 14); });
+      for (var i = 0; i < b.forms.length; i++) {
+        b.t.textContent = b.forms[i].toUpperCase();
+        var w = 0; try { w = b.t.getComputedTextLength(); } catch (e) { /* not laid out */ }
+        if (!w || ex - 10 - w >= minL) break;
+      }
+      form = Math.max(form, Math.min(i, b.forms.length - 1));
+    });
+    bandLbl.forEach(function (b) { b.t.textContent = b.forms[Math.min(form, b.forms.length - 1)].toUpperCase(); });
   }
 
   /* ======================= figures + lifecycle ======================= */
@@ -275,7 +311,7 @@
       : st("Chance of approval", F.pct0(m.pA), { note: m.dec ? "Decision market #" + m.dec.id : "Sample estimate" }));
     box.appendChild(st("Volume", F.compact(m.volume, 1), { unit: "sDAI", note: "Both branches" }));
     box.appendChild(st("TVL", m.tvl ? F.compact(m.tvl, 1) : "0", { unit: "sDAI", note: m.tvl ? "YES and NO pools" : "Pools closed" }));
-    box.appendChild(st("Snapshot vote", range(m.vOpen, m.vClose), { note: m.resolved ? "Closed" : NOW < m.vOpen ? "Not started" : "Open" }));
+    box.appendChild(st("Snapshot vote", range(m.vOpen, m.vClose), { note: m.resolved || NOW >= m.vClose ? "Closed" : NOW < m.vOpen ? "Not started" : "Open" }));
   }
   function renderLife(m) {
     var box = $("#ft-life"); S.clear(box); var p = phase(m);
@@ -865,12 +901,24 @@
   }
   function fromHash() { var h = decodeURIComponent(location.hash.replace(/^#/, "")); return BY[h] ? select(h) : false; }
 
+  /* ======================= On Seer band: the real EIP-8363 market's state ======================= */
+  // futarchy.seer.pm showed "Remaining Time 2d 14h 32m" at 21 Oct 2026 09:27 UTC, so trading ends 24 Oct 00:00 UTC
+  // (data-closes in index.html). The prices stay the dated snapshot; only the state line follows the real clock.
+  (function () {
+    var s = $("#ft-onseer-state"), t = s ? Date.parse(s.getAttribute("data-closes") || "") : NaN;
+    if (!isFinite(t) || Date.now() < t) return;
+    S.clear(s).appendChild(document.createTextNode("Trading closed " + F.dayMon(t) + ", resolving"));
+    s.appendChild(el("span", { class: "s-hide-sm", text: " on Reality.eth" }));
+    s.appendChild(document.createTextNode(". At the snapshot"));
+  })();
+
   /* ======================= boot ======================= */
   ch.root = el("div", { class: "s-chart ft-chart" });
   $("#ft-chart").appendChild(ch.root);
   if (!fromHash()) select("LIP-31");
   S.onResize(ch.root, drawChart);
   S.onResize($("#ft-poster-art"), drawPoster);
+  S.onResize($("#ft-hero-copy"), fitChips);
   renderFilters(); renderList(); renderRecord();
   syncFolds();
   if (mqSm.addEventListener) mqSm.addEventListener("change", function () { syncFolds(null, true); });

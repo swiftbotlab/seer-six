@@ -242,6 +242,7 @@
   function initHero() {
     var counts = {}; MARKETS.forEach(function (m) { counts[m.state] = (counts[m.state] || 0) + 1; });
     $("#ap-field-n").textContent = MARKETS.length + " markets";
+    var at = $("#ap-field-at"); if (at) at.textContent = F.dateTime(NOW); // sample states, read at the real current time
     var cbox = $("#ap-field-counts");
     D.states.forEach(function (s) { if (counts[s.id]) cbox.appendChild(el("span", {}, el("b", { text: String(counts[s.id]) }), " " + SHORT_STATE[s.id])); });
     drawField(); S.onResize($("#ap-field"), drawField);
@@ -669,6 +670,7 @@
     $("#ap-f-cat").value = "Weather";
     D.chains.forEach(function (c) { $("#ap-f-chain").appendChild(el("option", { text: c.name, attrs: { value: c.id } })); });
     $("#ap-f-chain").value = "gnosis";
+    $("#ap-f-date").min = new Date(NOW + DAY).toISOString().slice(0, 10); // reports open after today
     D.collateral.forEach(function (c) { $("#ap-f-coll").appendChild(el("option", { text: c.id + " · " + c.name, attrs: { value: c.id } })); });
     ["#ap-f-q", "#ap-f-outs", "#ap-f-min", "#ap-f-max", "#ap-f-unit", "#ap-f-cat", "#ap-f-chain", "#ap-f-coll", "#ap-f-date", "#ap-f-curate"].forEach(function (s) {
       $(s).addEventListener("input", drawCreate); $(s).addEventListener("change", drawCreate);
@@ -694,7 +696,7 @@
     if (q.length < 12) error = "Write the question in full (at least 12 characters).";
     var date = $("#ap-f-date").value, t = Date.parse(date + "T00:00:00Z");
     if (!isFinite(t)) t = Date.parse("2026-12-31T00:00:00Z");
-    if (t <= NOW) error = error || "Reports have to open after today (19 Oct 2026).";
+    if (t <= NOW) error = error || "Reports have to open after today (" + F.date(NOW) + ").";
     return { q: q, type: type, outs: outs, min: isFinite(min) ? min : 0, max: isFinite(max) ? max : 1, unit: unit, cat: $("#ap-f-cat").value, chain: $("#ap-f-chain").value, coll: $("#ap-f-coll").value, opens: new Date(t).toISOString(), curate: $("#ap-f-curate").checked, error: error };
   }
   function drawCreate() {
