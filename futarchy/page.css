@@ -340,3 +340,8 @@
 @media (min-width: 1101px) { .ft-hero__grid { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 32px; } }
 .ft-hero .ft-title { font-size: clamp(26px, 2.3vw, 34px); line-height: 1.12; font-weight: 600; letter-spacing: -.025em; max-width: none; }
 .ft-subtitle { margin-top: 8px; font-size: 15px; }
+
+/* On Seer now: the real futarchy proposals, under the sample proposal; on one-column layouts it comes before the poster */
+.ft-onseer { grid-column: 1 / -1; min-width: 0; }
+@media (max-width: 960px) { .ft-onseer { order: 1; } .ft-poster { order: 2; } }
+@media (max-width: 640px) { .ft-actions .s-btn--quiet { display: none; } }

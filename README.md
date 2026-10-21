@@ -21,8 +21,9 @@ Every figure is **sample data**, made up to show the design: organisations, prop
 agents and assets are fictional, and every address starts with `0x5eed`.
 The panels marked "On Seer" are real instead. The App's "On Seer now" strip reads Seer's public markets API
 (app.seer.pm) when the page loads and falls back to a dated snapshot (`assets/seer-snapshot.js`), saying which
-one it shows. The settled Rebrand Contest on Opportunity is a dated snapshot of its market page (20 Oct 2026),
-linked to Seer.
+one it shows. Deep, Futarchy and Risk each open with one dated snapshot of Seer's own app (deep.seer.pm,
+futarchy.seer.pm, risk.seer.pm; 21 Oct 2026), and Opportunity with the settled Rebrand Contest from its market
+page (20 Oct 2026). Each links to its source on Seer; none of those three pages makes a runtime request.
 
 Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name, mark and the
 Electric Foundation identity belong to their owners and are used here only to present
