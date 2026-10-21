@@ -106,7 +106,8 @@
       var col = m.coll || "unit of collateral";
       $("hm-price-cap").textContent = m.multi
         ? "Several answers can win and split the payout, so each price is a share of 1 " + col + ", not a chance. Seer's prices add up to " + centTxt(m.sum) + "."
-        : "Each band's width is the price traders give an answer on Seer. A full set of outcome tokens redeems for 1 " + col + ", so the prices add up to about 1: here " + centTxt(m.sum) + ".";
+        : "Each band's width is the price traders give an answer on Seer. A full set of outcome tokens redeems for 1 " + col + ", so the prices add up to about 1: here " + centTxt(m.sum) +
+          (m.inv == null && m.sum < 99 ? ", and the other " + centTxt(r1(100 - m.sum)) + " is left to Invalid" : "") + ".";  // the rows shown add up to exactly this sum
       var href = "https://app.seer.pm/markets/" + m.chain + "/" + m.id; // chain + address validated above
       var go = $("hm-price-go"); go.setAttribute("href", href); go.setAttribute("aria-label", "Open this market on Seer (new tab): " + clipTxt(m.title, 90));
       if (rebuild) buildPolys(); else st.items.forEach(function (o, i) { var t = st.polys[i].firstChild; if (t) t.textContent = o.name + " · " + val(o.price * 100); });

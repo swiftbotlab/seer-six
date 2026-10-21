@@ -435,3 +435,6 @@
 }
 .ft-sm-only { display: none; }
 @media (max-width: 640px) { .ft-sm-only { display: inline; } }
+/* r6 item 7: the hero starts at the shared top line (assets/system.css --hero-top) */
+.ft-hero { padding-top: var(--hero-top); }
+@media (min-width: 641px) { .ft-hero .ft-kicker { margin-bottom: 14px; } }  /* the H1 then sits where the other apps' H1 sits */

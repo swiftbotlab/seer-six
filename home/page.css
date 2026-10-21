@@ -396,3 +396,6 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-price__go { width: 100%; justify-content: center; }
 }
 @media (max-width: 420px) { .hm-price__src .hm-price__src-t { display: none; } }
+/* r6 item 7: the hero starts at the shared top line (assets/system.css --hero-top), copy column top-aligned */
+.hm-hero { padding-top: var(--hero-top); }
+.hm-hero__copy { align-self: start; }

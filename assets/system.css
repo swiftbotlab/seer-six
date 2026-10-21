@@ -382,6 +382,13 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-apphead__art { position: relative; min-width: 0; }
 @media (max-width: 960px) { .s-apphead .s-apphead__grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 @media (max-width: 640px) { .s-apphead { padding-block: 20px 8px; } .s-apphead__art--wide, .s-apphead__actions, .s-apphead .s-apphead__copy > dl { display: none; } }
+/* one top line for every app's hero (r6 item 7): the copy column starts at the top instead of centring on the art beside it,
+   and every hero (this apphead, Home, Futarchy, the App bar) starts --hero-top under the header, so the eyebrow and the H1
+   sit at the same height on all six pages */
+:root { --hero-top: 28px; }
+@media (max-width: 640px) { :root { --hero-top: 20px; } }
+.s-apphead { padding-top: var(--hero-top); }
+.s-apphead__copy { justify-content: flex-start; }
 @media (max-width: 960px) { .s-hero__grid { grid-template-columns: 1fr; } .s-hero__art { min-height: 220px; } .s-hero { padding-block: var(--s-10) var(--s-8); } }
 
 /* 6. COMPONENTS ------------------------------------------------------------- */
