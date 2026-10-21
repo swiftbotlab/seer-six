@@ -4,7 +4,8 @@
 Run by .github/workflows/refresh.yml (GitHub Actions, every hour) and by hand with `python3 -I tools/refresh.py .`.
 It reads Seer's public endpoints, validates every field the same way the pages do in the browser, and rewrites:
 
-  assets/seer-snapshot.js   App "On Seer now" strip + open-market count (app/live.js, home/live.js fallbacks)
+  assets/seer-snapshot.js   App "On Seer now" strip, the App explorer's first page, open-market count and the askers'
+                            market counts (app/live.js, app/explorer.js, home/live.js fallbacks)
   home/hero-snapshot.js     Home hero: the most liquid open, Kleros-verified categorical market (home/live.js rules)
   opportunity/snapshot.js   Opportunity hero: the three linked "AI Job Board Name" markets (opportunity/real.js rules)
   risk/snapshot.js          Risk hero: Seer Risk Pricing board (risk/page.js rules)
@@ -129,6 +130,11 @@ COLL = {(100, "0xaf204776c7245bf4147c2612bf6e5972ee483701"): "sDAI", (100, "0xe9
         (1, "0x83f20f44975d03b1b09e64809b757c47f942beea"): "sDAI"}
 
 
+def chain_ok(c):
+    """a chain id we can name (JSON true is not chain 1)"""
+    return isinstance(c, int) and not isinstance(c, bool) and c in CHAIN_NAMES
+
+
 def stem(title):
     """the topic of a title, for 'one card per topic': its first capitalised word after the first (Polymarket, Knesset, GTA...)
     — the same rule as app/live.js stem()"""
@@ -153,7 +159,7 @@ def strip_market(m):
         return None
     if not isinstance(m.get("parentMarket"), dict) or m["parentMarket"].get("id") != ZERO:
         return None
-    if m.get("chainId") not in CHAIN_NAMES or not isinstance(m.get("id"), str) or not ADDR.match(m["id"]):
+    if not chain_ok(m.get("chainId")) or not isinstance(m.get("id"), str) or not ADDR.match(m["id"]):
         return None
     title = clean(m.get("marketName"), 200)
     if len(title) < 8:
@@ -195,7 +201,93 @@ def strip_market(m):
             o["multi"] = True
     else:
         return None
+    o.update(asker(m))
     return o
+
+
+def asker(m):
+    """who asked: the creator's address and the creation block's time in ms (app/live.js and home/live.js read the same)"""
+    o = {}
+    c = m.get("creator")
+    if isinstance(c, str) and ADDR.match(c) and c.lower() != ZERO:
+        o["creator"] = c.lower()
+    ts = m.get("blockTimestamp")
+    if isinstance(ts, str) and re.fullmatch(r"\d{9,11}", ts):
+        ts = int(ts)
+    if isinstance(ts, int) and not isinstance(ts, bool) and 1.5e9 < ts and ts * 1000 < time.time() * 1000 + 864e5:
+        o["created"] = ts * 1000
+    return o
+
+
+# the App explorer (app/explorer.js): its default query, the first page of it kept as the snapshot fallback. Each market is
+# pruned to the fields explorer.js reads and validated here; the page then runs its own normalize() on it, exactly as on a
+# live answer, so the snapshot and the live explorer follow one set of rules.
+EXPLORE_BODY = {"type": "Generic", "marketStatusList": ["not_open", "open", "answer_not_final", "in_dispute", "pending_execution"],
+                "limit": 24, "page": 1}
+VSTATUS = {"verified", "verifying", "challenged", "not_verified"}
+HEX32 = re.compile(r"^0x[0-9a-fA-F]{64}$")
+
+
+def explore_market(m):
+    """API market -> the pruned, validated subset explorer.js reads, or None"""
+    if not isinstance(m, dict) or m.get("type") not in ("Generic", "Futarchy"):
+        return None
+    if not chain_ok(m.get("chainId")) or not isinstance(m.get("id"), str) or not ADDR.match(m["id"]):
+        return None
+    title = clean(m.get("marketName"), 300)
+    if len(title) < 4 or m.get("templateId") not in ("1", "2", "3"):
+        return None
+
+    def ts(x):
+        return x if isinstance(x, int) and not isinstance(x, bool) and 0 <= x < 1e11 else None
+
+    def usd(x):
+        v = fnum(x, 0, 1e10 - 1)
+        return round(v, 2) if v is not None else None
+    outs = [clean(x, 120) for x in (m.get("outcomes") if isinstance(m.get("outcomes"), list) else [])[:64]]
+    if len([x for x in outs if x]) < 2:
+        return None
+    odds = [fnum(x, 0, 100) for x in (m.get("odds") if isinstance(m.get("odds"), list) else [])[:64]]
+    qs = [{"id": q["id"].lower()} for q in (m.get("questions") if isinstance(m.get("questions"), list) else [])[:64]
+          if isinstance(q, dict) and isinstance(q.get("id"), str) and HEX32.match(q["id"])]
+    pm = m.get("parentMarket") if isinstance(m.get("parentMarket"), dict) else {}
+    pid = pm.get("id") if isinstance(pm.get("id"), str) and ADDR.match(pm["id"]) else ZERO
+    v = m.get("verification") if isinstance(m.get("verification"), dict) else {}
+    qa = m.get("questionsInArbitration")
+    o = {"id": m["id"].lower(), "type": m["type"], "chainId": m["chainId"], "marketName": title, "templateId": m["templateId"],
+         "outcomes": outs, "odds": odds, "questions": qs, "parentMarket": {"id": pid.lower()},
+         "liquidityUSD": usd(m.get("liquidityUSD")), "volumeUSD": usd(m.get("volumeUSD")), "openInterestUSD": usd(m.get("openInterestUSD")),
+         "openingTs": ts(m.get("openingTs")), "finalizeTs": ts(m.get("finalizeTs")), "hasAnswers": m.get("hasAnswers") is True,
+         "payoutReported": m.get("payoutReported") is True,
+         "questionsInArbitration": qa if isinstance(qa, str) and re.fullmatch(r"\d{1,6}", qa) else "0",
+         "verification": {"status": v.get("status") if v.get("status") in VSTATUS else "not_verified"}}
+    for k in ("lowerBound", "upperBound"):
+        if isinstance(m.get(k), str) and re.fullmatch(r"\d{1,40}", m[k]):
+            o[k] = m[k]
+    if isinstance(m.get("collateralToken"), str) and ADDR.match(m["collateralToken"]):
+        o["collateralToken"] = m["collateralToken"].lower()
+    a = asker(m)
+    if "creator" in a:
+        o["creator"] = a["creator"]
+    if "created" in a:
+        o["blockTimestamp"] = a["created"] // 1000
+    return o
+
+
+def creator_counts(addrs):
+    """{address: how many Generic markets that address has created on Seer} for the askers the pages name (only the count
+    is used; a failed read just leaves that address out)"""
+    out = {}
+    for a in addrs:
+        if a in out or not (isinstance(a, str) and ADDR.match(a)):
+            continue
+        try:
+            d = fetch(APP_API, {"creator": a, "type": "Generic", "limit": 1, "page": 1}, max_bytes=300_000, tries=2)
+        except Fail:
+            continue
+        if isinstance(d, dict) and count_ok(d.get("count")):
+            out[a] = d["count"]
+    return out
 
 
 def pick(lst):
@@ -226,7 +318,7 @@ def hero_market(m):
         return None
     if not isinstance(m.get("parentMarket"), dict) or m["parentMarket"].get("id") != ZERO:
         return None
-    if m.get("chainId") not in CHAIN_NAMES or not isinstance(m.get("id"), str) or not ADDR.match(m["id"]):
+    if not chain_ok(m.get("chainId")) or not isinstance(m.get("id"), str) or not ADDR.match(m["id"]):
         return None
     if m.get("templateId") not in ("2", "3"):
         return None
@@ -256,6 +348,7 @@ def hero_market(m):
     c = COLL.get((m["chainId"], (m.get("collateralToken") or "").lower() if isinstance(m.get("collateralToken"), str) else ""))
     if c:
         o["coll"] = c
+    o.update(asker(m))
     return o
 
 
@@ -282,9 +375,17 @@ def refresh_app(site, out):
     if not isinstance(o, dict) or not count_ok(o.get("count")):
         raise Fail("bad open count")
     opn = o["count"]
+    x = fetch(APP_API, EXPLORE_BODY, max_bytes=1_500_000)
+    if not isinstance(x, dict) or not isinstance(x.get("markets"), list) or not count_ok(x.get("count")):
+        raise Fail("bad explorer answer")
+    explore = [e for e in (explore_market(m) for m in x["markets"][:EXPLORE_BODY["limit"]]) if e]
+    if len(explore) < 6:
+        raise Fail("too few explorer markets")
+    creators = creator_counts([heroes[0].get("creator"), strip[0].get("creator")])
 
     snap = {"source": "app.seer.pm", "when": st["when"], "at": st["ms"], "count": verified, "markets": strip,
-            "open": {"count": opn, "when": st["when"], "at": st["ms"]},
+            "open": {"count": opn, "when": st["when"], "at": st["ms"]}, "creators": creators,
+            "explore": {"request": EXPLORE_BODY, "count": x["count"], "markets": explore},
             "rebrand": {"url": "https://app.seer.pm/markets/100/0xe7850b0d928aa40ab8732bd323fa4f6ef3c24b8a", "archive": "https://opportunity.seer.pm/archive"}}
     out["assets/seer-snapshot.js"] = (
         "/* Seer · dated snapshot of real markets, the App's fallback when Seer's public markets API can't be reached.\n"
@@ -292,10 +393,13 @@ def refresh_app(site, out):
         "   on " + st["when"] + " by tools/refresh.py (hourly, GitHub Actions) with the same rules the live strip uses (app/live.js):\n"
         "   top-level markets only, one per title and per topic, liquidity of at least $" + str(LIQ_MIN) + ", Invalid shown apart.\n"
         "   Odds are Seer's own; \"liq\" is liquidity in USD. Links open the market on Seer. \"open\" is every open market\n"
-        "   (no verification filter), the Home page's count. \"rebrand\": the settled Seer Rebrand Contest (Opportunity). Data only. */\n"
+        "   (no verification filter), the Home page's count. \"creator\"/\"created\": who asked a market and when (its creation block);\n"
+        "   \"creators\": how many markets each of those addresses has created on Seer. \"explore\": the App explorer's first page\n"
+        "   (its default request), each market pruned to the fields app/explorer.js validates. \"rebrand\": the settled Seer Rebrand\n"
+        "   Contest (Opportunity). Data only. */\n"
         "window.SEER_SNAPSHOT = " + jdump(snap) + ";\n")
     hero = {"source": "app.seer.pm", "when": st["when"], "at": st["ms"], "verified": d.get("count") if count_ok(d.get("count")) else None,
-            "market": heroes[0]}
+            "market": heroes[0], "creators": {k: v for k, v in creators.items() if k == heroes[0].get("creator")}}
     out["home/hero-snapshot.js"] = (
         "/* Seer homepage · dated snapshot of the hero market, shown at once and kept if Seer's public API does not answer.\n"
         "   Read from app.seer.pm (POST /.netlify/functions/markets-search, open + Kleros-verified, top-level, sorted by liquidity) on\n"
@@ -318,14 +422,18 @@ def refresh_app(site, out):
         "source": APP_API, "request": body,
         "note": "The App's 'On Seer now' strip: the most liquid open, Kleros-verified top-level market per topic. Odds in percent "
                 "as Seer reports them; liq in USD. invalidRest: Yes + No add up to less than 99%, the rest is left to Invalid.",
-        "verifiedOpen": verified, "open": opn, "markets": [app_row(m) for m in strip]}
+        "verifiedOpen": verified, "open": opn, "markets": [app_row(m) for m in strip], "creators": creators,
+        "explorer": {"note": "The App explorer's first page: Generic markets that are not resolved yet, in Seer's own default order "
+                             "(Kleros-verified first, then liquidity). count is Seer's total for this request; fields as Seer's API "
+                             "names them, pruned and validated.", "request": EXPLORE_BODY, "count": x["count"],
+                     "markets": [dict(e, url=mlink(e["chainId"], e["id"])) for e in explore]}}
     hm = dict(heroes[0])
     hm["url"] = mlink(hm["chain"], hm["id"])
     out["data/home.json"] = {
         "app": "Homepage", "page": SITE_URL + "home/", "fetchedAt": st["iso"], "mode": "hourly snapshot", "source": APP_API,
         "request": body, "note": "The hero: the most liquid open, Kleros-verified categorical or multi-categorical market on Seer. "
                                  "outcomes are [answer, odds %]; invalid is Seer's price of Invalid when it reports one.",
-        "openMarkets": opn, "verifiedOpen": hero["verified"], "hero": hm}
+        "openMarkets": opn, "verifiedOpen": hero["verified"], "hero": hm, "creators": hero["creators"]}
     return st["iso"]
 
 

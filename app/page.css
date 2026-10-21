@@ -487,3 +487,52 @@
 .ap-suggest__ask { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 12px 10px; font-size: var(--fs-ui); font-weight: 500; color: var(--text-2); }
 .ap-suggest__ask a { color: var(--violet-3); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .ap-suggest__ask a:hover { color: var(--text); }
+
+/* ---------- Markets: the explorer on Seer's real markets (explorer.js) ---------- */
+.ap-x { padding-top: 40px; }
+.ap-x__meta { max-width: 70ch; }
+.ap-x #ap-x-kinds { margin-top: 2px; }
+.ap-xcard { gap: 12px; }
+.ap-xcard .s-card__title:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ap-xcard .s-card__title:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.ap-xcard .s-mcard__binary a.s-btn { text-decoration: none; }
+.ap-xcard .ap-cvis--stack { margin-bottom: 2px; }
+.ap-xinv { margin-top: 6px; }
+.ap-xrest { margin-top: 2px; }
+.ap-xnone { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: var(--r-control); background: var(--surface-2); }
+p.ap-xnone { margin: 0; }
+.ap-xnone__o { font-size: 13px; line-height: 1.4; font-weight: 500; color: var(--text-2); overflow-wrap: anywhere; }
+.ap-xby { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font-size: var(--fs-meta); font-weight: 500; color: var(--text-3); }
+.ap-xby__k { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; }
+.ap-xby__a { padding: 0; border: 0; background: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .01em; color: var(--violet-3); cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 45%, transparent); border-radius: 4px; }
+.ap-xby__a:hover { color: var(--text); text-decoration-color: currentColor; }
+.ap-xby__a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ap-xby__a--t { font-size: 11.5px; text-transform: none; }
+.ap-xby__d { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .04em; }
+.ap-xgo { width: 24px; height: 24px; display: grid; place-items: center; color: inherit; border-radius: 6px; }
+.ap-xgo:hover { color: var(--text); background: var(--surface-2); }
+.ap-xgo:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.ap-xt { color: var(--text); font-weight: 500; line-height: 1.35; }
+.ap-xt:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ap-xtable td.ap-xlead { white-space: normal; min-width: 140px; max-width: 220px; }
+.ap-xmore { flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.ap-xmore:empty { display: none; }
+.ap-xmore__n { font-family: var(--font-mono); letter-spacing: .04em; }
+.ap-x .ap-markets__h .s-src { flex: none; }
+/* the sample walkthrough sits under the real explorer, labelled at its heading and folded on phones */
+.ap-sample { padding-top: 48px; }
+.ap-sample > .s-container > .s-fold > summary + * { margin-top: 0; }
+@media (max-width: 640px) {
+  .ap-x { padding-top: 32px; }
+  .ap-sample { padding-top: 32px; }
+  .ap-x .ap-markets__h .s-src { white-space: normal; }
+}
+/* "Asked by": the address links to its block-explorer page, the count opens the explorer on that asker's markets */
+.qa-ask a { color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 45%, transparent); border-radius: 4px; }
+.qa-ask a:hover { color: var(--text); text-decoration-color: currentColor; }
+.qa-ask a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.qa-ask a.qa-ask__addr { color: var(--text); }
+/* while a new page of results is on its way, the old one dims (the result count and the provenance chip stay readable) */
+#ap-x[aria-busy="true"] #ap-x-results { opacity: .55; transition: opacity var(--dur) var(--ease); }
+@media (prefers-reduced-motion: reduce) { #ap-x[aria-busy="true"] #ap-x-results { transition: none; } }

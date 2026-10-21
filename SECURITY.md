@@ -8,7 +8,12 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
   to that one host only:
   - Home: app.seer.pm markets-search, twice (the most liquid open, Kleros-verified market for the hero; the
     numeric `count` of open markets).
-  - App: app.seer.pm markets-search for the "On Seer now" strip, and its numeric `count` of every open market.
+  - App: app.seer.pm markets-search for the "On Seer now" strip, its numeric `count` of every open market, the
+    Markets explorer (one page of 24 per request, filters sent as the API's own fields, the previous request aborted,
+    search debounced) and the numeric `count` of markets the asker has created. Every row goes through one
+    `normalize()` (types, ranges, control/bidi stripped, clamped, textContent only); links are built from a validated
+    chain id and 0x address (app.seer.pm market pages; Gnosisscan/Etherscan address pages).
+  - Home also reads that `count` for the hero market's creator.
   - Opportunity: app.seer.pm markets-search for the three linked "AI Job Board Name" markets; ids, chain,
     parent links and "Other" positions must match what the page pins, or the answer is refused.
   - Futarchy: api.futarchy.seer.pm candles (EIP-8363's two conditional pools); numbers only, decimal strings

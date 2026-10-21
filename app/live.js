@@ -169,16 +169,16 @@
   function ago(ms) { var s = Math.max(0, (Date.now() - ms) / 1000); return s < 3600 ? Math.max(1, Math.round(s / 60)) + " min ago" : s < 172800 ? Math.round(s / 3600) + " h ago" : Math.round(s / 86400) + " days ago"; }
   function dayMon(ms) { var d = new Date(ms); return d.getUTCDate() + " " + MON[d.getUTCMonth()]; }
 
-  /* header: a provenance chip in place of the shell's "Sample data" badge — the first screen is real Seer markets;
-     the explorer under it is the labelled sample */
+  /* header: a provenance chip in place of the shell's "Sample data" badge — the first screen and the explorer under it are
+     real Seer markets; the walkthrough further down is the labelled sample */
   function chip(state, whenTxt) {
     var c = document.querySelector(".s-header .ap-prov") || document.querySelector(".s-header .s-lockup__sample");
     if (!c) return;
     if (!c.classList.contains("ap-prov")) { var n = el("span", { class: "s-sample s-lockup__sample ap-prov" }); c.parentNode.replaceChild(n, c); c = n; }
     var live = state === "live", at = snapAt();
     c.setAttribute("data-state", state);
-    c.title = live ? "Top of this page: real markets read live from Seer's public markets API at " + whenTxt + ". The explorer under it is sample data. Nothing here is tradable."
-      : "Top of this page: real markets, a snapshot of Seer's public markets API" + (at ? " read " + ago(at) + " (refreshed hourly)" : "") + ". The explorer under it is sample data. Nothing here is tradable.";
+    c.title = live ? "Top of this page: real markets read live from Seer's public markets API at " + whenTxt + "; the Markets explorer under it reads the same API. The walkthrough further down is sample data. Trades happen on app.seer.pm."
+      : "Top of this page: real markets, a snapshot of Seer's public markets API" + (at ? " read " + ago(at) + " (refreshed hourly)" : "") + "; the Markets explorer under it reads the same API. The walkthrough further down is sample data. Trades happen on app.seer.pm.";
     S.clear(c).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
     var t = el("span", { class: "ap-prov__t" });                              // one flex item, so the spaces inside it hold
     t.appendChild(el("span", { class: "ap-prov__k" + (!live && at ? " ap-prov__long" : ""), text: live ? "Live" : at ? "Snapshot" : "Loading" }));
@@ -186,21 +186,64 @@
     var w = live ? whenTxt : at ? dayMon(at) : "";
     if (w) t.appendChild(el("span", { class: "s-sample__mid", text: " · " + w }));
     c.appendChild(t);
-    c.appendChild(el("span", { class: "s-sr", text: live ? ": the top of this page is read live from app.seer.pm; the explorer below is sample data" : ": the top of this page is a dated snapshot of app.seer.pm; the explorer below is sample data" }));
+    c.appendChild(el("span", { class: "s-sr", text: live ? ": the top of this page is read live from app.seer.pm; the sample walkthrough further down is made up" : ": the top of this page is a dated snapshot of app.seer.pm; the sample walkthrough further down is made up" }));
   }
 
   /* ---------- the question-asker block in the bar: who asked the strip's first market, what it prices, how to use it ----------
      Only from the market's own data: the creator's address (never a guessed organisation), its type and Seer's prices. */
   function leadOf(m) { var o = m.outcomes.slice().sort(function (a, b) { return b[1] - a[1]; }); return o; }
   function isYes(m) { return !m.multi && m.outcomes.length === 2 && /^yes$/i.test(m.outcomes[0][0]) && /^no$/i.test(m.outcomes[1][0]); }
-  function askBlock(m) {
-    var by = document.getElementById("ap-ask-by"), pr = document.getElementById("ap-ask-prices"), use = document.getElementById("ap-ask-use");
-    if (!by || !pr || !use || !m) return;
+  /* "Asked by" names only what the data shows: the creator's address (linked to its page on the chain's block explorer where
+     that page is known to answer: Gnosisscan, Etherscan), when it asked, and how many other markets that address has created on
+     Seer (markets-search {creator}, count only), which opens the explorer below on that asker's markets */
+  var SCAN = { 1: "https://etherscan.io/address/", 100: "https://gnosisscan.io/address/" };
+  var asked = X && X.creators && typeof X.creators === "object" ? X.creators : {}, askedLive = {};
+  function creatorCount(a) { var c = own(askedLive, a) ? askedLive[a] : own(asked, a) ? asked[a] : null; return okCount(c) ? c : null; }
+  function own(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  function askBy(m) {
+    var by = document.getElementById("ap-ask-by");
+    if (!by || !m) return;
     S.clear(by);
-    if (m.creator) {
-      by.appendChild(el("span", { class: "qa-ask__addr", text: m.creator.slice(0, 6) + "…" + m.creator.slice(-4), attrs: { title: m.creator } }));
-      by.appendChild(document.createTextNode(", who created it on " + CHAINS[m.chain] + (m.created ? " on " + dayMon(m.created) + " " + new Date(m.created).getUTCFullYear() : "")));
-    } else by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page";
+    // the snapshot's rows come from tools/refresh.py (same checks); test them again before they become a link or a date
+    if (typeof m.creator !== "string" || !ADDR.test(m.creator) || !CHAINS[m.chain]) { by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page"; return; }
+    var a = m.creator.toLowerCase(), sh = a.slice(0, 6) + "…" + a.slice(-4);
+    var made = typeof m.created === "number" && isFinite(m.created) && m.created > 1.5e12 && m.created < Date.now() + 864e5 ? m.created : null;
+    by.appendChild(SCAN[m.chain] ? el("a", { class: "qa-ask__addr", href: SCAN[m.chain] + a, text: sh, attrs: { title: a, target: "_blank", rel: "noopener noreferrer", "aria-label": a + " on " + (m.chain === 100 ? "Gnosisscan" : "Etherscan") + " (opens in a new tab)" } })
+      : el("span", { class: "qa-ask__addr", text: sh, attrs: { title: a } }));
+    by.appendChild(document.createTextNode(", who created it on " + CHAINS[m.chain] + (made ? " on " + dayMon(made) + " " + new Date(made).getUTCFullYear() : "")));
+    var n = creatorCount(a);
+    if (n != null && n > 1) {
+      by.appendChild(document.createTextNode(" and "));
+      var b = el("a", { class: "qa-ask__more", href: "?creator=" + a + "#markets", text: (n - 1).toLocaleString("en-US") + " other Seer market" + (n - 1 === 1 ? "" : "s"), attrs: { "aria-label": "Show all " + n.toLocaleString("en-US") + " markets created by " + sh + " in the explorer below" } });
+      b.addEventListener("click", function (e) { if (window.AP_X && typeof window.AP_X.byCreator === "function") { e.preventDefault(); window.AP_X.byCreator(a); } });
+      by.appendChild(b);
+    } else if (n === 1) by.appendChild(document.createTextNode(", its only market on Seer"));
+    if (!own(askedLive, a)) countFor(a, function () { if (shownCreator === a) askBy(m); });
+  }
+  var shownCreator = null, asking = {};
+  function countFor(a, done) {                    // {creator, Generic, limit 1}: only the numeric "count" is used (~4 KB)
+    if (asking[a] || typeof fetch !== "function") return; asking[a] = 1;
+    var c3 = typeof AbortController === "function" ? new AbortController() : null, k3 = setTimeout(function () { if (c3) c3.abort(); }, ABORT_MS);
+    fetch(API, {
+      method: "POST", mode: "cors", credentials: "omit", cache: "no-store", referrerPolicy: "no-referrer", redirect: "error",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ creator: a, type: "Generic", limit: 1, page: 1 }),
+      signal: c3 ? c3.signal : undefined
+    }).then(function (r) {
+      if (!r.ok || !/application\/json/i.test(r.headers.get("content-type") || "") || +(r.headers.get("content-length") || 0) > 300000) throw new Error("bad answer");
+      return r.text();
+    }).then(function (t) {
+      clearTimeout(k3);
+      if (t.length > 300000) throw new Error("too big");
+      var d = JSON.parse(t);
+      if (!d || !okCount(d.count)) throw new Error("bad count");
+      askedLive[a] = d.count; done();
+    }).catch(function () { clearTimeout(k3); });       // the snapshot's count (if any) stays
+  }
+  function askBlock(m) {
+    var pr = document.getElementById("ap-ask-prices"), use = document.getElementById("ap-ask-use");
+    if (!pr || !use || !m) return;
+    shownCreator = typeof m.creator === "string" ? m.creator.toLowerCase() : null;
+    askBy(m);
     var t = clip(m.title, 50), c, u;
     if (m.scalar) {
       var sc = m.scalar, unit = sc.unit ? " " + sc.unit : "";

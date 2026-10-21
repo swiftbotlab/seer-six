@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Seer App · Market explorer (concept)</title>
-<meta name="description" content="Seer's explorer, its Etherscan: find what the markets say about a topic (live from Seer), who asked each question and what its prices mean, then trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; the explorer below the live strip is sample data, not affiliated with Seer.">
+<meta name="description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,7 +14,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Seer App · Market explorer (concept)">
-<meta property="og:description" content="Seer's explorer, its Etherscan: find what the markets say about a topic (live from Seer), who asked each question and what its prices mean, then trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; the explorer below the live strip is sample data, not affiliated with Seer.">
+<meta property="og:description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/app/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
 <meta property="og:image:width" content="1200">
@@ -23,14 +23,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Seer App · Market explorer (concept)">
-<meta name="twitter:description" content="Seer's explorer, its Etherscan: find what the markets say about a topic (live from Seer), who asked each question and what its prices mean, then trace a market from its Reality.eth question to redemption. Concept by Swift Bot Labs; the explorer below the live strip is sample data, not affiliated with Seer.">
+<meta name="twitter:description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="app">
-<script>window.SEER_PAGE = { nav: [["Markets", "#markets", true], ["Activity", "#activity"], ["On Seer now", "#on-seer"], ["Leaderboard", "#leaderboard"], ["Design notes", "#notes"]], search: "Search markets, outcomes or 0x…", cta: ["Create market", "#create", "plus-square"] };</script>
+<script>window.SEER_PAGE = { nav: [["Markets", "#markets", true], ["Sample", "#sample"], ["Activity", "#activity"], ["Leaderboard", "#leaderboard"], ["Design notes", "#notes"]], search: "Search markets, outcomes or 0x…", cta: ["Create market", "#create", "plus-square"] };</script>
 <script src="../assets/shell.js"></script>
 <main id="main" class="s-main">
 
@@ -89,11 +89,37 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
       </div>
     </section>
 
-    <section class="ap-section" id="markets" aria-labelledby="ap-markets-h">
+    <!-- Markets: the explorer itself, on Seer's real markets (app/explorer.js). Every filter but the type is Seer's own markets API
+         field; the dated snapshot (assets/seer-snapshot.js, hourly) is the fallback. -->
+    <section class="ap-section ap-x" id="markets" aria-labelledby="ap-markets-h">
       <div class="s-container">
         <div class="s-section-head ap-head ap-head--compact">
-          <div class="ap-markets__h"><h2 id="ap-markets-h" class="t-h3">Markets</h2><span class="s-sample" title="Everything from here down is made up to show the explorer: every market type, chain and state. The strip above is real.">Sample data</span><span class="t-meta ap-hide-sm">The explorer on a made-up set: every type, chain and state. Words in the search also find real markets on Seer.</span></div>
+          <div class="ap-markets__h"><h2 id="ap-markets-h" class="t-h3">Markets</h2><span class="s-src" id="ap-x-src" data-state="loading" role="status"><i aria-hidden="true"></i>Loading from app.seer.pm…</span><span class="t-meta ap-x__meta" id="ap-x-meta">Every market on Seer, read from its public markets API.</span></div>
         </div>
+        <div id="ap-x" aria-busy="true">
+          <div id="ap-x-kinds"></div>
+          <div class="ap-toolbar">
+            <button type="button" class="s-btn s-btn--ghost s-btn--sm ap-ftoggle" id="ap-x-ftoggle" aria-expanded="false" aria-controls="ap-x-fbody">Filters</button>
+            <div class="ap-toolbar__body" id="ap-x-fbody"></div>
+          </div>
+          <div class="ap-results">
+            <div class="ap-results__l" id="ap-x-resbar" aria-live="polite"></div>
+            <div class="ap-toolbar__end" id="ap-x-fend"></div>
+          </div>
+          <div id="ap-x-results"></div>
+          <div class="ap-showall-row ap-xmore" id="ap-x-more"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sample walkthrough: the made-up set that shows an explorer record end to end (page.js); folded on phones -->
+    <section class="ap-section ap-sample" id="sample" aria-labelledby="ap-sample-h">
+      <div class="s-container">
+        <div class="s-section-head ap-head ap-head--compact">
+          <div class="ap-markets__h"><h2 id="ap-sample-h" class="t-h3">Sample walkthrough</h2><span class="s-sample" title="Everything in this section and below it is made up to show the explorer's full record. The markets above it are real.">Sample data</span><span class="t-meta ap-hide-sm">18 made-up markets that show the full record an explorer can keep: every type, chain and lifecycle state, from the Reality.eth question to redemption.</span></div>
+        </div>
+        <details class="s-details s-fold" data-sfold open>
+          <summary><span class="s-fold__t"><b>Open the sample explorer</b><small>18 made-up markets, every type and state, each with its full record</small></span></summary>
         <div id="ap-cats"></div>
         <div class="ap-toolbar" id="ap-toolbar">
           <button type="button" class="s-btn s-btn--ghost s-btn--sm ap-ftoggle" id="ap-ftoggle" aria-expanded="false" aria-controls="ap-fbody"></button>
@@ -104,13 +130,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <div class="ap-toolbar__end" id="ap-fend"></div>
         </div>
         <div id="ap-results"></div>
+        </details>
       </div>
     </section>
 
     <!-- More on this page: the long tail, folded. Each row opens in place; a link to its #section opens it too (shell.js). -->
     <section class="s-section--tight s-more" aria-labelledby="ap-more-title">
       <div class="s-container">
-        <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="ap-more-title">Activity, leaderboard and market creation</h2></div><p>3 sections · each opens in place</p></div>
+        <div class="s-more__head"><div><span class="s-spec">More on this page</span><h2 class="t-h3" id="ap-more-title">Activity, leaderboard and market creation</h2></div><p>3 sections on the sample · each opens in place</p></div>
         <details class="s-details s-more__item">
           <summary><span class="s-more__t"><b>Activity</b><small>The protocol index: every market&#x27;s lifecycle, the latest transactions and the resolution queue.</small></span><span class="s-more__k">Activity</span></summary>
         <section class="ap-section" id="activity" aria-labelledby="ap-activity-h">
@@ -247,13 +274,13 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <li><b>State and verification on every card.</b> An explorer has to say where a market is in its life. Amber (waiting) and red (dispute) only ever appear next to their label.</li>
             <li><b>Row buttons follow the market type.</b> The kit shows Yes/No on every row. Here a categorical No buys the other outcomes as one basket; a scalar round trades Up/Down; multi-winner markets trade Buy/Sell, because a "No" there is not one clean bet.</li>
             <li><b>Each price in its market's unit.</b> #2841 reads 8.14/10 · UP 81¢, #2842 reads 50% · 6.3¢ (a funded share pays 1/8 sDAI), #2850 a default chance per year. Charts, 24h moves and ticket payouts use the same unit.</li>
-            <li><b>Kit fixes.</b> Binary prices add up to 100¢ (the kit's 69¢ + 37¢ is 106¢), amounts use a decimal point ("$100.00"), and sample markets use motif glyph tiles instead of photos.</li>
+            <li><b>Kit fixes.</b> Sample binary prices add up to 100¢ (the kit's 69¢ + 37¢ is 106¢); real markets keep Seer's own prices and say so on the card when Yes and No add up to more or less than 100¢. Amounts use a decimal point ("$100.00"), and markets use motif glyph tiles instead of photos.</li>
             <li><b>Type and contrast.</b> PP Neue Montreal and Suisse Int'l Mono when installed, Geist and Geist Mono otherwise; muted text is lifted so 12px labels pass WCAG AA.</li>
           </ol>
         </div>
       </div>
       </details>
-      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> One shared sample dataset, so the same market shows up in Deep, Futarchy, Opportunity and Risk; every address starts with 0x5eed. Only "On Seer now", the question-asker block above it and the search's "On Seer · live" rows are real: they read Seer's public markets API (the strip falls back to a dated snapshot, labelled as such). Nothing here is tradable.</span></div>
+      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every link opens the market on app.seer.pm, where it trades. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
     </div>
   </section>
 </main>
@@ -262,5 +289,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="page.js"></script>
 <script src="../assets/seer-snapshot.js"></script>
 <script src="live.js"></script>
+<script src="explorer.js"></script>
 </body>
 </html>

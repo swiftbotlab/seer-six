@@ -4,7 +4,9 @@
    inserted with textContent (Seer.el), never innerHTML. Routes (hash):
      #m=<id>[&o=<outcome>][&side=1][&tab=details|activity|positions|resolution|related]  market record
      #a=<0x…>                                                                             address record
-     #markets #activity #leaderboard #create #notes                                       sections */
+     #markets (the real explorer, explorer.js) #sample #activity #leaderboard #create #notes  sections
+   The search box drives both: word queries also go to the real explorer (window.AP_X.search) and to the "On Seer · live"
+   suggestions (live.js); market numbers, P-07 and 0x5eed addresses search this sample. */
 (function () {
   "use strict";
   var D = window.SEER_SAMPLE, S = window.Seer, U = S.ui, F = S.fmt, el = S.el, $ = S.$, $$ = S.$$;
@@ -248,7 +250,7 @@
     drawField(); S.onResize($("#ap-field"), drawField);
     // try chips
     var holderAgent = D.agents[0];
-    var tries = [["#2841", "#2841"], ["P-07", "P-07"], ["Geth", "Geth"], ["In dispute", "dispute"], [holderAgent.address.slice(0, 12) + "…", holderAgent.address.slice(0, 12)]];
+    var tries = [["election", "election"], ["ethereum", "ethereum"], ["#2841", "#2841"], ["P-07", "P-07"], [holderAgent.address.slice(0, 12) + "…", holderAgent.address.slice(0, 12)]];
     var tb = $("#ap-try");
     tries.forEach(function (t) {
       var b = el("button", { class: "s-chip" + (/^0x/.test(t[0]) ? " t-mono" : ""), text: t[0], attrs: { type: "button", "aria-label": "Search for " + t[1] } });
@@ -354,7 +356,9 @@
     if (!fromHero) qInput.value = FS.q;
     var hs = $("[data-shell-search] input"); if (hs && hs.value !== FS.q && document.activeElement !== hs) hs.value = FS.q;
     renderExplorer();
+    if (window.AP_X) window.AP_X.search(FS.q);                 // the real explorer: Seer's own search over every market title
   }
+  window.AP_X_QUERY_RESET = function () { if (FS.q) setQuery(""); };
   function sortVal(m, k) {
     if (k === "opening") return -Date.parse(m.openingDate);
     if (k === "created") return Date.parse(m.created);
@@ -414,12 +418,14 @@
     document.addEventListener("seer:search", function (e) {
       var q = (e.detail && e.detail.q) || "";
       FS.q = q.slice(0, 80); qInput.value = FS.q; renderExplorer();
+      if (window.AP_X) window.AP_X.search(FS.q);
       if (mode !== "home") go("markets");
     });
     var hs = $("[data-shell-search] input");
     if (hs) hs.addEventListener("keydown", function (e) {
       if (e.key !== "Enter") return; e.preventDefault();
-      var r = suggest(hs.value); if (r.items[0]) go(r.items[0].href); else go("markets");
+      var r = suggest(hs.value), word = window.AP_TOPIC && window.AP_TOPIC.ok(hs.value);
+      if (word && window.AP_X) { window.AP_X.search(hs.value); go("markets"); } else if (r.items[0]) go(r.items[0].href); else go("markets");
     });
     renderExplorer();
   }
@@ -781,10 +787,10 @@
 
     // breadcrumb
     var catBtn = el("button", { text: m.category, attrs: { type: "button", "aria-label": "Show all " + m.category + " markets" } });
-    catBtn.addEventListener("click", function () { clearAll(); FS.cat = m.category; $$(".s-chip", catRow).forEach(function (c) { c.setAttribute("aria-pressed", String(c.firstChild && c.firstChild.textContent === m.category)); }); renderExplorer(); go("markets"); });
+    catBtn.addEventListener("click", function () { clearAll(); FS.cat = m.category; $$(".s-chip", catRow).forEach(function (c) { c.setAttribute("aria-pressed", String(c.firstChild && c.firstChild.textContent === m.category)); }); renderExplorer(); go("sample"); });
     wrap.appendChild(el("nav", { class: "ap-crumbs", attrs: { "aria-label": "Breadcrumb" } },
       el("a", { class: "s-btn s-btn--ghost s-btn--sm", href: "#", html: S.icon("arrow-left", 14) }, "All markets"),
-      el("a", { href: "#markets", text: "Markets" }), sep(), catBtn, sep(), el("span", { class: "t-mono", text: "#" + m.id, attrs: { "aria-current": "page" } })));
+      el("a", { href: "#sample", text: "Sample" }), sep(), catBtn, sep(), el("span", { class: "t-mono", text: "#" + m.id, attrs: { "aria-current": "page" } })));
 
     var grid = el("div", { class: "ap-dgrid" }); wrap.appendChild(grid);
     var head = el("header", { class: "ap-dhead" }), A = el("div", { class: "ap-da" }), rail = el("aside", { class: "ap-rail", attrs: { "aria-label": "Trade" } }), B = el("div", { class: "ap-db" });
@@ -1337,7 +1343,7 @@
     var wrap = el("div", { class: "s-container ap-detail" }); view.appendChild(wrap);
     wrap.appendChild(el("nav", { class: "ap-crumbs", attrs: { "aria-label": "Breadcrumb" } },
       el("a", { class: "s-btn s-btn--ghost s-btn--sm", href: "#", html: S.icon("arrow-left", 14) }, "All markets"),
-      el("a", { href: "#markets", text: "Markets" }), sep(), el("span", { text: "Address" }), sep(), el("span", { class: "t-mono", text: F.addr(a, 4), attrs: { "aria-current": "page" } })));
+      el("a", { href: "#sample", text: "Sample" }), sep(), el("span", { text: "Address" }), sep(), el("span", { class: "t-mono", text: F.addr(a, 4), attrs: { "aria-current": "page" } })));
     var col = el("div", { class: "s-col", style: { "--gap": "16px", marginTop: "18px" } }); wrap.appendChild(col);
     var kind = e ? addrKind(e) : "Address", label = e ? addrLabel(e) : "Unknown address";
     var av = el("span", { class: "s-avatar ap-avatar-user", html: S.icon(e && e.agent ? "agent" : "user", 24), attrs: { "aria-hidden": "true" } });
@@ -1348,7 +1354,7 @@
         el("div", { class: "s-row", style: { "--gap": "6px" } }, el("span", { class: "ap-addr-full", text: a }), el("button", { class: "s-addr__copy", attrs: { type: "button", "aria-label": "Copy address", "data-copy": a }, html: S.icon("copy", 13) })),
         e && e.agent ? U.specs(["Operator " + e.agent.operator, e.agent.trades + " trades", "Brier " + e.agent.brier.toFixed(3)]) : e && e.trader ? U.specs([e.trader.markets + " markets traded", "Volume " + F.usd(e.trader.volume)]) : null))));
     if (!e) {
-      col.appendChild(U.empty({ title: "No activity for this address", text: "It holds no positions and created no markets in the sample. Addresses in this concept start with 0x5eed.", action: { label: "Back to markets", href: "#markets" }, motif: "dotgrid", motifOpts: { cols: 12, rows: 6, cell: 20, dissolve: .55 } }));
+      col.appendChild(U.empty({ title: "No activity for this address", text: "It holds no positions and created no markets in the sample. Addresses in this concept start with 0x5eed.", action: { label: "Back to the sample", href: "#sample" }, motif: "dotgrid", motifOpts: { cols: 12, rows: 6, cell: 20, dissolve: .55 } }));
       return;
     }
     var val = e.positions.reduce(function (s, p) { return s + p.balance; }, 0), who = e.agent || e.trader;

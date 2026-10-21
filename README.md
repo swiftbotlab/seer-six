@@ -25,7 +25,7 @@ Design system: https://swiftbotlab.github.io/seer-six/system/
 Plain HTML, CSS and JavaScript. No build step, no external scripts, no tracking.
 Working on the site: the hourly job commits to `main`, so `git pull --rebase` before you push.
 Each app page opens on Seer's own markets. Home (the most liquid open market and the open-market count),
-the App ("On Seer now"), Futarchy (EIP-8363's two conditional pools), Opportunity (the "AI Job Board Name"
+the App ("On Seer now" and the Markets explorer, every market on Seer with its asker), Futarchy (EIP-8363's two conditional pools), Opportunity (the "AI Job Board Name"
 market) and Risk (the Q3 2026 board) read Seer's public APIs (app.seer.pm, api.futarchy.seer.pm,
 risk.seer.pm) when the page loads and fall back to a dated snapshot, saying which one they show. Deep opens
 on a dated snapshot of Round 3 Originality from deep.seer.pm (its feed allows no cross-site reads).
