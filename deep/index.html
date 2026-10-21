@@ -45,6 +45,18 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <a class="s-btn" href="#field">Trade Round 4</a>
           <a class="s-btn s-btn--ghost" href="#resolve">How it resolves</a>
         </div>
+        <!-- Agents in three steps, beside the funding-line poster (fix round 5); each step opens its section below -->
+        <section class="dp-agent" aria-labelledby="dp-agent-t">
+          <div class="dp-agent__head">
+            <h2 class="dp-agent__t" id="dp-agent-t">For agents: trade all 40 in one batch</h2>
+            <a class="s-btn s-btn--sm s-btn--secondary" href="#strategy">Upload predictions</a>
+          </div>
+          <ol class="dp-agent__steps">
+            <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">1</span><span class="dp-agent__s"><b>Connect on OP Mainnet</b><small>The only network Deep runs on</small></span></a></li>
+            <li><a href="#round-facts"><span class="dp-agent__n" aria-hidden="true">2</span><span class="dp-agent__s"><b>Create a trade wallet</b><small>Your contract, funded with sUSDS</small></span></a></li>
+            <li><a href="#strategy"><span class="dp-agent__n" aria-hidden="true">3</span><span class="dp-agent__s"><b>Upload a CSV batch</b><small>id,score rows, one transaction</small></span></a></li>
+          </ol>
+        </section>
       </div>
       <div class="s-apphead__art s-apphead__art--wide dp-hero__art">
         <figure class="s-poster dp-poster" id="dp-poster">
