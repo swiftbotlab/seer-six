@@ -1,0 +1,178 @@
+{
+ "app": "App (market explorer)",
+ "page": "https://swiftbotlab.github.io/seer-six/app/",
+ "fetchedAt": "2026-10-21T18:40:26Z",
+ "mode": "hourly snapshot",
+ "source": "https://app.seer.pm/.netlify/functions/markets-search",
+ "request": {
+  "marketStatusList": [
+   "open"
+  ],
+  "verificationStatusList": [
+   "verified"
+  ],
+  "limit": 48,
+  "page": 1
+ },
+ "note": "The App's 'On Seer now' strip: the most liquid open, Kleros-verified top-level market per topic. Odds in percent as Seer reports them; liq in USD. invalidRest: Yes + No add up to less than 99%, the rest is left to Invalid.",
+ "verifiedOpen": 73,
+ "open": 2137,
+ "markets": [
+  {
+   "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
+   "chain": 100,
+   "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
+   "liq": 27579.88,
+   "outcomes": [
+    [
+     "Yashar",
+     66
+    ],
+    [
+     "Likud",
+     32.2
+    ],
+    [
+     "Others",
+     0.7
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
+   "chain": 100,
+   "title": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
+   "liq": 1180.89,
+   "outcomes": [
+    [
+     "Yes",
+     48.4
+    ],
+    [
+     "No",
+     51.6
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0xe820d073f8885f4a24328ba9fbb8a745114bb647",
+   "chain": 100,
+   "title": "Will the Digital Asset Market Clarity Act be approved by the U.S. Senate, excluding committee approval, in 2026?",
+   "liq": 918.74,
+   "outcomes": [
+    [
+     "Yes",
+     33.4
+    ],
+    [
+     "No",
+     69.7
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0xe820d073f8885f4a24328ba9fbb8a745114bb647",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0x0a2e852ade1b60ceae19e2d9a6f0a97da2d0dc06",
+   "chain": 100,
+   "title": "Will Donald Trump issue an official presidential pardon for Ghislaine Maxwell by December 31st 2026?",
+   "liq": 818.27,
+   "outcomes": [
+    [
+     "Yes",
+     6
+    ],
+    [
+     "No",
+     93.9
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x0a2e852ade1b60ceae19e2d9a6f0a97da2d0dc06",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
+   "chain": 100,
+   "title": "Who will win the 2026 South Sudanese presidential election?",
+   "liq": 781.56,
+   "outcomes": [
+    [
+     "Salva Kiir Mayardit",
+     89.8
+    ],
+    [
+     "Others",
+     9.9
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0x67ea7fc200ff1c2a8817c1efd4b56cdd6ef0a060",
+   "chain": 100,
+   "title": "Will GTA 6 achieve the highest first-day unit sales of any GTA game?",
+   "liq": 757.68,
+   "outcomes": [
+    [
+     "YES",
+     80.5
+    ],
+    [
+     "NO",
+     19.5
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x67ea7fc200ff1c2a8817c1efd4b56cdd6ef0a060",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0x36e2b9d28a3cbf15712d09b79f3362d049a4eba9",
+   "chain": 100,
+   "title": "Which party will win the most seats in the United States Senate elections in 2026?",
+   "liq": 639.17,
+   "outcomes": [
+    [
+     "Democratic Party",
+     64.1
+    ],
+    [
+     "Republican Party",
+     35.8
+    ],
+    [
+     "Other",
+     0.8
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x36e2b9d28a3cbf15712d09b79f3362d049a4eba9",
+   "chainName": "Gnosis"
+  },
+  {
+   "id": "0x6e9664bb63fc353caefddb5c80f7b39bf90742fc",
+   "chain": 100,
+   "title": "Who will win the 2026 Guinea-Bissau presidential election?",
+   "liq": 503.17,
+   "outcomes": [
+    [
+     "Fernando Dias da Costa",
+     27.3
+    ],
+    [
+     "Umaro Mokhtar Sissoco Embaló",
+     26
+    ],
+    [
+     "Domingos Simões Pereira",
+     15.2
+    ]
+   ],
+   "url": "https://app.seer.pm/markets/100/0x6e9664bb63fc353caefddb5c80f7b39bf90742fc",
+   "chainName": "Gnosis"
+  }
+ ]
+}

@@ -8,7 +8,7 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
   to that one host only:
   - Home: app.seer.pm markets-search, twice (the most liquid open, Kleros-verified market for the hero; the
     numeric `count` of open markets).
-  - App: app.seer.pm markets-search for the "On Seer now" strip.
+  - App: app.seer.pm markets-search for the "On Seer now" strip, and its numeric `count` of every open market.
   - Opportunity: app.seer.pm markets-search for the three linked "AI Job Board Name" markets; ids, chain,
     parent links and "Other" positions must match what the page pins, or the answer is refused.
   - Futarchy: api.futarchy.seer.pm candles (EIP-8363's two conditional pools); numbers only, decimal strings
@@ -22,6 +22,14 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
   `futarchy/eip8363-data.js`, `risk/snapshot.js`) and says so.
 - Deep makes no runtime request (deep.seer.pm's feed sends no CORS header): `deep/round3.js` is a dated
   snapshot of it, validated again in the page the same way.
+- The hourly refresh (`.github/workflows/refresh.yml` -> `tools/refresh.py`) runs on GitHub Actions with
+  `permissions: contents: write` only and no secrets; its one action (`actions/checkout`) is pinned by commit SHA,
+  and the script uses only the Python standard library (`python3 -I`). It reads the same Seer endpoints, plus
+  deep.seer.pm's feed, with redirects refused, size caps, timeouts and the pages' own type, range, control/bidi
+  and length checks, and writes data only (JSON-escaped). Each source fails closed: on any error its files stay
+  as they were and `data/index.json` says "kept". Commits are authored by the repository's noreply address.
+- `data/*.json` and `llms.txt` are static files for agents; no page fetches them.
+- The hub (index.html) reads only the local snapshot (`assets/seer-snapshot.js`) and makes no network request.
 - `localStorage` holds one value, the viewer's theme choice (`seer-theme`).
 - Any CSV a viewer drops into a demo is parsed in the browser and never uploaded.
 - All rendered text from data goes through `textContent`, not `innerHTML`.

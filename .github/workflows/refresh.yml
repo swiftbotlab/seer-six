@@ -1,0 +1,44 @@
+# Hourly refresh of the Seer data this site falls back to (assets/seer-snapshot.js, the five hero snapshots, data/*.json).
+# tools/refresh.py reads Seer's public endpoints with the standard library only, validates every field and keeps the last
+# good copy of any source that fails. No secrets: the job's own GITHUB_TOKEN may only write this repo's contents, and the
+# commit is authored by the repo's noreply address. GitHub Pages (deploy from main) republishes after each push.
+name: Refresh Seer data
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # hourly, off the top of the hour
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-seer-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Read Seer's public endpoints, validate, rewrite the snapshots
+        run: python3 -I tools/refresh.py .
+
+      - name: Commit and push what changed
+        run: |
+          git config user.name "Swiftbot"
+          git config user.email "344366013+swiftbotlab@users.noreply.github.com"
+          git add -- assets/seer-snapshot.js home/hero-snapshot.js opportunity/snapshot.js risk/snapshot.js futarchy/eip8363-data.js deep/round3.js data
+          if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
+          git commit -q -m "Hourly refresh: Seer data read $(date -u '+%d %b %Y, %H:%M UTC')"
+          for i in 1 2 3; do
+            if git push -q origin HEAD:main; then echo "pushed"; exit 0; fi
+            git pull -q --rebase origin main || { git rebase --abort; exit 1; }
+          done
+          exit 1
