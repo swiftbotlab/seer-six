@@ -430,8 +430,71 @@
     }
   }
   function clearAll() { ["q", "cat", "type", "state", "chain", "verify", "coll", "cond", "fut", "live"].forEach(resetFilter); renderExplorer(); }
+  /* ---- card grammar (fix round 5): each market type draws its own shape in Cards view ----
+     scalar: a range with tick marks and the estimate pinned on it (UP's price is the estimate's position);
+     a scalar round (#2841): every proposal's expected score on one 0-10 strip, the funding line dashed, the leader kept as a row;
+     several outcomes: one stacked bar, how a full set of outcome tokens (worth 1 collateral) is priced, top outcomes coloured. */
+  var SEG = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "var(--c5)"];
+  function pctTxt(p) { return p >= .1 ? F.pct0(p) : F.pct(p, 1); }
+  // legend values speak the card's own unit: chances for one-winner markets and shares for multi-scalar (price = share of the set);
+  // multi-winner prices are not chances (a funded share redeems 1/k), so those read in cents like their rows
+  function legVal(m, o, sum) { return multiCat(m) ? F.cents1(o.price) : pctTxt(o.price / sum); }
+  function rangeEl(m) {
+    var r = m.range, v = scalarValue(m), p = Math.max(0, Math.min(1, (v - r.min) / (r.max - r.min)));
+    var tr = el("div", { class: "ap-rng", attrs: { role: "img", "aria-label": "Market forecast " + fmtUnit(m, v) + " on a range of " + fmtUnit(m, r.min) + " to " + fmtUnit(m, r.max) }, style: { "--p": p.toFixed(4) } },
+      el("span", { class: "ap-rng__track" }, el("i")), el("span", { class: "ap-rng__ticks" }, [0, 1, 2, 3, 4].map(function () { return el("i"); })), el("span", { class: "ap-rng__pin" }));
+    return el("div", { class: "ap-cvis ap-cvis--rng" },
+      el("div", { class: "s-row s-row--between" }, el("span", { class: "t-meta", text: m.state === "pending" ? "Final answer" : "Market forecast" }), el("b", { class: "t-num ap-cvis__v", text: fmtUnit(m, v) })),
+      tr, el("div", { class: "s-row s-row--between t-meta t-num" }, el("span", { text: fmtNum(r.min) }), el("span", { text: fmtNum(r.max) + (r.unit ? " " + r.unit : "") })));
+  }
+  function stripEl(m) {
+    var r = m.range || { min: 0, max: 10 }, outs = real(m), k = (D.round4 && D.round4.slots) || 8;
+    var vals = outs.map(function (o) { return o.value != null ? o.value : r.min + (r.max - r.min) * o.price; });
+    var sorted = vals.slice().sort(function (a, b) { return b - a; }), line = sorted.length > k ? (sorted[k - 1] + sorted[k]) / 2 : null;
+    var pos = function (v) { return (Math.max(0, Math.min(1, (v - r.min) / (r.max - r.min))) * 100).toFixed(2) + "%"; };
+    var strip = el("div", { class: "ap-strip", attrs: { role: "img", "aria-label": outs.length + " expected scores from " + F.num(sorted[sorted.length - 1], 2) + " to " + F.num(sorted[0], 2) + " out of " + trimNum(r.max) + (line != null ? "; the top " + k + " clear the funding line at " + F.num(line, 3) : "") } },
+      el("span", { class: "ap-strip__base" }));
+    vals.forEach(function (v) { strip.appendChild(el("i", { class: line != null && v > line ? "is-in" : "", style: { left: pos(v) } })); });
+    if (line != null) strip.appendChild(el("span", { class: "ap-strip__line", style: { left: pos(line) } }));
+    return el("div", { class: "ap-cvis ap-cvis--strip" },
+      el("div", { class: "s-row s-row--between" }, el("span", { class: "t-meta", text: outs.length + " expected scores" }), line != null ? el("span", { class: "t-meta ap-cvis__k" }, el("i", { attrs: { "aria-hidden": "true" } }), "Funding line " + F.num(line, 3)) : null),
+      strip, el("div", { class: "s-row s-row--between t-meta t-num" }, el("span", { text: trimNum(r.min) }), el("span", { text: trimNum(r.max) })));
+  }
+  function trimNum(v) { return Number.isInteger(v) ? String(v) : F.num(v, 2); }
+  function stackEl(m, legendFrom) {
+    var outs = real(m).slice().sort(function (a, b) { return b.price - a.price; }), sum = 0;
+    outs.forEach(function (o) { sum += Math.max(0, o.price); });
+    if (!(sum > 0)) return null;
+    var top = outs.slice(0, SEG.length), rest = outs.slice(SEG.length), restP = 0;
+    rest.forEach(function (o) { restP += Math.max(0, o.price); });
+    var coll = cs(m), bar = el("div", { class: "ap-stack", attrs: { role: "img", "aria-label": "One full set of outcome tokens is worth 1 " + coll + ". Priced: " + top.map(function (o) { return shortName(o) + " " + F.cents1(o.price); }).join(", ") + (rest.length ? ", " + rest.length + " others " + F.cents1(restP) : "") } });
+    top.forEach(function (o, i) { bar.appendChild(el("i", { style: { width: (o.price / sum * 100).toFixed(3) + "%", background: SEG[i] }, attrs: { title: shortName(o) + " · " + F.cents1(o.price) } })); });
+    if (restP > 0) bar.appendChild(el("i", { class: "is-rest", style: { width: (restP / sum * 100).toFixed(3) + "%" }, attrs: { title: rest.length + " others · " + F.cents1(restP) } }));
+    var leg = el("div", { class: "ap-stack__leg t-meta" });
+    top.slice(legendFrom, legendFrom + 3).forEach(function (o, j) { var i = legendFrom + j; leg.appendChild(el("span", {}, el("i", { style: { background: SEG[i] }, attrs: { "aria-hidden": "true" } }), el("span", { class: "ap-stack__n", text: clip(shortName(o), 16) }), " " + legVal(m, o, sum))); });
+    var more = outs.length - Math.min(outs.length, legendFrom + 3);
+    if (more > 0) leg.appendChild(el("span", { class: "ap-stack__more", text: "+" + more + " more" }));
+    return el("div", { class: "ap-cvis ap-cvis--stack" }, bar, leg.childNodes.length ? leg : null);
+  }
+  function cardGrammar(c, m) {
+    var orows = $(".s-orows", c);
+    if (!orows) return;
+    if (sc(m) && m.range) {                         // single scalar: the range block replaces the plain bar
+      var blk = $(".s-orow--nobar", orows); if (blk) orows.replaceChild(rangeEl(m), blk);
+    } else if (isSet(m)) {                          // scalar round: the strip, then the leader's row with Up/Down
+      var rows = $$(".s-orow", orows); rows.slice(1).forEach(function (x) { x.remove(); });
+      orows.insertBefore(stripEl(m), orows.firstChild);
+    } else if (!isYesNo(m) && real(m).length > 2) { // several outcomes: one stacked bar
+      var three = $(".s-mcard__three", c);
+      if (three) { var st3 = stackEl(m, 0); if (st3) orows.parentNode.replaceChild(st3, orows); return; }
+      var st = stackEl(m, 2); if (!st) return;
+      orows.insertBefore(st, orows.firstChild);
+      $$(".s-orow", orows).forEach(function (x, i) { var lab = $(".s-orow__label", x); if (lab && i < 2) lab.insertBefore(el("i", { class: "s-dot ap-sw", style: { color: SEG[i] }, attrs: { "aria-hidden": "true" } }), lab.firstChild); });
+    }
+  }
   function card(m) {
     var c = U.marketCard(m, { onOpen: function () { openMarket(m.id); } });
+    cardGrammar(c, m);
     var app = appOf(m), row = el("div", { class: "ap-crow" });
     if (m.state !== "not-open") row.appendChild(U.stateBadge(m.state));
     if (app.id !== "app") row.appendChild(el("span", { class: "s-tag s-tag--outline", html: S.glyph(app.id), title: "Lives in " + app.name }, app.label));

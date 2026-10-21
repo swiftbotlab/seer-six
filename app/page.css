@@ -382,3 +382,39 @@
   .ap-try::-webkit-scrollbar { display: none; }
   .ap-try > * { flex: none; }
 }
+
+/* fix round 5 (2026-10-21): card grammar in Cards view (page.js cardGrammar) */
+.ap-cvis { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ap-cvis--rng, .ap-cvis--strip { padding: 12px; border-radius: var(--r-control); background: var(--surface-2); }
+.ap-cvis__v { font-weight: 600; }
+.ap-cvis__k { display: inline-flex; align-items: center; gap: 6px; }
+.ap-cvis__k i { width: 0; height: 10px; border-left: 1.5px dashed var(--text-2); }
+/* range: track filled to the estimate, five ticks, the estimate pinned */
+.ap-rng { --p: .5; position: relative; height: 22px; }
+.ap-rng__track { position: absolute; left: 0; right: 0; top: 8px; height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.ap-rng__track i { position: absolute; inset: 0 auto 0 0; width: calc(var(--p) * 100%); background: var(--c1); }
+.ap-rng__ticks { position: absolute; left: 0; right: 0; top: 17px; height: 5px; }
+.ap-rng__ticks i { position: absolute; top: 0; width: 1px; height: 5px; background: var(--line-strong); }
+.ap-rng__ticks i:nth-child(1) { left: 0; } .ap-rng__ticks i:nth-child(2) { left: 25%; } .ap-rng__ticks i:nth-child(3) { left: 50%; }
+.ap-rng__ticks i:nth-child(4) { left: 75%; } .ap-rng__ticks i:nth-child(5) { left: calc(100% - 1px); }
+.ap-rng__pin { position: absolute; top: 2px; left: calc(var(--p) * 100%); width: 14px; height: 18px; margin-left: -7px; }
+.ap-rng__pin::before { content: ""; position: absolute; left: 6px; top: 0; width: 2px; height: 18px; border-radius: 1px; background: var(--text); }
+.ap-rng__pin::after { content: ""; position: absolute; left: 2px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 2px var(--surface-2); }
+/* scalar round: one tick per proposal on the score range, the funded side in violet */
+.ap-strip { position: relative; height: 26px; }
+.ap-strip__base { position: absolute; left: 0; right: 0; top: 12px; height: 2px; border-radius: 1px; background: var(--surface-3); }
+.ap-strip i { position: absolute; top: 5px; width: 2px; height: 16px; margin-left: -1px; border-radius: 1px; background: var(--c-other); }
+.ap-strip i.is-in { background: var(--c1); }
+.ap-strip__line { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed var(--text-2); }
+/* several outcomes: how one full set is priced */
+.ap-stack { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--surface-3); gap: 1px; }
+.ap-stack i { display: block; height: 100%; min-width: 2px; }
+.ap-stack i.is-rest { background: var(--c-other); }
+.ap-stack__leg { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; line-height: 1.3; }
+.ap-stack__leg > span { display: inline-flex; align-items: center; gap: 5px; min-width: 0; white-space: nowrap; }
+.ap-stack__leg > span > i { width: 7px; height: 7px; border-radius: 2px; flex: none; }
+.ap-stack__leg .t-num, .ap-stack__more { color: var(--text-3); }
+.ap-cvis--stack + .s-orow { margin-top: 2px; }
+.s-mcard > .ap-cvis--stack { margin-bottom: 2px; }
+.ap-sw { margin-right: 2px; }
+@media (forced-colors: active) { .ap-stack i, .ap-strip i, .ap-rng__track i { forced-color-adjust: none; } }
