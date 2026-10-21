@@ -444,3 +444,37 @@ a.hm-chipapp:hover { background: var(--surface-hover); }
   .hm-agents__list li { padding: 8px 12px; }
   .hm-agents__list small { display: none; }
 }
+
+/* "Asked by" on the ink poster: the address links to its block-explorer page, the count opens that asker's markets in the App */
+.hm-price .qa-ask a { color: #D5C2FF; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(213, 194, 255, .5); border-radius: 4px; }
+.hm-price .qa-ask a:hover { color: #fff; text-decoration-color: currentColor; }
+.hm-price .qa-ask a:focus-visible { outline: 2px solid #D5C2FF; outline-offset: 2px; }
+.hm-price .qa-ask a.qa-ask__addr { color: #fff; }
+
+/* single column (tablets and phones): in the card the question is followed by its fan and answers, then who asked */
+@media (max-width: 960px) {
+  .hm-price__top { order: 1; }
+  .hm-price__q { order: 2; }
+  .hm-price__art { order: 3; }
+  .hm-price__legend { order: 4; }
+  .hm-price > .qa-ask { order: 5; }
+  .hm-price__foot { order: 6; }
+}
+/* phones: the real market and its one-to-many fan come up into the first screen, right under the headline, lede and the two
+   actions (the copy column's own items join the hero grid so the card can sit among them); in the card the question is
+   followed by its fan and answers, then who asked. The caption block no longer grows into a 300px-tall gap in the column foot. */
+@media (max-width: 640px) {
+  .hm-hero__grid { grid-template-areas: none; row-gap: 0; }
+  .hm-hero__copy { display: contents; }
+  .hm-hero__kicker { order: 1; }
+  .hm-hero__title { order: 2; }
+  .hm-hero__lede { order: 3; }
+  .hm-hero__actions { order: 4; }
+  .hm-hero__grid > .hm-price { order: 5; grid-area: auto; margin-top: 22px; }
+  .hm-seek { order: 6; margin-top: 20px; }
+  .hm-live { order: 7; }
+  .hm-hero__grid > .hm-facts { order: 8; grid-area: auto; margin-top: 18px; }
+  .hm-price__about { flex: none; }
+  /* the lede's second sentence (someone asks, traders price, someone reads the signal) is what the card shows right under it */
+  .hm-hero__lede-more { display: none; }
+}

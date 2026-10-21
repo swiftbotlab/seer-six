@@ -6,6 +6,7 @@
       multi-categorical market is handed to page.js (window.HM_HERO), which validates it again and draws it. Until then,
       or if Seer does not answer, the hero shows the dated snapshot in home/hero-snapshot.js and says so.
    2. "Open on Seer now": {marketStatusList:["open"], limit:1}; only the numeric "count" is used.
+   3. "Asked by": {creator, type: Generic, limit:1} for the hero market's creator; only the numeric "count" is used.
    Market titles and answers on Seer are written by whoever created the market, so nothing from a response is ever
    inserted as markup: every field is type-checked, range-checked, stripped of control and bidi characters and
    clamped, then set with textContent. Links are built from a validated chain id and 0x address, never taken from the
@@ -97,6 +98,10 @@
       var count = num(d.count, 1e7) != null && Math.round(d.count) === d.count && d.count >= c.length ? d.count : null;
       if (!H.set(c[0], { state: "live", at: Date.now(), verified: count })) throw new Error("rejected");
       done = true; clearTimeout(timer);
+      // who asked it: how many markets that address has created on Seer ({creator, Generic}: only the numeric count is used)
+      if (c[0].creator && typeof H.asked === "function") ask({ creator: c[0].creator, type: "Generic", limit: 1, page: 1 }, 300000).then(function (r) {
+        if (typeof r.count === "number" && isFinite(r.count) && r.count >= 1 && r.count < 1e7 && Math.round(r.count) === r.count) H.asked(c[0].creator, r.count);
+      }).catch(function () { /* the snapshot's count, if any, stays */ });
     }).catch(function (e) {
       done = true; clearTimeout(timer); H.state("snapshot");
       var s = document.getElementById("hm-price-src"); if (s) s.setAttribute("data-why", String((e && e.name) || "error").slice(0, 40));

@@ -85,6 +85,10 @@
     art.appendChild(svg); art.appendChild(read);
     var st = { m: null, items: [], polys: [], texts: [], vp: null, entries: [], pin: 0, hover: null, t: 1, run: 0 };
     var cur = null; // { m, state, at, verified }
+    var SCAN = { 1: "https://etherscan.io/address/", 100: "https://gnosisscan.io/address/" };
+    var asked = Object.create(null);                    // creator -> markets created on Seer (snapshot first, then live.js)
+    (function () { var c = window.HM_HERO_SNAPSHOT && window.HM_HERO_SNAPSHOT.creators;
+      if (c && typeof c === "object") Object.keys(c).slice(0, 8).forEach(function (k) { if (ADDR.test(k) && okNum(c[k], 1, 1e7)) asked[k.toLowerCase()] = c[k]; }); })();
 
     function val(v) { return st.m && st.m.multi ? centTxt(v) : pctTxt(v); }
     function setMarket(m, animate) {
@@ -126,9 +130,18 @@
       var col = m.coll || "unit of collateral", n = m.outs.length, a = m.outs[0], b = m.outs[1];
       S.clear(by);
       if (m.creator) {
-        var d = m.created ? new Date(m.created) : null;
-        by.appendChild(el("span", { class: "qa-ask__addr", text: m.creator.slice(0, 6) + "…" + m.creator.slice(-4), attrs: { title: m.creator } }));
+        // the address links to its page on the chain's block explorer (Gnosisscan / Etherscan, where that page answers); the
+        // count is how many other markets the address has created on Seer (markets-search {creator}), and opens them in the App
+        var d = m.created ? new Date(m.created) : null, ca = m.creator, sh = ca.slice(0, 6) + "…" + ca.slice(-4);
+        by.appendChild(SCAN[m.chain] ? el("a", { class: "qa-ask__addr", href: SCAN[m.chain] + ca, text: sh, attrs: { title: ca, target: "_blank", rel: "noopener noreferrer", "aria-label": ca + " on " + (m.chain === 100 ? "Gnosisscan" : "Etherscan") + " (opens in a new tab)" } })
+          : el("span", { class: "qa-ask__addr", text: sh, attrs: { title: ca } }));
         by.appendChild(document.createTextNode(", who created it on " + CHAINS[m.chain] + (d ? " on " + d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear() : "")));
+        var cn = okNum(asked[ca], 1, 1e7) && Math.round(asked[ca]) === asked[ca] ? asked[ca] : null;
+        if (cn != null && cn > 1) {
+          by.appendChild(document.createTextNode(" and "));
+          by.appendChild(el("a", { class: "qa-ask__more", href: "../app/?creator=" + ca + "#markets", text: f.num(cn - 1) + " other Seer market" + (cn - 1 === 1 ? "" : "s"),
+            attrs: { "aria-label": "All " + f.num(cn) + " markets created by " + sh + ", in the App explorer" } }));
+        } else if (cn === 1) by.appendChild(document.createTextNode(", its only market on Seer"));
       } else by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page";
       pr.textContent = m.multi
         ? "Each answer's share of 1 " + col + ": several of its " + n + " answers can win, so a price is not a chance"
@@ -289,6 +302,11 @@
           verified: okNum(opt.verified, 1, 1e7) && Math.round(opt.verified) === opt.verified ? opt.verified : null };
         setMarket(m, !same); meta(); provenance();
         return true;
+      },
+      // live.js: how many markets the hero's creator has created on Seer (markets-search {creator}, count only)
+      asked: function (a, n) {
+        if (typeof a !== "string" || !ADDR.test(a) || !okNum(n, 1, 1e7) || Math.round(n) !== n) return;
+        asked[a.toLowerCase()] = n; if (cur && cur.m.creator === a.toLowerCase()) askBlock(cur.m);
       },
       // keep what is drawn, settle its label: "snapshot" after Seer's API failed or stayed silent
       state: function (s) {
