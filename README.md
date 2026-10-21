@@ -19,9 +19,10 @@ Design system: https://swiftbotlab.github.io/seer-six/system/
 Plain HTML, CSS and JavaScript. No build step, no external scripts, no tracking.
 Every figure is **sample data**, made up to show the design: organisations, proposals,
 agents and assets are fictional, and every address starts with `0x5eed`.
-Two panels are real and dated instead: "Also on Seer" in the App (eight live markets) and the settled
-Rebrand Contest on Opportunity, copied once from app.seer.pm on 20 Oct 2026 (`assets/seer-snapshot.js`),
-never fetched at runtime, each linked to its market on Seer.
+The panels marked "On Seer" are real instead. The App's "On Seer now" strip reads Seer's public markets API
+(app.seer.pm) when the page loads and falls back to a dated snapshot (`assets/seer-snapshot.js`), saying which
+one it shows. The settled Rebrand Contest on Opportunity is a dated snapshot of its market page (20 Oct 2026),
+linked to Seer.
 
 Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name, mark and the
 Electric Foundation identity belong to their owners and are used here only to present

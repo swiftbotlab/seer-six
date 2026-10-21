@@ -169,7 +169,7 @@
     var homeHref = S.url("home/");
     var lock = '<a class="s-lockup__home" href="' + homeHref + '" aria-label="Seer home">' + S.logo("lockup", "s-lockup__logo") + "</a>";
     if (product) lock += '<span class="s-lockup__sep" aria-hidden="true"></span><a class="s-lockup__product" href="' + (cur ? S.url(cur.path) : S.url("")) + '">' + esc(product) + "</a>";
-    lock += '<span class="s-sample s-lockup__sample" title="Every figure on these pages is sample data, except panels marked as a dated snapshot of app.seer.pm. Nothing is live."><span>Sample<span class="s-sample__mid"> data</span></span></span>';
+    lock += '<span class="s-sample s-lockup__sample" title="Every figure on these pages is sample data, except the panels marked On Seer: real Seer markets, read live in the App and as dated snapshots elsewhere. Nothing is tradable."><span>Sample<span class="s-sample__mid"> data</span></span></span>';
     var nav = (cfg.nav || []).map(function (n, i) {
       return '<a href="' + esc(n[1]) + '"' + (n[2] ? ' aria-current="true"' : "") + ">" + esc(n[0]) + "</a>";
     }).join("");
@@ -197,10 +197,10 @@
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
       '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
       '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and JS. No trackers.</p></div>' +
-      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Sample data, made up to show the design, except panels marked as a dated snapshot of app.seer.pm. Nothing here is live or tradable.</p></div>' +
+      '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Sample data, made up to show the design, except the panels marked &ldquo;On Seer&rdquo;: the App reads Seer&rsquo;s public markets API as it loads, the others are dated snapshots of Seer&rsquo;s own apps. Nothing here is tradable.</p></div>' +
       "</div>" +
       '<div class="s-footer__base"><span class="s-footer__credit">Concept by Swift Bot Labs · not affiliated with Seer</span>' +
-      '<span class="s-specs"><span>Concept, not live</span><span>@swiftbotlab</span></span></div>' +
+      '<span class="s-specs"><span>Concept, not tradable</span><span>@swiftbotlab</span></span></div>' +
       "</div></footer>";
   }
 
