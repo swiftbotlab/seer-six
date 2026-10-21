@@ -1,12 +1,15 @@
 /* Seer App · "On Seer now": real markets, read live from Seer's public markets API, with a dated fallback.
    Concept by Swift Bot Labs. Not affiliated with Seer.
 
-   One POST to app.seer.pm/.netlify/functions/markets-search (open + Kleros-verified, sorted by liquidity).
+   Two POSTs to app.seer.pm/.netlify/functions/markets-search: open + Kleros-verified markets (sorted by liquidity), of which
+   the strip shows the most liquid per topic (one Polymarket meta-market, not six), and {open, limit 1} for the count of every
+   open market (the strip's last card). A binary card whose Yes + No add up to under 99% says what is left to Invalid.
    Market titles and outcomes on Seer are written by whoever created the market, so everything from the API
    is untrusted: it is type-checked, stripped of control and bidi characters, clamped, and only ever rendered
    with textContent. Links are built here from a validated chain id and 0x address, never taken from the API.
    If the request fails, times out or returns anything odd, the strip shows the dated snapshot in
-   assets/seer-snapshot.js and says so. */
+   assets/seer-snapshot.js (rewritten hourly by tools/refresh.py with these same rules) and says so, with its age.
+   The header chip beside the logo says the same thing: Live, or Snapshot and when. */
 (function () {
   "use strict";
   var S = window.Seer, X = window.SEER_SNAPSHOT || null;
@@ -15,7 +18,8 @@
   var el = S.el;
 
   var API = "https://app.seer.pm/.netlify/functions/markets-search";
-  var SHOW = 8, ASK = 24;                 // markets shown / asked for (dupes and conditional markets are skipped)
+  var SHOW = 8, ASK = 48;                 // markets shown / asked for (dupes, repeats of a topic and conditional markets are skipped)
+  var LIQ_MIN = 250;                      // USD: thinner markets only fill in on a day with fewer than 4 cards
   var FALLBACK_MS = 4000, ABORT_MS = 12000; // show the snapshot after 4 s; a late live answer (until 12 s) still replaces it
   var MAX_BYTES = 1500000;                  // a 24-market answer is ~80 KB; refuse anything far bigger
   var CHAINS = { 1: "Ethereum", 10: "Optimism", 100: "Gnosis", 8453: "Base" };
@@ -70,12 +74,34 @@
     return o;
   }
 
+  // the topic of a title: its first capitalised word after the first (Polymarket, Knesset, GTA...), months skipped;
+  // the same rule as stem() in tools/refresh.py, so the hourly snapshot and the live strip pick the same cards
+  var MONTHS = { jan: 1, feb: 1, mar: 1, apr: 1, may: 1, jun: 1, jul: 1, aug: 1, sep: 1, sept: 1, oct: 1, nov: 1, dec: 1, january: 1, february: 1,
+    march: 1, april: 1, june: 1, july: 1, august: 1, september: 1, october: 1, november: 1, december: 1 };
+  var EDGE = /^[^0-9A-Za-z\u00C0-\u024F]+|[^0-9A-Za-z\u00C0-\u024F]+$/g;
+  function stem(title) {
+    var w = title.split(" ");
+    for (var i = 1; i < w.length; i++) {
+      var t = w[i].replace(EDGE, "").replace(/['\u2019]s$/i, "");
+      if (t && /^[A-Z\u00C0-\u00DE]/.test(t) && !MONTHS[t.toLowerCase()]) return t.toLowerCase();
+    }
+    return w.slice(0, 3).join(" ").toLowerCase();
+  }
+  // by liquidity: one card per title and per topic, a liquidity floor; on a thin day (under 4 cards) plain liquidity order
   function pick(list) {
-    var out = [], seen = {};
+    var out = [], seen = {}, topic = {}, i, k, s;
     list.sort(function (a, b) { return b.liq - a.liq; });
-    for (var i = 0; i < list.length && out.length < SHOW; i++) {
-      var k = list[i].title.toLowerCase();
-      if (seen[k]) continue; seen[k] = 1; out.push(list[i]);
+    for (i = 0; i < list.length && out.length < SHOW; i++) {
+      k = list[i].title.toLowerCase(); s = stem(list[i].title);
+      if (seen[k] || topic[s] || list[i].liq < LIQ_MIN) continue;
+      seen[k] = 1; topic[s] = 1; out.push(list[i]);
+    }
+    if (out.length < 4) {
+      out = []; seen = {};
+      for (i = 0; i < list.length && out.length < SHOW; i++) {
+        k = list[i].title.toLowerCase();
+        if (seen[k]) continue; seen[k] = 1; out.push(list[i]);
+      }
     }
     return out;
   }
@@ -100,6 +126,13 @@
         return el("li", { style: { "--w": Math.max(1.5, Math.min(100, o[1])) + "%" }, attrs: { "data-i": String(i) } },
           el("span", { class: "ap-snap__o", text: clip(o[0], 28), attrs: { title: o[0] } }), el("b", { class: "t-num", text: pct(o[1]) }));
       }));
+      // a binary market whose two prices add up to under 99%: say where the rest is (Seer leaves it to Invalid)
+      var two = !m.multi && m.outcomes.length === 2, sum = two ? m.outcomes[0][1] + m.outcomes[1][1] : 100;
+      if (two && sum < 99) {
+        var rest = Math.round((100 - sum) * 10) / 10;
+        body.appendChild(el("li", { class: "ap-snap__inv", attrs: { title: m.outcomes[0][0] + " and " + m.outcomes[1][0] + " add up to " + pct(sum) + "; the other " + pct(rest) + " is the price left to Invalid." } },
+          el("span", { class: "ap-snap__o", text: "Invalid (the rest)" }), el("b", { class: "t-num", text: pct(rest) })));
+      }
     }
     return el("article", { class: "ap-snap__card ap-live__card", attrs: { role: "listitem" } },
       el("h3", { class: "ap-snap__t" }, el("a", { href: link(m), text: clip(m.title, 90), attrs: { rel: "noopener noreferrer", target: "_blank", title: m.title, "aria-label": m.title + " (opens on Seer)" } })),
@@ -109,19 +142,63 @@
         el("span", { class: "ap-snap__go" }, "Seer", el("span", { html: S.icon("external", 13) }))));
   }
 
+  // the strip's last card: every open market on Seer (snapshot count at once, the live count when Seer answers)
+  var openN = X && X.open && okCount(X.open.count) ? X.open.count : null;
+  function okCount(c) { return typeof c === "number" && isFinite(c) && c >= 1 && c < 1e7 && Math.round(c) === c; }
+  function allCard() {
+    return el("article", { class: "ap-snap__card ap-live__card ap-live__all", attrs: { role: "listitem" } },
+      el("span", { class: "ap-live__all-k", text: "All on Seer" }),
+      el("b", { class: "ap-live__all-n t-num", text: openN ? openN.toLocaleString("en-US") : "Every" }),
+      el("span", { class: "ap-live__all-t", text: "open markets, every type and chain" }),
+      el("a", { class: "ap-snap__go ap-live__all-go", href: "https://app.seer.pm/", text: "Browse on Seer", attrs: { rel: "noopener noreferrer", target: "_blank", "aria-label": (openN ? openN.toLocaleString("en-US") + " open markets: browse" : "Browse every open market") + " on Seer (opens app.seer.pm)" } },
+        el("span", { html: S.icon("external", 13) })));
+  }
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function snapAt() {                                    // the snapshot's read time (ms), from "at" or its "21 Oct 2026, 09:31 UTC" label
+    if (!X) return null;
+    if (typeof X.at === "number" && isFinite(X.at) && X.at > 1.7e12 && X.at < Date.now() + 864e5) return X.at;
+    var r = typeof X.when === "string" && /^(\d{1,2}) ([A-Z][a-z]{2}) (\d{4}), (\d\d):(\d\d) UTC$/.exec(X.when), mo = r ? MON.indexOf(r[2]) : -1;
+    return mo < 0 ? null : Date.UTC(+r[3], mo, +r[1], +r[4], +r[5]);
+  }
+  function ago(ms) { var s = Math.max(0, (Date.now() - ms) / 1000); return s < 3600 ? Math.max(1, Math.round(s / 60)) + " min ago" : s < 172800 ? Math.round(s / 3600) + " h ago" : Math.round(s / 86400) + " days ago"; }
+  function dayMon(ms) { var d = new Date(ms); return d.getUTCDate() + " " + MON[d.getUTCMonth()]; }
+
+  /* header: a provenance chip in place of the shell's "Sample data" badge — the first screen is real Seer markets;
+     the explorer under it is the labelled sample */
+  function chip(state, whenTxt) {
+    var c = document.querySelector(".s-header .ap-prov") || document.querySelector(".s-header .s-lockup__sample");
+    if (!c) return;
+    if (!c.classList.contains("ap-prov")) { var n = el("span", { class: "s-sample s-lockup__sample ap-prov" }); c.parentNode.replaceChild(n, c); c = n; }
+    var live = state === "live", at = snapAt();
+    c.setAttribute("data-state", state);
+    c.title = live ? "Top of this page: real markets read live from Seer's public markets API at " + whenTxt + ". The explorer under it is sample data. Nothing here is tradable."
+      : "Top of this page: real markets, a snapshot of Seer's public markets API" + (at ? " read " + ago(at) + " (refreshed hourly)" : "") + ". The explorer under it is sample data. Nothing here is tradable.";
+    S.clear(c).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+    var t = el("span", { class: "ap-prov__t" });                              // one flex item, so the spaces inside it hold
+    t.appendChild(el("span", { class: "ap-prov__k" + (!live && at ? " ap-prov__long" : ""), text: live ? "Live" : at ? "Snapshot" : "Loading" }));
+    if (!live && at) t.appendChild(el("span", { class: "ap-prov__d", text: dayMon(at) }));   // phones: "21 Oct" in place of the word
+    var w = live ? whenTxt : at ? dayMon(at) : "";
+    if (w) t.appendChild(el("span", { class: "s-sample__mid", text: " · " + w }));
+    c.appendChild(t);
+    c.appendChild(el("span", { class: "s-sr", text: live ? ": the top of this page is read live from app.seer.pm; the explorer below is sample data" : ": the top of this page is a dated snapshot of app.seer.pm; the explorer below is sample data" }));
+  }
+
   var shown = null; // "live" | "snapshot"
   function render(list, state, when, count) {
     S.clear(host);
     list.forEach(function (m) { host.appendChild(card(m)); });
+    host.appendChild(allCard());
     src.setAttribute("data-state", state);
     S.clear(src).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
     src.appendChild(document.createTextNode(state === "live" ? "Live · app.seer.pm · " + when : "Snapshot · " + when));
+    var at = snapAt(), age = at ? " (read " + ago(at) + ", refreshed hourly)" : "";
     if (meta) meta.textContent = state === "live"
-      ? "Top " + list.length + " of " + count + " open, Kleros-verified markets by liquidity, read from Seer's public API just now."
-      : state === "loading" ? "Dated snapshot while live prices load from Seer's public API…"
-      : "Seer's API couldn't be reached just now, so this is the dated snapshot: top " + list.length + " of " + count + " open, Kleros-verified markets by liquidity.";
+      ? "The most liquid open, Kleros-verified market per topic: " + list.length + " of " + count + ", read from Seer's public API just now."
+      : state === "loading" ? "Dated snapshot" + age + " while live prices load from Seer's public API…"
+      : "Seer's API couldn't be reached just now, so this is the snapshot" + age + ": the most liquid open, Kleros-verified market per topic, " + list.length + " of " + count + ".";
     host.setAttribute("aria-busy", state === "loading" ? "true" : "false");
     if (state !== "loading") shown = state;
+    chip(state, when);
     railButtons();
   }
   function fallback() {
@@ -159,6 +236,28 @@
     clearTimeout(timer); clearTimeout(kill);
     render(list, "live", hhmm(new Date()), count.toLocaleString("en-US"));
   }).catch(function (e) { clearTimeout(timer); clearTimeout(kill); src.setAttribute("data-why", String((e && e.name) || "error").slice(0, 40)); fallback(); });
+
+  // the count of every open market for the last card ({open, limit 1}: only the numeric "count" is used; ~4 KB)
+  (function () {
+    var c2 = typeof AbortController === "function" ? new AbortController() : null, k2 = setTimeout(function () { if (c2) c2.abort(); }, ABORT_MS);
+    fetch(API, {
+      method: "POST", mode: "cors", credentials: "omit", cache: "no-store", referrerPolicy: "no-referrer", redirect: "error",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ marketStatusList: ["open"], limit: 1, page: 1 }),
+      signal: c2 ? c2.signal : undefined
+    }).then(function (r) {
+      if (!r.ok || !/application\/json/i.test(r.headers.get("content-type") || "") || +(r.headers.get("content-length") || 0) > 200000) throw new Error("bad answer");
+      return r.text();
+    }).then(function (t) {
+      clearTimeout(k2);
+      if (t.length > 200000) throw new Error("too big");
+      var d = JSON.parse(t);
+      if (!d || !okCount(d.count)) throw new Error("bad count");
+      openN = d.count;
+      var n = host.querySelector(".ap-live__all-n"), a = host.querySelector(".ap-live__all-go");
+      if (n) n.textContent = openN.toLocaleString("en-US");
+      if (a) a.setAttribute("aria-label", openN.toLocaleString("en-US") + " open markets: browse on Seer (opens app.seer.pm)");
+    }).catch(function () { clearTimeout(k2); });                           // the snapshot count stays
+  })();
 
   /* ---------- rail arrows ---------- */
   var prev = document.getElementById("ap-live-prev"), next = document.getElementById("ap-live-next");

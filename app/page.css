@@ -418,3 +418,33 @@
 .s-mcard > .ap-cvis--stack { margin-bottom: 2px; }
 .ap-sw { margin-right: 2px; }
 @media (forced-colors: active) { .ap-stack i, .ap-strip i, .ap-rng__track i { forced-color-adjust: none; } }
+
+/* ---------- r6 stage 4 (2026-10-21): the header says where the first screen comes from; the strip shows one card per topic ---------- */
+/* header: provenance chip in place of the shell's sample badge (keeps the badge's metrics and responsive rules; app/live.js chip()) */
+.s-lockup__sample.ap-prov { border-color: var(--line-strong); background: var(--surface-2); color: var(--text); cursor: default; }
+.s-lockup__sample.ap-prov::before { display: none; }
+.ap-prov > i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+.ap-prov[data-state="live"] > i { background: var(--live); box-shadow: 0 0 0 3px rgba(255, 75, 75, .18); }
+.ap-prov[data-state="snapshot"] > i, .ap-prov[data-state="loading"] > i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.ap-prov[data-state="loading"] > i { animation: s-src-blink 1s var(--ease) infinite alternate; }
+.ap-prov__d { display: none; }
+@media (max-width: 1500px) { .ap-prov .s-sample__mid { display: none; } }  /* the App's header nav is the longest: the time is in the strip's chip just below */
+@media (max-width: 640px) { .ap-prov .ap-prov__long { display: none; } .ap-prov .ap-prov__d { display: inline; } }
+@media (prefers-reduced-motion: reduce) { .ap-prov > i { animation: none; } }
+/* a binary card whose Yes + No add up to under 99%: the rest, left to Invalid, as a quiet third row */
+.ap-snap__outs li.ap-snap__inv { padding: 1px 8px; background: transparent; box-shadow: inset 0 0 0 1px var(--line); font-size: 12px; }
+.ap-snap__outs li.ap-snap__inv::before { display: none; }
+.ap-snap__inv b { color: var(--text-2); font-weight: 500; }
+/* the strip's last card: every open market on Seer */
+.ap-live__all { justify-content: flex-start; gap: 6px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.ap-live__all-k { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; color: var(--violet-3); }
+.ap-live__all-n { margin-top: 4px; font-size: 28px; line-height: 1.1; font-weight: 600; letter-spacing: -.02em; color: var(--text); }
+.ap-live__all-t { font-size: 13px; line-height: 1.4; font-weight: 500; color: var(--text-2); }
+.ap-live__all-go { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); font-size: 12px; font-weight: 500; text-decoration: none; justify-content: space-between; }
+.ap-live__all-go::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.ap-live__all:hover .ap-live__all-go { color: var(--text); }
+/* the explorer under the real strip is the sample: say so at its heading */
+.ap-markets__h { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+/* r6 item 7: the explorer bar starts at the shared top line (assets/system.css --hero-top), copy and search top-aligned */
+.ap-bar { padding-top: var(--hero-top); }
+.ap-bar__in { align-items: start; }
