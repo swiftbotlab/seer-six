@@ -1,7 +1,7 @@
 {
  "app": "Homepage",
  "page": "https://swiftbotlab.github.io/seer-six/home/",
- "fetchedAt": "2026-10-21T21:48:56Z",
+ "fetchedAt": "2026-10-21T21:55:07Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -44,6 +44,11 @@
   ],
   "invalid": null,
   "coll": "sDAI",
+  "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
+  "created": 1784312710000,
   "url": "https://app.seer.pm/markets/100/0x31cb54c49479243333594eb7343d31f6bd1ddfd3"
+ },
+ "creators": {
+  "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c": 275
  }
 }
