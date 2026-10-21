@@ -432,6 +432,7 @@
     renderDetail(opt); decorate();
     var i = -1; ridge.rows.forEach(function (p, k) { if (p.id === id) i = k; }); if (i >= 0) ridgeOn(i);
     if (opt.hash) try { history.replaceState(null, "", "#" + id); } catch (e) { /* file:// in some browsers */ }
+    if (opt.scroll) unfoldProposal();
     if (opt.scroll) $("#proposal").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
 
@@ -669,6 +670,9 @@
     payOut.appendChild(el("p", { class: "t-meta", text: "The same 100 sUSDS on DOWN at " + F.cents(p.deep.down) + " would redeem for " + F.num(dnRet, 2) + " sUSDS. Ignores slippage and fees." }));
   }
 
+  // phones fold the proposal detail (details[data-sfold], shell.js); choosing a proposal opens it
+  function unfoldProposal() { var f = document.querySelector("#proposal details[data-sfold]"); if (f) { f.open = true; f.dataset.touched = "1"; } }
+
   /* ---------------- boot ---------------- */
   renderField(); renderDetail(); renderSignal(); renderStrategy(); renderLb();
   function fromHash(scroll) {
@@ -680,6 +684,6 @@
     }
     return false;
   }
-  if (fromHash(false)) setTimeout(function () { $("#proposal").scrollIntoView({ block: "start" }); }, 60);
+  if (fromHash(false)) setTimeout(function () { unfoldProposal(); $("#proposal").scrollIntoView({ block: "start" }); }, 60);
   window.addEventListener("hashchange", function () { fromHash(true); });
 })();

@@ -155,31 +155,34 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div><span class="s-spec" id="dp-p-spec">Proposal</span><h2 class="t-h2 dp-ptitle" id="dp-p-title"></h2><p class="t-meta dp-pmeta" id="dp-p-meta"></p></div>
         <div class="s-row" style="--gap:8px" id="dp-p-tags"></div>
       </div>
-      <div class="s-split dp-psplit">
-        <div class="s-col dp-pmain" style="--gap:16px">
-          <div class="s-card s-card--pad">
-            <div class="s-stats dp-pstats" id="dp-p-stats" style="--cols:4"></div>
-            <div class="s-row s-row--between">
-              <div><h3 class="t-title">Forecast panel score</h3><p class="t-meta" id="dp-p-chartnote"></p></div>
-              <div id="dp-p-seg"></div>
+      <details class="s-details s-fold" data-sfold open>
+        <summary><span class="s-fold__t"><b>Open P-07: the score forecast and every agent</b><small>The market's curve, each agent's mean and spread, a ticket to forecast</small></span></summary>
+        <div class="s-split dp-psplit">
+          <div class="s-col dp-pmain" style="--gap:16px">
+            <div class="s-card s-card--pad">
+              <div class="s-stats dp-pstats" id="dp-p-stats" style="--cols:4"></div>
+              <div class="s-row s-row--between">
+                <div><h3 class="t-title">Forecast panel score</h3><p class="t-meta" id="dp-p-chartnote"></p></div>
+                <div id="dp-p-seg"></div>
+              </div>
+              <div id="dp-p-chart" class="dp-pchart"></div>
             </div>
-            <div id="dp-p-chart" class="dp-pchart"></div>
+            <div class="s-card s-card--pad">
+              <div class="s-row s-row--between"><div><h3 class="t-title">What each agent forecasts</h3><p class="t-meta">Mean and one standard deviation. The violet rule is the market. Select an agent to compare its curve above.</p></div></div>
+              <div class="dp-forest" id="dp-forest"></div>
+            </div>
+            <div class="dp-links" id="dp-links"></div>
+            <details class="s-card s-card--pad dp-chain">
+              <summary><span class="t-title">On-chain details</span><span class="t-meta">Market, outcome tokens, oracle</span></summary>
+              <div id="dp-kv"></div>
+            </details>
           </div>
-          <div class="s-card s-card--pad">
-            <div class="s-row s-row--between"><div><h3 class="t-title">What each agent forecasts</h3><p class="t-meta">Mean and one standard deviation. The violet rule is the market. Select an agent to compare its curve above.</p></div></div>
-            <div class="dp-forest" id="dp-forest"></div>
-          </div>
-          <div class="dp-links" id="dp-links"></div>
-          <details class="s-card s-card--pad dp-chain">
-            <summary><span class="t-title">On-chain details</span><span class="t-meta">Market, outcome tokens, oracle</span></summary>
-            <div id="dp-kv"></div>
-          </details>
+          <aside class="s-sticky s-col dp-rail" style="--gap:12px">
+            <div id="dp-ticket"></div>
+            <div class="s-callout"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.2v4M8 4.9v.1" stroke-linecap="round"/></svg><span><b>UP pays the score ÷ 10.</b> If the panel scores this proposal 8.6, each UP redeems for 0.86 sUSDS and each DOWN for 0.14.</span></div>
+          </aside>
         </div>
-        <aside class="s-sticky s-col dp-rail" style="--gap:12px">
-          <div id="dp-ticket"></div>
-          <div class="s-callout"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.2v4M8 4.9v.1" stroke-linecap="round"/></svg><span><b>UP pays the score ÷ 10.</b> If the panel scores this proposal 8.6, each UP redeems for 0.86 sUSDS and each DOWN for 0.14.</span></div>
-        </aside>
-      </div>
+      </details>
     </div>
   </section>
 

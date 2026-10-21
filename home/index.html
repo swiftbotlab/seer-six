@@ -90,10 +90,13 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <span class="s-sample hm-thread__sample" title="A made-up grant round: every figure in this walkthrough is sample data."><span>Sample data</span></span>
       </div>
       <p class="t-body hm-thread__lede" id="hm-thread-lede"></p>
-      <div class="hm-thread__grid">
-        <div class="hm-steps" id="hm-steps" role="tablist" aria-label="Apps in the thread" aria-orientation="vertical"></div>
-        <section class="s-panel hm-stage" id="hm-stage" role="tabpanel"></section>
-      </div>
+      <details class="s-details s-fold" data-sfold open>
+        <summary><span class="s-fold__t"><b>Follow P-07 through the apps</b><small>Deep, Opportunity, Futarchy and the App, one step each</small></span></summary>
+        <div class="hm-thread__grid">
+          <div class="hm-steps" id="hm-steps" role="tablist" aria-label="Apps in the thread" aria-orientation="vertical"></div>
+          <section class="s-panel hm-stage" id="hm-stage" role="tabpanel"></section>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -107,18 +110,21 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
         <p class="t-body hm-head-note">Pick an app to see the building blocks it uses, or a building block to see which apps rely on it.</p>
       </div>
-      <div class="hm-map">
-        <div class="hm-map__apps" id="hm-map-apps"></div>
-        <div class="hm-map__bus" id="hm-map-bus" aria-hidden="true"></div>
-        <div class="s-poster hm-layer">
-          <div class="hm-layer__head">
-            <span class="hm-layer__name"><span id="hm-layer-mark"></span>Seer protocol</span>
-            <div class="s-specs s-hide-sm"><span>Same market format</span><span>Same outcome tokens</span><span>Same oracle</span></div>
+      <details class="s-details s-fold" data-sfold open>
+        <summary><span class="s-fold__t"><b>Open the protocol map</b><small>Five apps on one market format, one token standard, one oracle</small></span></summary>
+        <div class="hm-map">
+          <div class="hm-map__apps" id="hm-map-apps"></div>
+          <div class="hm-map__bus" id="hm-map-bus" aria-hidden="true"></div>
+          <div class="s-poster hm-layer">
+            <div class="hm-layer__head">
+              <span class="hm-layer__name"><span id="hm-layer-mark"></span>Seer protocol</span>
+              <div class="s-specs s-hide-sm"><span>Same market format</span><span>Same outcome tokens</span><span>Same oracle</span></div>
+            </div>
+            <div class="hm-layer__groups" id="hm-layer-groups"></div>
+            <div class="hm-layer__read" id="hm-layer-read" aria-live="polite"></div>
           </div>
-          <div class="hm-layer__groups" id="hm-layer-groups"></div>
-          <div class="hm-layer__read" id="hm-layer-read" aria-live="polite"></div>
         </div>
-      </div>
+      </details>
     </div>
   </section>
 

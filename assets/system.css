@@ -689,6 +689,13 @@ button.s-orow:hover { background: var(--surface-hover); }
 .s-details > summary small { font-size: var(--fs-meta); font-weight: 500; color: var(--text-3); margin-left: auto; padding-right: 10px; }
 .s-details[open] > summary { margin-bottom: 16px; }
 .s-details + .s-details { margin-top: 16px; }
+/* phone folds (shell.js, r6 item 9): <details class="s-details s-fold" data-sfold open> reads as a plain block above 640px
+   (summary hidden) and as one tap-to-open row on phones, so long sample tools don't stretch the phone page */
+@media (min-width: 641px) { details[data-sfold] > summary { display: none; } }
+.s-fold__t { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.s-fold__t b { font-weight: 600; }
+.s-details > summary .s-fold__t small { margin: 0; padding: 0; font-size: var(--fs-meta); font-weight: 500; line-height: 1.4; color: var(--text-3); letter-spacing: 0; }
+@media (max-width: 640px) { .s-fold > summary { padding: 14px 16px; font-size: 15px; } .s-fold[open] > summary { margin-bottom: 14px; } }
 @media (max-width: 640px) { .s-details > summary { padding: 16px 18px; font-size: 15px; } }
 
 /* "More on this page" (2026-10-20): each page's long tail (tools, guides, design notes) folded behind labelled rows.

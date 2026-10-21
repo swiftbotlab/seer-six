@@ -266,6 +266,7 @@
     var jumped = false;
     document.addEventListener("seer:search", function (ev) {
       var v = String((ev.detail && ev.detail.q) || "").slice(0, 80); ST.q = v.trim(); if (q) q.value = v; renderField();
+      if (v) unfoldField();
       if (!jumped && v) { jumped = true; var f = $("#field"), r = f.getBoundingClientRect(); if (r.top > window.innerHeight * .6 || r.bottom < 0) f.scrollIntoView({ behavior: "smooth", block: "start" }); }
     });
     renderField();
@@ -608,10 +609,13 @@
       }
     });
   }
+  // phones fold the field (details[data-sfold], shell.js); a search or a #P-xx link opens it
+  function unfoldField() { var d = document.querySelector("#field details[data-sfold]"); if (d) { d.open = true; d.dataset.touched = "1"; } }
   function fromHash() {
     var m = /^#(P-\d{2})$/i.exec(location.hash || "");
     if (!m) return;
     var id = m[1].toUpperCase(); if (!BY[id] || id === curId) return;
+    unfoldField();
     var f = $("#field"); if (f) f.scrollIntoView({ block: "start" });
     openEntry(id);
   }

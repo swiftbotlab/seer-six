@@ -116,25 +116,28 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div><span class="s-spec">Sample · the field · 40 entries · 8 slots</span><h2 class="t-h2" id="op-field-h">Every entry, priced by its chance of selection</h2></div>
         <div class="s-row" style="--gap:10px" id="op-view"></div>
       </div>
-      <div class="op-tools">
-        <div class="op-tools__chips" id="op-cats"></div>
-        <div class="s-row op-tools__end" style="--gap:12px">
-          <label class="s-switch"><input type="checkbox" id="op-close"> Close calls only</label>
-          <label class="op-sort"><span class="s-sr">Sort entries</span>
-            <select class="s-select" id="op-sort">
-              <option value="chance">Sort: chance of selection</option>
-              <option value="move">Sort: biggest 24h move</option>
-              <option value="ask">Sort: largest ask</option>
-              <option value="id">Sort: entry number</option>
-            </select>
-          </label>
-          <label class="s-search s-search--sm op-q"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><span class="s-sr">Filter entries</span><input type="search" id="op-q" placeholder="Filter 40 entries" autocomplete="off"></label>
+      <details class="s-details s-fold" data-sfold open>
+        <summary><span class="s-fold__t"><b>Browse all 40 entries</b><small>Filter, sort and compare every entry&#x27;s chance of selection</small></span></summary>
+        <div class="op-tools">
+          <div class="op-tools__chips" id="op-cats"></div>
+          <div class="s-row op-tools__end" style="--gap:12px">
+            <label class="s-switch"><input type="checkbox" id="op-close"> Close calls only</label>
+            <label class="op-sort"><span class="s-sr">Sort entries</span>
+              <select class="s-select" id="op-sort">
+                <option value="chance">Sort: chance of selection</option>
+                <option value="move">Sort: biggest 24h move</option>
+                <option value="ask">Sort: largest ask</option>
+                <option value="id">Sort: entry number</option>
+              </select>
+            </label>
+            <label class="s-search s-search--sm op-q"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.4 10.4 3.3 3.3"/></svg><span class="s-sr">Filter entries</span><input type="search" id="op-q" placeholder="Filter 40 entries" autocomplete="off"></label>
+          </div>
         </div>
-      </div>
-      <div id="op-grid" class="op-grid"></div>
-      <div id="op-table" class="op-tablebox" hidden></div>
-      <div class="op-morewrap" id="op-tmorewrap" hidden><button class="s-btn s-btn--ghost op-more" type="button" id="op-tmore">Show all 40</button></div>
-      <p class="t-meta op-fieldnote" id="op-fieldnote" aria-live="polite"></p>
+        <div id="op-grid" class="op-grid"></div>
+        <div id="op-table" class="op-tablebox" hidden></div>
+        <div class="op-morewrap" id="op-tmorewrap" hidden><button class="s-btn s-btn--ghost op-more" type="button" id="op-tmore">Show all 40</button></div>
+        <p class="t-meta op-fieldnote" id="op-fieldnote" aria-live="polite"></p>
+      </details>
     </div>
   </section>
 
@@ -148,39 +151,42 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-export">Export queue (CSV)</button>
         </div>
       </div>
-      <div class="op-queue">
-        <div class="s-col op-queue__side" style="--gap:16px">
-          <div class="s-panel op-qctl">
-            <p class="t-body">Entries near the selection line get a full review; clear favourites and long shots a shorter one. All 40 are still read and scored.</p>
-            <div class="op-qrange">
-              <div class="s-row s-row--between"><label class="t-ui" for="op-hi">Fast-track at or above</label><b class="op-qval" id="op-hi-v">70%</b></div>
-              <input class="s-range" type="range" id="op-hi" min="50" max="95" step="5" value="70" aria-describedby="op-hi-help">
-              <p class="t-meta" id="op-hi-help">Likely picks: one reviewer checks fit and budget, then all five score.</p>
+      <details class="s-details s-fold" data-sfold open>
+        <summary><span class="s-fold__t"><b>Open the reviewer queue</b><small>Fast-track and light-pass sliders, reading order and hours</small></span></summary>
+        <div class="op-queue">
+          <div class="s-col op-queue__side" style="--gap:16px">
+            <div class="s-panel op-qctl">
+              <p class="t-body">Entries near the selection line get a full review; clear favourites and long shots a shorter one. All 40 are still read and scored.</p>
+              <div class="op-qrange">
+                <div class="s-row s-row--between"><label class="t-ui" for="op-hi">Fast-track at or above</label><b class="op-qval" id="op-hi-v">70%</b></div>
+                <input class="s-range" type="range" id="op-hi" min="50" max="95" step="5" value="70" aria-describedby="op-hi-help">
+                <p class="t-meta" id="op-hi-help">Likely picks: one reviewer checks fit and budget, then all five score.</p>
+              </div>
+              <div class="op-qrange">
+                <div class="s-row s-row--between"><label class="t-ui" for="op-lo">Light pass below</label><b class="op-qval" id="op-lo-v">20%</b></div>
+                <input class="s-range" type="range" id="op-lo" min="5" max="45" step="5" value="20" aria-describedby="op-lo-help">
+                <p class="t-meta" id="op-lo-help">Long shots: a shorter read, with a flag to escalate anything the market missed.</p>
+              </div>
+              <div class="s-stats op-qstats" id="op-qstats" style="--cols:2"></div>
+              <p class="t-meta">Per reviewer: 3 h full, 1 h fast-track, 30 min light pass.</p>
             </div>
-            <div class="op-qrange">
-              <div class="s-row s-row--between"><label class="t-ui" for="op-lo">Light pass below</label><b class="op-qval" id="op-lo-v">20%</b></div>
-              <input class="s-range" type="range" id="op-lo" min="5" max="45" step="5" value="20" aria-describedby="op-lo-help">
-              <p class="t-meta" id="op-lo-help">Long shots: a shorter read, with a flag to escalate anything the market missed.</p>
+            <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> Prices set the reading order; the panel's scores pick the eight.</span></div>
+          </div>
+          <div class="s-card s-card--pad op-queue__main">
+            <div class="s-row s-row--between" style="--gap:12px">
+              <div><h3 class="t-title">Reading order</h3><p class="t-meta" id="op-qsub">Ranked by price. The dashed line is the eighth funding slot.</p></div>
+              <div id="op-qorder"></div>
             </div>
-            <div class="s-stats op-qstats" id="op-qstats" style="--cols:2"></div>
-            <p class="t-meta">Per reviewer: 3 h full, 1 h fast-track, 30 min light pass.</p>
-          </div>
-          <div class="s-callout s-callout--violet"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 8h11M8 2.5v11" stroke-linecap="round"/></svg><span><b>A signal, not a verdict.</b> Prices set the reading order; the panel's scores pick the eight.</span></div>
-        </div>
-        <div class="s-card s-card--pad op-queue__main">
-          <div class="s-row s-row--between" style="--gap:12px">
-            <div><h3 class="t-title">Reading order</h3><p class="t-meta" id="op-qsub">Ranked by price. The dashed line is the eighth funding slot.</p></div>
-            <div id="op-qorder"></div>
-          </div>
-          <div class="op-strip" id="op-strip" role="img"></div>
-          <div class="s-legend" id="op-qlegend"></div>
-          <div id="op-qtable"></div>
-          <div class="s-row s-row--between">
-            <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-qmore">Show all 40</button>
-            <a class="s-link t-ui" href="../deep/#P-07">Score forecasts for each proposal in Deep</a>
+            <div class="op-strip" id="op-strip" role="img"></div>
+            <div class="s-legend" id="op-qlegend"></div>
+            <div id="op-qtable"></div>
+            <div class="s-row s-row--between">
+              <button class="s-btn s-btn--sm s-btn--ghost" type="button" id="op-qmore">Show all 40</button>
+              <a class="s-link t-ui" href="../deep/#P-07">Score forecasts for each proposal in Deep</a>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </div>
   </section>
 

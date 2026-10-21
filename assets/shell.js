@@ -228,13 +228,26 @@
       var act = nv.querySelector(".is-active, a[aria-current=\"true\"]");
       if (act && act.scrollIntoView && nv.scrollWidth - nv.clientWidth > 4) { try { act.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e) { /* older engines: fine */ } }
     }
+    // phone folds (r6 item 9): <details data-sfold open> is open with its summary hidden above 640px and folded on phones
+    // until opened; the page draws into it while it is open, then it folds here (DOMContentLoaded). A reader's own toggle
+    // sticks until the layout crosses 640px; a #hash into it opens it (below).
+    var mqFold = window.matchMedia ? window.matchMedia("(max-width: 640px)") : null;
+    var syncFolds = function () {
+      [].forEach.call(doc.querySelectorAll("details[data-sfold]"), function (d) {
+        if (!d.dataset.sfBound) { d.dataset.sfBound = "1"; var su = d.querySelector("summary"); if (su) su.addEventListener("click", function () { d.dataset.touched = "1"; }); }
+        if (!d.dataset.touched) d.open = !(mqFold && mqFold.matches);
+      });
+    };
+    syncFolds();
+    if (mqFold) { var refold = function () { [].forEach.call(doc.querySelectorAll("details[data-sfold]"), function (d) { delete d.dataset.touched; }); syncFolds(); };
+      if (mqFold.addEventListener) mqFold.addEventListener("change", refold); else if (mqFold.addListener) mqFold.addListener(refold); }
     // F4: a hash that points inside (or at a section holding) a closed <details> opens it before the browser scrolls there
     var openDetails = function () {
       var id = location.hash.slice(1); if (!id) return; var t;
       try { t = doc.getElementById(decodeURIComponent(id)); } catch (e) { return; }
       if (!t) return;
-      var opened = false, d = t.closest("details"); while (d) { if (!d.open) opened = true; d.open = true; d = d.parentElement ? d.parentElement.closest("details") : null; }
-      [].forEach.call(t.querySelectorAll("details.s-details"), function (x) { if (!x.open) opened = true; x.open = true; });
+      var opened = false, d = t.closest("details"); while (d) { if (!d.open) opened = true; d.open = true; d.dataset.touched = "1"; d = d.parentElement ? d.parentElement.closest("details") : null; }
+      [].forEach.call(t.querySelectorAll("details.s-details"), function (x) { if (!x.open) opened = true; x.open = true; x.dataset.touched = "1"; });
       if (opened && t.scrollIntoView) { t.scrollIntoView(); if (doc.readyState !== "complete") window.addEventListener("load", function () { t.scrollIntoView(); }, { once: true }); } // the fold (and late fonts) change the layout under the browser's own jump
     };
     openDetails(); window.addEventListener("hashchange", openDetails);
