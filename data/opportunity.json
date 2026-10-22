@@ -1,7 +1,7 @@
 {
  "app": "Opportunity Markets",
  "page": "https://swiftbotlab.github.io/seer-six/opportunity/",
- "fetchedAt": "2026-10-22T18:55:30Z",
+ "fetchedAt": "2026-10-22T19:47:03Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -23,16 +23,11 @@
   "https://app.seer.pm/markets/100/0xf6a42af200c181df45e0f3fd49d58f5d57bb7d35",
   "https://app.seer.pm/markets/100/0x144364db8edd6225248fe9d02f77ecc3ec0e4c4c"
  ],
- "liquidityUSD": 2388.78,
- "volumeUSD": 8259.62,
+ "liquidityUSD": 2351.29,
+ "volumeUSD": 8299.24,
  "total": 235,
  "under1": 211,
  "rows": [
-  [
-   "Earnode",
-   15.1,
-   2
-  ],
   [
    "delegateyourjob.ai",
    6.5,
@@ -102,6 +97,11 @@
    "Taskweave",
    1.5,
    0
+  ],
+  [
+   "Earnode",
+   1.5,
+   2
   ],
   [
    "Horizance",
