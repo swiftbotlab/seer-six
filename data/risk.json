@@ -1,7 +1,7 @@
 {
  "app": "Risk Pricing",
  "page": "https://swiftbotlab.github.io/seer-six/risk/",
- "fetchedAt": "2026-10-22T11:47:14Z",
+ "fetchedAt": "2026-10-22T12:59:25Z",
  "mode": "hourly snapshot",
  "source": [
   "https://risk.seer.pm/api/v1/risk-pricing",
