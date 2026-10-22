@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-22T22:44:28Z",
+ "fetchedAt": "2026-10-22T23:42:56Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,7 +22,7 @@
    "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
    "chain": 100,
    "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
-   "liq": 27583.99,
+   "liq": 27584.17,
    "outcomes": [
     [
      "Yashar",
@@ -43,31 +43,30 @@
    "chainName": "Gnosis"
   },
   {
-   "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
+   "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
    "chain": 100,
-   "title": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
-   "liq": 1174.91,
+   "title": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
+   "liq": 1171.01,
    "outcomes": [
     [
      "Yes",
-     49
+     40.1
     ],
     [
      "No",
-     48.9
+     60
     ]
    ],
    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
-   "created": 1782120405000,
-   "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
-   "chainName": "Gnosis",
-   "invalidRest": 2.1
+   "created": 1782125670000,
+   "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3",
+   "chainName": "Gnosis"
   },
   {
    "id": "0xe820d073f8885f4a24328ba9fbb8a745114bb647",
    "chain": 100,
    "title": "Will the Digital Asset Market Clarity Act be approved by the U.S. Senate, excluding committee approval, in 2026?",
-   "liq": 918.87,
+   "liq": 918.88,
    "outcomes": [
     [
      "Yes",
@@ -87,7 +86,7 @@
    "id": "0x0a2e852ade1b60ceae19e2d9a6f0a97da2d0dc06",
    "chain": 100,
    "title": "Will Donald Trump issue an official presidential pardon for Ghislaine Maxwell by December 31st 2026?",
-   "liq": 818.39,
+   "liq": 818.4,
    "outcomes": [
     [
      "Yes",
@@ -127,7 +126,7 @@
    "id": "0x67ea7fc200ff1c2a8817c1efd4b56cdd6ef0a060",
    "chain": 100,
    "title": "Will GTA 6 achieve the highest first-day unit sales of any GTA game?",
-   "liq": 757.79,
+   "liq": 757.8,
    "outcomes": [
     [
      "YES",
@@ -239,9 +238,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 27583.99,
-    "volumeUSD": 6400.64,
-    "openInterestUSD": 8846.13,
+    "liquidityUSD": 27584.17,
+    "volumeUSD": 6400.68,
+    "openInterestUSD": 8846.31,
     "openingTs": 1784312694,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -323,9 +322,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7168.12,
-    "volumeUSD": 49712.78,
-    "openInterestUSD": 31090.65,
+    "liquidityUSD": 7168.16,
+    "volumeUSD": 49713.06,
+    "openInterestUSD": 31090.82,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -425,9 +424,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 1239.17,
+    "liquidityUSD": 1239.18,
     "volumeUSD": 8.17,
-    "openInterestUSD": 642.69,
+    "openInterestUSD": 642.7,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -442,48 +441,6 @@
     "creator": "0xaa36deb402ccf0fee2aa09974552154a9564ae20",
     "blockTimestamp": 1743866000,
     "url": "https://app.seer.pm/markets/100/0xfe414db77da686f2050877565b7223b7da4b7c36"
-   },
-   {
-    "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
-    "type": "Generic",
-    "chainId": 100,
-    "marketName": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
-    "templateId": "2",
-    "outcomes": [
-     "Yes",
-     "No",
-     "Invalid"
-    ],
-    "odds": [
-     49,
-     48.9,
-     null
-    ],
-    "questions": [
-     {
-      "id": "0xf0fca2511c1ba7ddc27f1b74cecac8f79dd9db242d02174a24030c54d4d53706"
-     }
-    ],
-    "parentMarket": {
-     "id": "0x0000000000000000000000000000000000000000"
-    },
-    "liquidityUSD": 1174.91,
-    "volumeUSD": 44.28,
-    "openInterestUSD": 312.83,
-    "openingTs": 1782120390,
-    "finalizeTs": 33260976000,
-    "hasAnswers": false,
-    "payoutReported": false,
-    "questionsInArbitration": "0",
-    "verification": {
-     "status": "verified"
-    },
-    "lowerBound": "0",
-    "upperBound": "0",
-    "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
-    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
-    "blockTimestamp": 1782120405,
-    "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2"
    },
    {
     "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
@@ -509,7 +466,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1171.0,
+    "liquidityUSD": 1171.01,
     "volumeUSD": 151.54,
     "openInterestUSD": 416.99,
     "openingTs": 1782125656,
@@ -526,6 +483,48 @@
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782125670,
     "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3"
+   },
+   {
+    "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
+    "type": "Generic",
+    "chainId": 100,
+    "marketName": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
+    "templateId": "2",
+    "outcomes": [
+     "Yes",
+     "No",
+     "Invalid"
+    ],
+    "odds": [
+     39.9,
+     59.9,
+     null
+    ],
+    "questions": [
+     {
+      "id": "0xf0fca2511c1ba7ddc27f1b74cecac8f79dd9db242d02174a24030c54d4d53706"
+     }
+    ],
+    "parentMarket": {
+     "id": "0x0000000000000000000000000000000000000000"
+    },
+    "liquidityUSD": 1170.24,
+    "volumeUSD": 149.22,
+    "openInterestUSD": 426.5,
+    "openingTs": 1782120390,
+    "finalizeTs": 33260976000,
+    "hasAnswers": false,
+    "payoutReported": false,
+    "questionsInArbitration": "0",
+    "verification": {
+     "status": "verified"
+    },
+    "lowerBound": "0",
+    "upperBound": "0",
+    "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
+    "blockTimestamp": 1782120405,
+    "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2"
    },
    {
     "id": "0xbde8f9b2148e74431faea5d9cf2a815ef6518b42",
@@ -551,7 +550,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1154.92,
+    "liquidityUSD": 1154.93,
     "volumeUSD": 381.8,
     "openInterestUSD": 550.19,
     "openingTs": 1782120028,
@@ -593,7 +592,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1126.11,
+    "liquidityUSD": 1126.12,
     "volumeUSD": 53.1,
     "openInterestUSD": 644.08,
     "openingTs": 1782120242,
@@ -635,9 +634,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1119.5,
-    "volumeUSD": 726.35,
-    "openInterestUSD": 827.26,
+    "liquidityUSD": 1119.51,
+    "volumeUSD": 726.36,
+    "openInterestUSD": 827.27,
     "openingTs": 1798797061,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -719,8 +718,8 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1099.23,
-    "volumeUSD": 686.09,
+    "liquidityUSD": 1099.24,
+    "volumeUSD": 686.1,
     "openInterestUSD": 1004.36,
     "openingTs": 1798805720,
     "finalizeTs": 33260976000,
@@ -761,7 +760,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.16,
+    "liquidityUSD": 1098.17,
     "volumeUSD": 1158.04,
     "openInterestUSD": 783.46,
     "openingTs": 1798815265,
@@ -847,7 +846,7 @@
     },
     "liquidityUSD": 1028.43,
     "volumeUSD": 553.68,
-    "openInterestUSD": 1168.71,
+    "openInterestUSD": 1168.72,
     "openingTs": 1782120471,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -887,9 +886,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 918.87,
+    "liquidityUSD": 918.88,
     "volumeUSD": 965.47,
-    "openInterestUSD": 1351.87,
+    "openInterestUSD": 1351.88,
     "openingTs": 1778845743,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -971,9 +970,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 818.39,
-    "volumeUSD": 698.42,
-    "openInterestUSD": 2008.76,
+    "liquidityUSD": 818.4,
+    "volumeUSD": 698.43,
+    "openInterestUSD": 2008.77,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1097,9 +1096,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 757.79,
+    "liquidityUSD": 757.8,
     "volumeUSD": 20.35,
-    "openInterestUSD": 655.75,
+    "openInterestUSD": 655.76,
     "openingTs": 1789032916,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1144,7 +1143,7 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 639.26,
-    "volumeUSD": 444.26,
+    "volumeUSD": 444.27,
     "openInterestUSD": 365.65,
     "openingTs": 1784314968,
     "finalizeTs": 33260976000,
@@ -1185,7 +1184,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 591.71,
+    "liquidityUSD": 591.72,
     "volumeUSD": 192.84,
     "openInterestUSD": 388.18,
     "openingTs": 1798792360,
@@ -1240,8 +1239,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 564.31,
-    "volumeUSD": 2797.3,
-    "openInterestUSD": 2794.34,
+    "volumeUSD": 2797.32,
+    "openInterestUSD": 2794.35,
     "openingTs": 1798675200,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
