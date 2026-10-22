@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-22T21:45:43Z",
+ "fetchedAt": "2026-10-22T22:44:28Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,7 +22,7 @@
    "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
    "chain": 100,
    "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
-   "liq": 27583.8,
+   "liq": 27583.99,
    "outcomes": [
     [
      "Yashar",
@@ -43,24 +43,25 @@
    "chainName": "Gnosis"
   },
   {
-   "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
+   "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
    "chain": 100,
-   "title": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
-   "liq": 1181.05,
+   "title": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
+   "liq": 1174.91,
    "outcomes": [
     [
      "Yes",
-     48.4
+     49
     ],
     [
      "No",
-     51.6
+     48.9
     ]
    ],
    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
-   "created": 1782125670000,
-   "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3",
-   "chainName": "Gnosis"
+   "created": 1782120405000,
+   "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
+   "chainName": "Gnosis",
+   "invalidRest": 2.1
   },
   {
    "id": "0xe820d073f8885f4a24328ba9fbb8a745114bb647",
@@ -106,7 +107,7 @@
    "id": "0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
    "chain": 100,
    "title": "Who will win the 2026 South Sudanese presidential election?",
-   "liq": 781.67,
+   "liq": 781.68,
    "outcomes": [
     [
      "Salva Kiir Mayardit",
@@ -170,7 +171,7 @@
    "id": "0x6e9664bb63fc353caefddb5c80f7b39bf90742fc",
    "chain": 100,
    "title": "Who will win the 2026 Guinea-Bissau presidential election?",
-   "liq": 503.24,
+   "liq": 503.25,
    "outcomes": [
     [
      "Fernando Dias da Costa",
@@ -238,9 +239,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 27583.8,
-    "volumeUSD": 6400.59,
-    "openInterestUSD": 8846.06,
+    "liquidityUSD": 27583.99,
+    "volumeUSD": 6400.64,
+    "openInterestUSD": 8846.13,
     "openingTs": 1784312694,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -280,9 +281,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 7580.25,
-    "volumeUSD": 11805.83,
-    "openInterestUSD": 7681.9,
+    "liquidityUSD": 7580.3,
+    "volumeUSD": 11805.91,
+    "openInterestUSD": 7681.95,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -322,9 +323,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7168.07,
-    "volumeUSD": 49712.44,
-    "openInterestUSD": 31090.44,
+    "liquidityUSD": 7168.12,
+    "volumeUSD": 49712.78,
+    "openInterestUSD": 31090.65,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -443,48 +444,6 @@
     "url": "https://app.seer.pm/markets/100/0xfe414db77da686f2050877565b7223b7da4b7c36"
    },
    {
-    "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
-    "type": "Generic",
-    "chainId": 100,
-    "marketName": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
-    "templateId": "2",
-    "outcomes": [
-     "Yes",
-     "No",
-     "Invalid"
-    ],
-    "odds": [
-     48.4,
-     51.6,
-     null
-    ],
-    "questions": [
-     {
-      "id": "0xd772826cb17c661812e8d17f5e93188a76936b092f6b468d4ddcfd4d3e78c823"
-     }
-    ],
-    "parentMarket": {
-     "id": "0x0000000000000000000000000000000000000000"
-    },
-    "liquidityUSD": 1181.05,
-    "volumeUSD": 61.93,
-    "openInterestUSD": 315.95,
-    "openingTs": 1782125656,
-    "finalizeTs": 33260976000,
-    "hasAnswers": false,
-    "payoutReported": false,
-    "questionsInArbitration": "0",
-    "verification": {
-     "status": "verified"
-    },
-    "lowerBound": "0",
-    "upperBound": "0",
-    "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
-    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
-    "blockTimestamp": 1782125670,
-    "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3"
-   },
-   {
     "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
     "type": "Generic",
     "chainId": 100,
@@ -508,7 +467,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1174.9,
+    "liquidityUSD": 1174.91,
     "volumeUSD": 44.28,
     "openInterestUSD": 312.83,
     "openingTs": 1782120390,
@@ -525,6 +484,48 @@
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782120405,
     "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2"
+   },
+   {
+    "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
+    "type": "Generic",
+    "chainId": 100,
+    "marketName": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
+    "templateId": "2",
+    "outcomes": [
+     "Yes",
+     "No",
+     "Invalid"
+    ],
+    "odds": [
+     40.1,
+     60,
+     null
+    ],
+    "questions": [
+     {
+      "id": "0xd772826cb17c661812e8d17f5e93188a76936b092f6b468d4ddcfd4d3e78c823"
+     }
+    ],
+    "parentMarket": {
+     "id": "0x0000000000000000000000000000000000000000"
+    },
+    "liquidityUSD": 1171.0,
+    "volumeUSD": 151.54,
+    "openInterestUSD": 416.99,
+    "openingTs": 1782125656,
+    "finalizeTs": 33260976000,
+    "hasAnswers": false,
+    "payoutReported": false,
+    "questionsInArbitration": "0",
+    "verification": {
+     "status": "verified"
+    },
+    "lowerBound": "0",
+    "upperBound": "0",
+    "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
+    "blockTimestamp": 1782125670,
+    "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3"
    },
    {
     "id": "0xbde8f9b2148e74431faea5d9cf2a815ef6518b42",
@@ -550,9 +551,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1154.91,
+    "liquidityUSD": 1154.92,
     "volumeUSD": 381.8,
-    "openInterestUSD": 550.18,
+    "openInterestUSD": 550.19,
     "openingTs": 1782120028,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -634,7 +635,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1119.49,
+    "liquidityUSD": 1119.5,
     "volumeUSD": 726.35,
     "openInterestUSD": 827.26,
     "openingTs": 1798797061,
@@ -676,9 +677,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1112.24,
+    "liquidityUSD": 1112.25,
     "volumeUSD": 88.71,
-    "openInterestUSD": 663.09,
+    "openInterestUSD": 663.1,
     "openingTs": 1782125983,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -720,7 +721,7 @@
     },
     "liquidityUSD": 1099.23,
     "volumeUSD": 686.09,
-    "openInterestUSD": 1004.35,
+    "openInterestUSD": 1004.36,
     "openingTs": 1798805720,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -760,9 +761,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.15,
-    "volumeUSD": 1158.03,
-    "openInterestUSD": 783.45,
+    "liquidityUSD": 1098.16,
+    "volumeUSD": 1158.04,
+    "openInterestUSD": 783.46,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -802,9 +803,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1083.69,
+    "liquidityUSD": 1083.7,
     "volumeUSD": 13.87,
-    "openInterestUSD": 509.61,
+    "openInterestUSD": 509.62,
     "openingTs": 1783415432,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -887,8 +888,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 918.87,
-    "volumeUSD": 965.46,
-    "openInterestUSD": 1351.86,
+    "volumeUSD": 965.47,
+    "openInterestUSD": 1351.87,
     "openingTs": 1778845743,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -972,7 +973,7 @@
     },
     "liquidityUSD": 818.39,
     "volumeUSD": 698.42,
-    "openInterestUSD": 2008.75,
+    "openInterestUSD": 2008.76,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1012,9 +1013,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 802.23,
+    "liquidityUSD": 802.24,
     "volumeUSD": 291.72,
-    "openInterestUSD": 1137.95,
+    "openInterestUSD": 1137.96,
     "openingTs": 1798827365,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1054,7 +1055,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 781.67,
+    "liquidityUSD": 781.68,
     "volumeUSD": 107.83,
     "openInterestUSD": 322.09,
     "openingTs": 1784369698,
