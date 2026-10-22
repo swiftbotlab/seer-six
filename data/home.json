@@ -1,7 +1,7 @@
 {
  "app": "Homepage",
  "page": "https://swiftbotlab.github.io/seer-six/home/",
- "fetchedAt": "2026-10-22T15:49:02Z",
+ "fetchedAt": "2026-10-22T16:48:58Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,8 +22,8 @@
   "chain": 100,
   "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
   "tpl": "2",
-  "liq": 27582.91,
-  "vol": 6400.39,
+  "liq": 27583.09,
+  "vol": 6400.43,
   "outcomes": [
    [
     "Yashar",
