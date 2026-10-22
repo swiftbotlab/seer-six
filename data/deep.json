@@ -1,7 +1,7 @@
 {
  "app": "Deep",
  "page": "https://swiftbotlab.github.io/seer-six/deep/",
- "fetchedAt": "2026-10-22T07:56:38Z",
+ "fetchedAt": "2026-10-22T08:53:29Z",
  "mode": "hourly snapshot",
  "source": "https://deep.seer.pm/.netlify/functions/get-originality-r3-v3-markets-data",
  "note": "Seer Deep, Round 3 Originality on OP Mainnet: one scalar market per GitHub repo. repos are [repo, UP price, DOWN price, market]; UP (0-1) is the market's estimate of the share of original work. Highest UP first.",
@@ -37,6 +37,13 @@
    "down": 0.135,
    "market": "0xc53217f3ca3371921076c4e7ea9457ea3b758317",
    "url": "https://app.seer.pm/markets/10/0xc53217f3ca3371921076c4e7ea9457ea3b758317"
+  },
+  {
+   "repo": "ethereum/py_ecc",
+   "up": 0.8499,
+   "down": 0.203,
+   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
+   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
   },
   {
    "repo": "ethereum/consensus-specs",
@@ -289,13 +296,6 @@
    "down": 0.1292,
    "market": "0x36b1a703d790770ef14b875d3a0d2e0ded6234c1",
    "url": "https://app.seer.pm/markets/10/0x36b1a703d790770ef14b875d3a0d2e0ded6234c1"
-  },
-  {
-   "repo": "ethereum/py_ecc",
-   "up": 0.7464,
-   "down": 0.1315,
-   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
-   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
   },
   {
    "repo": "Commit-Boost/commit-boost-client",
