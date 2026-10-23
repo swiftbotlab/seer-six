@@ -251,10 +251,9 @@
     drawField(); S.onResize($("#ap-field"), drawField);
     // try chips
     if (window.matchMedia && matchMedia("(max-width: 640px)").matches) qInput.placeholder = "Topic, market or asker address";   // fits a phone
-    // topics search Seer's real open markets; the two askers open everything they asked, on every interface (explorer.js)
+    // topics search Seer's real open markets; the asker chip opens everything it asked, on every interface (explorer.js)
     var tries = [["election", "election"], ["ethereum", "ethereum"], ["futarchy", "futarchy"]];
-    var askers = [["0x00dc3e0acadb8dba21bb08ff30540222ff8836e0", "Deep + Risk", "the asker behind Deep's Round 3 markets and the Risk Pricing board"],
-      ["0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c", null, null]];
+    var askers = [["0x00dc3e0acadb8dba21bb08ff30540222ff8836e0", "Deep + Risk", "the asker behind Deep's Round 3 markets and the Risk Pricing board"]];
     var tb = $("#ap-try");
     tries.forEach(function (t) {
       var b = el("button", { class: "s-chip", text: t[0], attrs: { type: "button", "aria-label": "Search Seer's markets for " + t[1] } });
