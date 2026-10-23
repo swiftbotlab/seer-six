@@ -88,6 +88,57 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     </div>
   </section>
 
+  <!-- Who's asking on Seer: the askers Seer's own data names (Seer, Part II: "who is asking the question"), one row each with the
+       decision it informs, what is priced and one figure with its source and time. asking.js fills the figures: the AI job board
+       live from app.seer.pm (snapshot first), Deep and Risk from their hourly same-origin snapshots, Futarchy's state from its
+       trading close, and the hero market's own asker. Names are only what each interface's own hero says. -->
+  <section class="s-section--tight hm-asking" id="asking" aria-labelledby="hm-asking-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">Who is asking</span><h2 id="hm-asking-h" class="t-h2">Who&#39;s asking on Seer</h2></div>
+        <p class="hm-asking__lede">Real askers, named only where Seer&#39;s own data names them: the decision each market informs, what it prices, and where it reads now. <span class="s-src" id="hm-ak-src" data-state="loading"><i aria-hidden="true"></i><span id="hm-ak-src-t">Reading Seer&hellip;</span></span></p>
+      </div>
+      <div class="hm-ak-head" aria-hidden="true"><span>Asked by</span><span>Informs</span><span>Prices</span><span>Reads now</span><span></span></div>
+      <ol class="hm-ak-list" id="hm-asking">
+        <li class="hm-ak" id="hm-ak-opp">
+          <span class="hm-ak__who">Seer, crowdsourcing a name for its AI job board</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Informs</span>Which name Seer adopts; reviewers start with the names traders rank highest</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Prices</span>Each suggested name being adopted: a share of that name pays 1 sDAI</span>
+          <span class="hm-ak__fig"><span class="hm-ak__k">Reads now</span><b class="hm-ak__v" id="hm-ak-opp-v">&hellip;</b><span class="hm-ak__n" id="hm-ak-opp-n"></span><span class="hm-ak__s" id="hm-ak-opp-s"></span></span>
+          <a class="hm-ak__go" href="../opportunity/">Opportunity Markets<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </li>
+        <li class="hm-ak" id="hm-ak-deep">
+          <span class="hm-ak__who">The Deep Funding experiment</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Informs</span>Scoring Round 3 originality, repo by repo: the funding team sees the field&#39;s view first</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Prices</span>Each repo&#39;s average originality score, 0&ndash;100: UP 0.80 &asymp; a score of 80</span>
+          <span class="hm-ak__fig"><span class="hm-ak__k">Reads now</span><b class="hm-ak__v" id="hm-ak-deep-v">&hellip;</b><span class="hm-ak__n" id="hm-ak-deep-n"></span><span class="hm-ak__s" id="hm-ak-deep-s"></span></span>
+          <a class="hm-ak__go" href="../deep/">Deep<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </li>
+        <li class="hm-ak" id="hm-ak-fut">
+          <span class="hm-ak__who">futarchy.seer.pm, for the <span class="u-nowrap">EIP-8363</span> inclusion call</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Informs</span>Whether EIP-8363 is scheduled for Hegot&aacute;; the core devs decide</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Prices</span>ETH in USDS twice: if EIP-8363 is scheduled, and if it is not</span>
+          <span class="hm-ak__fig"><span class="hm-ak__k">Reads now</span><b class="hm-ak__v" id="hm-ak-fut-v">&hellip;</b><span class="hm-ak__n" id="hm-ak-fut-n"></span><span class="hm-ak__s" id="hm-ak-fut-s"></span></span>
+          <a class="hm-ak__go" href="../futarchy/">Futarchy<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </li>
+        <li class="hm-ak" id="hm-ak-risk">
+          <span class="hm-ak__who">Seer&#39;s Risk Pricing app, risk.seer.pm</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Informs</span>Comparing default risk across protocols, side by side, not one price in isolation</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Prices</span>Each asset&#39;s yearly probability of default; No to All, the chance none of them defaults</span>
+          <span class="hm-ak__fig"><span class="hm-ak__k">Reads now</span><b class="hm-ak__v" id="hm-ak-risk-v">&hellip;</b><span class="hm-ak__n" id="hm-ak-risk-n"></span><span class="hm-ak__s" id="hm-ak-risk-s"></span></span>
+          <a class="hm-ak__go" href="../risk/">Risk Pricing<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </li>
+        <li class="hm-ak" id="hm-ak-hero">
+          <span class="hm-ak__who">Any address can ask: <span id="hm-ak-hero-who">the market at the top of this page</span></span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Informs</span>Whoever needs the answer; the market names no organisation, so none is shown here</span>
+          <span class="hm-ak__c"><span class="hm-ak__k">Prices</span>Each answer to the market at the top of this page, at Seer&#39;s prices</span>
+          <span class="hm-ak__fig"><span class="hm-ak__k">Reads now</span><b class="hm-ak__v" id="hm-ak-hero-v">&hellip;</b><span class="hm-ak__n" id="hm-ak-hero-n"></span><span class="hm-ak__s" id="hm-ak-hero-s"></span></span>
+          <a class="hm-ak__go" id="hm-ak-hero-go" href="../app/#markets">Its markets in the App<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <!-- Two sides of every market (Seer, 23 Oct: "a two-sided marketplace for information seekers ... and traders"): the seeker's
        path beside the trader's, one market between them. Every link goes to a real place: Seer's create flow, the explorer, app.seer.pm. -->
   <section class="s-section--tight s-two" id="two-sides" aria-labelledby="hm-two-h">
@@ -293,5 +344,9 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="page.js"></script>
 <script src="../assets/seer-snapshot.js"></script>
 <script src="live.js"></script>
+<script src="../opportunity/snapshot.js"></script>
+<script src="../deep/round3.js"></script>
+<script src="../risk/snapshot.js"></script>
+<script src="asking.js"></script>
 </body>
 </html>

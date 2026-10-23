@@ -203,6 +203,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-tile__line { grid-column: 1 / -1; color: var(--text-2); font-size: 13.5px; line-height: 1.45; font-weight: 500; }
 .hb-tile__opens { grid-column: 1 / -1; color: var(--text-2); font-size: 13px; line-height: 1.45; font-weight: 500; }
 .hb-tile__opens .s-spec { color: var(--violet-3); margin-right: 2px; }
+.hb-tile__asked { grid-column: 1 / -1; color: var(--text); font-size: 13px; line-height: 1.45; font-weight: 500; }
+.hb-tile__asked .s-spec { color: var(--violet-3); margin-right: 2px; }
 /* for agents: one row under the six cards */
 .hb-agents { margin-top: 16px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 2.1fr); gap: 14px 28px; align-items: center; background: var(--surface); border-radius: var(--r-panel); padding: 18px 20px; }
 .hb-agents__head { min-width: 0; }
@@ -223,6 +225,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   .hb-tile__open { display: none; }
   .hb-tile__line { font-size: 12.5px; }
   .hb-tile__opens { display: none; }
+  .hb-tile__asked { font-size: 12.5px; }
   .hb-tile__now { width: 42%; right: 6px; bottom: 6px; }
   .hb-tile__now figcaption { display: none; }
   .hb-tile__n { left: 6px; top: 6px; padding: 1px 4px; }
@@ -519,13 +522,14 @@ main > .s-section--tight { padding-block: 32px; }
     labels: S.apps.map(function (a) { return a.n + " " + a.label; }), stemLabel: "One protocol" });
 
   // the six interfaces: one card each, our screen with the live site today inset (captured October 2026)
-  var LINE = {   // what each app is for, in the Seer team's own terms (who learns what), then the real market it opens on
-    home: ["The protocol beneath the apps: one question format, one oracle, six ways to use the answer.", "the most liquid open market on Seer, live"],
-    app: ["Seer's Etherscan: every market from every Seer interface, read as an information seeker or as a trader, each with who asked it.", "every market on Seer, live, each with its own detail"],
-    deep: ["Many-answer questions: agents forecast how human evaluators will score each entry, a signal for the funding team.", "Round 3 Originality, 98 repos by UP price, hourly"],
-    futarchy: ["What happens to a metric if a proposal passes, and if it fails: information for the DAO, not the decision.", "EIP-8363's two conditional prices, live"],
-    opportunity: ["Traders forecast which submissions get selected: one more signal for reviewers, who still choose.", "the AI Job Board Name market, every name priced, live"],
-    risk: ["Market estimates of default risk across protocols, side by side, not one yes-or-no price in isolation.", "Seer's latest quarterly risk board, live"]
+  var LINE = {   // what each app is for, in the Seer team's own terms (who learns what), the real market it opens on, and who asks it
+                 // (static text, copied from each page's hero "Asked by"; no figures on the hub)
+    home: ["The protocol beneath the apps: one question format, one oracle, six ways to use the answer.", "the most liquid open market on Seer, live", "whoever created the most liquid market: anyone can"],
+    app: ["Seer's Etherscan: every market from every Seer interface, read as an information seeker or as a trader, each with who asked it.", "every market on Seer, live, each with its own detail", "every creator, by address"],
+    deep: ["Many-answer questions: agents forecast how human evaluators will score each entry, a signal for the funding team.", "Round 3 Originality, 98 repos by UP price, hourly", "the Deep Funding experiment"],
+    futarchy: ["What happens to a metric if a proposal passes, and if it fails: information for the DAO, not the decision.", "EIP-8363's two conditional prices, live", "futarchy.seer.pm, for the EIP-8363 inclusion call"],
+    opportunity: ["Traders forecast which submissions get selected: one more signal for reviewers, who still choose.", "the AI Job Board Name market, every name priced, live", "Seer, crowdsourcing a name for its AI job board"],
+    risk: ["Market estimates of default risk across protocols, side by side, not one yes-or-no price in isolation.", "Seer's latest quarterly risk board, live", "Seer's Risk Pricing app, risk.seer.pm"]
   };
   var grid = document.getElementById("hb-grid");
   S.apps.forEach(function (a) {
@@ -540,6 +544,7 @@ main > .s-section--tight { padding-block: 32px; }
         S.el("h3", { class: "hb-tile__name" }, S.el("a", { href: a.path, html: S.glyph(a.id) }, a.name)),
         S.el("span", { class: "hb-tile__open", attrs: { "aria-hidden": "true" } }, "Open", S.el("span", { html: S.icon("arrow-right", 14) })),
         S.el("p", { class: "hb-tile__line", text: LINE[a.id][0] }),
+        S.el("p", { class: "hb-tile__asked" }, S.el("span", { class: "s-spec", text: "Asked by" }), " " + LINE[a.id][2]),
         S.el("p", { class: "hb-tile__opens" }, S.el("span", { class: "s-spec", text: "Opens on" }), " " + LINE[a.id][1]))));
   });
 

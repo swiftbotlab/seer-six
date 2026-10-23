@@ -147,6 +147,11 @@
             attrs: { "aria-label": "All " + f.num(cn) + " markets created by " + sh + ", in the App explorer" } }));
         } else if (cn === 1) by.appendChild(document.createTextNode(", its only market on Seer"));
       } else by.textContent = "Whoever created it on Seer (anyone can, without permission); the address is on its market page";
+      // one in-page link to "Who's asking on Seer" (#asking, asking.js), whose last row follows this market's own asker
+      by.appendChild(document.createTextNode(" · "));
+      by.appendChild(el("a", { class: "qa-ask__jump", href: "#asking", text: "Named askers on Seer ↓" }));
+      window.HM_ASKER = m.creator ? { creator: m.creator, chain: m.chain, count: okNum(asked[m.creator], 1, 1e7) && Math.round(asked[m.creator]) === asked[m.creator] ? asked[m.creator] : null } : null;
+      try { document.dispatchEvent(new CustomEvent("hm-asker")); } catch (e) { /* asking.js reads HM_ASKER on load as well */ }
       pr.textContent = m.multi
         ? "Each answer's share of 1 " + col + ": several of its " + n + " answers can win, so a price is not a chance"
         : "The chance of each of its " + n + " answers; one wins, and a full set pays 1 " + col;
