@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-23T14:52:43Z",
+ "fetchedAt": "2026-10-23T15:51:24Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -46,7 +46,7 @@
    "id": "0xfe8abb3b55acca31e74243349573801c379507b3",
    "chain": 100,
    "title": "Will Polymarket publicly release a fix for the negative-risk mint/merge share cost basis accounting issue before January 1, 2027?",
-   "liq": 1171.1,
+   "liq": 1171.11,
    "outcomes": [
     [
      "Yes",
@@ -66,7 +66,7 @@
    "id": "0xe820d073f8885f4a24328ba9fbb8a745114bb647",
    "chain": 100,
    "title": "Will the Digital Asset Market Clarity Act be approved by the U.S. Senate, excluding committee approval, in 2026?",
-   "liq": 918.95,
+   "liq": 918.96,
    "outcomes": [
     [
      "Yes",
@@ -86,7 +86,7 @@
    "id": "0x0a2e852ade1b60ceae19e2d9a6f0a97da2d0dc06",
    "chain": 100,
    "title": "Will Donald Trump issue an official presidential pardon for Ghislaine Maxwell by December 31st 2026?",
-   "liq": 818.46,
+   "liq": 818.47,
    "outcomes": [
     [
      "Yes",
@@ -106,7 +106,7 @@
    "id": "0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
    "chain": 100,
    "title": "Who will win the 2026 South Sudanese presidential election?",
-   "liq": 781.74,
+   "liq": 781.75,
    "outcomes": [
     [
      "Salva Kiir Mayardit",
@@ -146,7 +146,7 @@
    "id": "0x36e2b9d28a3cbf15712d09b79f3362d049a4eba9",
    "chain": 100,
    "title": "Which party will win the most seats in the United States Senate elections in 2026?",
-   "liq": 639.31,
+   "liq": 639.32,
    "outcomes": [
     [
      "Democratic Party",
@@ -195,9 +195,8 @@
   "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c": 275
  },
  "explorer": {
-  "note": "The App explorer's first page: Generic markets that are not resolved yet, in Seer's own default order (Kleros-verified first, then liquidity). count is Seer's total for this request; fields as Seer's API names them, pruned and validated.",
+  "note": "The App explorer's first page: markets of every type and interface that are not resolved yet, in Seer's own default order (Kleros-verified first, then liquidity). count is Seer's total for this request; fields as Seer's API names them, pruned and validated.",
   "request": {
-   "type": "Generic",
    "marketStatusList": [
     "not_open",
     "open",
@@ -208,7 +207,7 @@
    "limit": 24,
    "page": 1
   },
-  "count": 1959,
+  "count": 2348,
   "markets": [
    {
     "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
@@ -252,6 +251,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x1ff51c4b17ed1e9538993ac142a669abca1d7ec54ca3762109900fc0cfa0fb37",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1784312710,
     "url": "https://app.seer.pm/markets/100/0x31cb54c49479243333594eb7343d31f6bd1ddfd3"
@@ -280,9 +280,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 7580.93,
-    "volumeUSD": 11806.89,
-    "openInterestUSD": 7682.58,
+    "liquidityUSD": 7580.98,
+    "volumeUSD": 11806.97,
+    "openInterestUSD": 7682.64,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -294,6 +294,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0x053720357c72aea18963ec9712ed645d70b605f6",
+    "conditionId": "0x51cdd4bf983fe061aafc0ab38f7976400103a88f5b701e923c26c4575fa303fa",
     "creator": "0xaa36deb402ccf0fee2aa09974552154a9564ae20",
     "blockTimestamp": 1743865150,
     "url": "https://app.seer.pm/markets/100/0xbbf8f7e40a9234d965f59802c1b3720b21bcc32e"
@@ -322,9 +323,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7168.72,
-    "volumeUSD": 49716.94,
-    "openInterestUSD": 31093.25,
+    "liquidityUSD": 7168.77,
+    "volumeUSD": 49717.26,
+    "openInterestUSD": 31093.45,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -336,6 +337,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x2309cdce50395aa8ca07ffa74845177ad71ac1b589a3390ebb721a977f7257be",
     "creator": "0xaa36deb402ccf0fee2aa09974552154a9564ae20",
     "blockTimestamp": 1743864100,
     "url": "https://app.seer.pm/markets/100/0xe1793927eb763864967426fe7750ab0dc6f019f3"
@@ -396,6 +398,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xb745509a1b4509898047a144a5b13d0411dfffbb2a498791597da4d0efd0d329",
     "creator": "0xaa36deb402ccf0fee2aa09974552154a9564ae20",
     "blockTimestamp": 1744642305,
     "url": "https://app.seer.pm/markets/100/0xabe35cf0953169d9384f5953633f02996b4802f9"
@@ -424,7 +427,7 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 1239.28,
+    "liquidityUSD": 1239.29,
     "volumeUSD": 8.17,
     "openInterestUSD": 642.75,
     "openingTs": 1743984000,
@@ -438,6 +441,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0x2beee027677241fa88cce318624c4417b8d1f484",
+    "conditionId": "0x51cdd4bf983fe061aafc0ab38f7976400103a88f5b701e923c26c4575fa303fa",
     "creator": "0xaa36deb402ccf0fee2aa09974552154a9564ae20",
     "blockTimestamp": 1743866000,
     "url": "https://app.seer.pm/markets/100/0xfe414db77da686f2050877565b7223b7da4b7c36"
@@ -466,9 +470,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1171.1,
+    "liquidityUSD": 1171.11,
     "volumeUSD": 151.55,
-    "openInterestUSD": 417.02,
+    "openInterestUSD": 417.03,
     "openingTs": 1782125656,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -480,6 +484,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x63787f1f31e3d243a85d3c02850fc1d70e2723036d64a25f67f9e11b100f2b4c",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782125670,
     "url": "https://app.seer.pm/markets/100/0xfe8abb3b55acca31e74243349573801c379507b3"
@@ -508,7 +513,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1170.33,
+    "liquidityUSD": 1170.34,
     "volumeUSD": 149.23,
     "openInterestUSD": 426.54,
     "openingTs": 1782120390,
@@ -522,6 +527,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x2470e8fa842bdae0b41f2eefdef99674d7e5fafffadfb1de34a3091dfba42556",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782120405,
     "url": "https://app.seer.pm/markets/100/0x022f8516fb5af0a6a86a37d48494ceb407298bc2"
@@ -551,8 +557,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 1155.02,
-    "volumeUSD": 381.83,
-    "openInterestUSD": 550.23,
+    "volumeUSD": 381.84,
+    "openInterestUSD": 550.24,
     "openingTs": 1782120028,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -564,6 +570,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x246292f59ee35e4702737984f66353b652fa0a827ca421ffbad707082ad92f9d",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782120035,
     "url": "https://app.seer.pm/markets/100/0xbde8f9b2148e74431faea5d9cf2a815ef6518b42"
@@ -594,7 +601,7 @@
     },
     "liquidityUSD": 1126.21,
     "volumeUSD": 53.1,
-    "openInterestUSD": 644.13,
+    "openInterestUSD": 644.14,
     "openingTs": 1782120242,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -606,6 +613,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x2bc2d0328c109dc5cf51a4d74aa0e0578280aefd22e2b024a3748f52a8bf0482",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782120255,
     "url": "https://app.seer.pm/markets/100/0x38b161f9f6ffbda19a11c32dd73db3f61b00003a"
@@ -634,8 +642,8 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1119.59,
-    "volumeUSD": 726.41,
+    "liquidityUSD": 1119.6,
+    "volumeUSD": 726.42,
     "openInterestUSD": 827.33,
     "openingTs": 1798797061,
     "finalizeTs": 33260976000,
@@ -648,6 +656,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x33331343edd424b78ec775c69973a98f87ae11d77526379a33408cf513468f58",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1772790960,
     "url": "https://app.seer.pm/markets/100/0xc57764377e06fa317457a123b2c25f031c088e17"
@@ -690,6 +699,7 @@
     "lowerBound": "10000000000000000000",
     "upperBound": "50000000000000000000",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xd4e130a911c78ae01afa722cf1558b8b3f5ca0e8c4419ffbdc1eceac71b08ac9",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782125995,
     "url": "https://app.seer.pm/markets/100/0x736feaf877de6523ca001ab3e3a229e80d7af00b"
@@ -720,7 +730,7 @@
     },
     "liquidityUSD": 1099.33,
     "volumeUSD": 686.15,
-    "openInterestUSD": 1004.44,
+    "openInterestUSD": 1004.45,
     "openingTs": 1798805720,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -732,6 +742,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xf174f62075227c38e9f7ea49f51739d31e1af4360e8f8c96ba519275577ca673",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1767874840,
     "url": "https://app.seer.pm/markets/100/0x0b5f90febc2fc44c43985b2a712f159ca059d93a"
@@ -760,9 +771,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.25,
-    "volumeUSD": 1158.13,
-    "openInterestUSD": 783.52,
+    "liquidityUSD": 1098.26,
+    "volumeUSD": 1158.14,
+    "openInterestUSD": 783.53,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -774,6 +785,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x3e6f0d62eb4370b6d5f7457c5a21ba1689a7313887e5a85320edb0a4bd34cb98",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1768834560,
     "url": "https://app.seer.pm/markets/100/0x9510c9bad4b5831f86d771403365a83f619e8aeb"
@@ -802,7 +814,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1083.79,
+    "liquidityUSD": 1083.8,
     "volumeUSD": 13.87,
     "openInterestUSD": 509.66,
     "openingTs": 1783415432,
@@ -816,6 +828,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x7606caaa4b22968aaf65b40d709f0b8f5113222da986742563479092256d8eac",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1783415460,
     "url": "https://app.seer.pm/markets/100/0xcef8554bad70c8f46b4242662286d0f03ce77899"
@@ -844,9 +857,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1028.51,
+    "liquidityUSD": 1028.52,
     "volumeUSD": 553.73,
-    "openInterestUSD": 1168.81,
+    "openInterestUSD": 1168.82,
     "openingTs": 1782120471,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -858,6 +871,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x4d1dd1ec831e79616e062376908bd7008ffb123ef5a6229a9d472a0e0c17edb4",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1782120480,
     "url": "https://app.seer.pm/markets/100/0xe659d844b813ae908473e9d0f0981a5c33cf638f"
@@ -886,7 +900,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 918.95,
+    "liquidityUSD": 918.96,
     "volumeUSD": 965.55,
     "openInterestUSD": 1351.99,
     "openingTs": 1778845743,
@@ -900,6 +914,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xf9427087dfc7d4e6e5be4221e97381105a3d33be6be50320fbdff7c6399ed90a",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1778845760,
     "url": "https://app.seer.pm/markets/100/0xe820d073f8885f4a24328ba9fbb8a745114bb647"
@@ -942,6 +957,7 @@
     "lowerBound": "100000000000000000",
     "upperBound": "120000000000000000000",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xa7e1c08f0d3d85768a43cf2f6c989613b2db54c81aa81d7a839882c0a06cb60c",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1765529635,
     "url": "https://app.seer.pm/markets/100/0x2324741962ff5b8331dbbdc88de8cf1c06fa5ca8"
@@ -970,9 +986,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 818.46,
-    "volumeUSD": 698.48,
-    "openInterestUSD": 2008.93,
+    "liquidityUSD": 818.47,
+    "volumeUSD": 698.49,
+    "openInterestUSD": 2008.94,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -984,6 +1000,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x6217c27c3a8626373c7fc5505d99f4d0f34e63d2ced0ba3dc898b1402d036143",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1761552160,
     "url": "https://app.seer.pm/markets/100/0x0a2e852ade1b60ceae19e2d9a6f0a97da2d0dc06"
@@ -1026,6 +1043,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x79c6f01465baff5ac95942aba43eae5da875010e2a59179bcef4b68ac0e67e52",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1769969890,
     "url": "https://app.seer.pm/markets/100/0x394c593c402fff1754fcc4d5d953dc6ff0dc6c21"
@@ -1054,7 +1072,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 781.74,
+    "liquidityUSD": 781.75,
     "volumeUSD": 107.84,
     "openInterestUSD": 322.12,
     "openingTs": 1784369698,
@@ -1068,6 +1086,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x41680431e2cccb18db136ea9dc11fbe4ff64cdb726cfee9ddec221f0586ac5fb",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1784369725,
     "url": "https://app.seer.pm/markets/100/0x2c04736e1698d13a554cca3558e7bfe9f5334a00"
@@ -1110,6 +1129,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xb40444c167d82edd576e492d3a2f4519f1a25a478a83f8ed2d33195357c12d8b",
     "creator": "0xbddf948569dd3f53ba3561bb4633ddc0fad38ece",
     "blockTimestamp": 1789032965,
     "url": "https://app.seer.pm/markets/100/0x67ea7fc200ff1c2a8817c1efd4b56cdd6ef0a060"
@@ -1142,7 +1162,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 639.31,
+    "liquidityUSD": 639.32,
     "volumeUSD": 444.3,
     "openInterestUSD": 365.68,
     "openingTs": 1784314968,
@@ -1156,6 +1176,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0x304d7646a16e9bf7fc31dff8f74ec2d245bac6d880bb0c583ad3e305a2ebcb76",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1784314985,
     "url": "https://app.seer.pm/markets/100/0x36e2b9d28a3cbf15712d09b79f3362d049a4eba9"
@@ -1184,7 +1205,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 591.76,
+    "liquidityUSD": 591.77,
     "volumeUSD": 192.85,
     "openInterestUSD": 388.21,
     "openingTs": 1798792360,
@@ -1198,6 +1219,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xafb82cc3a2e5b07635c96ba02b2d4f57e50d482a0e31d33d4468baf447455670",
     "creator": "0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c",
     "blockTimestamp": 1770971560,
     "url": "https://app.seer.pm/markets/100/0x612f809c9a09c2cd64aaa37fa9e858391707bc1e"
@@ -1239,8 +1261,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 564.36,
-    "volumeUSD": 2797.54,
-    "openInterestUSD": 2794.57,
+    "volumeUSD": 2797.56,
+    "openInterestUSD": 2794.59,
     "openingTs": 1798675200,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1252,6 +1274,7 @@
     "lowerBound": "0",
     "upperBound": "0",
     "collateralToken": "0xaf204776c7245bf4147c2612bf6e5972ee483701",
+    "conditionId": "0xa2179f17fed134e3954e1b94564e6fd5088f491a7812a884937f90acba1c3273",
     "creator": "0xcf989b69aba2ede83fa11baf9bfc3a426a1326ce",
     "blockTimestamp": 1761820360,
     "url": "https://app.seer.pm/markets/100/0x21e5fc95afe520e0e26acccb28daed15d48e2555"
