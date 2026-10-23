@@ -16,7 +16,7 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
     aborts the previous one of its kind. Every row goes through one `normalize()` (types, ranges, control/bidi
     stripped, clamped, textContent only); links are built from a validated chain id and 0x address (app.seer.pm
     market pages; Gnosisscan, Etherscan and Blockscout address pages). The Interface column reads only the market's
-    own fields and the local `risk/snapshot.js`; the URL parameters `iface` and `lens` are matched against fixed lists.
+    own fields and the local `risk/snapshot.js` and `deep/round3.js` (Deep's feed prices, validated again: 0x address, prices 0 to 1); the URL parameters `iface` and `lens` are matched against fixed lists.
   - Home also reads that `count` for the hero market's creator.
   - Opportunity: app.seer.pm markets-search for the three linked "AI Job Board Name" markets; ids, chain,
     parent links and "Other" positions must match what the page pins, or the answer is refused.

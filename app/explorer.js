@@ -36,6 +36,7 @@
   var SNAP = window.SEER_SNAPSHOT && typeof window.SEER_SNAPSHOT === "object" ? window.SEER_SNAPSHOT : null;
   var XS = SNAP && SNAP.explore && typeof SNAP.explore === "object" && Array.isArray(SNAP.explore.markets) ? SNAP.explore : null;
   var RSNAP = window.SEER_RISK_SNAPSHOT && typeof window.SEER_RISK_SNAPSHOT === "object" ? window.SEER_RISK_SNAPSHOT : null;
+  var DSNAP = window.SEER_DEEP_R3 && typeof window.SEER_DEEP_R3 === "object" ? window.SEER_DEEP_R3 : null;
 
   var API = "https://app.seer.pm/.netlify/functions/markets-search";
   var PAGE = 24, MAX_PAGES = 10, FALLBACK_MS = 4000, ABORT_MS = 12000, MAX_BYTES = 1500000, ONE_BYTES = 400000, DEBOUNCE = 380;
@@ -79,6 +80,19 @@
       if (x && typeof x.id === "string" && ADDR.test(x.id) && typeof x.quarter === "string" && /^\d{4}-Q[1-4]$/.test(x.quarter)) RISK["100:" + x.id.toLowerCase()] = x.quarter;
     });
   })();
+  // Deep's Round 3 markets carry no price in Seer's markets API; deep.seer.pm's own feed (deep/round3.js, hourly) does
+  var DEEP = {}, DEEP_AT = null;                                      // "10:0x…" -> [UP, DOWN] prices, 0-1
+  (function () {
+    if (!DSNAP || DSNAP.chainId !== 10 || !Array.isArray(DSNAP.repos)) return;
+    var t = typeof DSNAP.fetchedAt === "string" && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(DSNAP.fetchedAt) ? Date.parse(DSNAP.fetchedAt) : NaN;
+    if (!(t > 1.7e12 && t < Date.now() + 864e5)) return;
+    DEEP_AT = t;
+    DSNAP.repos.slice(0, 400).forEach(function (r) {
+      if (!Array.isArray(r) || typeof r[3] !== "string" || !ADDR.test(r[3])) return;
+      var up = r[1], dn = r[2];
+      if (typeof up === "number" && typeof dn === "number" && isFinite(up) && isFinite(dn) && up >= 0 && up <= 1 && dn >= 0 && dn <= 1 && up + dn > 0) DEEP["10:" + r[3].toLowerCase()] = [up, dn];
+    });
+  })();
   function idsOf(map) { return Object.keys(map).map(function (k) { return k.split(":")[1]; }); }
   var IFACES = [["all", "All interfaces"], ["app", "Seer app"], ["futarchy", "Futarchy"], ["deep", "Deep"]];
   if (Object.keys(RISK).length) IFACES.push(["risk", "Risk Pricing"]);
@@ -86,6 +100,7 @@
   function ifaceOf(o) {                                     // -> [key, why], read only from the market's own fields
     var k = o.chain + ":" + o.id;
     if (own(RISK, k)) return ["risk", "risk.seer.pm's own API lists this market as its " + RISK[k].replace("-", " ") + " board."];
+    if (own(DEEP, k)) return ["deep", "Listed in deep.seer.pm's own Round 3 feed, which also prices it (hourly snapshot)."];
     if (own(OPP, k)) return ["opportunity", OPP[k] === "rebrand" ? "The Seer Rebrand Contest market, archived on opportunity.seer.pm."
       : "One of the three linked markets behind opportunity.seer.pm's AI job board name."];
     if (o.fut) return ["futarchy", "Seer's futarchy market type, the one futarchy.seer.pm's proposals use."];
@@ -135,6 +150,11 @@
         var dn = odds[0], up = odds[1], sum = dn + up;
         if (sum > 100) { dn = dn / sum * 100; up = up / sum * 100; }
         if (sum > 0) o.scalar.value = Math.round(dn * lo + up * hi) / 100;
+      } else if (own(DEEP, o.chain + ":" + o.id)) {                 // no price in Seer's API: deep.seer.pm's own, the same formula
+        var dp = DEEP[o.chain + ":" + o.id], u2 = dp[0], d2 = dp[1], s2 = u2 + d2;
+        if (s2 > 1) { u2 = u2 / s2; d2 = d2 / s2; }
+        o.scalar.value = Math.round((d2 * lo + u2 * hi) * 100) / 100;
+        o.ext = "deep";
       }
     } else if (tpl === "1" || tpl === "2" || tpl === "3") {
       o.kind = fut ? "futarchy" : tpl === "1" ? "multi-scalar" : tpl === "3" ? "multi-categorical" : "categorical";
@@ -212,7 +232,7 @@
     if (m.kind === "scalar") {
       var c = m.scalar, un = c.unit ? " " + c.unit : "";
       return c.value == null ? "No price yet, so no estimate: the range is " + nm(c.min) + " to " + nm(c.max) + un + "."
-        : "The market expects about " + nm(c.value) + un + ", on a range of " + nm(c.min) + " to " + nm(c.max) + ".";
+        : "The market expects about " + nm(c.value) + un + ", on a range of " + nm(c.min) + " to " + nm(c.max) + "." + (m.ext === "deep" ? " Priced on deep.seer.pm." : "");
     }
     if (!m.priced) return m.fut ? "Seer's markets API gives no price for this futarchy market, so there is no reading to take here."
       : "No price yet: Seer shows prices once the market has liquidity, so there is no reading to take.";
@@ -230,6 +250,7 @@
   // our rule of thumb, said as one: under $1K of liquidity low, $1K-10K moderate, $10K and up high
   function depth(m) {
     if (!hasPrice(m)) return { k: "none", label: "No price yet", note: "Nothing to read until the market has liquidity and a price." };
+    if (m.ext === "deep") return { k: "none", label: "Liquidity not in Seer's API", note: "Priced on deep.seer.pm. Seer's markets API reports no liquidity for this market, so this page can't say how much stands behind the price." };
     var l = m.liq;
     if (l < 1000) return { k: "low", label: "Low liquidity", note: "A small trade can move this price: read it as a rough lean, not a settled view." };
     if (l < 10000) return { k: "mid", label: "Moderate liquidity", note: "A larger trade can still move this price: compare it with related markets before leaning on it." };
@@ -265,7 +286,7 @@
     view = sv === "table" || sv === "cards" ? sv : (window.matchMedia && matchMedia("(min-width: 1200px)").matches ? "table" : "cards");
     if (sl === "seeker" || sl === "trader") lens = sl;
     var pl = param("lens", "seeker|trader"); if (pl) lens = pl;
-    var pi = param("iface", "[a-z]{2,12}"); if (pi && IFACES.some(function (x) { return x[0] === pi; })) Q.iface = pi;
+    var pi = param("iface", "[a-z]{2,12}"); if (pi && IFACES.some(function (x) { return x[0] === pi; })) { Q.iface = pi; if (pi === "deep") Q.sort = "openingTs"; }
     var r = param("creator", "0x[0-9a-fA-F]{40}");          // ?creator=0x… (from "Asked by" links): open on that asker's markets
     if (r && r.toLowerCase() !== ZERO) { Q.creator = r.toLowerCase(); Q.state = "any"; Q.iface = "all"; }
   })();
@@ -559,7 +580,7 @@
     bot.appendChild(badges(m));
     bot.appendChild(el("div", { class: "s-specs ap-cspec" }, el("span", { text: KIND_NAME[m.kind] }), el("span", { text: CH[m.chain][0] }), m.coll ? el("span", { class: "ap-nc", text: m.coll }) : null));
     var by = byLine(m); if (by) bot.appendChild(by);
-    var metaEl = el("div", { class: "s-card__meta" }, el("span", { text: usd(m.vol) + " Vol." }), el("span", { text: usd(m.liq) + " liq" }),
+    var metaEl = el("div", { class: "s-card__meta" }, el("span", { text: usd(m.vol) + " Vol." }), el("span", m.ext === "deep" ? { text: "priced on deep.seer.pm", attrs: { title: "Seer's markets API has no price or liquidity for this market; the price is deep.seer.pm's own (hourly snapshot)." } } : { text: usd(m.liq) + " liq" }),
       m.opening && m.state === "not-open" ? el("span", { text: "Reports " + day(m.opening, true) }) : null);
     bot.appendChild(el("div", { class: "s-card__foot" }, metaEl, el("div", { class: "s-card__icons" },
       el("a", { class: "ap-xgo", href: link(m), html: S.icon("external", 15), attrs: { target: "_blank", rel: "noopener noreferrer", "aria-label": "Trade on Seer: " + clip(m.title, 80) } }))));
@@ -599,7 +620,7 @@
       st,
       { key: "chain", label: "Chain", class: "col-xl", sort: function (m) { return CH[m.chain][0]; }, render: function (m) { return U.chainBadge(CH[m.chain][1]); } },
       { key: "lead", label: "Leading", class: "ap-xlead", render: function (m) { return lead(m); } },
-      { key: "liq", label: "Liquidity", num: true, sort: true, render: function (m) { return usd(m.liq); } },
+      { key: "liq", label: "Liquidity", num: true, sort: true, render: function (m) { return m.ext === "deep" ? el("span", { text: "—", attrs: { title: "Not in Seer's markets API: this market is priced on deep.seer.pm" } }) : usd(m.liq); } },
       { key: "vol", label: "Volume", num: true, sort: true, render: function (m) { return usd(m.vol); } },
       { key: "oi", label: "Open int.", num: true, sort: true, class: "col-xl", render: function (m) { return usd(m.oi); } },
       { key: "opening", label: "Reports open", num: true, sort: function (m) { return m.opening || 0; }, render: function (m) { return m.opening ? day(m.opening, true) : "—"; } }];
@@ -679,6 +700,8 @@
   }
   function setIface(v) {
     if (v === Q.iface) return;
+    if (v === "deep" && Q.sort === "default") Q.sort = "openingTs";          // Deep: the newest round's markets first
+    else if (Q.iface === "deep" && Q.sort === "openingTs") Q.sort = "default";
     Q.iface = v; if (v !== "all" && Q.creator) reset("creator");
     if (v !== "all") kind = "all";
     changed();
@@ -824,9 +847,9 @@
     dpanel.appendChild(sec("What it prices", "02", [el("p", { class: "ap-dline", text: whatPrices(m) }), outcomeList(m)]));
     // 3 · how to use the signal, beside the traders' numbers: the two sides of the market
     var tips = [d.note];
-    if (hasPrice(m) && m.vol === 0) tips.push("No trades yet: the price is still where the liquidity was first set.");
+    if (hasPrice(m) && m.vol === 0 && !m.ext) tips.push("No trades yet: the price is still where the liquidity was first set.");
     var sn = stateNote(m); if (sn) tips.push(sn);
-    tips.push("Prices move. This reading is from " + (from === "snapshot" ? "the hourly snapshot" : "app.seer.pm at " + hhmm(m.at || Date.now())) + ".");
+    tips.push("Prices move. This reading is from " + (m.ext === "deep" ? "deep.seer.pm's feed, read hourly" + (DEEP_AT ? " (" + hhmm(DEEP_AT) + ")" : "") : from === "snapshot" ? "the hourly snapshot" : "app.seer.pm at " + hhmm(m.at || Date.now())) + ".");
     var seek = el("section", { class: "s-card s-card--pad ap-side ap-side--seek", attrs: { "aria-labelledby": "ap-d-seek" } },
       el("span", { class: "s-spec", text: "For information seekers" }),
       el("h3", { class: "ap-side__t", attrs: { id: "ap-d-seek" }, text: "What this tells you" }),
@@ -834,7 +857,9 @@
       meter(m, "ap-depth--d"),
       el("h4", { class: "ap-side__h", text: "How to use it" }),
       el("ul", { class: "ap-side__tips" }, tips.map(function (t) { return el("li", { text: t }); })));
-    var kv = [["Leading", el("b", { text: lead(m) })], ["Liquidity", usd(m.liq)], ["Volume", usd(m.vol)], ["Open interest", usd(m.oi)],
+    var kv = [["Leading", el("b", { text: lead(m) })],
+      m.ext === "deep" ? ["Price from", "deep.seer.pm's own feed, hourly snapshot" + (DEEP_AT ? " (" + day(DEEP_AT, true) + ", " + hhmm(DEEP_AT) + ")" : "") + "; Seer's markets API has none"] : null,
+      ["Liquidity", m.ext === "deep" ? "Not in Seer's API" : usd(m.liq)], ["Volume", usd(m.vol)], ["Open interest", usd(m.oi)],
       m.opening ? ["Reports open", day(m.opening, true) + ", " + hhmm(m.opening)] : null,
       m.state === "waiting" && m.finalize ? ["Answer final", day(m.finalize, true) + ", " + hhmm(m.finalize)] : null,
       m.created ? ["Created", day(m.created, true)] : null,
