@@ -111,6 +111,8 @@
   }
 
   var DEF = { state: "unresolved", chain: "all", verify: "all", sort: "default", cond: false, iface: "all", q: "", creator: "" };
+  // Deep and Futarchy open newest first: Deep's newest round, and Futarchy's newest proposals (Seer's own order puts old test markets on top)
+  var NEWEST = { deep: "openingTs", futarchy: "creationDate" };
 
   function clean(s, max) {
     if (typeof s !== "string") return "";
@@ -287,7 +289,7 @@
     view = sv === "table" || sv === "cards" ? sv : (window.matchMedia && matchMedia("(min-width: 1200px)").matches ? "table" : "cards");
     if (sl === "seeker" || sl === "trader") lens = sl;
     var pl = param("lens", "seeker|trader"); if (pl) lens = pl;
-    var pi = param("iface", "[a-z]{2,12}"); if (pi && IFACES.some(function (x) { return x[0] === pi; })) { Q.iface = pi; if (pi === "deep") Q.sort = "openingTs"; }
+    var pi = param("iface", "[a-z]{2,12}"); if (pi && IFACES.some(function (x) { return x[0] === pi; })) { Q.iface = pi; if (NEWEST[pi]) Q.sort = NEWEST[pi]; }
     var r = param("creator", "0x[0-9a-fA-F]{40}");          // ?creator=0x… (from "Asked by" links): open on that asker's markets
     if (r && r.toLowerCase() !== ZERO) { Q.creator = r.toLowerCase(); Q.state = "any"; Q.iface = "all"; }
   })();
@@ -786,8 +788,8 @@
   }
   function setIface(v) {
     if (v === Q.iface) return;
-    if (v === "deep" && Q.sort === "default") Q.sort = "openingTs";          // Deep: the newest round's markets first
-    else if (Q.iface === "deep" && Q.sort === "openingTs") Q.sort = "default";
+    if (NEWEST[Q.iface] && Q.sort === NEWEST[Q.iface]) Q.sort = "default";
+    if (NEWEST[v] && Q.sort === "default") Q.sort = NEWEST[v];
     Q.iface = v; if (v !== "all" && Q.creator) reset("creator");
     if (v !== "all") kind = "all";
     changed();
