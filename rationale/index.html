@@ -93,6 +93,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .rt-log { counter-reset: lg; }
 .rt-log li::before { content: counter(lg, decimal-leading-zero); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; color: var(--violet-3); }
 .rt-log b { color: var(--text); }
+.rt-log-h { margin: 26px 0 12px; font-size: 15px; line-height: 1.4; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
 .rt-lead { margin: 0; font-size: 15px; line-height: 1.55; font-weight: 500; color: var(--text); }
 .rt-lg { margin: 0; display: flex; flex-direction: column; gap: 14px; }
 .rt-lg figcaption .s-spec { display: block; margin-bottom: 6px; color: var(--violet-3); }
@@ -352,8 +353,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   <section class="rt-sec" id="changed" aria-labelledby="rt-ch-h">
     <div class="s-container">
       <div class="rt-sec__head">
-        <div><span class="s-spec">07 · Changelog · 23&ndash;24 Oct 2026</span><h2 class="t-h2" id="rt-ch-h">Refined after the Oct 23 extension</h2></div>
-        <p class="t-body" style="color:var(--text-2)">What changed on the live site after Seer&rsquo;s 23 Oct post. The on-chain claim still points here; earlier changes (live Seer data on every first screen, the line direction, the three-question block) are dated on the <a href="../" style="color:var(--violet-3)">hub</a>.</p>
+        <div><span class="s-spec">07 · Changelog · 21&ndash;24 Oct 2026</span><h2 class="t-h2" id="rt-ch-h">Refined after the Oct 23 extension</h2></div>
+        <p class="t-body" style="color:var(--text-2)">What changed on the live site after Seer&rsquo;s 23 Oct post, then the round before it (21&ndash;22 Oct). The on-chain claim text is dated 19 Oct; this list is the record of what changed since.</p>
       </div>
       <ol class="rt-log">
         <li><span><b>Two sides of every market</b> on the hub and the homepage: the information seeker&rsquo;s path beside the trader&rsquo;s, linked to Seer&rsquo;s create flow, the explorer and app.seer.pm.</span></li>
@@ -363,6 +364,14 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <li><span><b>&ldquo;On Seer now&rdquo;</b> titles open the same detail; its &ldquo;Seer&rdquo; link trades.</span></li>
         <li><span><b>This rationale,</b> linked from the hub, every page&rsquo;s design notes and the footer.</span></li>
         <li><span><b>Updated Oct 23 after the team&rsquo;s logo comments:</b> Seer&rsquo;s raven, the mark on its X profile, is the primary logo again on every interface, the favicon and the social cards, beside the lowercase seer of its X banner; one derived mark is offered as an option (<a href="#logo">keep or derive</a>). The Electric Foundation palette, type and line language stay.</span></li>
+      </ol>
+      <h3 class="rt-log-h" id="changed-21-22">21&ndash;22 Oct, after Seer&rsquo;s Part&nbsp;II brief</h3>
+      <ol class="rt-log">
+        <li><span><b>Live Seer data on every first screen:</b> each interface opens on a real Seer market read from Seer&rsquo;s public APIs as the page loads, with a dated hourly snapshot as the fallback, labelled.</span></li>
+        <li><span><b>Line direction and Information Finance framing, per Part&nbsp;II:</b> every line motif runs one to many, left to right, and each headline says who learns what from the market.</span></li>
+        <li><span><b>Asked by &middot; Prices &middot; Use the signal</b> on all six first screens, filled only from the market&rsquo;s own data.</span></li>
+        <li><span><b>The sample walkthrough is labelled:</b> the made-up grant round under each first screen says so.</span></li>
+        <li><span><b>Video:</b> <a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">the 80-second walkthrough on x.com&nbsp;&#8599;</a></span></li>
       </ol>
       <p class="rt-note"><b>Real and sample.</b> Every first screen, the explorer and every market detail read Seer&rsquo;s public APIs live, with a dated hourly snapshot as the fallback, labelled. The walkthrough under each first screen (Lattice DAO, proposal P-07, market #2841) is made up to show the full design and is labelled as sample data; its addresses all start with 0x5eed. Concept by Swift Bot Labs, not affiliated with Seer.</p>
     </div>

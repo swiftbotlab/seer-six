@@ -38,8 +38,6 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .hb-poster__lede { color: rgba(224, 226, 245, .78); font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; max-width: 50ch; margin-top: 18px; }
 .hb-poster__art { position: relative; min-height: 320px; color: var(--violet); }
 /* real Seer data in the first screen (from assets/seer-snapshot.js, rewritten hourly by tools/refresh.py) */
-.hb-poster__since { margin-top: 14px; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: rgba(224, 226, 245, .74); max-width: 60ch; }
-.hb-poster__since b { color: #fff; font-weight: 600; }
 .hb-live { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-block: 1px solid rgba(224, 226, 245, .16); font-size: 14px; line-height: 1.35; color: rgba(224, 226, 245, .78); max-width: 60ch; }
 .hb-live[hidden] { display: none; }
 .hb-live .s-src { background: rgba(224, 226, 245, .08); box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .2); color: rgba(224, 226, 245, .9); }
@@ -53,9 +51,23 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .s-header .hb-prov::before { width: 7px; height: 7px; border-radius: 50%; transform: none; background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
 /* one line in from the left fans out into six, one per interface (Seer's Part II line direction: one -> many) */
 .hb-poster__art .hb-fan { position: absolute; inset: 0; color: var(--violet); }
-.hb-poster__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.hb-poster__foot { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
 .hb-poster .s-btn--secondary { background: rgba(125, 51, 255, .18); color: #E0D2FF; }
 .hb-poster .s-btn--secondary:hover { background: rgba(125, 51, 255, .28); }
+/* first screen: two doors (the information seeker's, the trader's) right under the lede and the live line, a text route
+   into the six interfaces, and one proof line from the Opportunity archive (the record Home's "picked with a market" reads) */
+.hb-doors .s-btn svg { flex: none; }
+.hb-route, .hb-changed { margin-top: 14px; font-size: 14px; line-height: 1.5; font-weight: 500; color: rgba(224, 226, 245, .74); }
+.hb-changed { margin-top: 6px; font-size: 13px; }
+.hb-route a, .hb-changed a, .hb-proofline a { color: #D5C2FF; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(213, 194, 255, .5); border-radius: 3px; }
+.hb-route a:hover, .hb-changed a:hover, .hb-proofline a:hover { color: #fff; text-decoration-color: currentColor; }
+.hb-route a:focus-visible, .hb-changed a:focus-visible, .hb-proofline a:focus-visible { outline: 2px solid #D5C2FF; outline-offset: 2px; }
+.hb-route i, .hb-changed i { font-style: normal; color: rgba(224, 226, 245, .5); padding: 0 3px; }
+.hb-proofline { margin-top: 12px; font-size: 13.5px; line-height: 1.55; font-weight: 500; color: rgba(224, 226, 245, .78); max-width: 62ch; }
+.hb-proofline[hidden] { display: none; }
+.hb-proofline b { color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hb-proofline .s-src { margin-right: 8px; vertical-align: 1px; background: rgba(224, 226, 245, .08); box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .2); color: rgba(224, 226, 245, .9); }
+.hb-proofline .s-src > i { background: transparent; box-shadow: inset 0 0 0 1.5px rgba(224, 226, 245, .7); }
 .hb-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: var(--r-card); overflow: hidden; }
 .hb-flow > div { background: var(--surface); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .hb-flow__step { display: flex; align-items: center; gap: 8px; }
@@ -73,7 +85,23 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   .hb-poster__art { min-height: 240px; }
   .hb-notes { grid-template-columns: 1fr; }
 }
-@media (max-width: 640px) { .hb-poster__copy { padding: 26px 20px 22px; } }
+/* phones: the H1, the lede and both doors come first, then a compact fan, then the live line and the proof line. The copy
+   column's own items join the poster (Home's display:contents + order technique); the fan never sits above the doors. */
+@media (max-width: 640px) {
+  .hb-poster { display: flex; flex-direction: column; padding: 26px 0 22px; }
+  .hb-poster__copy, .hb-poster__head, .hb-poster__foot { display: contents; }
+  .hb-poster__head > *, .hb-poster__foot > * { margin-inline: 20px; }
+  .hb-poster__head > .s-specs { order: 1; margin-left: calc(20px - var(--spec-sep)); }
+  .hb-poster__title { order: 2; }
+  .hb-poster__lede { order: 3; }
+  .hb-doors { order: 4; margin-top: 22px; }
+  .hb-route { order: 5; margin-top: 12px; }
+  .hb-poster__art { order: 6; margin-top: 18px; }
+  .hb-live { order: 7; }
+  .hb-proofline { order: 8; }
+  .hb-changed { order: 9; margin-top: 12px; }
+  .hb-lede-more { display: none; }
+}
 /* 60-second tour: six rows (interface, what it shows, the one thing to try, link) and four build facts */
 .hb-read { gap: 20px; }
 .hb-read__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; }
@@ -111,7 +139,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   .hb-read__open { grid-row: auto; }
   .hb-read__facts { grid-template-columns: 1fr; }
 }
-@media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; width: 100%; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
+@media (max-width: 480px) { .hb-poster__foot .s-row { flex-direction: column; align-items: stretch; align-self: stretch; } .hb-poster__foot .s-row .s-btn { width: 100%; justify-content: center; } }
 .hb-poster__art { overflow: hidden; }
 /* kit -> concept: a crop of the Electric Foundation web frame beside the same component, live */
 .hb-fid-head { margin: 0 0 14px; max-width: 72ch; }
@@ -219,20 +247,20 @@ main > .s-section--tight { padding-block: 32px; }
   <div class="s-container">
     <section class="s-poster hb-poster" aria-labelledby="hb-title">
       <div class="hb-poster__copy">
-        <div>
+        <div class="hb-poster__head">
           <div class="s-specs"><span>Information Finance</span><span>Electric Foundation identity</span><span><b>6</b> interfaces</span></div>
           <h1 id="hb-title" class="hb-poster__title u-mt-6">One question in. <span class="t-accent">Every answer priced.</span></h1>
-          <p class="hb-poster__lede">Someone asks, traders price each possible answer, and whoever needs to know reads the signal: a DAO before its vote, a grant team before funding, a risk desk before sizing. Six interfaces on one protocol, each opening on a real Seer market.</p>
+          <p class="hb-poster__lede">Someone asks, traders price each possible answer, and whoever needs to know reads the signal: a DAO before its vote, a grant team before funding, a risk desk before sizing.<span class="hb-lede-more"> Six interfaces on one protocol, each opening on a real Seer market.</span></p>
           <p class="hb-live" id="hb-live" hidden></p>
-          <p class="hb-poster__since"><b>Updated Oct&nbsp;23 after the team&#39;s logo comments:</b> Seer&#39;s raven, the mark on its X profile, is the primary logo again on every interface, and one derived mark that links it to the Electric Foundation system is offered as an option: <a href="rationale/#logo">keep or derive</a>.</p>
-          <p class="hb-poster__since"><b>Refined after the Oct&nbsp;23 extension (23&ndash;24 Oct):</b> two sides of every market, information seekers and traders; the App as an explorer across every Seer interface, with a detail for each real market; and the <a href="rationale/">design rationale</a>, point by point.</p>
-          <p class="hb-poster__since"><b>21&ndash;22 Oct:</b> every interface opens on live Seer data; line direction and Information Finance framing follow the team&#39;s Part&nbsp;II brief. The walkthrough under each is sample data, labelled. <a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">Watch the 80-second video walkthrough&nbsp;&#8599;</a></p>
+          <p class="hb-proofline" id="hb-proofline" hidden></p>
         </div>
         <div class="hb-poster__foot">
-          <div class="s-row">
-            <a class="s-btn s-btn--lg" href="home/">Start at the homepage</a>
-            <a class="s-btn s-btn--lg s-btn--secondary" href="#tour">The 60-second tour</a>
+          <div class="s-row hb-doors">
+            <a class="s-btn s-btn--lg" href="app/?lens=seeker#markets">I need an answer<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="s-btn s-btn--lg s-btn--secondary" href="app/?lens=trader#markets">I trade forecasts<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
+          <p class="hb-route"><a href="home/">Start at the homepage</a><i aria-hidden="true">·</i><a href="#tour">The 60-second tour</a></p>
+          <p class="hb-changed"><a href="rationale/#changed">What changed for the 23 Oct brief&nbsp;&rarr;</a><i aria-hidden="true">·</i><a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">80-second video&nbsp;&#8599;<span class="s-sr"> (opens x.com)</span></a></p>
         </div>
       </div>
       <div class="hb-poster__art" aria-hidden="true">
@@ -464,6 +492,25 @@ main > .s-section--tight { padding-block: 32px; }
       el("span", { text: "Most liquid: " + clip(top.title, 48) + " · " + clip(top.lead[0], 24) + " " + (Math.round(top.lead[1] * 10) / 10) + "%" }), el("span", { html: S.icon("external", 13) })));
     box.hidden = false;
     chip(" · " + hm, TIP + " The numbers at the top of this page: Seer's public markets API, read " + ago + " (" + day + ", " + hm + ") by the hourly refresh.");
+  })();
+
+  /* one proof line under the live line: Seer's own Rebrand Contest, settled on its Opportunity Market, picked the identity these
+     six interfaces are built on. Read from the archive record (D.opportunity.archive[0], the same source as Home's proof()),
+     never typed in here; linked to the market on Seer when the snapshot's link is a valid app.seer.pm market URL. */
+  (function () {
+    var box = document.getElementById("hb-proofline"), O = D && D.opportunity, A = O && Array.isArray(O.archive) ? O.archive[0] : null;
+    if (!S || !box || !A || !Array.isArray(A.top)) return;
+    var win = A.top.filter(function (t) { return t && t.winner; })[0] || A.top[0];
+    if (!win || typeof win.name !== "string" || !win.name || typeof win.share !== "number" || !isFinite(win.share) || win.share <= 0 || win.share > 1) return;
+    var R = window.SEER_SNAPSHOT && window.SEER_SNAPSHOT.rebrand, url = "https://opportunity.seer.pm/archive", host = "opportunity.seer.pm";
+    if (R && typeof R.url === "string" && /^https:\/\/app\.seer\.pm\/markets\/(1|10|100|8453)\/0x[0-9a-fA-F]{40}$/.test(R.url)) { url = R.url; host = "app.seer.pm"; }
+    var el = S.el, pct = (Math.round(win.share * 1000) / 10).toFixed(1) + "%";
+    box.appendChild(el("span", { class: "s-src", attrs: { "data-state": "snapshot", title: "Settled result, as published on Seer's Opportunity archive" } },
+      el("i", { attrs: { "aria-hidden": "true" } }), el("span", { text: "Opportunity archive" })));
+    box.appendChild(el("span", {}, "Seer's own ",
+      el("a", { href: url, attrs: { target: "_blank", rel: "noopener noreferrer" } }, "Rebrand Contest market", el("span", { class: "s-sr", text: " (opens " + host + ")" })),
+      " finished with " + win.name.slice(0, 60) + " at ", el("b", { text: pct }), "; these six interfaces are built on it."));
+    box.hidden = false;
   })();
 
   // poster: one line (the protocol, one question format) enters from the left and fans out into six, one per interface:
