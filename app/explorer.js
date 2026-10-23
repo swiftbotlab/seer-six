@@ -5,7 +5,8 @@
    The explorer reads every market both ways (the lens at its top): "Information seekers" leads with what the market says and
    how much liquidity stands behind it; "Traders" leads with prices, liquidity, volume and dates. Every market opens a detail
    drawer (?market=<chain>:<0x…>) that answers the three questions: who is asking, what it prices, how to use the signal,
-   with a seekers' panel and a traders' panel side by side, and "Trade on Seer" as the way out.
+   with a seekers' panel and a traders' panel side by side, and "Trade on Seer" as the way out. AP_X.lookup answers the page's
+   search box for a pasted market or asker address (any chain, any state).
 
    Every filter but the market type is a field of Seer's own public markets API (POST app.seer.pm/.netlify/functions/markets-search,
    the request Seer's app makes): interface (type, creator + marketName, marketIds), state (marketStatusList), chain (chainsList),
@@ -1055,17 +1056,77 @@
     window.addEventListener("popstate", function () { var p = marketParam(); if (p) openKey(p[0], p[1], false); else closeDetail(true); });
   }
 
+  /* ---------- address lookup for the page's search box (page.js): a pasted market address (or its app.seer.pm link) opens that
+     market's record; an asker's address lists everything it asked. Two POSTs, 300 ms after the typing stops, each on its own
+     abort slot (the drawer's reads are never cancelled): {marketIds: [addr]} with no chain filter (any chain, any state) and
+     {creator: addr} for its count. A creator's address is never a market id, so the two never collide. Rows come back as plain
+     values built here from validated data; page.js renders them with textContent. ---------- */
+  var LK = { cache: {}, keys: [], timer: null, want: null, cb: null };
+  function lkParse(raw) {                                   // -> "0x…" (40 hex, lowercase) or null
+    var t = clean(String(raw || ""), 200).toLowerCase(), r;
+    if (/^0x[0-9a-f]{40}$/.test(t)) return t;
+    r = /^(?:https?:\/\/)?app\.seer\.pm\/markets\/(\d{1,5})\/(0x[0-9a-f]{40})(?:[\/?#].*)?$/.exec(t);
+    return r && own(CH, +r[1]) ? r[2] : null;
+  }
+  function lkKeep(a, v) { if (!own(LK.cache, a)) { LK.keys.push(a); if (LK.keys.length > 30) delete LK.cache[LK.keys.shift()]; } LK.cache[a] = v; }
+  function lkRows(a, hit, n) {
+    var rows = [];
+    if (hit && hit.m) rows.push({ kind: "Market on Seer", label: clip(hit.m.title, 110), title: hit.m.title, sub: IF[hit.m.iface].name + " · " + CH[hit.m.chain][0] + " · " + short(a),
+      val: lead(hit.m), open: [hit.m.chain, hit.m.id] });
+    else if (hit) rows.push({ kind: "Market on Seer", label: "A market at " + short(a) + " on " + CH[hit.chain][0], sub: "This explorer can't read its data: open it on app.seer.pm", val: "", ext: "https://app.seer.pm/markets/" + hit.chain + "/" + a });
+    if (n) rows.push({ kind: "Asker", label: n.toLocaleString("en-US") + " market" + (n === 1 ? "" : "s") + " asked by " + short(a), sub: "Everything this address asked on Seer, on every interface", val: "", creator: a });
+    return rows;
+  }
+  function lkRun(a) {
+    LK.want = a;
+    var ok = 0, failed = 0, hit = null, n = null, now = Date.now();
+    function done() {
+      if (ok + failed < 2 || LK.want !== a) return;
+      var rows = lkRows(a, hit, n);
+      lkKeep(a, rows.length ? { state: "ok", addr: a, rows: rows } : failed ? { state: "error", addr: a, at: Date.now() } : { state: "miss", addr: a, rows: [] });
+      LK.want = null;
+      if (typeof LK.cb === "function") LK.cb(a);
+    }
+    post({ marketIds: [a], limit: 1, page: 1 }, "lk-m", ONE_BYTES).then(function (d) {
+      var m0 = d.markets[0];
+      if (m0 && typeof m0 === "object" && typeof m0.id === "string" && m0.id.toLowerCase() === a && typeof m0.chainId === "number" && own(CH, m0.chainId)) {
+        var m = normalize(m0, now);
+        if (m) { m.src = "live"; m.at = now; remember(m); hit = { m: m }; } else hit = { chain: m0.chainId };
+      }
+      ok++; done();
+    }).catch(function (e) { if (LK.want !== a) return; failed++; done(); });
+    post({ creator: a, limit: 1, page: 1 }, "lk-c", ONE_BYTES).then(function (d) {
+      var c = okN(d.count); if (c == null) throw new Error("bad count");
+      n = c; ok++; done();
+    }).catch(function (e) { if (LK.want !== a) return; failed++; done(); });
+  }
+  function lookup(raw, onReady) {                           // -> null (not an address) | {state: loading|ok|miss|error, addr, rows}
+    var a = lkParse(raw);
+    if (!a) return null;
+    if (a === ZERO) return { state: "miss", addr: a, rows: [] };
+    var r = own(LK.cache, a) ? LK.cache[a] : null;
+    if (r && !(r.state === "error" && Date.now() - r.at > 30000)) return r;
+    if (typeof fetch !== "function") return { state: "error", addr: a };
+    LK.cb = onReady;
+    if (LK.want === a) return { state: "loading", addr: a };  // already asked: don't restart it (Enter while it loads)
+    clearTimeout(LK.timer); LK.want = a;
+    LK.timer = setTimeout(function () { lkRun(a); }, 300);
+    return { state: "loading", addr: a };
+  }
+
   // the page's search box (page.js) hands word queries here: Seer's own search over every market's title
   window.AP_X = {
     search: function (raw) {
       var q = clean(String(raw || ""), 60);
-      if (q.length < 3 || !/[a-z\u00c0-\u024f]{3}/i.test(q) || /^0x/i.test(q) || /^#?\d+$/.test(q) || /^p-?\d{1,2}$/i.test(q.replace(/\s+/g, ""))) q = "";
+      if (q.length < 3 || !/[a-z\u00c0-\u024f]{3}/i.test(q) || /^0x/i.test(q) || /^#?\d+$/.test(q) || /^p-?\d{1,2}$/i.test(q.replace(/\s+/g, "")) || lkParse(q)) q = "";
       if (q === Q.q) return;
       Q.q = q; clearTimeout(debounce); syncCtrls();
       debounce = setTimeout(load, DEBOUNCE);
     },
     byCreator: byCreator,
-    open: function (chain, id) { openKey(+chain, String(id || ""), true); }
+    open: function (chain, id) { openKey(+chain, String(id || ""), true); },
+    lookup: lookup,                                         // AP_X.lookup(text, onReady): a market or asker address, live
+    isAddress: function (raw) { return lkParse(raw) != null; }
   };
 
   // first paint: the snapshot's first page at once (labelled), then the live answer

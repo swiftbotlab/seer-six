@@ -6,7 +6,8 @@
      #a=<0x…>                                                                             address record
      #markets (the real explorer, explorer.js) #sample #activity #leaderboard #create #notes  sections
    The search box drives both: word queries also go to the real explorer (window.AP_X.search) and to the "On Seer · live"
-   suggestions (live.js); market numbers, P-07 and 0x5eed addresses search this sample. */
+   suggestions (live.js); a full market or asker address, or an app.seer.pm market link, is looked up on Seer live
+   (window.AP_X.lookup, explorer.js); market numbers, P-07, partial 0x and 0x5eed addresses search this sample. */
 (function () {
   "use strict";
   var D = window.SEER_SAMPLE, S = window.Seer, U = S.ui, F = S.fmt, el = S.el, $ = S.$, $$ = S.$$;
@@ -249,12 +250,22 @@
     D.states.forEach(function (s) { if (counts[s.id]) cbox.appendChild(el("span", {}, el("b", { text: String(counts[s.id]) }), " " + SHORT_STATE[s.id])); });
     drawField(); S.onResize($("#ap-field"), drawField);
     // try chips
-    var holderAgent = D.agents[0];
-    var tries = [["election", "election"], ["ethereum", "ethereum"], ["#2841", "#2841"], ["P-07", "P-07"], [holderAgent.address.slice(0, 12) + "…", holderAgent.address.slice(0, 12)]];
+    if (window.matchMedia && matchMedia("(max-width: 640px)").matches) qInput.placeholder = "Topic, market or asker address";   // fits a phone
+    // topics search Seer's real open markets; the two askers open everything they asked, on every interface (explorer.js)
+    var tries = [["election", "election"], ["ethereum", "ethereum"], ["futarchy", "futarchy"]];
+    var askers = [["0x00dc3e0acadb8dba21bb08ff30540222ff8836e0", "Deep + Risk", "the asker behind Deep's Round 3 markets and the Risk Pricing board"],
+      ["0xb5a6a9c6d779e7dd7815f94ae2ccfb153a21801c", null, null]];
     var tb = $("#ap-try");
     tries.forEach(function (t) {
-      var b = el("button", { class: "s-chip" + (/^0x/.test(t[0]) ? " t-mono" : ""), text: t[0], attrs: { type: "button", "aria-label": "Search for " + t[1] } });
+      var b = el("button", { class: "s-chip", text: t[0], attrs: { type: "button", "aria-label": "Search Seer's markets for " + t[1] } });
       b.addEventListener("click", function () { setQuery(t[1]); qInput.focus(); openSuggest(); });
+      tb.appendChild(b);
+    });
+    tb.appendChild(el("span", { class: "ap-try__br", attrs: { "aria-hidden": "true" } }));
+    askers.forEach(function (t) {
+      var b = el("button", { class: "s-chip ap-try__addr", attrs: { type: "button", title: t[0], "aria-label": "Every market asked by " + t[0] + (t[2] ? ", " + t[2] : "") } },
+        el("span", { class: "t-mono", text: t[0].slice(0, 6) + "…" + t[0].slice(-4) }), t[1] ? el("small", { text: t[1] }) : null);
+      b.addEventListener("click", function () { closeSuggest(); if (window.AP_X && typeof window.AP_X.byCreator === "function") window.AP_X.byCreator(t[0]); });
       tb.appendChild(b);
     });
     // typeahead
@@ -267,6 +278,16 @@
         sugState.i = (sugState.i + (e.key === "ArrowDown" ? 1 : -1) + n) % n; paintSel();
       } else if (e.key === "Enter") {
         e.preventDefault();
+        // a full address: open its first live row, now or as soon as Seer answers
+        var lk = window.AP_X && typeof window.AP_X.lookup === "function" ? window.AP_X.lookup(qInput.value, onLookup) : null;
+        if (lk) {
+          pendEnter = null;
+          if (lk.state === "loading") { pendEnter = lk.addr; if (sugBox.hidden) openSuggest(); return; }
+          if (sugBox.hidden) openSuggest();
+          var li = sugState.items[sugState.i >= 0 ? sugState.i : 0];
+          if (li) pick(li);
+          return;
+        }
         var it = sugState.items[sugState.i >= 0 ? sugState.i : 0];
         if (it && !sugBox.hidden) pick(it);
         else { closeSuggest(); var t = $("#markets"); if (t) t.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); }
@@ -277,10 +298,12 @@
     var seek = $("#ap-seek-read");
     if (seek) seek.addEventListener("click", function () { qInput.focus(); if (qInput.value.trim()) openSuggest(); else hintSuggest(); });
   }
-  // a suggestion row: a sample record (hash route), a real market on Seer (new tab), or a topic to search for
+  // a suggestion row: a sample record (hash route), a real market on Seer (its record here, or a new tab), an asker, or a topic
   function pick(it) {
     if (it.q) { setQuery(it.q); qInput.focus(); openSuggest(); return; }
     closeSuggest();
+    if (it.open && window.AP_X && typeof window.AP_X.open === "function") { window.AP_X.open(it.open[0], it.open[1]); return; }
+    if (it.creator && window.AP_X && typeof window.AP_X.byCreator === "function") { window.AP_X.byCreator(it.creator); return; }
     if (it.ext) { window.open(it.ext, "_blank", "noopener,noreferrer"); return; }
     go(it.href);
   }
@@ -296,16 +319,45 @@
   var CREATE_URL = "https://app.seer.pm/create-market";   // Seer's own create flow (checked: it answers 200, unknown paths 404)
   function hintSuggest() {
     S.clear(sugBox);
-    sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: "Type a topic: words search Seer's real open markets, live. Market numbers, P-07 and 0x addresses search the sample explorer." }));
+    sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: "Type a topic to read Seer's real open markets, live, or paste a market or asker address. #2841, P-07 and 0x5eed… search the sample walkthrough." }));
     var items = [{ kind: "Try a topic", label: "election", sub: "Real markets on Seer about elections", q: "election" },
       { kind: "Try a topic", label: "ethereum", sub: "Real markets on Seer about Ethereum", q: "ethereum" },
+      { kind: "Try an asker", label: "0x00dc…36e0", sub: "Everything the asker behind Deep and Risk Pricing asked", creator: "0x00dc3e0acadb8dba21bb08ff30540222ff8836e0", live: true },
       { kind: "Ask on Seer", label: "Ask your own question on Seer", sub: "app.seer.pm/create-market · opens in a new tab", ext: CREATE_URL, live: true }];
     sugState = { items: items, i: 0 };
     items.forEach(function (it, i) { sugBox.appendChild(sugRow(it, i)); });
     sugBox.hidden = false; qInput.setAttribute("aria-expanded", "true");
     paintSel();
   }
+  // a full market or asker address: Seer's answer first (explorer.js AP_X.lookup), then any sample match, labelled
+  var pendEnter = null;
+  function onLookup(a) {
+    if (!sugBox.hidden) openSuggest(true);
+    if (pendEnter !== a) return;
+    pendEnter = null;
+    var lk = window.AP_X.lookup(qInput.value, onLookup);
+    if (lk && lk.addr === a && lk.state === "ok" && sugState.items[0] && sugState.items[0].live) pick(sugState.items[0]);
+  }
+  function openAddr(lk, refresh) {
+    var res = suggest(qInput.value), keepI = refresh && !sugBox.hidden ? sugState.i : 0;
+    var live = lk.state === "ok" ? lk.rows.map(function (r) { return { kind: r.kind, label: r.label, title: r.title, sub: r.sub, val: r.val, open: r.open, creator: r.creator, ext: r.ext, live: true }; }) : [];
+    var items = live.concat(res.items);
+    sugState = { items: items, i: items.length ? Math.min(Math.max(keepI, 0), items.length - 1) : -1 };
+    S.clear(sugBox);
+    sugBox.appendChild(el("div", { class: "ap-suggest__live" }, el("b", { text: "On Seer · live" }),
+      el("span", { text: lk.state === "loading" ? "Looking up this address on Seer…" : lk.state === "error" ? "Seer's API didn't answer just now"
+        : lk.state === "miss" ? "No Seer market or asker at this address" : "Found on Seer" })));
+    live.forEach(function (it, i) { sugBox.appendChild(sugRow(it, i)); });
+    if (res.items.length) {
+      sugBox.appendChild(el("div", { class: "ap-suggest__live ap-suggest__sample" }, el("b", { text: "In the sample walkthrough" }), el("span", { text: "Made-up data" })));
+      res.items.forEach(function (it, j) { sugBox.appendChild(sugRow(it, live.length + j)); });
+    }
+    sugBox.hidden = false; qInput.setAttribute("aria-expanded", "true");
+    paintSel();
+  }
   function openSuggest(refresh) {
+    var lk = window.AP_X && typeof window.AP_X.lookup === "function" ? window.AP_X.lookup(qInput.value, onLookup) : null;
+    if (lk) return openAddr(lk, refresh);
     var res = suggest(qInput.value), keepI = refresh && !sugBox.hidden ? sugState.i : 0;
     // word queries also read Seer's real open markets (live.js); the rows arrive a moment later and re-render this box
     var live = window.AP_TOPIC && typeof window.AP_TOPIC.peek === "function"
@@ -319,7 +371,7 @@
     sugState = { items: items, i: items.length ? Math.min(Math.max(keepI, 0), items.length - 1) : -1 };
     S.clear(sugBox);
     if (!qInput.value.trim()) { closeSuggest(); return; }
-    if (!res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: live ? "Nothing in the sample matches; real markets on Seer are below." : "Nothing in the sample matches. Try a market number, an outcome or an address that starts with 0x5eed." }));
+    if (!res.items.length) sugBox.appendChild(el("div", { class: "ap-suggest__empty", text: live ? "Nothing in the sample matches; real markets on Seer are below." : "Nothing in the sample matches. Try a topic, a full market or asker address, or #2841, P-07 and 0x5eed… for the sample." }));
     res.items.forEach(function (it, i) { sugBox.appendChild(sugRow(it, i)); });
     var qq = qInput.value.trim().toLowerCase();
     if (/^0x/.test(qq) && "0x5eed".indexOf(qq) === 0 || qq === "0x5eed") sugBox.appendChild(el("div", { class: "ap-suggest__foot", text: "Every sample address starts with 0x5eed · keep typing to narrow " + res.total + " matches" }));
@@ -424,6 +476,10 @@
     var hs = $("[data-shell-search] input");
     if (hs) hs.addEventListener("keydown", function (e) {
       if (e.key !== "Enter") return; e.preventDefault();
+      if (window.AP_X && typeof window.AP_X.isAddress === "function" && window.AP_X.isAddress(hs.value)) {   // an address: the hero search looks it up
+        if (mode !== "home") go("");
+        setQuery(hs.value.trim()); qInput.focus(); openSuggest(); return;
+      }
       var r = suggest(hs.value), word = window.AP_TOPIC && window.AP_TOPIC.ok(hs.value);
       if (word && window.AP_X) { window.AP_X.search(hs.value); go("markets"); } else if (r.items[0]) go(r.items[0].href); else go("markets");
     });

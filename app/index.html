@@ -59,11 +59,12 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
             <label class="s-search ap-search">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
               <span class="s-sr">Search the explorer</span>
-              <input id="ap-q" type="search" autocomplete="off" spellcheck="false" maxlength="80" placeholder="Question, outcome, #2841, P-07 or 0x…" role="combobox" aria-expanded="false" aria-controls="ap-suggest" aria-autocomplete="list">
+              <input id="ap-q" type="search" autocomplete="off" spellcheck="false" maxlength="80" placeholder="Question, topic, or a market or asker address" role="combobox" aria-expanded="false" aria-controls="ap-suggest" aria-autocomplete="list" aria-describedby="ap-addr-hint">
               <kbd aria-hidden="true">Enter</kbd>
             </label>
             <div class="ap-suggest" id="ap-suggest" role="listbox" aria-label="Search results" hidden></div>
           </div>
+          <p class="ap-addr-hint" id="ap-addr-hint">Paste a market address to open its record, or an asker's address to see everything it asked, on every interface.</p>
           <div class="ap-try" id="ap-try"><span class="t-meta">Try</span></div>
           <!-- the information seeker's path: words search Seer's real open markets live (live.js); or ask a new question on Seer -->
           <p class="ap-seek-path"><span class="ap-seek-path__k">Have a question?</span><button type="button" class="ap-seek-path__b" id="ap-seek-read" aria-controls="ap-q">Read what a market says</button><a href="https://app.seer.pm/create-market" target="_blank" rel="noopener noreferrer">Ask your own on Seer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></p>
@@ -119,10 +120,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <section class="ap-section ap-sample" id="sample" aria-labelledby="ap-sample-h">
       <div class="s-container">
         <div class="s-section-head ap-head ap-head--compact">
-          <div class="ap-markets__h"><h2 id="ap-sample-h" class="t-h3">Sample walkthrough</h2><span class="s-sample" title="Everything in this section and below it is made up to show the explorer's full record. The markets above it are real.">Sample data</span><span class="t-meta ap-hide-sm">18 made-up markets that show the full record an explorer can keep: every type, chain and lifecycle state, from the Reality.eth question to redemption.</span></div>
+          <div class="ap-markets__h"><h2 id="ap-sample-h" class="t-h3">Sample walkthrough</h2><span class="s-sample" title="Everything in this section and below it is made up to show the explorer's full record. The markets above it are real.">Sample data</span><span class="t-meta ap-hide-sm">18 made-up markets that show the full record an explorer can keep: every type, chain and lifecycle state, from the Reality.eth question to redemption. The search at the top finds them by #2841, P-07 or any 0x5eed… address.</span></div>
         </div>
         <details class="s-details s-fold" data-sfold open>
-          <summary><span class="s-fold__t"><b>Open the sample explorer</b><small>18 made-up markets, every type and state, each with its full record</small></span></summary>
+          <summary><span class="s-fold__t"><b>Open the sample explorer</b><small>18 made-up markets, every type and state, each with its full record · search #2841, P-07 or 0x5eed…</small></span></summary>
         <div id="ap-cats"></div>
         <div class="ap-toolbar" id="ap-toolbar">
           <button type="button" class="s-btn s-btn--ghost s-btn--sm ap-ftoggle" id="ap-ftoggle" aria-expanded="false" aria-controls="ap-fbody"></button>
@@ -286,7 +287,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
       </div>
       </details>
-      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer with each market's detail and its interface counts, and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every trade link opens the market on app.seer.pm. In "On Seer now", the Deep, Risk Pricing, Opportunity and Futarchy cards come from the hourly snapshots their own pages use (deep.seer.pm's feed, risk.seer.pm, Seer's markets API, futarchy.seer.pm's candles), each dated on its card; the Seer app count is Seer's general markets minus the Deep, Risk Pricing and Opportunity ones, our rule. The liquidity levels (under $1K low, $1K to $10K moderate, above that high) are our reading rule, not Seer's. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
+      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer with each market's detail and its interface counts, and the search's "On Seer · live" rows (topics, and pasted market or asker addresses on any chain). They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every trade link opens the market on app.seer.pm. In "On Seer now", the Deep, Risk Pricing, Opportunity and Futarchy cards come from the hourly snapshots their own pages use (deep.seer.pm's feed, risk.seer.pm, Seer's markets API, futarchy.seer.pm's candles), each dated on its card; the Seer app count is Seer's general markets minus the Deep, Risk Pricing and Opportunity ones, our rule. The liquidity levels (under $1K low, $1K to $10K moderate, above that high) are our reading rule, not Seer's. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
     </div>
   </section>
 </main>

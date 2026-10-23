@@ -508,7 +508,7 @@
   window.AP_TOPIC = (function () {
     var cache = {}, keys = [], timer = null, ctl2 = null;
     function key(v) { return clean(String(v || ""), 60).toLowerCase(); }
-    function eligible(k) { return k.length >= 3 && /[a-z\u00c0-\u024f]{3}/i.test(k) && !/^0x/i.test(k) && !/^#?\d+$/.test(k) && !/^p-?\d{1,2}$/i.test(k.replace(/\s+/g, "")); }
+    function eligible(k) { return k.length >= 3 && /[a-z\u00c0-\u024f]{3}/i.test(k) && !/^0x/i.test(k) && !/^#?\d+$/.test(k) && !/^p-?\d{1,2}$/i.test(k.replace(/\s+/g, "")) && !/:\/\/|^app\.seer\.pm\//i.test(k); }
     function lead(m) {
       if (m.scalar) return num(m.scalar.value) + (m.scalar.unit ? " " + m.scalar.unit : "");
       var a = leadOf(m)[0]; return clip(a[0], 18) + " " + (m.multi ? (Math.round(a[1] * 10) / 10) + "¢" : pct(a[1]));

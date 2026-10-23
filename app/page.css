@@ -659,3 +659,17 @@ a.ap-daddr:hover { color: var(--text); }
 .ap-iface__src[data-state="snapshot"], .ap-iface__src[data-state="none"] { color: var(--text-2); }
 @media (min-width: 641px) and (max-width: 1200px) { .ap-iface { flex-wrap: wrap; } .ap-iface__src { flex-basis: 100%; white-space: normal; } }
 @media (max-width: 640px) { .ap-iface__src { white-space: normal; } }
+
+/* the search's address path (page.js + explorer.js AP_X.lookup): a hint under the box, two asker chips on their own row */
+.ap-addr-hint { margin-top: 8px; font-size: var(--fs-meta); line-height: 1.45; font-weight: 500; color: var(--text-3); }
+.ap-try__br { display: none; }
+.ap-try .ap-try__addr { gap: 6px; }
+.ap-try__addr .t-mono { font-family: var(--font-mono); font-size: 11.5px; }
+.ap-try__addr small { font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+.ap-suggest__sample { border-top: 1px solid var(--line); margin-top: 4px; }
+.ap-suggest__sample b { color: var(--text-3); }
+@media (max-width: 640px) {
+  .ap-try { flex-wrap: wrap; overflow: visible; row-gap: 6px; }
+  .ap-try__br { display: block; flex-basis: 100%; height: 0; }
+  .ap-addr-hint { display: none; }     /* phones: the placeholder says it, the first screen keeps its markets */
+}
