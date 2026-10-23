@@ -7,7 +7,9 @@
    string from the API is ever rendered, and every link is built here from the fixed market and pool addresses.
    The dated snapshot in eip8363-data.js is painted at once; the live answer replaces it when Seer replies (until 12 s),
    and after 4 s without one the page says "Snapshot · <date>". Market state follows the real clock: trading ends
-   24 Oct 2026 00:00 UTC (futarchy.seer.pm showed "2d 14h 32m" left at 21 Oct 09:27 UTC). */
+   24 Oct 2026 00:00 UTC (futarchy.seer.pm showed "2d 14h 32m" left at 21 Oct 09:27 UTC). Once data read after that
+   moment is shown, both prices and the impact come from each pool's last hourly candle that ends by the close, never a
+   later candle or spot price, and the chips say "Prices at close" instead of "Live". */
 (function () {
   "use strict";
   var S = window.Seer, X = window.FT_EIP8363 || null;
@@ -54,6 +56,7 @@
     }
     var y = pairs(x.yes), n = pairs(x.no);
     if (!y || !n || y.length < 24 || n.length < 24 || !(x.py > 100 && x.py < 1e6) || !(x.pn > 100 && x.pn < 1e6)) return null;
+    if (x.at / 1000 >= CLOSES && !closeOk(y, n)) return null;
     return { yes: y, no: n, py: x.py, pn: x.pn, at: Math.floor(x.at / 1000) };
   }
   function fromApi(d, nowS) {
@@ -78,11 +81,20 @@
     }
     var y = rows(D.y), n = rows(D.n);
     var py = spot(D.py, "YES", y[y.length - 1][1]), pn = spot(D.pn, "NO", n[n.length - 1][1]);
-    if (Math.abs(py / pn - 1) > 0.5) throw new Error("branches disagree");
+    if (nowS >= CLOSES) { if (!closeOk(y, n)) throw new Error("no close"); } // after the close the spot prices are not used
+    else if (Math.abs(py / pn - 1) > 0.5) throw new Error("branches disagree");
     return { yes: y, no: n, py: py, pn: pn, at: nowS };
   }
+  // the last candle [start, close] that starts at or before t (s); null before the first candle
+  function lastBy(s, t) { var lo = 0, hi = s.length - 1, r = null; while (lo <= hi) { var m = (lo + hi) >> 1; if (s[m][0] <= t) { r = s[m]; lo = m + 1; } else hi = m - 1; } return r; }
   // last close at or before t (s); null before the first candle
-  function at(s, t) { var lo = 0, hi = s.length - 1, r = null; while (lo <= hi) { var m = (lo + hi) >> 1; if (s[m][0] <= t) { r = s[m][1]; lo = m + 1; } else hi = m - 1; } return r; }
+  function at(s, t) { var r = lastBy(s, t); return r ? r[1] : null; }
+  // at the close: each branch's last hourly candle that ENDS by it (starts at or before CLOSES - 1 h); a candle that starts at
+  // or after the close, and any spot price read after it, are never used. Both must exist and agree within 50%.
+  function closeOk(y, n) {
+    var cy = lastBy(y, CLOSES - H), cn = lastBy(n, CLOSES - H);
+    return !!(cy && cn && Math.abs(cy[1] / cn[1] - 1) <= 0.5);
+  }
   // time-weighted average over the window: each hour holds the close of the hour before it (an approximation of the
   // pools' own TWAP oracle, which futarchy.seer.pm reads on-chain)
   function twap(s) {
@@ -91,11 +103,15 @@
     return k ? sum / k : null;
   }
   function derive(m) {
-    var end = Math.min(m.at, CLOSES), start = Math.max(m.yes[0][0], m.no[0][0]), hours = [];
-    for (var t = start; t <= end; t += H) hours.push([t, at(m.yes, t), at(m.no, t)]);
-    if (hours.length && hours[hours.length - 1][0] < end) hours.push([end, m.py, m.pn]); // end on the spot prices
+    var done = m.at >= CLOSES, end = done ? CLOSES : m.at, start = Math.max(m.yes[0][0], m.no[0][0]), hours = [];
+    if (done) {                                // trading has ended: the prices AT the close replace the spot prices
+      var cy = lastBy(m.yes, CLOSES - H), cn = lastBy(m.no, CLOSES - H);
+      m.py = cy[1]; m.pn = cn[1]; m.candle = Math.max(cy[0], cn[0]);
+    }
+    for (var t = start; t <= (done ? CLOSES - H : end); t += H) hours.push([t, at(m.yes, t), at(m.no, t)]);
+    if (hours.length && hours[hours.length - 1][0] < end) hours.push([end, m.py, m.pn]); // end on the spot (or close) prices
     var ty = twap(m.yes), tn = twap(m.no);
-    m.hours = hours; m.start = start; m.end = end;
+    m.hours = hours; m.start = start; m.end = end; m.closed = done;
     m.gap = m.py / m.pn - 1;
     m.twapGap = ty && tn ? ty / tn - 1 : null;
     return m;
@@ -105,9 +121,9 @@
   var cur = null, mode = null; // mode: loading | live | snapshot
   function setText(id, t) { var n = $(id); if (n) n.textContent = t; }
   function renderCopy(m) {
-    var closed = Math.floor(Date.now() / 1000) >= CLOSES;
+    var closed = m.closed || Math.floor(Date.now() / 1000) >= CLOSES;
     setText("ft-real-y", usd(m.py)); setText("ft-real-n", usd(m.pn)); setText("ft-real-gap", gapTxt(m.gap));
-    setText("ft-real-gap-l", m.at >= CLOSES ? "Impact at close" : "Impact (spot)");
+    setText("ft-real-gap-l", m.closed ? "Impact at close" : closed ? "Impact, last snapshot" : "Impact (spot)");
     var r = rec(m.gap), tag = $("ft-real-rec");
     if (tag) {
       tag.className = "s-tag ft-rec" + (r === "approve" ? " s-tag--pos" : r === "reject" ? " s-tag--neg" : "");
@@ -123,7 +139,7 @@
     var st = $("ft-real-state");
     if (st) {
       st.setAttribute("data-state", closed ? "pending" : "open");
-      st.textContent = closed ? "Trading closed " + dayMon(CLOSES) + " · resolving" : "Trading until " + dayMon(CLOSES);
+      st.textContent = closed ? "Closed " + dayMon(CLOSES) + " " + hhmm(CLOSES) + " UTC · resolving" : "Trading until " + dayMon(CLOSES);
     }
   }
   // provenance: the hero's chip and the header chip (index.html swaps the shell's sample badge for it)
@@ -131,6 +147,8 @@
     var label = state === "live" ? "Live" : "Snapshot", when = state === "live" ? hhmm(m.at) + " UTC" : (X && X.when) || "";
     var short = state === "live" ? when : X && typeof X.at === "number" ? dayMon(Math.floor(X.at / 1000)) : "";
     var hs = $("ft-real-src");
+    if (m && m.closed) { renderClosed(state, m, when); return; }
+    if (hs) hs.removeAttribute("title");
     if (hs) {
       hs.setAttribute("data-state", state);
       S.clear(hs).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
@@ -145,6 +163,31 @@
       hd.appendChild(el("span", { class: "ft-hsrc__k", text: label }));
       if (short) hd.appendChild(el("span", { class: "ft-hsrc__when", text: " · " + short }));
       hd.setAttribute("aria-label", "Top of page: " + (state === "live" ? "live from futarchy.seer.pm, read at " + when : "snapshot of futarchy.seer.pm, " + when + (state === "loading" ? ", live prices loading" : "")));
+    }
+    root.setAttribute("aria-busy", state === "loading" ? "true" : "false");
+  }
+  // after the close: no Live chip; the hero says the prices are the close's, from which hourly candle, and where they were read
+  function renderClosed(state, m, when) {
+    var c = m.candle, cw = (CLOSES - c <= 86400 ? "" : dayMon(c) + " ") + hhmm(c) + " UTC";
+    var read = state === "live" ? "read live from api.futarchy.seer.pm at " + when : "from the hourly snapshot of " + when + (state === "loading" ? " (live read pending)" : " (Seer's API didn't answer)");
+    var why = "Trading closed " + dayMon(CLOSES) + ", " + hhmm(CLOSES) + " UTC. Both prices are the closes of each pool's last hourly candle before it (" +
+      dayMon(c) + " " + hhmm(c) + "\u2013" + hhmm(c + H) + " UTC), never a later trade; " + read + ".";
+    var hs = $("ft-real-src");
+    if (hs) {
+      hs.setAttribute("data-state", "closed"); hs.setAttribute("title", why);
+      S.clear(hs).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+      hs.appendChild(document.createTextNode("Prices at close"));
+      hs.appendChild(el("span", { class: "s-hide-sm", text: " · futarchy.seer.pm" }));
+      hs.appendChild(document.createTextNode(" · ")); hs.appendChild(el("span", { class: "s-hide-sm", text: "hourly " }));
+      hs.appendChild(document.createTextNode("candle " + cw));
+    }
+    var hd = $("ft-hsrc");
+    if (hd) {
+      hd.setAttribute("data-state", "closed");
+      S.clear(hd).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
+      hd.appendChild(el("span", { class: "ft-hsrc__k", text: "At close" }));
+      hd.appendChild(el("span", { class: "ft-hsrc__when", text: " · " + dayMon(CLOSES) }));
+      hd.setAttribute("aria-label", "Top of page: EIP-8363's prices at its close, " + dayMon(CLOSES) + " " + hhmm(CLOSES) + " UTC, from futarchy.seer.pm (hourly candle " + cw + ")");
     }
     root.setAttribute("aria-busy", state === "loading" ? "true" : "false");
   }
@@ -166,8 +209,9 @@
     var Y = function (v) { return top + (hi - v) / (hi - lo) * ph; };
     var Yy = Y(m.py), Yn = Y(m.pn);
     var svg = sv("svg", { viewBox: "0 0 " + W + " " + Hh, width: W, height: Hh, class: "ft-poster__svg ft-rp", role: "img",
-      "aria-label": "EIP-8363 on Seer, hourly since " + dayMon(t0) + ", then the proposal forks into its two outcomes: ETH " + usd(m.py) + " USDS if scheduled, " + usd(m.pn) + " if not, a gap of " + gapTxt(m.gap) + ", inside the ±1% band." +
-        (m.twapGap != null ? " 5-day TWAP, 9 to 14 Oct: about " + gapTxt(m.twapGap) + ", neutral." : "") });
+      "aria-label": "EIP-8363 on Seer, hourly since " + dayMon(t0) + (m.closed ? " to the trading close, " + dayMon(CLOSES) + " " + hhmm(CLOSES) + " UTC" : "") + ", then the proposal forks into its two outcomes: ETH " + usd(m.py) + " USDS if scheduled, " + usd(m.pn) + " if not" + (m.closed ? " at the close" : "") + ", a gap of " + gapTxt(m.gap) + ", " +
+        (rec(m.gap) === "neutral" ? "inside the ±1% band." : rec(m.gap) === "approve" ? "above the +1% band." : "below the −1% band.") +
+        (m.twapGap != null ? " 5-day TWAP, 9 to 14 Oct: about " + gapTxt(m.twapGap) + ", " + (rec(m.twapGap) === "neutral" ? "neutral." : "leans " + rec(m.twapGap) + ".") : "") });
     // construction grid on 45°, through the end node (the EF logo sheet's lines)
     var g = sv("g", { class: "ft-pt-grid" }), gap = 46, cA = ex + Yn, cB = ex - Yn;
     for (var k = -Hh; k < W + Hh; k += gap) {
