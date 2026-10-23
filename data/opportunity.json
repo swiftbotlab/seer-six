@@ -1,7 +1,7 @@
 {
  "app": "Opportunity Markets",
  "page": "https://swiftbotlab.github.io/seer-six/opportunity/",
- "fetchedAt": "2026-10-23T15:51:26Z",
+ "fetchedAt": "2026-10-23T16:50:05Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -23,8 +23,8 @@
   "https://app.seer.pm/markets/100/0xf6a42af200c181df45e0f3fd49d58f5d57bb7d35",
   "https://app.seer.pm/markets/100/0x144364db8edd6225248fe9d02f77ecc3ec0e4c4c"
  ],
- "liquidityUSD": 2351.53,
- "volumeUSD": 8300.1,
+ "liquidityUSD": 2341.43,
+ "volumeUSD": 8309.06,
  "total": 235,
  "under1": 211,
  "rows": [
@@ -35,17 +35,7 @@
   ],
   [
    "Zetsu.AI",
-   5.0,
-   0
-  ],
-  [
-   "Wageware",
-   4.5,
-   2
-  ],
-  [
-   "Workmesh",
-   4.3,
+   4.1,
    0
   ],
   [
@@ -62,6 +52,16 @@
    "WorkX",
    3.6,
    2
+  ],
+  [
+   "Wageware",
+   3.6,
+   2
+  ],
+  [
+   "Workmesh",
+   3.5,
+   0
   ],
   [
    "Seek",

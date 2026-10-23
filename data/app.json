@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-23T15:51:24Z",
+ "fetchedAt": "2026-10-23T16:50:02Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,7 +22,7 @@
    "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
    "chain": 100,
    "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
-   "liq": 27586.32,
+   "liq": 27586.5,
    "outcomes": [
     [
      "Yashar",
@@ -237,9 +237,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 27586.32,
-    "volumeUSD": 6401.18,
-    "openInterestUSD": 8847.0,
+    "liquidityUSD": 27586.5,
+    "volumeUSD": 6401.22,
+    "openInterestUSD": 8847.06,
     "openingTs": 1784312694,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -599,8 +599,8 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1126.21,
-    "volumeUSD": 53.1,
+    "liquidityUSD": 1126.22,
+    "volumeUSD": 53.11,
     "openInterestUSD": 644.14,
     "openingTs": 1782120242,
     "finalizeTs": 33260976000,
@@ -685,9 +685,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1112.34,
+    "liquidityUSD": 1112.35,
     "volumeUSD": 88.71,
-    "openInterestUSD": 663.15,
+    "openInterestUSD": 663.16,
     "openingTs": 1782125983,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -771,8 +771,8 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.26,
-    "volumeUSD": 1158.14,
+    "liquidityUSD": 1098.27,
+    "volumeUSD": 1158.15,
     "openInterestUSD": 783.53,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
@@ -816,7 +816,7 @@
     },
     "liquidityUSD": 1083.8,
     "volumeUSD": 13.87,
-    "openInterestUSD": 509.66,
+    "openInterestUSD": 509.67,
     "openingTs": 1783415432,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -857,7 +857,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1028.52,
+    "liquidityUSD": 1028.53,
     "volumeUSD": 553.73,
     "openInterestUSD": 1168.82,
     "openingTs": 1782120471,
@@ -943,7 +943,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 827.9,
+    "liquidityUSD": 827.91,
     "volumeUSD": 143.01,
     "openInterestUSD": 421.02,
     "openingTs": 1801471821,
@@ -988,7 +988,7 @@
     },
     "liquidityUSD": 818.47,
     "volumeUSD": 698.49,
-    "openInterestUSD": 2008.94,
+    "openInterestUSD": 2008.95,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1029,9 +1029,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 802.3,
+    "liquidityUSD": 802.31,
     "volumeUSD": 291.75,
-    "openInterestUSD": 1138.05,
+    "openInterestUSD": 1138.06,
     "openingTs": 1798827365,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1117,7 +1117,7 @@
     },
     "liquidityUSD": 738.26,
     "volumeUSD": 206.1,
-    "openInterestUSD": 895.8,
+    "openInterestUSD": 895.81,
     "openingTs": 1789032916,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1163,7 +1163,7 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 639.32,
-    "volumeUSD": 444.3,
+    "volumeUSD": 444.31,
     "openInterestUSD": 365.68,
     "openingTs": 1784314968,
     "finalizeTs": 33260976000,
@@ -1260,9 +1260,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 564.36,
-    "volumeUSD": 2797.56,
-    "openInterestUSD": 2794.59,
+    "liquidityUSD": 564.37,
+    "volumeUSD": 2797.58,
+    "openInterestUSD": 2794.61,
     "openingTs": 1798675200,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
