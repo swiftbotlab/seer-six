@@ -21,6 +21,13 @@ Live demos: https://swiftbotlab.github.io/seer-six/
 | 06 | Risk Pricing | https://swiftbotlab.github.io/seer-six/risk/ |
 
 Design system: https://swiftbotlab.github.io/seer-six/system/
+Design rationale: https://swiftbotlab.github.io/seer-six/rationale/
+
+Refined 23-24 Oct 2026, after Seer's extension post: the hub and homepage show the two sides of every market (the
+information seeker's path beside the trader's); the App is an explorer across every Seer interface (Seer app, Futarchy,
+Deep, Risk Pricing, Opportunity), read either as an information seeker or as a trader, with a detail for each real
+market (`app/?market=<chain>:<address>`) that answers who is asking, what it prices and how to use the signal; the
+rationale explains each decision and the Electric Foundation identity, logo included.
 
 Plain HTML, CSS and JavaScript. No build step, no external scripts, no tracking.
 Working on the site: the hourly job commits to `main`, so `git pull --rebase` before you push.

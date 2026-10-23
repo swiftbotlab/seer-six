@@ -10,9 +10,13 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
     numeric `count` of open markets).
   - App: app.seer.pm markets-search for the "On Seer now" strip, its numeric `count` of every open market, the
     Markets explorer (one page of 24 per request, filters sent as the API's own fields, the previous request aborted,
-    search debounced) and the numeric `count` of markets the asker has created. Every row goes through one
-    `normalize()` (types, ranges, control/bidi stripped, clamped, textContent only); links are built from a validated
-    chain id and 0x address (app.seer.pm market pages; Gnosisscan/Etherscan address pages).
+    search debounced) and the numeric `count` of markets the asker has created. A market's detail reads one market
+    (`marketIds` + `chainsList`, only after `?market=<chain>:<0x address>` matches a known chain id and a 40-hex
+    address) and the asker's markets (a count, and their six most liquid unresolved ones); each kind of request
+    aborts the previous one of its kind. Every row goes through one `normalize()` (types, ranges, control/bidi
+    stripped, clamped, textContent only); links are built from a validated chain id and 0x address (app.seer.pm
+    market pages; Gnosisscan, Etherscan and Blockscout address pages). The Interface column reads only the market's
+    own fields and the local `risk/snapshot.js`; the URL parameters `iface` and `lens` are matched against fixed lists.
   - Home also reads that `count` for the hero market's creator.
   - Opportunity: app.seer.pm markets-search for the three linked "AI Job Board Name" markets; ids, chain,
     parent links and "Other" positions must match what the page pins, or the answer is refused.
@@ -34,8 +38,10 @@ Static site: HTML, CSS and vanilla JavaScript served from GitHub Pages.
   and length checks, and writes data only (JSON-escaped). Each source fails closed: on any error its files stay
   as they were and `data/index.json` says "kept". Commits are authored by the repository's noreply address.
 - `data/*.json` and `llms.txt` are static files for agents; no page fetches them.
-- The hub (index.html) reads only the local snapshot (`assets/seer-snapshot.js`) and makes no network request.
-- `localStorage` holds one value, the viewer's theme choice (`seer-theme`).
+- The hub (index.html) and the design rationale (rationale/) make no network request; the hub reads only the local
+  snapshot (`assets/seer-snapshot.js`).
+- `localStorage` holds view preferences only: the theme (`seer-theme`) and, on the App, the explorer's view and lens
+  (`ap-x-view`, `ap-x-lens`, `ap-view`). Every read and write is wrapped, so private mode just uses the defaults.
 - Any CSV a viewer drops into a demo is parsed in the browser and never uploaded.
 - All rendered text from data goes through `textContent`, not `innerHTML`.
 

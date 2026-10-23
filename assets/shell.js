@@ -23,7 +23,7 @@
     { id: "home", n: "01", name: "Seer", label: "Seer", product: "", path: "home/", host: "seer.pm", motif: "wedges",
       blurb: "The protocol beneath the apps: one question format, one oracle, six ways to use the answer." },
     { id: "app", n: "02", name: "Seer App", label: "App", product: "App", path: "app/", host: "app.seer.pm", motif: "grid",
-      blurb: "Seer's Etherscan: every market in one explorer, to read what it says, inspect it or trade." },
+      blurb: "Seer's Etherscan: every market from every interface, to read what it says, inspect it or trade." },
     { id: "deep", n: "03", name: "Deep", label: "Deep", product: "Deep", path: "deep/", host: "deep.seer.pm", motif: "waves",
       blurb: "Questions with many answers: agents forecast how evaluators will score each entry." },
     { id: "futarchy", n: "04", name: "Futarchy", label: "Futarchy", product: "Futarchy", path: "futarchy/", host: "futarchy.seer.pm", motif: "fork",
@@ -196,7 +196,7 @@
       '</div>' +
       '<div class="s-footer__cols">' +
       "<div><h4>Interfaces</h4>" + apps + "</div>" +
-      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
+      '<div><h4>This concept</h4><a href="' + S.url("") + '">Overview and links</a><a href="' + S.url("rationale/") + '">Design rationale</a><a href="' + S.url("") + '#design-notes">Design notes</a><a href="' + S.url("system/") + '">Design system</a></div>' +
       '<div><h4>Source</h4><a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a><p class="t-meta s-footer__fact">Static HTML, CSS and JS. No trackers.</p></div>' +
       '<div><h4>About the data</h4><p class="t-meta" style="line-height:1.55;color:var(--text-2)">Each app opens on Seer&rsquo;s own markets, read live from Seer&rsquo;s public APIs, with a snapshot refreshed every hour as the fallback (Deep: an hourly snapshot of deep.seer.pm). The walkthrough under them is sample data, made up to show the design and labelled. Nothing here is tradable. For agents: <a href="' + ROOT + 'llms.txt">llms.txt</a>.</p></div>' +
       "</div>" +
