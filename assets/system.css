@@ -258,7 +258,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-header__in { height: 100%; display: flex; align-items: center; gap: 28px; }
 .s-lockup { display: inline-flex; align-items: center; gap: 12px; flex: none; color: var(--text); }
 .s-lockup__home { display: inline-flex; align-items: center; color: var(--text); }
-.s-lockup__logo { height: 24px; width: auto; color: var(--text); }
+.s-lockup__logo { height: 36px; width: auto; color: var(--text); } /* Seer's current lockup (raven + SEER), 2.16:1 */
 .s-lockup__logo--mark { height: 26px; }
 .s-lockup__sep { width: 1px; height: 18px; background: var(--line-strong); }
 .s-lockup__product { font-size: 16px; font-weight: 500; letter-spacing: -.01em; color: var(--text); white-space: nowrap; }
@@ -339,7 +339,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
   .s-lockup__sample .s-sample__mid { display: none; }
   .s-lockup__sample { padding: 0 7px; }
   .s-lockup__product { font-size: 15px; }
-  .s-lockup__logo { height: 21px; }
+  .s-lockup__logo { height: 32px; }
   .s-header__end .s-btn { height: 34px; padding: 0 12px; }
   .s-header__end .s-btn:has(> .s-btn__long:last-child) { width: 34px; padding: 0; }
   .s-header__end .s-btn .s-btn__long { display: none; }
@@ -349,7 +349,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
 .s-footer { margin-top: var(--s-12); border-top: 1px solid var(--line); background: var(--bg); }
 .s-footer__in { padding-block: var(--s-10) var(--s-8); display: grid; gap: var(--s-8); grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr); }
 .s-footer__brand { display: flex; flex-direction: column; gap: 14px; }
-.s-footer__brand svg { height: 22px; width: auto; color: var(--text); align-self: flex-start; }
+.s-footer__brand svg { height: 44px; width: auto; color: var(--text); align-self: flex-start; }
 .s-footer__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6); }
 .s-footer__cols a[href^="http"] { overflow-wrap: anywhere; }
 .s-footer__fact { line-height: 1.5; color: var(--text-2); padding: 5px 0; }

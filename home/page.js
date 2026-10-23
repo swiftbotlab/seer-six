@@ -736,17 +736,14 @@
   /* ======================================================================
      7. PROOF (public rebrand result) + closing poster
      ====================================================================== */
-  var WORD = ["M311.8,117.3c-7.5,31.8-36.6,51.9-68.3,51.9s-71.7-34.1-71.7-76,28-75.7,71-75.7,69,34.5,69,75.5v10.5h-107.5c0,21.9,19.4,38.3,40.2,38.3s29.1-9.1,35.1-24.5h32.2ZM279.2,79.7c0-20-17.5-35-36.4-35s-38.3,14.7-38.3,35h74.7Z",
-    "M464.3,117.3c-7.5,31.8-36.6,51.9-68.3,51.9s-71.7-34.1-71.7-76,28-75.7,71-75.7,69,34.5,69,75.5v10.5h-107.5c0,21.9,19.4,38.3,40.2,38.3s29.1-9.1,35.1-24.5h32.2ZM431.7,79.7c0-20-17.5-35-36.4-35s-38.3,14.7-38.3,35h74.7Z",
-    "M572.1,21.4v32.8h-59.5v115h-32.8v-101.7c0-4.7.7-9.1,2-13.4.6-1.9,1.3-3.8,2.1-5.6,4.6-10.2,12.9-18.5,23.1-23.1,1.8-.8,3.7-1.5,5.6-2.1,4.2-1.3,8.7-2,13.4-2h46.1Z",
-    "M92.2,17.5c31.4,0,66.1,12.7,66.1,49.4h-32.2c0-18.4-18.4-23.5-33.6-23.5s-32.5,1.4-32.5,18.1,31,18.4,43.3,20.5c24.9,4.1,56,11.7,56,42.7s-35.9,44.6-64.5,44.6-66.1-12.7-66.1-49.3h32.2c0,18.4,18.4,23.5,33.6,23.5s32.5-2.7,32.5-18.1-31-18.5-43.3-20.5c-24.8-4.1-55.9-11.7-55.9-42.6S63.7,17.5,92.2,17.5Z"];
+  // the giant cropped wordmark (the kit's poster motif): the lowercase seer, as Seer's X banner sets it beside its line
   function proof() {
     var A = D.opportunity.archive[0], box = $("hm-rebrand");
     var top = A.top, other = 1 - top.reduce(function (s, t) { return s + t.share; }, 0);
     box.appendChild(el("div", { class: "s-col", style: { "--gap": "12px" } },
       el("div", { class: "s-row s-row--between" }, el("span", { class: "s-spec", text: "Public result · Opportunity archive" }), el("span", { class: "s-tag s-tag--outline", text: "Not sample data" })),
       el("h3", { text: "The identity on this page was picked with a market" }),
-      el("p", { text: "Seer ran its own rebrand as an Opportunity Market. Traders priced which of " + A.entries + " entries the team would choose. Electric Foundation finished at " + f.pct(top[0].share, 1) + ", and it is the identity these six interfaces are built on." })));
+      el("p", { text: "Seer ran its own rebrand as an Opportunity Market. Traders priced which of " + A.entries + " entries the team would choose. Electric Foundation finished at " + f.pct(top[0].share, 1) + ": its palette, type and line language carry these six interfaces, and Seer's current logo stays the mark." })));
     var rows = el("div", { class: "s-orows" });
     top.forEach(function (t) {
       var r = S.ui.orow({ name: t.name, price: t.share }, { actions: false, value: f.pct(t.share, 1) });
@@ -758,7 +755,7 @@
     box.appendChild(el("div", { class: "s-row s-row--between" }, S.ui.specs([A.entries + " entries", A.images + " images", "Finalised"]),
       el("a", { class: "s-btn s-btn--ghost s-btn--sm", href: "../opportunity/" }, "See the archive", el("span", { html: S.icon("arrow-right", 14), style: { display: "inline-flex" } }))));
     var word = $("hm-cta-word");
-    word.innerHTML = '<svg viewBox="27 17 545 152" fill="currentColor" aria-hidden="true" focusable="false">' + WORD.map(function (d) { return '<path d="' + d + '"/>'; }).join("") + "</svg>";
+    word.innerHTML = S.logo("wordmark").replace('role="img" aria-label="Seer"', 'aria-hidden="true" focusable="false"');
   }
 
   /* ---------- boot (each block is independent; one failure must not blank the page) ---------- */

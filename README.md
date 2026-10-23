@@ -27,7 +27,10 @@ Refined 23-24 Oct 2026, after Seer's extension post: the hub and homepage show t
 information seeker's path beside the trader's); the App is an explorer across every Seer interface (Seer app, Futarchy,
 Deep, Risk Pricing, Opportunity), read either as an information seeker or as a trader, with a detail for each real
 market (`app/?market=<chain>:<address>`) that answers who is asking, what it prices and how to use the signal; the
-rationale explains each decision and the Electric Foundation identity, logo included.
+rationale explains each decision and the Electric Foundation identity. Updated 23 Oct after the team's logo comments:
+Seer's current logo (the raven in its open ring with the star, as on x.com/seer_pm; vector from app.seer.pm's own header
+SVG, path data unchanged, recoloured only, beside the lowercase seer of Seer's X banner) is the primary mark again; one derived mark that links it to the new line is offered on the rationale page
+(https://swiftbotlab.github.io/seer-six/rationale/#logo).
 
 Plain HTML, CSS and JavaScript. No build step, no external scripts, no tracking.
 Working on the site: the hourly job commits to `main`, so `git pull --rebase` before you push.
@@ -45,7 +48,7 @@ in [`llms.txt`](https://swiftbotlab.github.io/seer-six/llms.txt).
 Everything under them is a **sample walkthrough**, labelled as such and made up to show the design:
 organisations, proposals, agents and assets are fictional, and every sample address starts with `0x5eed`.
 
-Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name, mark and the
+Concept by Swift Bot Labs. Not affiliated with Seer. The Seer name and logo and the
 Electric Foundation identity belong to their owners and are used here only to present
 this design concept. Stand-in fonts (Geist, Geist Mono) are under the
 SIL Open Font License; see `assets/fonts/`.

@@ -15,7 +15,7 @@ Provenance: every file in data/ is JSON with `source` (the Seer endpoint it was 
 
 ## Design
 
-- [Design rationale](https://swiftbotlab.github.io/seer-six/rationale/): the two-sided marketplace (information seekers and traders), the App as Seer's Etherscan, the three questions on every screen, and the Electric Foundation identity, logo included: what was kept, what was rethought, and why. Refined after Seer's 23 Oct 2026 extension.
+- [Design rationale](https://swiftbotlab.github.io/seer-six/rationale/): the two-sided marketplace (information seekers and traders), the App as Seer's Etherscan, the three questions on every screen, and the Electric Foundation identity: what was kept, what was rethought, and why. Refined after Seer's 23 Oct 2026 extension. Logo (https://swiftbotlab.github.io/seer-six/rationale/#logo): Seer's current logo is the primary mark; one derived mark is offered as an option.
 
 ## Data
 

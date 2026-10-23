@@ -202,6 +202,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   .hb-poster__art { min-height: 150px; }
   .hb-flow b.hb-big { font-size: 22px; }
 }
+.hb-kc li a, .hb-notes li a { color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.hb-kc li a:hover, .hb-notes li a:hover { color: var(--text); }
 .hb-notes__rt { margin: 4px 0 16px; font-size: 14px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
 .hb-notes__rt a { color: var(--violet-3); text-decoration: underline; text-underline-offset: 3px; }
 /* hub rhythm: tighter sections */
@@ -222,6 +224,7 @@ main > .s-section--tight { padding-block: 32px; }
           <h1 id="hb-title" class="hb-poster__title u-mt-6">One question in. <span class="t-accent">Every answer priced.</span></h1>
           <p class="hb-poster__lede">Someone asks, traders price each possible answer, and whoever needs to know reads the signal: a DAO before its vote, a grant team before funding, a risk desk before sizing. Six interfaces on one protocol, each opening on a real Seer market.</p>
           <p class="hb-live" id="hb-live" hidden></p>
+          <p class="hb-poster__since"><b>Updated Oct&nbsp;23 after the team&#39;s logo comments:</b> Seer&#39;s raven, the mark on its X profile, is the primary logo again on every interface, and one derived mark that links it to the Electric Foundation system is offered as an option: <a href="rationale/#logo">keep or derive</a>.</p>
           <p class="hb-poster__since"><b>Refined after the Oct&nbsp;23 extension (23&ndash;24 Oct):</b> two sides of every market, information seekers and traders; the App as an explorer across every Seer interface, with a detail for each real market; and the <a href="rationale/">design rationale</a>, point by point.</p>
           <p class="hb-poster__since"><b>21&ndash;22 Oct:</b> every interface opens on live Seer data; line direction and Information Finance framing follow the team&#39;s Part&nbsp;II brief. The walkthrough under each is sample data, labelled. <a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">Watch the 80-second video walkthrough&nbsp;&#8599;</a></p>
         </div>
@@ -304,7 +307,7 @@ main > .s-section--tight { padding-block: 32px; }
           <div>
             <h3 class="t-h3">Kept</h3>
             <ul>
-              <li class="hb-kc--keep"><b>The mark.</b> The EF entry&#39;s own vector files, path data unchanged: not a redraw.</li>
+              <li class="hb-kc--keep"><b>The logo stays Seer&#39;s.</b> The raven from Seer&#39;s X profile, path data from app.seer.pm&#39;s own SVG, beside the lowercase seer of its X banner; a derived mark is offered as an option (<a href="rationale/#logo">keep or derive</a>).</li>
               <li class="hb-kc--keep"><b>Tokens.</b> #101013 · #1A1A1E · #7D33FF; radius 9 · 22 · 8.</li>
               <li class="hb-kc--keep"><b>Components.</b> Pill search, chips, outcome rows, bet slip.</li>
             </ul>
@@ -362,7 +365,7 @@ main > .s-section--tight { padding-block: 32px; }
       <details class="s-details" id="tour"><summary>The 60-second tour<small>per app: what it shows, the one thing to try, its link</small></summary>
       <ol class="hb-read__rows" id="hb-tour-list"></ol>
       <ul class="hb-read__facts" id="hb-facts">
-        <li><b>Electric Foundation, as specified.</b> The official mark and wordmark, the kit's tokens, radii and type spec, and its components built live: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
+        <li><b>Electric Foundation, as specified.</b> The kit's tokens, radii and type spec, its line language and its components built live, under Seer's current logo: <a href="#kit">kit and built, side by side</a> · <a href="system/">design system</a>.</li>
         <li><b>One dataset, traced across apps.</b> P-07 in <a href="deep/#P-07">Deep</a>, markets <a href="app/#m=2841">#2841</a> and <a href="app/#m=2842">#2842</a> in the explorer, <a href="futarchy/#LIP-31">LIP-31</a> in Futarchy; every cross-link resolves.</li>
         <li><b>Seer's mechanics kept.</b> Reality.eth answers and bonds, Kleros arbitration, Kleros Curate, the six market states, conditional tokens (split, merge, redeem) and sDAI / xDAI / sUSDS per chain.</li>
         <li><b>Static HTML, CSS and vanilla JS.</b> No build step, no trackers, no requests except to Seer&#39;s own public APIs; fonts self-hosted. For agents: <a href="llms.txt">llms.txt</a> and the same data as JSON in <a href="data/index.json">data/</a>. Source: <a href="https://github.com/swiftbotlab/seer-six" rel="noopener">github.com/swiftbotlab/seer-six</a>.</li>
@@ -374,7 +377,6 @@ main > .s-section--tight { padding-block: 32px; }
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
           <ol>
-            <li><b>The official mark and wordmark</b>, taken from the designer's own vector files and recoloured, never redrawn.</li>
             <li><b>The UI tokens as specified:</b> page #101013 / #F7F7F9, card #1A1A1E / #FFFFFF, nested #1F1F24 / #F1F1F4, primary #7D33FF, secondary #241E33 / #EFE9FC, active chip #8F55F7.</li>
             <li><b>The geometry:</b> radius 9 for cards, 22 for panels, 8 for buttons and chips; 12px card padding; 40px page gutter and 32px grid gap on desktop.</li>
             <li><b>The type spec:</b> Medium 13 for UI, Medium 12 for meta, Bold 16/24 for market titles, Bold 32 at −2% for amounts.</li>
@@ -385,6 +387,7 @@ main > .s-section--tight { padding-block: 32px; }
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Deliberate departures</h3>
           <ol>
+            <li><b>The logo is Seer&#39;s current one:</b> the raven in its open ring with the star, as on Seer&#39;s X profile (the vector from app.seer.pm&#39;s own header SVG, recoloured only), beside the lowercase seer that Seer&#39;s X banner sets with its line. The kit carries everything around it; a derived mark that links the two is on the <a href="rationale/#logo">rationale page</a> as an option.</li>
             <li><b>Line direction, reversed.</b> The kit&#39;s lines converge from many into one point. Seer&#39;s Part&nbsp;II brief asks for the reverse, so every line motif here runs one &rarr; many, left to right: one question in, its priced answers out (on this page, one protocol out to six interfaces).</li>
             <li><b>Motifs carry data.</b> Branch widths are answer prices, waves are forecast distributions, the 45° fork is a futarchy decision, data bars are a field of entries.</li>
             <li><b>Typefaces.</b> PP Neue Montreal and Suisse Int'l Mono are used when installed; everyone else gets licensed stand-ins, Geist and Geist Mono (it keeps the slashed zero). Headlines use one sans: the accent words are violet, not a second, serif face.</li>
