@@ -219,10 +219,11 @@ def asker(m):
     return o
 
 
-# the App explorer (app/explorer.js): its default query, the first page of it kept as the snapshot fallback. Each market is
-# pruned to the fields explorer.js reads and validated here; the page then runs its own normalize() on it, exactly as on a
-# live answer, so the snapshot and the live explorer follow one set of rules.
-EXPLORE_BODY = {"type": "Generic", "marketStatusList": ["not_open", "open", "answer_not_final", "in_dispute", "pending_execution"],
+# the App explorer (app/explorer.js): its default query (every interface: no "type", so Generic and Futarchy markets), the
+# first page of it kept as the snapshot fallback. Each market is pruned to the fields explorer.js reads and validated here;
+# the page then runs its own normalize() on it, exactly as on a live answer, so the snapshot and the live explorer follow
+# one set of rules.
+EXPLORE_BODY = {"marketStatusList": ["not_open", "open", "answer_not_final", "in_dispute", "pending_execution"],
                 "limit": 24, "page": 1}
 VSTATUS = {"verified", "verifying", "challenged", "not_verified"}
 HEX32 = re.compile(r"^0x[0-9a-fA-F]{64}$")
@@ -266,6 +267,8 @@ def explore_market(m):
             o[k] = m[k]
     if isinstance(m.get("collateralToken"), str) and ADDR.match(m["collateralToken"]):
         o["collateralToken"] = m["collateralToken"].lower()
+    if isinstance(m.get("conditionId"), str) and HEX32.match(m["conditionId"]):
+        o["conditionId"] = m["conditionId"].lower()
     a = asker(m)
     if "creator" in a:
         o["creator"] = a["creator"]
@@ -423,7 +426,7 @@ def refresh_app(site, out):
         "note": "The App's 'On Seer now' strip: the most liquid open, Kleros-verified top-level market per topic. Odds in percent "
                 "as Seer reports them; liq in USD. invalidRest: Yes + No add up to less than 99%, the rest is left to Invalid.",
         "verifiedOpen": verified, "open": opn, "markets": [app_row(m) for m in strip], "creators": creators,
-        "explorer": {"note": "The App explorer's first page: Generic markets that are not resolved yet, in Seer's own default order "
+        "explorer": {"note": "The App explorer's first page: markets of every type and interface that are not resolved yet, in Seer's own default order "
                              "(Kleros-verified first, then liquidity). count is Seer's total for this request; fields as Seer's API "
                              "names them, pruned and validated.", "request": EXPLORE_BODY, "count": x["count"],
                      "markets": [dict(e, url=mlink(e["chainId"], e["id"])) for e in explore]}}

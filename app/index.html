@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://app.seer.pm; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Seer App · Market explorer (concept)</title>
-<meta name="description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="Seer's explorer, its Etherscan: every market from every Seer interface (Seer app, Futarchy, Deep, Risk Pricing, Opportunity), read live from Seer's public API. Each market answers who is asking, what it prices and how to use the signal, for information seekers and for traders, then links to trade on Seer. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the three latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -14,7 +14,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Seer concept by Swift Bot Labs">
 <meta property="og:title" content="Seer App · Market explorer (concept)">
-<meta property="og:description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta property="og:description" content="Seer's explorer, its Etherscan: every market from every Seer interface (Seer app, Futarchy, Deep, Risk Pricing, Opportunity), read live from Seer's public API. Each market answers who is asking, what it prices and how to use the signal, for information seekers and for traders, then links to trade on Seer. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta property="og:url" content="https://swiftbotlab.github.io/seer-six/app/">
 <meta property="og:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
 <meta property="og:image:width" content="1200">
@@ -23,7 +23,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@swiftbotlab">
 <meta name="twitter:title" content="Seer App · Market explorer (concept)">
-<meta name="twitter:description" content="Seer's explorer, its Etherscan: every market on Seer, read live from its public API and filtered by state, chain, Kleros verification and who asked it, with what each price means. A labelled sample walkthrough traces one market from its Reality.eth question to redemption. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="twitter:description" content="Seer's explorer, its Etherscan: every market from every Seer interface (Seer app, Futarchy, Deep, Risk Pricing, Opportunity), read live from Seer's public API. Each market answers who is asking, what it prices and how to use the signal, for information seekers and for traders, then links to trade on Seer. Concept by Swift Bot Labs, not affiliated with Seer.">
 <meta name="twitter:image" content="https://swiftbotlab.github.io/seer-six/assets/og/app.png">
 <script>try{var t=/[?&]theme=(light|dark)/.exec(location.search);t=(t&&t[1])||localStorage.getItem("seer-theme");if(t!=="light")t="dark";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="../assets/system.css">
@@ -41,9 +41,9 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <section class="ap-bar" aria-labelledby="ap-title">
       <div class="s-container ap-bar__in">
         <div class="ap-bar__copy">
-          <div class="s-specs ap-bar__kicker"><span>02</span><span>Explorer</span><span class="ap-hide-sm">Every market type, every chain</span></div>
+          <div class="s-specs ap-bar__kicker"><span>02</span><span>Explorer</span><span class="ap-hide-sm">Every interface, every chain</span></div>
           <h1 id="ap-title" class="ap-bar__title">Every market, <span class="t-accent">on the record.</span></h1>
-          <p class="ap-bar__lede">Every Seer market in one explorer: find what the markets say about a topic, then trade if you disagree.</p>
+          <p class="ap-bar__lede">Every Seer market, from every Seer interface, in one explorer. Read it as an information seeker (what a market says, and how much stands behind it) or as a trader (the price to disagree with), then trade on Seer.</p>
         </div>
         <!-- filled by live.js from the strip's first market (the most liquid open, Kleros-verified one): creator address, type, prices -->
         <div class="ap-bar__ask">
@@ -97,7 +97,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <div class="ap-markets__h"><h2 id="ap-markets-h" class="t-h3">Markets</h2><span class="s-src" id="ap-x-src" data-state="loading" role="status"><i aria-hidden="true"></i>Loading from app.seer.pm…</span><span class="t-meta ap-x__meta" id="ap-x-meta">Every market on Seer, read from its public markets API.</span></div>
         </div>
         <div id="ap-x" aria-busy="true">
-          <div id="ap-x-kinds"></div>
+          <!-- the two sides of Seer's marketplace: one switch decides what every card and table row leads with (explorer.js) -->
+          <div class="ap-lens" id="ap-x-lens" role="group" aria-label="Read the markets as"></div>
+          <!-- Interface: which Seer app a market belongs to, derived only from its own fields and the apps' own lists -->
+          <div class="ap-iface"><span class="ap-iface__k" id="ap-x-iface-k">Interface</span><div class="ap-iface__row" id="ap-x-ifaces"></div></div>
           <div class="ap-toolbar">
             <button type="button" class="s-btn s-btn--ghost s-btn--sm ap-ftoggle" id="ap-x-ftoggle" aria-expanded="false" aria-controls="ap-x-fbody">Filters</button>
             <div class="ap-toolbar__body" id="ap-x-fbody"></div>
@@ -253,7 +256,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <div class="s-container">
       <div class="s-section-head ap-head">
         <div><span class="s-spec">This interface</span><h2 id="ap-notes-h" class="t-h2">Design notes</h2></div>
-        <a class="s-btn s-btn--ghost" href="../#design-notes">Notes for all six</a>
+        <div class="s-row ap-notes__links"><a class="s-btn s-btn--ghost" href="../rationale/#explorer">Design rationale</a><a class="s-btn s-btn--ghost" href="../#design-notes">Notes for all six</a></div>
       </div>
       <details class="s-details"><summary>Design notes for this page<small>kept from the kit · departures</small></summary>
       <div class="ap-notes">
@@ -269,7 +272,10 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Deliberate departures</h3>
           <ol>
-            <li><b>Explorer depth the kit doesn't draw.</b> An Etherscan-style record per market (contract, condition ID, Reality.eth question, outcome-token ERC-20s, event log, positions, resolution) and per address, built only from kit surfaces.</li>
+            <li><b>Seer's Etherscan, across its interfaces.</b> One explorer for every Seer market, with an Interface facet and column (Seer app, Futarchy, Deep, Risk Pricing, Opportunity) read from each market's own fields; where they can't tell, it says "Not identified".</li>
+            <li><b>Two sides, one switch.</b> Seer is a two-sided marketplace, so the explorer reads every market both ways: for information seekers it leads with what the market says and how much liquidity stands behind it; for traders, with prices, volume and dates.</li>
+            <li><b>Discover, understand, trade.</b> A market's title opens its detail: who is asking (and what else they ask), what it prices, how to use the signal, then a seekers' panel beside a traders' panel and "Trade on Seer". Trading itself stays on app.seer.pm.</li>
+            <li><b>Explorer depth the kit doesn't draw.</b> An Etherscan-style record per market (contract, condition ID, Reality.eth question, outcome-token ERC-20s, event log, positions, resolution) and per address, built only from kit surfaces; the sample walkthrough shows the full record.</li>
             <li><b>The dot grid carries data.</b> In the lifecycle field each column is a market and each row a step; settled steps turn from dots into crosses, so the field reads as uncertainty becoming structure.</li>
             <li><b>State and verification on every card.</b> An explorer has to say where a market is in its life. Amber (waiting) and red (dispute) only ever appear next to their label.</li>
             <li><b>Row buttons follow the market type.</b> The kit shows Yes/No on every row. Here a categorical No buys the other outcomes as one basket; a scalar round trades Up/Down; multi-winner markets trade Buy/Sell, because a "No" there is not one clean bet.</li>
@@ -280,15 +286,21 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
       </div>
       </details>
-      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every link opens the market on app.seer.pm, where it trades. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
+      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer with each market's detail, and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every trade link opens the market on app.seer.pm. The liquidity levels (under $1K low, $1K to $10K moderate, above that high) are our reading rule, not Seer's. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
     </div>
   </section>
 </main>
+<!-- Market detail (explorer.js): one real market, its three questions and both sides; ?market=<chain>:<0x…> opens it -->
+<div class="s-drawer ap-drawer" id="ap-x-drawer" aria-hidden="true">
+  <div class="s-drawer__scrim" data-close></div>
+  <div class="s-drawer__panel ap-dpanel" id="ap-x-dpanel" role="dialog" aria-modal="true" aria-labelledby="ap-d-title"></div>
+</div>
 <script src="../assets/sample-data.js"></script>
 <script src="../assets/ui.js"></script>
 <script src="page.js"></script>
 <script src="../assets/seer-snapshot.js"></script>
 <script src="live.js"></script>
+<script src="../risk/snapshot.js"></script>
 <script src="explorer.js"></script>
 </body>
 </html>

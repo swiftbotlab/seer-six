@@ -140,12 +140,15 @@
           el("span", { class: "ap-snap__o", text: "Invalid (the rest)" }), el("b", { class: "t-num", text: pct(rest) })));
       }
     }
+    // discover -> understand -> trade: the title opens the market's detail in the explorer below (explorer.js), "Seer" trades it
+    var t = el("a", { href: "?market=" + m.chain + ":" + m.id + "#markets", text: clip(m.title, 90), attrs: { title: m.title, "aria-label": m.title + " (details)", "aria-haspopup": "dialog" } });
+    t.addEventListener("click", function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0 || !window.AP_X || typeof window.AP_X.open !== "function") return; e.preventDefault(); window.AP_X.open(m.chain, m.id); });
     return el("article", { class: "ap-snap__card ap-live__card", attrs: { role: "listitem" } },
-      el("h3", { class: "ap-snap__t" }, el("a", { href: link(m), text: clip(m.title, 90), attrs: { rel: "noopener noreferrer", target: "_blank", title: m.title, "aria-label": m.title + " (opens on Seer)" } })),
+      el("h3", { class: "ap-snap__t" }, t),
       body,
       el("div", { class: "ap-snap__foot" },
         el("span", { class: "t-num", text: usd(m.liq) + " liq · " + CHAINS[m.chain], attrs: { title: "Liquidity in USD and chain, as Seer's API reports them" } }),
-        el("span", { class: "ap-snap__go" }, "Seer", el("span", { html: S.icon("external", 13) }))));
+        el("a", { class: "ap-snap__go", href: link(m), attrs: { rel: "noopener noreferrer", target: "_blank", "aria-label": "Trade on Seer: " + clip(m.title, 80) + " (opens app.seer.pm)" } }, "Seer", el("span", { html: S.icon("external", 13) }))));
   }
 
   // the strip's last card: every open market on Seer (snapshot count at once, the live count when Seer answers)
