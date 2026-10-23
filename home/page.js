@@ -119,6 +119,10 @@
       askBlock(m);
       var href = "https://app.seer.pm/markets/" + m.chain + "/" + m.id; // chain + address validated above
       var go = $("hm-price-go"); go.setAttribute("href", href); go.setAttribute("aria-label", "Open this market on Seer (new tab): " + clipTxt(m.title, 90));
+      // the trader's path in "Two sides of every market" follows the same market: its detail in the App explorer, its page on Seer
+      var exa = $("hm-two-ex"), ext = $("hm-two-ex-t"), tgo = $("hm-two-trade-go");
+      if (exa && ext) { exa.setAttribute("href", "../app/?market=" + m.chain + ":" + m.id + "#markets"); ext.textContent = "See it on the market above: " + clipTxt(m.title, 50); }
+      if (tgo) tgo.setAttribute("href", href);
       if (rebuild) buildPolys(); else st.items.forEach(function (o, i) { var t = st.polys[i].firstChild; if (t) t.textContent = o.name + " · " + val(o.price * 100); });
       buildLegend(); focus();
       if (animate) run(); else if (st.t >= 1) draw();                           // a running animation picks up the new prices

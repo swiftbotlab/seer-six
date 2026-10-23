@@ -910,3 +910,39 @@ a.s-onseer__c:hover { box-shadow: inset 0 0 0 1px var(--line-strong); }
 @media (max-width: 480px) {
   .s-sample, .s-chip .s-chip__n, .s-tag--mono, .s-table th, .s-tabs .s-count, .s-band { font-size: 11.5px; }
 }
+
+/* Two sides of every market (hub + Home, Oct 23): the information seeker's path beside the trader's, one market between them.
+   The middle motif runs the Part II way: one line (the question) in from the left, fanning out to many priced answers. */
+.s-two__lede { margin: 0; max-width: 54ch; font-size: 14px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
+.s-two__grid { display: grid; grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr); align-items: stretch; }
+.s-two__side { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 22px 22px 20px; border-radius: var(--r-card); background: var(--surface); }
+.s-two__side--seek { background: var(--violet-wash); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--violet-2) 45%, transparent); }
+.s-two__head .s-spec { display: block; margin-bottom: 6px; }
+.s-two__side--seek .s-two__head .s-spec { color: var(--violet-3); }
+.s-two__head h3 { margin: 0; font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; color: var(--text); }
+.s-two__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: two; }
+.s-two__steps li { counter-increment: two; display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; row-gap: 3px; align-items: baseline; min-width: 0; }
+.s-two__steps li::before { content: "0" counter(two); grid-row: span 3; font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; color: var(--violet-3); }
+.s-two__steps b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+.s-two__steps span { font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
+.s-two__steps a { justify-self: start; display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; font-size: var(--fs-ui); font-weight: 500; color: var(--violet-3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--violet-3) 45%, transparent); border-radius: 4px; overflow-wrap: anywhere; }
+.s-two__steps a:hover { color: var(--text); text-decoration-color: currentColor; }
+.s-two__steps a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.s-two__steps a svg { flex: none; }
+.s-two__mid { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 0 8px; color: var(--violet-2); }
+.s-two__mid svg { width: 100%; height: 150px; overflow: visible; }
+.s-two__mid p { margin: 0; text-align: center; font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.s-two__foot { margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--text-2); max-width: 90ch; }
+.s-two__foot b { color: var(--text); font-weight: 600; }
+@media (max-width: 900px) {
+  .s-two__grid { grid-template-columns: minmax(0, 1fr); }
+  .s-two__mid { flex-direction: row; justify-content: flex-start; padding: 10px 4px; gap: 12px; }
+  .s-two__mid svg { width: 120px; height: 44px; flex: none; }
+  .s-two__mid p { text-align: left; }
+}
+@media (max-width: 640px) {
+  .s-two__side { padding: 16px 16px 16px; gap: 12px; }
+  .s-two__head h3 { font-size: 18px; }
+  .s-two__steps { gap: 12px; }
+  .s-two__steps li { grid-template-columns: 26px minmax(0, 1fr); }
+}

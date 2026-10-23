@@ -202,6 +202,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   .hb-poster__art { min-height: 150px; }
   .hb-flow b.hb-big { font-size: 22px; }
 }
+.hb-notes__rt { margin: 4px 0 16px; font-size: 14px; line-height: 1.5; font-weight: 500; color: var(--text-2); }
+.hb-notes__rt a { color: var(--violet-3); text-decoration: underline; text-underline-offset: 3px; }
 /* hub rhythm: tighter sections */
 main > .s-section--tight { padding-block: 32px; }
 /* the tour inside its fold */
@@ -209,7 +211,7 @@ main > .s-section--tight { padding-block: 32px; }
 </style>
 </head>
 <body data-app="index">
-<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Interfaces", "#interfaces"], ["The kit", "#kit-applied"], ["How they connect", "#connect"], ["Tour", "#tour"], ["System", "system/"]], connect: false };</script>
+<script>window.SEER_PAGE = { product: "Six interfaces", nav: [["Two sides", "#two-sides"], ["Interfaces", "#interfaces"], ["The kit", "#kit-applied"], ["How they connect", "#connect"], ["Rationale", "rationale/"], ["System", "system/"]], connect: false };</script>
 <script src="assets/shell.js"></script>
 <main id="main" class="s-main">
   <div class="s-container">
@@ -220,7 +222,8 @@ main > .s-section--tight { padding-block: 32px; }
           <h1 id="hb-title" class="hb-poster__title u-mt-6">One question in. <span class="t-accent">Every answer priced.</span></h1>
           <p class="hb-poster__lede">Someone asks, traders price each possible answer, and whoever needs to know reads the signal: a DAO before its vote, a grant team before funding, a risk desk before sizing. Six interfaces on one protocol, each opening on a real Seer market.</p>
           <p class="hb-live" id="hb-live" hidden></p>
-          <p class="hb-poster__since"><b>Updated 21&ndash;22 Oct:</b> every interface now opens on live Seer data; line direction and Information Finance framing follow the team&#39;s Part&nbsp;II brief. The walkthrough under each is sample data, labelled. <a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">Watch the 80-second video walkthrough&nbsp;&#8599;</a></p>
+          <p class="hb-poster__since"><b>Refined after the Oct&nbsp;23 extension (23&ndash;24 Oct):</b> two sides of every market, information seekers and traders; the App as an explorer across every Seer interface, with a detail for each real market; and the <a href="rationale/">design rationale</a>, point by point.</p>
+          <p class="hb-poster__since"><b>21&ndash;22 Oct:</b> every interface opens on live Seer data; line direction and Information Finance framing follow the team&#39;s Part&nbsp;II brief. The walkthrough under each is sample data, labelled. <a href="https://x.com/swiftbotlab/status/2113037947427795014" target="_blank" rel="noopener noreferrer">Watch the 80-second video walkthrough&nbsp;&#8599;</a></p>
         </div>
         <div class="hb-poster__foot">
           <div class="s-row">
@@ -234,6 +237,36 @@ main > .s-section--tight { padding-block: 32px; }
       </div>
     </section>
   </div>
+
+<!-- Two sides of every market (Seer, 23 Oct: "a two-sided marketplace for information seekers ... and traders"): the seeker's
+       path beside the trader's, one market between them. Every link goes to a real place: Seer's create flow, the explorer, app.seer.pm. -->
+  <section class="s-section--tight s-two" id="two-sides" aria-labelledby="hb-two-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">A two-sided marketplace</span><h2 id="hb-two-h" class="t-h2">Two sides of every market</h2></div>
+        <p class="s-two__lede">People who need an answer, and people who put capital behind one. Each side has its own path through the same market.</p>
+      </div>
+      <div class="s-two__grid">
+        <article class="s-two__side s-two__side--seek" aria-labelledby="hb-two-seek">
+          <div class="s-two__head"><span class="s-spec">Information seekers</span><h3 id="hb-two-seek">You need an answer to decide</h3></div>
+          <ol class="s-two__steps">
+            <li><b>Ask a question</b><span>Put it on Seer with its possible answers and the date it resolves. Anyone can, without permission.</span><a href="https://app.seer.pm/create-market" target="_blank" rel="noopener noreferrer">Create a market on Seer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></li>
+            <li><b>A market prices it</b><span>Traders put capital behind each answer, so every price is the market&#39;s current odds.</span></li>
+            <li><b>Read and use the signal</b><span>See who asked, what is priced and how much liquidity backs it, then decide: a DAO before its vote, a grant team before funding, a risk desk before sizing.</span><a href="app/?lens=seeker#markets">Read markets as a seeker<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          </ol>
+        </article>
+        <div class="s-two__mid"><svg viewBox="0 0 120 150" preserveAspectRatio="none" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" vector-effect="non-scaling-stroke"><path d="M0 75H40" stroke-width="2.2" vector-effect="non-scaling-stroke"/><g stroke-width="1.5"><path d="M40 75C68 75 70 12 100 12H120" stroke-opacity="1" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 37 100 37H120" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 62 100 62H120" stroke-opacity="0.7" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 88 100 88H120" stroke-opacity="0.7" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 113 100 113H120" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 138 100 138H120" stroke-opacity="1" vector-effect="non-scaling-stroke"/></g><path d="M40 75h0" stroke-width="8" vector-effect="non-scaling-stroke"/></g></svg><p>One market: the question in, priced answers out</p></div>
+        <article class="s-two__side s-two__side--trade" aria-labelledby="hb-two-trade">
+          <div class="s-two__head"><span class="s-spec">Traders</span><h3 id="hb-two-trade">You think a price is wrong</h3></div>
+          <ol class="s-two__steps">
+            <li><b>Find markets</b><span>Every Seer market from every interface, by topic, state, chain or the address that asked.</span><a href="app/?lens=trader#markets">Open the explorer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><b>Understand the price</b><span>What each answer costs, the liquidity and volume behind it, and when reports open.</span><a href="app/?lens=trader#markets" id="hb-two-ex"><span id="hb-two-ex-t">See a live market&#39;s detail</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><b>Trade on Seer</b><span>Buy the answer you think is underpriced. Your trade moves the price that seekers read.</span><a href="https://app.seer.pm/" target="_blank" rel="noopener noreferrer" id="hb-two-trade-go">Trade on app.seer.pm<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </div>
+  </section>
 
   <section class="s-section--tight" id="interfaces" aria-labelledby="hb-int">
     <div class="s-container">
@@ -306,7 +339,7 @@ main > .s-section--tight { padding-block: 32px; }
             <li class="hb-kc--keep"><b>Contrast:</b> every text colour is at least 4.6:1 on the page, card and row surfaces, in dark and light (WCAG AA), computed from the tokens.</li>
             <li class="hb-kc--keep"><b>Keyboard:</b> a skip link is the first Tab stop, every control shows a focus ring, and data tables are real tables with headers.</li>
             <li class="hb-kc--keep"><b>Reduced motion:</b> transitions and animations drop to near zero when the system asks.</li>
-            <li class="hb-kc--keep"><b>Tested:</b> all seven pages at 360, 390, 768, 1024 and 1440 px, dark and light at 390 and 1440: no console errors and no sideways scroll.</li>
+            <li class="hb-kc--keep"><b>Tested:</b> all eight pages at 360, 390, 768, 1024 and 1440 px, dark and light at 390 and 1440: no console errors and no sideways scroll.</li>
           </ul>
         </section>
       </div>
@@ -336,6 +369,7 @@ main > .s-section--tight { padding-block: 32px; }
       </ul>
       </details>
       <details class="s-details" id="design-notes"><summary>All design notes<small>the long version · kept from the kit · deliberate departures</small></summary>
+      <p class="hb-notes__rt">The reasoning behind these, point by point (two sides, the explorer, the three questions, the identity and the logo): <a href="rationale/">Design rationale</a>.</p>
       <div class="hb-notes">
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Kept from the Electric Foundation kit</h3>
@@ -415,6 +449,10 @@ main > .s-section--tight { padding-block: 32px; }
       });
       if (title.length >= 8 && lead) top = { title: title, lead: lead, href: "https://app.seer.pm/markets/" + m.chain + "/" + m.id.toLowerCase() };
     }
+    // the trader's path ("Two sides of every market") points at the same real market: its detail in the explorer, its page on Seer
+    var exa = document.getElementById("hb-two-ex"), ext = document.getElementById("hb-two-ex-t"), tgo = document.getElementById("hb-two-trade-go");
+    if (top && exa && ext) { exa.setAttribute("href", "app/?market=" + m.chain + ":" + m.id.toLowerCase() + "#markets"); ext.textContent = "See it on a live market: " + clip(top.title, 54); }
+    if (top && tgo) tgo.setAttribute("href", top.href);
     var el = S.el;
     box.appendChild(el("span", { class: "s-src", attrs: { "data-state": "snapshot", title: "Read from Seer's public markets API at " + hm + " on " + day + " by the hourly refresh" } },
       el("i", { attrs: { "aria-hidden": "true" } }), el("span", { text: "Seer data · updated " + ago })));
@@ -433,7 +471,7 @@ main > .s-section--tight { padding-block: 32px; }
   // the six interfaces: one card each, our screen with the live site today inset (captured October 2026)
   var LINE = {   // what each app is for, in the Seer team's own terms (who learns what), then the real market it opens on
     home: ["The protocol beneath the apps: one question format, one oracle, six ways to use the answer.", "the most liquid open market on Seer, live"],
-    app: ["Seer's Etherscan: every market on every chain, to read what the markets say and check the record.", "every market on Seer, live, with who asked each one"],
+    app: ["Seer's Etherscan: every market from every Seer interface, read as an information seeker or as a trader, each with who asked it.", "every market on Seer, live, each with its own detail"],
     deep: ["Many-answer questions: agents forecast how human evaluators will score each entry, a signal for the funding team.", "Round 3 Originality, 98 repos by UP price, hourly"],
     futarchy: ["What happens to a metric if a proposal passes, and if it fails: information for the DAO, not the decision.", "EIP-8363's two conditional prices, live"],
     opportunity: ["Traders forecast which submissions get selected: one more signal for reviewers, who still choose.", "the AI Job Board Name market, every name priced, live"],

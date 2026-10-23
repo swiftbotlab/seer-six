@@ -30,7 +30,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <link rel="stylesheet" href="page.css">
 </head>
 <body data-app="home">
-<script>window.SEER_PAGE = { product: "", nav: [["Walkthrough", "#connect"], ["Protocol", "#protocol"], ["Market types", "#types"], ["Resolution", "#resolution"], ["Builders", "#builders"]], cta: ["Open the App", "../app/", "arrow-right"], connect: false };</script>
+<script>window.SEER_PAGE = { product: "", nav: [["Two sides", "#two-sides"], ["Walkthrough", "#connect"], ["Protocol", "#protocol"], ["Market types", "#types"], ["Resolution", "#resolution"], ["Builders", "#builders"]], cta: ["Open the App", "../app/", "arrow-right"], connect: false };</script>
 <script src="../assets/shell.js"></script>
 <!-- the hero's dated snapshot (a real Seer market), then the header chip that says where the top of this page comes from:
      it replaces the shell's "Sample data" badge before first paint; page.js keeps it in step with the hero (Live or Snapshot) -->
@@ -85,6 +85,36 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div><dt>Collateral</dt><dd>sDAI <span>xDAI · sUSDS</span></dd></div>
         <div><dt>Chains</dt><dd>4 <span>ETH · OP · GNO · BASE</span></dd></div>
       </dl>
+    </div>
+  </section>
+
+  <!-- Two sides of every market (Seer, 23 Oct: "a two-sided marketplace for information seekers ... and traders"): the seeker's
+       path beside the trader's, one market between them. Every link goes to a real place: Seer's create flow, the explorer, app.seer.pm. -->
+  <section class="s-section--tight s-two" id="two-sides" aria-labelledby="hm-two-h">
+    <div class="s-container">
+      <div class="s-section-head">
+        <div><span class="s-spec">A two-sided marketplace</span><h2 id="hm-two-h" class="t-h2">Two sides of every market</h2></div>
+        <p class="s-two__lede">People who need an answer, and people who put capital behind one. Each side has its own path through the same market.</p>
+      </div>
+      <div class="s-two__grid">
+        <article class="s-two__side s-two__side--seek" aria-labelledby="hm-two-seek">
+          <div class="s-two__head"><span class="s-spec">Information seekers</span><h3 id="hm-two-seek">You need an answer to decide</h3></div>
+          <ol class="s-two__steps">
+            <li><b>Ask a question</b><span>Put it on Seer with its possible answers and the date it resolves. Anyone can, without permission.</span><a href="https://app.seer.pm/create-market" target="_blank" rel="noopener noreferrer">Create a market on Seer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></li>
+            <li><b>A market prices it</b><span>Traders put capital behind each answer, so every price is the market&#39;s current odds.</span></li>
+            <li><b>Read and use the signal</b><span>See who asked, what is priced and how much liquidity backs it, then decide: a DAO before its vote, a grant team before funding, a risk desk before sizing.</span><a href="../app/?lens=seeker#markets">Read markets as a seeker<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          </ol>
+        </article>
+        <div class="s-two__mid"><svg viewBox="0 0 120 150" preserveAspectRatio="none" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" vector-effect="non-scaling-stroke"><path d="M0 75H40" stroke-width="2.2" vector-effect="non-scaling-stroke"/><g stroke-width="1.5"><path d="M40 75C68 75 70 12 100 12H120" stroke-opacity="1" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 37 100 37H120" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 62 100 62H120" stroke-opacity="0.7" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 88 100 88H120" stroke-opacity="0.7" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 113 100 113H120" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/><path d="M40 75C68 75 70 138 100 138H120" stroke-opacity="1" vector-effect="non-scaling-stroke"/></g><path d="M40 75h0" stroke-width="8" vector-effect="non-scaling-stroke"/></g></svg><p>One market: the question in, priced answers out</p></div>
+        <article class="s-two__side s-two__side--trade" aria-labelledby="hm-two-trade">
+          <div class="s-two__head"><span class="s-spec">Traders</span><h3 id="hm-two-trade">You think a price is wrong</h3></div>
+          <ol class="s-two__steps">
+            <li><b>Find markets</b><span>Every Seer market from every interface, by topic, state, chain or the address that asked.</span><a href="../app/?lens=trader#markets">Open the explorer<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><b>Understand the price</b><span>What each answer costs, the liquidity and volume behind it, and when reports open.</span><a href="../app/?lens=trader#markets" id="hm-two-ex"><span id="hm-two-ex-t">See a live market&#39;s detail</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><b>Trade on Seer</b><span>Buy the answer you think is underpriced. Your trade moves the price that seekers read.</span><a href="https://app.seer.pm/" target="_blank" rel="noopener noreferrer" id="hm-two-trade-go">Trade on app.seer.pm<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span class="s-sr"> (opens app.seer.pm)</span></a></li>
+          </ol>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -218,7 +248,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
               <span class="s-spec">Design notes · 01 Homepage</span>
               <h2 id="hm-notes-title" class="t-h2">Design notes</h2>
             </div>
-            <a class="s-btn s-btn--ghost" href="../#design-notes">All notes for the six interfaces</a>
+            <div class="s-row" style="--gap:8px;flex-wrap:wrap"><a class="s-btn s-btn--ghost" href="../rationale/#two-sides">Design rationale</a><a class="s-btn s-btn--ghost" href="../#design-notes">All notes for the six interfaces</a></div>
           </div>
                 <div class="hm-notes__grid">
             <ol class="hm-notes__list">
