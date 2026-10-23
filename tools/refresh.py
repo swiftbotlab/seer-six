@@ -4,8 +4,8 @@
 Run by .github/workflows/refresh.yml (GitHub Actions, every hour) and by hand with `python3 -I tools/refresh.py .`.
 It reads Seer's public endpoints, validates every field the same way the pages do in the browser, and rewrites:
 
-  assets/seer-snapshot.js   App "On Seer now" strip, the App explorer's first page, open-market count and the askers'
-                            market counts (app/live.js, app/explorer.js, home/live.js fallbacks)
+  assets/seer-snapshot.js   App "On Seer now" strip, the App explorer's first page and its per-interface counts, open-market
+                            count and the askers' market counts (app/live.js, app/explorer.js, home/live.js fallbacks)
   home/hero-snapshot.js     Home hero: the most liquid open, Kleros-verified categorical market (home/live.js rules)
   opportunity/snapshot.js   Opportunity hero: the three linked "AI Job Board Name" markets (opportunity/real.js rules)
   risk/snapshot.js          Risk hero: Seer Risk Pricing board (risk/page.js rules)
@@ -277,6 +277,73 @@ def explore_market(m):
     return o
 
 
+# the App explorer's interface counts (app/explorer.js loadCounts(), same requests): Seer's own counts for its default request
+DEEP_ASKER = "0x00dc3e0acadb8dba21bb08ff30540222ff8836e0"   # created deep.seer.pm's Round 3 markets
+REBRAND = "0xe7850b0d928aa40ab8732bd323fa4f6ef3c24b8a"      # the settled Rebrand Contest market, archived on opportunity.seer.pm
+
+
+def count0(c):
+    return isinstance(c, int) and not isinstance(c, bool) and 0 <= c < 10_000_000
+
+
+def js_data(site, rel, var):
+    """a data file this script wrote (window.X = {...};) -> the object, or None"""
+    try:
+        with open(os.path.join(site, rel), encoding="utf-8") as f:
+            t = f.read(3_000_000)
+        k = "window." + var + " = "
+        d = json.loads(t[t.index(k) + len(k):].strip().rstrip(";"))
+        return d if isinstance(d, dict) else None
+    except Exception:
+        return None
+
+
+def iface_counts(site):
+    """{all, futarchy, generic, deep, risk, opportunity, app} for markets not resolved yet on every chain: four count-only reads
+    and one read of the Risk Pricing + Opportunity markets by id (counted here). app = generic - deep - risk - opportunity."""
+    st = EXPLORE_BODY["marketStatusList"]
+
+    def cnt(extra):
+        d = fetch(APP_API, dict({"marketStatusList": st, "limit": 1, "page": 1}, **extra), max_bytes=400_000, tries=2)
+        c = d.get("count") if isinstance(d, dict) else None
+        if not count0(c):
+            raise Fail("bad count")
+        return c
+    rk = js_data(site, "risk/snapshot.js", "SEER_RISK_SNAPSHOT") or {}
+    rids = [m["id"].lower() for m in (rk.get("markets") if isinstance(rk.get("markets"), list) else [])[:40]
+            if isinstance(m, dict) and isinstance(m.get("id"), str) and ADDR.match(m["id"])]
+    if rk.get("chainId") != 100 or not rids:
+        raise Fail("no risk.seer.pm market list")
+    oids = [x for x, _ in OPP_CHAIN] + [REBRAND]
+    ids = rids + oids
+    d = fetch(APP_API, {"marketStatusList": st, "marketIds": ids, "limit": len(ids) + 2, "page": 1}, max_bytes=800_000, tries=2)
+    if not isinstance(d, dict) or not isinstance(d.get("markets"), list):
+        raise Fail("bad id answer")
+    seen = {m["id"].lower() for m in d["markets"][:len(ids) + 2]
+            if isinstance(m, dict) and m.get("chainId") == 100 and not isinstance(m.get("chainId"), bool)
+            and isinstance(m.get("id"), str) and ADDR.match(m["id"])}
+    c = {"all": cnt({}), "futarchy": cnt({"type": "Futarchy"}), "generic": cnt({"type": "Generic"}),
+         "deep": cnt({"type": "Generic", "creator": DEEP_ASKER, "marketName": "Deep Funding"}),
+         "risk": len(seen & set(rids)), "opportunity": len(seen & set(oids))}
+    c["app"] = c["generic"] - c["deep"] - c["risk"] - c["opportunity"]
+    if c["app"] < 0 or c["futarchy"] > c["all"] or c["generic"] > c["all"]:
+        raise Fail("counts don't add up")
+    return c
+
+
+def last_iface_counts(site):
+    """the previous snapshot's interface counts (kept with their own read time when this hour's reads fail), or None"""
+    old = js_data(site, "assets/seer-snapshot.js", "SEER_SNAPSHOT") or {}
+    c = (old.get("explore") or {}).get("ifaceCounts") if isinstance(old.get("explore"), dict) else None
+    keys = ("all", "futarchy", "generic", "deep", "risk", "opportunity", "app")
+    if not isinstance(c, dict) or not all(count0(c.get(k)) for k in keys):
+        return None
+    at = c.get("at")
+    if not (isinstance(at, int) and not isinstance(at, bool) and 1.7e12 < at < time.time() * 1000 + 864e5):
+        return None
+    return {k: c[k] for k in keys + ("at",)}
+
+
 def creator_counts(addrs):
     """{address: how many Generic markets that address has created on Seer} for the askers the pages name (only the count
     is used; a failed read just leaves that address out)"""
@@ -385,10 +452,19 @@ def refresh_app(site, out):
     if len(explore) < 6:
         raise Fail("too few explorer markets")
     creators = creator_counts([heroes[0].get("creator"), strip[0].get("creator")])
+    try:  # secondary: a failed read keeps the last good counts (with their own time), never the whole App source
+        ic = iface_counts(site)
+        ic["at"] = st["ms"]
+    except Exception as e:
+        ic = last_iface_counts(site)
+        print("app          ifaceCounts %s (%s)" % ("kept" if ic else "none", (str(e) if isinstance(e, Fail) else type(e).__name__)[:60]))
+    xp = {"request": EXPLORE_BODY, "count": x["count"], "markets": explore}
+    if ic:
+        xp["ifaceCounts"] = ic
 
     snap = {"source": "app.seer.pm", "when": st["when"], "at": st["ms"], "count": verified, "markets": strip,
             "open": {"count": opn, "when": st["when"], "at": st["ms"]}, "creators": creators,
-            "explore": {"request": EXPLORE_BODY, "count": x["count"], "markets": explore},
+            "explore": xp,
             "rebrand": {"url": "https://app.seer.pm/markets/100/0xe7850b0d928aa40ab8732bd323fa4f6ef3c24b8a", "archive": "https://opportunity.seer.pm/archive"}}
     out["assets/seer-snapshot.js"] = (
         "/* Seer · dated snapshot of real markets, the App's fallback when Seer's public markets API can't be reached.\n"
@@ -398,7 +474,8 @@ def refresh_app(site, out):
         "   Odds are Seer's own; \"liq\" is liquidity in USD. Links open the market on Seer. \"open\" is every open market\n"
         "   (no verification filter), the Home page's count. \"creator\"/\"created\": who asked a market and when (its creation block);\n"
         "   \"creators\": how many markets each of those addresses has created on Seer. \"explore\": the App explorer's first page\n"
-        "   (its default request), each market pruned to the fields app/explorer.js validates. \"rebrand\": the settled Seer Rebrand\n"
+        "   (its default request), each market pruned to the fields app/explorer.js validates; \"ifaceCounts\": Seer's counts per\n"
+        "   interface for that request (app = generic - deep - risk - opportunity, our rule; \"at\" = read time). \"rebrand\": the settled Seer Rebrand\n"
         "   Contest (Opportunity). Data only. */\n"
         "window.SEER_SNAPSHOT = " + jdump(snap) + ";\n")
     hero = {"source": "app.seer.pm", "when": st["when"], "at": st["ms"], "verified": d.get("count") if count_ok(d.get("count")) else None,
@@ -424,11 +501,15 @@ def refresh_app(site, out):
         "app": "App (market explorer)", "page": SITE_URL + "app/", "fetchedAt": st["iso"], "mode": "hourly snapshot",
         "source": APP_API, "request": body,
         "note": "The App's 'On Seer now' strip: the most liquid open, Kleros-verified top-level market per topic. Odds in percent "
-                "as Seer reports them; liq in USD. invalidRest: Yes + No add up to less than 99%, the rest is left to Invalid.",
+                "as Seer reports them; liq in USD. invalidRest: Yes + No add up to less than 99%, the rest is left to Invalid. "
+                "The page adds one card per other interface after the first market, from deep.json, risk.json, opportunity.json "
+                "and futarchy.json (the same hourly snapshots).",
         "verifiedOpen": verified, "open": opn, "markets": [app_row(m) for m in strip], "creators": creators,
         "explorer": {"note": "The App explorer's first page: markets of every type and interface that are not resolved yet, in Seer's own default order "
                              "(Kleros-verified first, then liquidity). count is Seer's total for this request; fields as Seer's API "
-                             "names them, pruned and validated.", "request": EXPLORE_BODY, "count": x["count"],
+                             "names them, pruned and validated. ifaceCounts: Seer's count per interface for the same request "
+                             "(app = generic - deep - risk - opportunity, our interface rule; at = read time in ms).",
+                     "request": EXPLORE_BODY, "count": x["count"], "ifaceCounts": ic,
                      "markets": [dict(e, url=mlink(e["chainId"], e["id"])) for e in explore]}}
     hm = dict(heroes[0])
     hm["url"] = mlink(hm["chain"], hm["id"])
