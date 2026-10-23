@@ -643,3 +643,19 @@ a.ap-daddr:hover { color: var(--text); }
   .ap-drec .s-kv > dd { padding-top: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .ap-lens__b { transition: none; } }
+
+/* On Seer now: one card per Seer interface after the first market (live.js); a tag on every card names its interface */
+.ap-live__top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 22px; }
+.ap-live__note { margin: -2px 0 0; font-size: 12px; line-height: 1.4; font-weight: 500; color: var(--text-3); }
+.ap-live__state { margin-left: auto; }
+.ap-live__nobar li::before { display: none; }
+/* while live, the strip's and the explorer's source chips shrink to a plain read time (the header chip says Live);
+   a snapshot or an outage keeps the full chip */
+.ap-live__head .s-src[data-state="live"], .ap-x .ap-markets__h .s-src[data-state="live"] { min-height: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; font-family: var(--font-sans); font-size: var(--fs-meta); font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text-3); }
+.ap-live__head .s-src[data-state="live"] > i, .ap-x .ap-markets__h .s-src[data-state="live"] > i { display: none; }
+/* the Interface chips' counts: where they come from (explorer.js) */
+.ap-iface__src { flex: none; font-size: var(--fs-meta); line-height: 1.4; font-weight: 500; color: var(--text-3); white-space: nowrap; }
+.ap-iface__src:empty { display: none; }
+.ap-iface__src[data-state="snapshot"], .ap-iface__src[data-state="none"] { color: var(--text-2); }
+@media (min-width: 641px) and (max-width: 1200px) { .ap-iface { flex-wrap: wrap; } .ap-iface__src { flex-basis: 100%; white-space: normal; } }
+@media (max-width: 640px) { .ap-iface__src { white-space: normal; } }

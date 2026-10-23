@@ -9,7 +9,13 @@
    with textContent. Links are built here from a validated chain id and 0x address, never taken from the API.
    If the request fails, times out or returns anything odd, the strip shows the dated snapshot in
    assets/seer-snapshot.js (rewritten hourly by tools/refresh.py with these same rules) and says so, with its age.
-   The header chip beside the logo says the same thing: Live, or Snapshot and when. */
+   The header chip beside the logo says the same thing: Live, or Snapshot and when.
+   One card per Seer interface follows the strip's first market (the Seer app's most liquid one): Deep's Round 3 leader
+   (deep/round3.js, deep.seer.pm's feed), the Risk Pricing board (risk/snapshot.js, risk.seer.pm), the AI job board's leading
+   name (opportunity/snapshot.js) and EIP-8363 on futarchy.seer.pm (futarchy/eip8363-data.js). These are the hourly snapshot
+   files the interface pages use, validated again here, each card dated; EIP-8363 shows its state (open, or closed and
+   resolving) and its pools' prices, never as odds. Each card's title opens that market's detail in the explorer, except
+   EIP-8363, which Seer's markets API doesn't list: it opens its page in this concept. */
 (function () {
   "use strict";
   var S = window.Seer, X = window.SEER_SNAPSHOT || null;
@@ -143,7 +149,9 @@
     // discover -> understand -> trade: the title opens the market's detail in the explorer below (explorer.js), "Seer" trades it
     var t = el("a", { href: "?market=" + m.chain + ":" + m.id + "#markets", text: clip(m.title, 90), attrs: { title: m.title, "aria-label": m.title + " (details)", "aria-haspopup": "dialog" } });
     t.addEventListener("click", function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0 || !window.AP_X || typeof window.AP_X.open !== "function") return; e.preventDefault(); window.AP_X.open(m.chain, m.id); });
-    return el("article", { class: "ap-snap__card ap-live__card", attrs: { role: "listitem" } },
+    var k = ifOf(m);
+    return el("article", { class: "ap-snap__card ap-live__card", attrs: { role: "listitem" }, data: { iface: k } },
+      el("div", { class: "ap-live__top" }, tag(k)),
       el("h3", { class: "ap-snap__t" }, t),
       body,
       el("div", { class: "ap-snap__foot" },
@@ -190,6 +198,151 @@
     if (w) t.appendChild(el("span", { class: "s-sample__mid", text: " · " + w }));
     c.appendChild(t);
     c.appendChild(el("span", { class: "s-sr", text: live ? ": the top of this page is read live from app.seer.pm; the sample walkthrough further down is made up" : ": the top of this page is a dated snapshot of app.seer.pm; the sample walkthrough further down is made up" }));
+  }
+
+  /* ---------- one card per Seer interface, from the interface pages' own hourly snapshots ---------- */
+  var IFN = { app: "Seer app", deep: "Deep", risk: "Risk Pricing", opportunity: "Opportunity", futarchy: "Futarchy" };
+  var DEEP_ASKER = "0x00dc3e0acadb8dba21bb08ff30540222ff8836e0";
+  var OPP_IDS = { "0x8b3c7f3f09f6a85353926d8ee0f12decc1c9a5e8": 1, "0xf6a42af200c181df45e0f3fd49d58f5d57bb7d35": 1, "0x144364db8edd6225248fe9d02f77ecc3ec0e4c4c": 1 };
+  var ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/;
+  function isoMs(v) { var t = typeof v === "string" && ISO.test(v) ? Date.parse(v) : NaN; return t > 1.7e12 && t < Date.now() + 864e5 ? t : null; }
+  function fin(x, lo, hi) { return typeof x === "number" && isFinite(x) && x >= lo && x <= hi; }
+  function tag(k) {
+    return el("span", { class: "s-tag ap-iftag ap-live__if", data: { iface: k } },
+      el("span", { class: "ap-iftag__g", html: S.glyph(k), attrs: { "aria-hidden": "true" } }), IFN[k]);
+  }
+  function stamp(ms) { // "19:45 UTC" today, "23 Oct, 19:45 UTC" otherwise
+    var d = new Date(ms), t = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
+    var same = d.getUTCFullYear() === t.getUTCFullYear() && d.getUTCMonth() === t.getUTCMonth() && d.getUTCDate() === t.getUTCDate();
+    return (same ? "" : dayMon(ms) + ", ") + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + " UTC";
+  }
+  function snapFoot(ms, src, name, href, aria) {
+    return el("div", { class: "ap-snap__foot" },
+      el("span", { class: "t-num", text: "Snapshot · " + stamp(ms), attrs: { title: "Hourly snapshot of " + src + ", read " + dayMon(ms) + " " + new Date(ms).getUTCFullYear() + ", " + stamp(ms).replace(/^.*, /, "") } }),
+      el("a", { class: "ap-snap__go", href: href, attrs: { rel: "noopener noreferrer", target: "_blank", "aria-label": aria } }, name, el("span", { html: S.icon("external", 13) })));
+  }
+  function opener(text, chain, id, full) {            // the card's title: opens the market's detail in the explorer below
+    var t = el("a", { href: "?market=" + chain + ":" + id + "#markets", text: text, attrs: { title: full || text, "aria-label": (full || text) + " (details)", "aria-haspopup": "dialog" } });
+    t.addEventListener("click", function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0 || !window.AP_X || typeof window.AP_X.open !== "function") return; e.preventDefault(); window.AP_X.open(chain, id); });
+    return t;
+  }
+  function shell(k, title, body, foot, note, state) {
+    var c = el("article", { class: "ap-snap__card ap-live__card ap-live__card--if", attrs: { role: "listitem" }, data: { iface: k } },
+      el("div", { class: "ap-live__top" }, tag(k), state || null), el("h3", { class: "ap-snap__t" }, title), body);
+    if (note) c.appendChild(el("p", { class: "ap-live__note", text: note }));
+    c.appendChild(foot);
+    return c;
+  }
+  function rows2(list, nobar) {                        // two of the strip's outcome rows: [label, value 0-100, shown text]
+    return el("ul", { class: "ap-snap__outs" + (nobar ? " ap-live__nobar" : "") }, list.map(function (o, i) {
+      return el("li", { style: { "--w": Math.max(1.5, Math.min(100, o[1])) + "%" }, attrs: { "data-i": String(i) } },
+        el("span", { class: "ap-snap__o", text: o[0], attrs: { title: o[0] } }), el("b", { class: "t-num", text: o[2] }));
+    }));
+  }
+  // Deep: deep.seer.pm's Round 3 feed; the repository with the highest UP price (the share of original work the market expects)
+  // and the median UP, read the way deep/real.js reads them for the Deep page
+  function deepCard() {
+    var D = window.SEER_DEEP_R3, at = D && typeof D === "object" ? isoMs(D.fetchedAt) : null;
+    if (!at || D.chainId !== 10 || !Array.isArray(D.repos)) return null;
+    var best = null, ups = [], seen = {};
+    D.repos.slice(0, 400).forEach(function (r) {
+      if (!Array.isArray(r) || r.length < 4 || typeof r[3] !== "string" || !ADDR.test(r[3]) || !fin(r[1], 0, 1.5) || !fin(r[2], 0, 1.5)) return;
+      var name = clean(r[0], 161), a = r[3].toLowerCase(), up = Math.min(1, r[1]);
+      if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,59}\/[A-Za-z0-9._-]{1,100}$/.test(name) || seen[a]) return;   // deep/real.js's REPO
+      seen[a] = 1; ups.push(up);
+      if (!best || up > best.up || (up === best.up && name < best.name)) best = { name: name, up: up, id: a };
+    });
+    var n = ups.length; if (!best || n < 20) return null;
+    ups.sort(function (a, b) { return a - b; });
+    var mid = n >> 1, med = n % 2 ? ups[mid] : (ups[mid - 1] + ups[mid]) / 2;
+    return shell("deep", opener("Round 3 originality: " + best.name + " leads all " + n + " repositories", 10, best.id,
+      "Deep Funding Round 3: " + best.name + " has the highest UP price, the market's share of original work, of the " + n + " repositories deep.seer.pm prices"),
+      rows2([[clip(best.name, 24), best.up * 100, "UP " + best.up.toFixed(2)], ["Median of " + n, med * 100, "UP " + med.toFixed(2)]]),
+      snapFoot(at, "deep.seer.pm's Round 3 feed", "Deep", "https://deep.seer.pm/", "Open Deep on deep.seer.pm"), "UP: the share of original work, priced on deep.seer.pm");
+  }
+  // Risk Pricing: risk.seer.pm's board; No to All (the chance that none of its assets defaults, per year) and the highest estimate
+  function riskCard() {
+    var R = window.SEER_RISK_SNAPSHOT, at = R && typeof R === "object" ? isoMs(R.fetchedAt) : null;
+    if (!at || R.chainId !== 100 || typeof R.marketId !== "string" || !ADDR.test(R.marketId) || !fin(R.noToAll, 0, 1) || !Array.isArray(R.assets) || !Array.isArray(R.markets)) return null;
+    var cur = null;
+    R.markets.slice(0, 40).forEach(function (m) {
+      if (m && typeof m.id === "string" && m.id.toLowerCase() === R.marketId.toLowerCase() && m.current === true && typeof m.quarter === "string" && /^\d{4}-Q[1-4]$/.test(m.quarter) && fin(m.endTime, 1.6e9, 2.2e9)) cur = m;
+    });
+    if (!cur) return null;
+    var top = null, n = 0;
+    R.assets.slice(0, 60).forEach(function (a) {
+      if (!Array.isArray(a) || !fin(a[1], 0, .999)) return;
+      var name = clean(a[0], 16); if (!/^[A-Za-z0-9.+-]{1,16}$/.test(name)) return;
+      n++; if (!top || a[1] > top[1]) top = [name, a[1]];
+    });
+    if (!top || n < 2) return null;
+    var q = cur.quarter.split("-"), qn = q[1] + " " + q[0], closed = cur.endTime * 1000 <= Date.now();
+    var st = el("span", { class: "s-state ap-live__state", data: { state: closed ? "pending" : "open" }, text: closed ? "Closed " + dayMon(cur.endTime * 1000) : "Open",
+      attrs: { title: closed ? qn + " closed on " + dayMon(cur.endTime * 1000) + ": these are its closing prices, as on risk.seer.pm" : qn + " trades until " + dayMon(cur.endTime * 1000) } });
+    var p2 = function (v) { return (Math.round(v * 10000) / 100).toFixed(2) + "%"; };
+    return shell("risk", opener(qn + " board: how likely is each of " + n + " DeFi assets to default?", 100, R.marketId.toLowerCase(),
+      "Seer's Risk Pricing board for " + qn + " on risk.seer.pm: each asset's probability of default, and No to All"),
+      rows2([["No to All", R.noToAll * 100, p2(R.noToAll)], ["Highest: " + top[0], top[1] * 100, p2(top[1])]]),
+      snapFoot(at, "risk.seer.pm's public API", "Risk", "https://risk.seer.pm/", "Open Risk Pricing on risk.seer.pm"),
+      "Chance per year" + (closed ? " · " + qn + " closing prices" : ", as risk.seer.pm shows it"), st);
+  }
+  // Opportunity: the AI job board name, three linked markets on Gnosis (opportunity.seer.pm); its two leading names
+  function oppCard() {
+    var O = window.OP_SNAPSHOT, at = O && typeof O === "object" ? isoMs(O.at) : null;
+    if (!at || O.chain !== 100 || !Array.isArray(O.ids) || O.ids.length !== 3 || !Array.isArray(O.rows) || typeof O.total !== "number") return null;
+    for (var i = 0; i < 3; i++) if (typeof O.ids[i] !== "string" || !ADDR.test(O.ids[i]) || !OPP_IDS[O.ids[i].toLowerCase()]) return null;
+    var rows = [];
+    O.rows.slice(0, 400).forEach(function (r) {
+      if (!Array.isArray(r) || !fin(r[1], 0, 100) || [0, 1, 2].indexOf(r[2]) < 0) return;
+      var name = clean(r[0], 60); if (name) rows.push([name, r[1], r[2]]);
+    });
+    if (rows.length < 2 || !fin(O.total, rows.length, 2000)) return null;
+    rows.sort(function (a, b) { return b[1] - a[1]; });
+    var title = clean(O.title, 200); if (title.length < 8) return null;
+    var lead = rows[0], liq = fin(O.liq, 0, 1e10) ? O.liq : null;
+    return shell("opportunity", opener(clip(title, 90), 100, O.ids[lead[2]].toLowerCase(), title),
+      rows2(rows.slice(0, 2).map(function (r) { return [clip(r[0], 28), r[1], pct(r[1])]; })),
+      snapFoot(at, "Seer's markets API (the AI job board's three linked markets)", "Opportunity", "https://opportunity.seer.pm/", "Open Opportunity on opportunity.seer.pm"),
+      "Of " + Math.round(O.total) + " names in 3 linked markets" + (liq != null ? " · " + usd(liq) + " liq" : ""));
+  }
+  // Futarchy: EIP-8363's two conditional pools on Ethereum (futarchy.seer.pm); the market's state, and the pools' prices at its
+  // close once trading has ended (hourly closes up to 24 Oct 00:00 UTC), never a price after it
+  var FT_CLOSES = Date.UTC(2026, 9, 24) / 1000, FT_H = 3600;
+  function ftCard() {
+    var F = window.FT_EIP8363;
+    if (!F || typeof F !== "object" || !fin(F.since, 1.7e9, 2.2e9) || !fin(F.at, 1.7e12, Date.now() + 864e5) || !fin(F.py, 100, 1e6) || !fin(F.pn, 100, 1e6)) return null;
+    function series(a) {
+      if (!Array.isArray(a) || a.length % 2 || a.length > 2000) return null;
+      var out = [];
+      for (var i = 0; i < a.length; i += 2) { var h = a[i], v = a[i + 1] / 100; if (!fin(h, 0, 1e5) || h !== Math.floor(h) || !fin(v, 100, 1e6)) return null; out.push([F.since + h * FT_H, v]); }
+      return out.length >= 24 ? out : null;
+    }
+    function last(s, t) { var r = null; for (var i = 0; i < s.length && s[i][0] <= t; i++) r = s[i][1]; return r; }
+    var ys = series(F.yes), ns = series(F.no); if (!ys || !ns) return null;
+    var now = Date.now() / 1000, closed = now >= FT_CLOSES, atClose = closed && F.at / 1000 >= FT_CLOSES;
+    var y = atClose ? last(ys, FT_CLOSES - FT_H) : F.py, n = atClose ? last(ns, FT_CLOSES - FT_H) : F.pn;
+    if (y == null || n == null) return null;
+    var g = y / n - 1, a = Math.abs(g) * 100, gt = a < 0.01 ? "<0.01%" : (g > 0 ? "+" : "\u2212") + a.toFixed(2) + "%";
+    var rec = g > 0.01 ? "above +1%" : g < -0.01 ? "below \u22121%" : "inside \u00b11%, neutral";
+    var f2 = function (v) { return v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    var t = el("a", { href: "../futarchy/", text: "What happens to ETH if EIP-8363 is scheduled?", attrs: { title: "EIP-8363 on futarchy.seer.pm. Seer's markets API doesn't list this proposal, so it opens its page in this concept.", "aria-label": "EIP-8363: its Futarchy page in this concept" } });
+    var st = el("span", { class: "s-state ap-live__state", data: { state: closed ? "pending" : "open" }, text: closed ? "Closed " + dayMon(FT_CLOSES * 1000) + " \u00b7 resolving" : "Trading until " + dayMon(FT_CLOSES * 1000),
+      attrs: { title: closed ? "Trading closed " + dayMon(FT_CLOSES * 1000) + ", 00:00 UTC; the proposal is resolving" : "Trading ends " + dayMon(FT_CLOSES * 1000) + ", 00:00 UTC" } });
+    return shell("futarchy", t, rows2([["ETH if scheduled", 0, f2(y)], ["ETH if not", 0, f2(n)]], true),
+      snapFoot(F.at, "api.futarchy.seer.pm (EIP-8363's two conditional pools)", "Futarchy", "https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa", "Open EIP-8363 on futarchy.seer.pm"),
+      "In USDS · " + (atClose ? "impact at close " : closed ? "impact, last snapshot " : "impact (spot) ") + gt + ", " + rec, st);
+  }
+  function ifCards() {
+    var out = [];
+    [deepCard, riskCard, oppCard, ftCard].forEach(function (f) { var c = null; try { c = f(); } catch (e) { c = null; } if (c) out.push(c); });
+    return out;
+  }
+  function ifOf(m) {                                   // the strip's markets: our interface rule, as in explorer.js
+    if (OPP_IDS[m.id]) return "opportunity";
+    var R = window.SEER_RISK_SNAPSHOT;
+    if (R && typeof R.marketId === "string" && m.chain === 100 && R.marketId.toLowerCase() === m.id) return "risk";
+    if (m.creator === DEEP_ASKER && /\bDeep Funding\b/.test(m.title)) return "deep";
+    return "app";
   }
 
   /* ---------- the question-asker block in the bar: who asked the strip's first market, what it prices, how to use it ----------
@@ -268,16 +421,22 @@
   function render(list, state, when, count) {
     S.clear(host);
     askBlock(list[0]);
-    list.forEach(function (m) { host.appendChild(card(m)); });
+    var ifs = ifCards();
+    host.appendChild(card(list[0]));
+    ifs.forEach(function (c) { host.appendChild(c); });
+    list.slice(1).forEach(function (m) { host.appendChild(card(m)); });
     host.appendChild(allCard());
     src.setAttribute("data-state", state);
     S.clear(src).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
-    src.appendChild(document.createTextNode(state === "live" ? "Live · app.seer.pm · " + when : "Snapshot · " + when));
+    // while live, a plain read time (the header chip already says Live); a snapshot shows the full chip
+    src.appendChild(document.createTextNode(state === "live" ? "Read " + when : "Snapshot · " + when));
+    src.title = state === "live" ? "Seer app markets read live from app.seer.pm's public markets API at " + when + "; the other interfaces' cards are their hourly snapshots, dated on each card" : "";
     var at = snapAt(), age = at ? " (read " + ago(at) + ", refreshed hourly)" : "";
+    var per = ifs.length ? ", with one card per other interface from its hourly snapshot" : "";
     if (meta) meta.textContent = state === "live"
-      ? "The most liquid open, Kleros-verified market per topic: " + list.length + " of " + count + ", read from Seer's public API just now."
+      ? "The Seer app's most liquid open, Kleros-verified markets, one per topic (" + list.length + " of " + count + ", read just now)" + per + "."
       : state === "loading" ? "Dated snapshot" + age + " while live prices load from Seer's public API…"
-      : "Seer's API couldn't be reached just now, so this is the snapshot" + age + ": the most liquid open, Kleros-verified market per topic, " + list.length + " of " + count + ".";
+      : "Seer's API couldn't be reached just now, so this is the snapshot" + age + ": the most liquid open, Kleros-verified market per topic, " + list.length + " of " + count + per + ".";
     host.setAttribute("aria-busy", state === "loading" ? "true" : "false");
     if (state !== "loading") shown = state;
     chip(state, when);

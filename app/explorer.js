@@ -295,15 +295,18 @@
   var known = {}, knownKeys = [];                           // every market this page has normalized, for the detail drawer
   function remember(m) { var k = keyOf(m); if (!own(known, k)) { knownKeys.push(k); if (knownKeys.length > 400) delete known[knownKeys.shift()]; } known[k] = m; }
 
-  function body(p) {
-    var f = Q.iface, b = { limit: PAGE, page: p };
-    if (f === "futarchy") b.type = "Futarchy"; else if (f === "app" || f === "deep") b.type = "Generic";
-    if (f === "risk") b.marketIds = idsOf(RISK); else if (f === "opportunity") b.marketIds = idsOf(OPP);
+  function filt(b) {                                        // the state, chain, Kleros and conditional filters, as Seer's API fields
     if (Q.state === "unresolved") b.marketStatusList = ["not_open", "open", "answer_not_final", "in_dispute", "pending_execution"];
     else if (API_STATE[Q.state]) b.marketStatusList = [API_STATE[Q.state]];
     if (Q.chain !== "all") b.chainsList = [Q.chain];
     if (API_VERIFY[Q.verify]) b.verificationStatusList = [API_VERIFY[Q.verify]];
     if (Q.cond) b.showConditionalMarkets = true;
+    return b;
+  }
+  function body(p) {
+    var f = Q.iface, b = filt({ limit: PAGE, page: p });
+    if (f === "futarchy") b.type = "Futarchy"; else if (f === "app" || f === "deep") b.type = "Generic";
+    if (f === "risk") b.marketIds = idsOf(RISK); else if (f === "opportunity") b.marketIds = idsOf(OPP);
     if (f === "deep") { b.creator = DEEP_ASKER; b.marketName = Q.q || "Deep Funding"; }
     else { if (Q.q) b.marketName = Q.q; if (Q.creator) b.creator = Q.creator; }
     if (Q.sort !== "default") { b.orderBy = Q.sort; b.orderDirection = "desc"; }
@@ -343,7 +346,7 @@
 
   /* ---------- fetch: one POST to Seer's markets API per slot (the list, one market, one asker's markets) ---------- */
   var CTL = {};
-  function seer(b, slot, maxBytes) {
+  function post(b, slot, maxBytes) {                        // -> Seer's parsed answer {markets: [...], count}, checked for shape and size
     if (typeof fetch !== "function") return Promise.reject(new Error("no fetch"));
     if (CTL[slot]) CTL[slot].abort();
     var c = typeof AbortController === "function" ? new AbortController() : null, kill = setTimeout(function () { if (c) c.abort(); }, ABORT_MS);
@@ -361,14 +364,95 @@
       if (t.length > maxBytes) throw new Error("too big");
       var d = JSON.parse(t);
       if (!d || !Array.isArray(d.markets)) throw new Error("bad shape");
+      return d;
+    }, function (e) { clearTimeout(kill); throw e; });
+  }
+  function okN(c) { return typeof c === "number" && isFinite(c) && c >= 0 && c < 1e7 && Math.round(c) === c ? c : null; }
+  function seer(b, slot, maxBytes) {
+    return post(b, slot, maxBytes).then(function (d) {
       var n = typeof d.count === "number" && isFinite(d.count) && d.count >= 0 && d.count < 1e7 ? Math.round(d.count) : null;
       var now = Date.now(), seen = {}, list = d.markets.slice(0, b.limit).map(function (m) { return normalize(m, now); }).filter(function (m) {
         if (!m) return false; var k = keyOf(m); if (seen[k]) return false; seen[k] = 1; return true;
       });
       list.forEach(function (m) { m.src = "live"; m.at = now; remember(m); });
       return { list: list, count: n };
-    }, function (e) { clearTimeout(kill); throw e; });
+    });
   }
+
+  /* ---------- interface counts on the chips: Seer's own counts for the current state, chain, Kleros and conditional filters ----------
+     Four count-only reads (limit 1; only the numeric "count" is used): every market, type Futarchy, type Generic, and Deep's rule
+     (Generic + asked by 0x00dc…36e0 + "Deep Funding"); one read of the Risk Pricing and Opportunity markets by id, counted here.
+     Seer app = Generic − Deep − Risk Pricing − Opportunity, our interface rule. Search and asker filters are not counted.
+     Fallback: the hourly snapshot's counts (SEER_SNAPSHOT.explore.ifaceCounts, tools/refresh.py), only for the default filters. */
+  var CK0 = "unresolved|all|all|0", cseq = 0, cTimer = null, cLive = null, cLiveKey = null, cLiveAt = null;
+  function cntKey() { return [Q.state, Q.chain, Q.verify, Q.cond ? 1 : 0].join("|"); }
+  function cntOf(all, fut, gen, deep, risk, opp) {        // -> {all, app, futarchy, deep, risk, opportunity}, or null if it doesn't add up
+    if ([all, fut, gen, deep, risk, opp].some(function (x) { return okN(x) == null; })) return null;
+    var app = gen - deep - risk - opp;
+    if (app < 0 || fut > all || gen > all) return null;
+    return { all: all, app: app, futarchy: fut, deep: deep, risk: risk, opportunity: opp, rest: Math.max(0, all - fut - gen) };
+  }
+  var XC = (function () {                                   // the snapshot's counts, checked like a live answer
+    var c = XS && XS.ifaceCounts && typeof XS.ifaceCounts === "object" ? XS.ifaceCounts : null;
+    if (!c || typeof c.at !== "number" || !(c.at > 1.7e12 && c.at < Date.now() + 864e5)) return null;
+    var o = cntOf(c.all, c.futarchy, c.generic, c.deep, c.risk, c.opportunity);
+    if (o) o.at = c.at;
+    return o;
+  })();
+  var cSrc = null;
+  function paintCounts(c, how, at) {
+    if (!ifRow) return;
+    $$(".s-chip", ifRow).forEach(function (b, i) {
+      var k = IFACES[i] && IFACES[i][0], key = k === "all" ? "all" : k, n = c && own(c, key) ? c[key] : null, sp = b.querySelector(".s-chip__n");
+      if (n == null) { if (sp) sp.parentNode.removeChild(sp); b.removeAttribute("aria-label"); b.removeAttribute("title"); return; }
+      if (!sp) { sp = el("span", { class: "s-chip__n" }); b.appendChild(sp); }
+      sp.textContent = n.toLocaleString("en-US");
+      b.setAttribute("aria-label", IFACES[i][1] + ": " + n.toLocaleString("en-US") + " market" + (n === 1 ? "" : "s"));
+      b.title = k === "all" ? "Seer's own count for these filters" + (c.rest ? ". It includes " + c.rest.toLocaleString("en-US") + " that are in neither Seer's Generic nor its Futarchy type, so no interface count holds them" : "")
+        : k === "app" ? "Seer's general (Generic) markets minus the Deep, Risk Pricing and Opportunity ones: our interface rule"
+        : k === "deep" ? "Generic markets asked by 0x00dc…36e0 with “Deep Funding” in the question"
+        : k === "futarchy" ? "Seer's futarchy market type" : k === "risk" ? "The risk.seer.pm board markets in Seer's API" : "The AI job board's linked markets and the Rebrand Contest market";
+    });
+    if (!cSrc) return;
+    var st = STATES.filter(function (x) { return x[0] === Q.state; })[0], bits = [st ? st[1].toLowerCase() : Q.state];
+    bits.push(Q.chain === "all" ? "all chains" : CH[+Q.chain][0]);
+    if (Q.verify !== "all") bits.push("Kleros " + VERIFY.filter(function (x) { return x[0] === Q.verify; })[0][1].toLowerCase());
+    if (Q.cond) bits.push("conditional only");
+    cSrc.setAttribute("data-state", how);
+    cSrc.textContent = how === "live" ? "Counts read live " + hhmm(at) + ": " + bits.join(", ") + (Q.q || Q.creator ? "; search and asker not counted" : "")
+      : how === "snapshot" ? (cLiveKey === "error" ? "Seer's API didn't answer: counts" : "Counts") + " from the hourly snapshot, " + day(at, true) + " " + hhmm(at) + ": not resolved yet, all chains"
+      : how === "loading" ? "Counting on Seer…"
+      : "No counts: Seer's API didn't answer just now";
+  }
+  function loadCounts() {
+    var k = cntKey(), my = ++cseq;
+    if (cLive && cLiveKey === k) return paintCounts(cLive, "live", cLiveAt);
+    if (XC && k === CK0) paintCounts(XC, "snapshot", XC.at); else paintCounts(null, "loading");
+    var base = filt({ limit: 1, page: 1 }), ids = idsOf(RISK).concat(idsOf(OPP));
+    function w(x) { var b = {}, p; for (p in base) b[p] = base[p]; for (p in x) b[p] = x[p]; return b; }
+    function n(d) { var c = okN(d.count); if (c == null) throw new Error("bad count"); return c; }
+    Promise.all([post(w({}), "c-all", ONE_BYTES), post(w({ type: "Futarchy" }), "c-fut", ONE_BYTES), post(w({ type: "Generic" }), "c-gen", ONE_BYTES),
+      post(w({ type: "Generic", creator: DEEP_ASKER, marketName: "Deep Funding" }), "c-deep", ONE_BYTES),
+      ids.length ? post(w({ marketIds: ids, limit: ids.length + 2 }), "c-ids", ONE_BYTES) : Promise.resolve({ markets: [], count: 0 })
+    ]).then(function (r) {
+      if (my !== cseq) return;
+      var risk = 0, opp = 0, seen = {};
+      r[4].markets.slice(0, ids.length + 2).forEach(function (m) {
+        if (!m || typeof m !== "object" || typeof m.chainId !== "number" || !own(CH, m.chainId) || typeof m.id !== "string" || !ADDR.test(m.id)) return;
+        var key = m.chainId + ":" + m.id.toLowerCase(); if (seen[key]) return; seen[key] = 1;
+        if (own(RISK, key)) risk++; else if (own(OPP, key)) opp++;
+      });
+      var c = cntOf(n(r[0]), n(r[1]), n(r[2]), n(r[3]), risk, opp);
+      if (!c) throw new Error("counts don't add up");
+      cLive = c; cLiveKey = k; cLiveAt = Date.now();
+      paintCounts(c, "live", cLiveAt);
+    }).catch(function () {
+      if (my !== cseq) return;
+      cLive = null; cLiveKey = "error";
+      if (XC && cntKey() === CK0) paintCounts(XC, "snapshot", XC.at); else paintCounts(null, "none");
+    });
+  }
+  function countsSoon() { clearTimeout(cTimer); cTimer = setTimeout(loadCounts, 160); }
   var fbTimer = null;
   function load() {                                         // page 1 of the current filters
     var my = ++seq; page = 1; more = "idle"; allCards = false;
@@ -416,7 +500,7 @@
     var sa = snapAt();
     src.setAttribute("data-state", state === "live" ? "live" : state === "loading" ? "loading" : "snapshot");
     S.clear(src).appendChild(el("i", { attrs: { "aria-hidden": "true" } }));
-    src.appendChild(document.createTextNode(state === "live" ? "Live · app.seer.pm · " + hhmm(at)
+    src.appendChild(document.createTextNode(state === "live" ? "Read " + hhmm(at)          // plain while live: the header chip says Live
       : state === "loading" ? "Loading from app.seer.pm…"
       : state === "snapshot" ? "Snapshot · " + (sa ? day(sa, true) + ", " + hhmm(sa) : "dated")
       : "Seer's API is unavailable right now"));
@@ -685,6 +769,7 @@
     if (local) { render(true); return; }
     clearTimeout(debounce);
     debounce = setTimeout(load, 120);
+    if (cntKey() !== cLiveKey) countsSoon();
   }
   function syncToggle(act) {
     var tg = $("#ap-x-ftoggle"); if (!tg) return;
@@ -727,6 +812,7 @@
     $$(".s-chiprow__track", ifRow).forEach(function (t) { t.setAttribute("aria-labelledby", "ap-x-iface-k"); });
     $$(".s-icon-btn", ifRow).forEach(function (b, i) { b.setAttribute("aria-label", i ? "Scroll interfaces right" : "Scroll interfaces left"); });
     var ifb = $("#ap-x-ifaces"); if (ifb) ifb.appendChild(ifRow);
+    cSrc = $("#ap-x-iface-src");
     var b = $("#ap-x-fbody");
     b.appendChild(fsel("state", "State", STATES));
     b.appendChild(fsel("chain", "Chain", [["all", "All chains"], ["100", "Gnosis"], ["1", "Ethereum"], ["10", "OP Mainnet"], ["8453", "Base"]]));
@@ -827,6 +913,14 @@
     })));
     if (n > 1) box.appendChild(el("div", { class: "s-row" }, askAll(m, n)));
   }
+  // a Risk Pricing board: risk.seer.pm states it as yearly default chances and No to All, the figure the Risk page and the strip show
+  function riskNote(m) {
+    if (m.iface !== "risk" || !RSNAP || typeof RSNAP.noToAll !== "number" || !(RSNAP.noToAll >= 0 && RSNAP.noToAll <= 1)) return null;
+    var t = typeof RSNAP.fetchedAt === "string" && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(RSNAP.fetchedAt) ? Date.parse(RSNAP.fetchedAt) : NaN;
+    if (!(t > 1.7e12 && t < Date.now() + 864e5)) return null;
+    return el("p", { class: "ap-dline ap-drisk", text: "risk.seer.pm reads this board as each asset's chance of default per year; its No to All, the chance that none defaults, is " +
+      (Math.round(RSNAP.noToAll * 10000) / 100).toFixed(2) + "% (hourly snapshot, " + day(t, true) + " " + hhmm(t) + "). The prices below are app.seer.pm's token prices, shares of one payout, not yearly chances." });
+  }
   function renderDetail(m, from) {
     S.clear(dpanel);
     var f = IF[m.iface], d = depth(m);
@@ -844,7 +938,7 @@
     dpanel.appendChild(sec("Who is asking", "01", who));
     if (m.creator) otherMarkets(m, others);
     // 2 · what it prices
-    dpanel.appendChild(sec("What it prices", "02", [el("p", { class: "ap-dline", text: whatPrices(m) }), outcomeList(m)]));
+    dpanel.appendChild(sec("What it prices", "02", [el("p", { class: "ap-dline", text: whatPrices(m) }), riskNote(m), outcomeList(m)]));
     // 3 · how to use the signal, beside the traders' numbers: the two sides of the market
     var tips = [d.note];
     if (hasPrice(m) && m.vol === 0 && !m.ext) tips.push("No trades yet: the price is still where the liquidity was first set.");
@@ -978,5 +1072,6 @@
   if (XS) { var first = snapRows().filter(matchServer).filter(function (m) { return Q.iface === "all" || m.iface === Q.iface; }); if (first.length) { rows = snapSort(first); mode = "loading"; render(true); } }
   if (Q.creator) pendingScroll = true;
   load();
+  loadCounts();
   var mp = marketParam(); if (mp) openKey(mp[0], mp[1], false);
 })();

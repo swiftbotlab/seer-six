@@ -41,9 +41,9 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
     <section class="ap-bar" aria-labelledby="ap-title">
       <div class="s-container ap-bar__in">
         <div class="ap-bar__copy">
-          <div class="s-specs ap-bar__kicker"><span>02</span><span>Explorer</span><span class="ap-hide-sm">Every interface, every chain</span></div>
-          <h1 id="ap-title" class="ap-bar__title">Every market, <span class="t-accent">on the record.</span></h1>
-          <p class="ap-bar__lede">Every Seer market, from every Seer interface, in one explorer. Read it as an information seeker (what a market says, and how much stands behind it) or as a trader (the price to disagree with), then trade on Seer.</p>
+          <div class="s-specs ap-bar__kicker"><span>02</span><span>Seer's Etherscan</span><span class="ap-hide-sm">Every interface, every chain</span></div>
+          <h1 id="ap-title" class="ap-bar__title">Every Seer market. <span class="t-accent">Two ways to read it.</span></h1>
+          <p class="ap-bar__lede">From every Seer interface, in one explorer. Read a market as an information seeker (what it says, and how much stands behind it) or as a trader (the price to disagree with), then trade on Seer.</p>
         </div>
         <!-- filled by live.js from the strip's first market (the most liquid open, Kleros-verified one): creator address, type, prices -->
         <div class="ap-bar__ask">
@@ -100,7 +100,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
           <!-- the two sides of Seer's marketplace: one switch decides what every card and table row leads with (explorer.js) -->
           <div class="ap-lens" id="ap-x-lens" role="group" aria-label="Read the markets as"></div>
           <!-- Interface: which Seer app a market belongs to, derived only from its own fields and the apps' own lists -->
-          <div class="ap-iface"><span class="ap-iface__k" id="ap-x-iface-k">Interface</span><div class="ap-iface__row" id="ap-x-ifaces"></div></div>
+          <div class="ap-iface"><span class="ap-iface__k" id="ap-x-iface-k">Interface</span><div class="ap-iface__row" id="ap-x-ifaces"></div><span class="ap-iface__src" id="ap-x-iface-src" data-state="loading" role="status"></span></div>
           <div class="ap-toolbar">
             <button type="button" class="s-btn s-btn--ghost s-btn--sm ap-ftoggle" id="ap-x-ftoggle" aria-expanded="false" aria-controls="ap-x-fbody">Filters</button>
             <div class="ap-toolbar__body" id="ap-x-fbody"></div>
@@ -272,7 +272,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div class="s-card s-card--pad">
           <h3 class="t-h3">Deliberate departures</h3>
           <ol>
-            <li><b>Seer's Etherscan, across its interfaces.</b> One explorer for every Seer market, with an Interface facet and column (Seer app, Futarchy, Deep, Risk Pricing, Opportunity) read from each market's own fields; where they can't tell, it says "Not identified".</li>
+            <li><b>Seer's Etherscan, across its interfaces.</b> One explorer for every Seer market, with an Interface facet and column (Seer app, Futarchy, Deep, Risk Pricing, Opportunity) read from each market's own fields; where they can't tell, it says "Not identified". Each interface chip carries Seer's own count for the current filters, and "On Seer now" shows one market from every interface.</li>
             <li><b>Two sides, one switch.</b> Seer is a two-sided marketplace, so the explorer reads every market both ways: for information seekers it leads with what the market says and how much liquidity stands behind it; for traders, with prices, volume and dates.</li>
             <li><b>Discover, understand, trade.</b> A market's title opens its detail: who is asking (and what else they ask), what it prices, how to use the signal, then a seekers' panel beside a traders' panel and "Trade on Seer". Trading itself stays on app.seer.pm.</li>
             <li><b>Explorer depth the kit doesn't draw.</b> An Etherscan-style record per market (contract, condition ID, Reality.eth question, outcome-token ERC-20s, event log, positions, resolution) and per address, built only from kit surfaces; the sample walkthrough shows the full record.</li>
@@ -286,7 +286,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
       </div>
       </details>
-      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer with each market's detail, and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every trade link opens the market on app.seer.pm. The liquidity levels (under $1K low, $1K to $10K moderate, above that high) are our reading rule, not Seer's. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
+      <div class="s-callout u-mt-6"><span id="ap-notes-icon"></span><span><b>About the data.</b> Real: the question-asker block, "On Seer now", the Markets explorer with each market's detail and its interface counts, and the search's "On Seer · live" rows. They read Seer's public markets API live and fall back to a dated hourly snapshot, labelled as such; every filter but the market type is one of that API's own fields, and every trade link opens the market on app.seer.pm. In "On Seer now", the Deep, Risk Pricing, Opportunity and Futarchy cards come from the hourly snapshots their own pages use (deep.seer.pm's feed, risk.seer.pm, Seer's markets API, futarchy.seer.pm's candles), each dated on its card; the Seer app count is Seer's general markets minus the Deep, Risk Pricing and Opportunity ones, our rule. The liquidity levels (under $1K low, $1K to $10K moderate, above that high) are our reading rule, not Seer's. Made up: the sample walkthrough and everything under it (activity, leaderboard, create), one shared sample dataset whose addresses all start with 0x5eed, so the same market shows up in Deep, Futarchy, Opportunity and Risk.</span></div>
     </div>
   </section>
 </main>
@@ -299,9 +299,11 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 <script src="../assets/ui.js"></script>
 <script src="page.js"></script>
 <script src="../assets/seer-snapshot.js"></script>
-<script src="live.js"></script>
 <script src="../risk/snapshot.js"></script>
 <script src="../deep/round3.js"></script>
+<script src="../opportunity/snapshot.js"></script>
+<script src="../futarchy/eip8363-data.js"></script>
+<script src="live.js"></script>
 <script src="explorer.js"></script>
 </body>
 </html>
