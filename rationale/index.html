@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Seer · Design rationale (concept)</title>
-<meta name="description" content="Why the six Seer interfaces look and work the way they do: a two-sided marketplace for information seekers and traders, the App as Seer's Etherscan, the three questions on every screen, and what we kept or changed from the Electric Foundation identity, logo included. Concept by Swift Bot Labs, not affiliated with Seer.">
+<meta name="description" content="Why the six Seer interfaces look and work the way they do: a two-sided marketplace for information seekers and traders, the App as Seer's Etherscan, the three questions on every screen, what we kept or changed from the Electric Foundation identity, and the logo: keep Seer's current mark, or one derived mark that links it to the new line. Concept by Swift Bot Labs, not affiliated with Seer.">
 <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
 <script>/* preload the latin font files over http(s) only: file:// previews refuse crossorigin font fetches */
 if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(function(n){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/woff2";l.crossOrigin="anonymous";l.href="../assets/fonts/"+n+".woff2";document.head.appendChild(l)});</script>
@@ -74,7 +74,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .rt-mono { font-family: var(--font-mono); font-size: 12.5px; color: var(--text); }
 .rt-brand { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
 .rt-tile { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 168px; padding: 18px; border-radius: var(--r-card); }
-.rt-tile img { display: block; height: 44px; width: auto; max-width: 100%; }
+.rt-tile img { display: block; height: 60px; width: auto; max-width: 100%; }
 .rt-tile--ink { background: #0C0A16; box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .12); }
 .rt-tile--fog { background: #E9EAFA; }
 .rt-tile--violet { background: #7D33FF; }
@@ -93,6 +93,25 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 .rt-log { counter-reset: lg; }
 .rt-log li::before { content: counter(lg, decimal-leading-zero); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em; color: var(--violet-3); }
 .rt-log b { color: var(--text); }
+.rt-lead { margin: 0; font-size: 15px; line-height: 1.55; font-weight: 500; color: var(--text); }
+.rt-lg { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.rt-lg figcaption .s-spec { display: block; margin-bottom: 6px; color: var(--violet-3); }
+.rt-lg figcaption h3 { margin: 0; }
+.rt-lg p { margin: 0; font-size: 14px; line-height: 1.55; font-weight: 500; color: var(--text-2); }
+.rt-lg__pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.rt-lg__tile { display: grid; place-items: center; min-height: 132px; padding: 18px; border-radius: var(--r-card); }
+.rt-lg__tile img { display: block; width: 100%; max-width: 196px; height: auto; }
+.rt-sizes td { vertical-align: middle; }
+.rt-sizes td.rt-same { font-size: 13px; color: var(--text-3); font-weight: 500; }
+.rt-sizes { min-width: 720px; }
+.rt-sizes td img { display: block; max-width: none; flex: none; }
+.rt-hd img { max-width: none; }
+.rt-hd { display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; border-radius: var(--r-card); }
+.rt-hd img { display: block; height: 36px; width: auto; }
+.rt-hd i { width: 1px; height: 18px; }
+.rt-hd b { font-size: 16px; font-weight: 500; letter-spacing: -.01em; }
+.rt-hd--dark { background: #101013; box-shadow: inset 0 0 0 1px rgba(224, 226, 245, .1); } .rt-hd--dark i { background: #34343C; } .rt-hd--dark b { color: #EDEDF2; }
+.rt-hd--light { background: #F7F7F9; box-shadow: inset 0 0 0 1px rgba(12, 10, 22, .08); } .rt-hd--light i { background: #D6D6DE; } .rt-hd--light b { color: #101013; }
 .rt-note { margin-top: 16px; font-size: 13.5px; line-height: 1.55; font-weight: 500; color: var(--text-3); max-width: 90ch; }
 .rt-note b { color: var(--text-2); }
 @media (max-width: 1100px) {
@@ -101,6 +120,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 }
 @media (max-width: 760px) {
   .rt-shots2, .rt-cols, .rt-brand { grid-template-columns: minmax(0, 1fr); }
+  .rt-lg__tile { min-height: 104px; }
   .rt-tile { min-height: 120px; }
 }
 @media (max-width: 640px) {
@@ -113,7 +133,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
 </style>
 </head>
 <body data-app="rationale">
-<script>window.SEER_PAGE = { product: "Design rationale", nav: [["Two sides", "#two-sides"], ["Explorer", "#explorer"], ["Three questions", "#three"], ["Identity", "#identity"], ["What changed", "#changed"]], connect: false };</script>
+<script>window.SEER_PAGE = { product: "Design rationale", nav: [["Two sides", "#two-sides"], ["Explorer", "#explorer"], ["Three questions", "#three"], ["Identity", "#identity"], ["Logo", "#logo"], ["What changed", "#changed"]], connect: false };</script>
 <script src="../assets/shell.js"></script>
 <script>(function(){var b=document.querySelector(".s-lockup__sample");if(b&&b.parentNode)b.parentNode.removeChild(b);})();</script>
 <main id="main" class="s-main">
@@ -129,7 +149,8 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <li><a href="#explorer">The App as Seer&rsquo;s Etherscan</a></li>
         <li><a href="#three">Who is asking, what it prices, how to use it</a></li>
         <li><a href="#infofi">Information Finance, and the line</a></li>
-        <li><a href="#identity">The Electric Foundation identity, logo included</a></li>
+        <li><a href="#identity">The Electric Foundation identity, around Seer&rsquo;s logo</a></li>
+        <li><a href="#logo">Logo: keep or derive</a></li>
         <li><a href="#changed">Refined after the Oct 23 extension</a></li>
       </ol>
     </div>
@@ -241,19 +262,18 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
   <section class="rt-sec" id="identity" aria-labelledby="rt-id-h">
     <div class="s-container">
       <div class="rt-sec__head">
-        <div><span class="s-spec">05 · Identity</span><h2 class="t-h2" id="rt-id-h">The Electric Foundation identity, logo included</h2></div>
+        <div><span class="s-spec">05 · Identity</span><h2 class="t-h2" id="rt-id-h">The Electric Foundation identity, around Seer&rsquo;s logo</h2></div>
         <blockquote class="rt-quote"><p>&ldquo;Also remember that the Electric Foundation&rsquo;s identity is the starting point, but there is room to rethink the experience. We&rsquo;re leaving those design decisions to you.&rdquo;</p><cite>Seer, 23 Oct 2026</cite></blockquote>
       </div>
-      <div class="rt-brand" aria-label="The Electric Foundation logo as used here">
-        <div class="rt-tile rt-tile--ink"><img src="../assets/brand/seer-logo-fog.svg" width="180" height="50" alt="The Electric Foundation Seer logo, fog on ink"><span>Fog on ink · headers, dark theme</span></div>
-        <div class="rt-tile rt-tile--fog"><img src="../assets/brand/seer-logo-ink.svg" width="180" height="50" alt="The Electric Foundation Seer logo, ink on fog"><span>Ink on fog · light theme</span></div>
-        <div class="rt-tile rt-tile--violet"><img src="../assets/brand/seer-mark-fog.svg" width="50" height="50" alt="The Electric Foundation S mark, fog on electric violet"><span>Mark on violet · favicon, posters</span></div>
+      <div class="rt-brand" aria-label="Seer's current logo as used here">
+        <div class="rt-tile rt-tile--ink"><img src="../assets/brand/seer-current-logo-fog.svg" width="134" height="62" alt="Seer's logo, the raven in its open ring with the star, beside the lowercase seer, fog on ink"><span>Fog on ink · headers, dark theme</span></div>
+        <div class="rt-tile rt-tile--fog"><img src="../assets/brand/seer-current-logo-ink.svg" width="134" height="62" alt="Seer's current logo, ink on fog"><span>Ink on fog · light theme</span></div>
+        <div class="rt-tile rt-tile--violet"><img src="../assets/brand/seer-current-mark-fog.svg" width="62" height="62" alt="Seer's current raven symbol, fog on electric violet"><span>Symbol on violet · favicon, posters</span></div>
       </div>
       <div class="rt-cols">
         <div class="rt-card">
           <h3>Kept from the kit</h3>
           <ol>
-            <li><b>The logo, unchanged.</b> The S mark and the lowercase &ldquo;seer&rdquo; wordmark come from the designer&rsquo;s own vector files, path data untouched, recoloured only. They sit in every header as one lockup beside each product&rsquo;s name (Seer · App, Seer · Deep&hellip;).</li>
             <li><b>The UI tokens:</b> page #101013, card #1A1A1E, nested #1F1F24, primary #7D33FF, active chip #8F55F7, and their light counterparts.</li>
             <li><b>The geometry:</b> radius 9 for cards, 22 for panels, 8 for controls; 12px card padding; the 40px gutter.</li>
             <li><b>The type spec:</b> Medium 13 for UI, Bold 16/24 for market titles, Bold 32 for amounts, a mono for spec labels. PP Neue Montreal and Suisse Int&rsquo;l Mono are used when installed; Geist and Geist Mono stand in otherwise.</li>
@@ -264,6 +284,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <div class="rt-card">
           <h3>Rethought, and why</h3>
           <ol>
+            <li><b>The logo stays Seer&rsquo;s.</b> The raven from Seer&rsquo;s X profile, beside the lowercase seer of its X banner, leads every header next to each product&rsquo;s name (Seer · App, Seer · Deep&hellip;); a derived mark is offered below as an option.</li>
             <li><b>Line direction, reversed,</b> because the Part II brief asks for one &rarr; many.</li>
             <li><b>Motifs carry data</b> instead of decorating: a band&rsquo;s width is a price, a branch is a repository, a fork is a decision.</li>
             <li><b>One sans.</b> The kit&rsquo;s accent serif was a trial font in the file, and dense data screens read better in one family; accent words are violet instead.</li>
@@ -275,16 +296,63 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         </div>
       </div>
       <div class="rt-why rt-logo">
-        <p><b>Why the Electric Foundation logo, and not the raven.</b> We use the Electric Foundation mark on purpose. Seer named this identity the recognisable starting point, and a swapped or redrawn mark is the first thing that would break recognition. The mark is also built on the same 45&deg; construction as the kit&rsquo;s line language, so one geometry runs from the logo to the data motifs. The raven is Seer&rsquo;s current mark, and the Part II banner pairs it with an italic SEER wordmark; mixing two marks across six products would split the identity, so we kept one. Should the team keep the raven, the logo is drawn in a single place (<span class="rt-mono">Seer.logo</span> in assets/shell.js), so the swap is one file.</p>
+        <p><b>Why Seer&rsquo;s current logo.</b> We first led with the Electric Foundation S mark. On 23 Oct the team signalled a preference for keeping the current mark, the raven on Seer&rsquo;s X profile, so it is the primary logo again on every interface, the favicon and the social cards: it is the mark people already know from x.com/seer_pm, seer.pm and app.seer.pm. Beside it we set the lowercase seer that Seer&rsquo;s own X banner already pairs with its fanning line. The Electric Foundation system carries everything around it (palette, type, line language, components), so the six interfaces read as Seer, refined, not replaced. The raven is drawn from app.seer.pm&rsquo;s own header SVG, the same drawing as the X profile image, path data unchanged and recoloured only, in one place (<span class="rt-mono">Seer.logo</span> in assets/shell.js).</p>
       </div>
     </div>
   </section>
 
   <!-- 6 -->
+  <section class="rt-sec" id="logo" aria-labelledby="rt-logo-h">
+    <div class="s-container">
+      <div class="rt-sec__head">
+        <div><span class="s-spec">06 · Logo</span><h2 class="t-h2" id="rt-logo-h">Logo: keep or derive</h2></div>
+        <p class="rt-lead">We propose keeping recognition: Seer&rsquo;s raven stays the mark people know from its X profile, and the Electric Foundation system carries the rest. If the team wants the logo itself to carry the new line, here is one derived mark that keeps the link to the current one.</p>
+      </div>
+      <div class="rt-cols rt-logos">
+        <figure class="rt-card rt-lg">
+          <figcaption><span class="s-spec">Keep · primary on this site</span><h3>Seer&rsquo;s raven, as on its X profile</h3></figcaption>
+          <div class="rt-lg__pair"><div class="rt-lg__tile rt-tile--ink"><img src="../assets/brand/seer-current-logo-fog.svg" width="172" height="80" alt="Seer's raven and the lowercase seer on ink"></div><div class="rt-lg__tile rt-tile--fog"><img src="../assets/brand/seer-current-logo-ink.svg" width="172" height="80" alt="Seer's raven and the lowercase seer on fog"></div></div>
+          <p>The raven in its open ring with the six-point star, as on x.com/seer_pm, beside the lowercase seer that Seer&rsquo;s X banner sets with its line. The raven&rsquo;s vector is app.seer.pm&rsquo;s own (its header pairs it with an italic SEER, shown in the tests below); recoloured to the kit&rsquo;s fog and ink for both themes.</p>
+        </figure>
+        <figure class="rt-card rt-lg">
+          <figcaption><span class="s-spec">Derive · an option</span><h3>The raven, carrying Seer&rsquo;s line</h3></figcaption>
+          <div class="rt-lg__pair"><div class="rt-lg__tile rt-tile--ink"><img src="../assets/brand/seer-derived-logo-dark.svg" width="196" height="80" alt="The derived mark on ink: the raven in a violet ring, its tail turning into one line that fans out into four, beside the lowercase seer wordmark"></div><div class="rt-lg__tile rt-tile--fog"><img src="../assets/brand/seer-derived-logo-light.svg" width="196" height="80" alt="The derived mark on fog"></div></div>
+          <p>The raven, its open ring, eye, wing and six-point star are Seer&rsquo;s own paths, untouched, so it reads as the same mark. Only the tail changes: it becomes the line from Seer&rsquo;s X banner and Part&nbsp;II brief, one line in that fans out into four to the right, in the kit&rsquo;s violet. The mark and the line become one sign; the wordmark is the same lowercase seer.</p>
+        </figure>
+      </div>
+      <div class="rt-table-wrap u-mt-6">
+        <table class="rt-table rt-sizes">
+          <caption>Small-size tests: favicon at 16, 32 and 64 px, and the app header at its real height, dark and light</caption>
+          <thead><tr><th scope="col">Mark</th><th scope="col">16 px</th><th scope="col">32 px</th><th scope="col">64 px</th><th scope="col">App header, dark</th><th scope="col">App header, light</th></tr></thead>
+          <tbody>
+            <tr><td>Current (X)</td>
+              <td><img src="../assets/brand/favicon.svg" width="16" height="16" alt="Current favicon at 16 px"></td>
+              <td><img src="../assets/brand/favicon.svg" width="32" height="32" alt="Current favicon at 32 px"></td>
+              <td><img src="../assets/brand/favicon.svg" width="64" height="64" alt="Current favicon at 64 px"></td>
+              <td><span class="rt-hd rt-hd--dark"><img src="../assets/brand/seer-current-logo-fog.svg" width="82" height="36" alt="Current logo in a dark header"><i></i><b>App</b></span></td>
+              <td><span class="rt-hd rt-hd--light"><img src="../assets/brand/seer-current-logo-ink.svg" width="82" height="36" alt="Current logo in a light header"><i></i><b>App</b></span></td></tr>
+            <tr><td>As app.seer.pm sets it</td>
+              <td colspan="3" class="rt-same">Same raven and favicon as above</td>
+              <td><span class="rt-hd rt-hd--dark"><img src="../assets/brand/seer-app-logo-fog.svg" width="78" height="36" alt="The raven with app.seer.pm's italic SEER in a dark header"><i></i><b>App</b></span></td>
+              <td><span class="rt-hd rt-hd--light"><img src="../assets/brand/seer-app-logo-ink.svg" width="78" height="36" alt="The raven with app.seer.pm's italic SEER in a light header"><i></i><b>App</b></span></td></tr>
+            <tr><td>Derived</td>
+              <td><img src="../assets/brand/seer-derived-favicon.svg" width="16" height="16" alt="Derived favicon at 16 px"></td>
+              <td><img src="../assets/brand/seer-derived-favicon.svg" width="32" height="32" alt="Derived favicon at 32 px"></td>
+              <td><img src="../assets/brand/seer-derived-favicon.svg" width="64" height="64" alt="Derived favicon at 64 px"></td>
+              <td><span class="rt-hd rt-hd--dark"><img src="../assets/brand/seer-derived-logo-dark.svg" width="86" height="36" alt="Derived logo in a dark header"><i></i><b>App</b></span></td>
+              <td><span class="rt-hd rt-hd--light"><img src="../assets/brand/seer-derived-logo-light.svg" width="86" height="36" alt="Derived logo in a light header"><i></i><b>App</b></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rt-note"><b>What the tests show.</b> At 16 px both symbols reduce to a ring around a bird; at 32 px the derived tail lines start to read; from 64 px up and in the header the fan is clear. Both lockups hold at the header&rsquo;s 36 px. <b>Sources:</b> the raven as Seer shows it on its <a href="https://x.com/seer_pm" target="_blank" rel="noopener noreferrer">x.com/seer_pm</a> profile image (raster only); the same raven, ring and six-point star as vector in the header SVG on <a href="https://app.seer.pm/" target="_blank" rel="noopener noreferrer">app.seer.pm</a> and in <a href="https://seer.pm/assets/body/logo.svg" target="_blank" rel="noopener noreferrer">seer.pm/assets/body/logo.svg</a>, read 23 Oct 2026, path data unchanged and recoloured only; the lowercase seer as on Seer&rsquo;s X banner (the Electric Foundation wordmark). The Seer name and logo belong to Seer.</p>
+    </div>
+</section>
+
+  <!-- 6 -->
   <section class="rt-sec" id="changed" aria-labelledby="rt-ch-h">
     <div class="s-container">
       <div class="rt-sec__head">
-        <div><span class="s-spec">06 · Changelog · 23&ndash;24 Oct 2026</span><h2 class="t-h2" id="rt-ch-h">Refined after the Oct 23 extension</h2></div>
+        <div><span class="s-spec">07 · Changelog · 23&ndash;24 Oct 2026</span><h2 class="t-h2" id="rt-ch-h">Refined after the Oct 23 extension</h2></div>
         <p class="t-body" style="color:var(--text-2)">What changed on the live site after Seer&rsquo;s 23 Oct post. The on-chain claim still points here; earlier changes (live Seer data on every first screen, the line direction, the three-question block) are dated on the <a href="../" style="color:var(--violet-3)">hub</a>.</p>
       </div>
       <ol class="rt-log">
@@ -294,6 +362,7 @@ if(location.protocol!=="file:")["geist-latin","geist-mono-latin"].forEach(functi
         <li><span><b>A detail for every real market:</b> who is asking (address, block explorer, their other markets), what it prices, how to use the signal, the seekers&rsquo; and traders&rsquo; panels, the on-chain record, a link to share, and Trade on Seer.</span></li>
         <li><span><b>&ldquo;On Seer now&rdquo;</b> titles open the same detail; its &ldquo;Seer&rdquo; link trades.</span></li>
         <li><span><b>This rationale,</b> linked from the hub, every page&rsquo;s design notes and the footer.</span></li>
+        <li><span><b>Updated Oct 23 after the team&rsquo;s logo comments:</b> Seer&rsquo;s raven, the mark on its X profile, is the primary logo again on every interface, the favicon and the social cards, beside the lowercase seer of its X banner; one derived mark is offered as an option (<a href="#logo">keep or derive</a>). The Electric Foundation palette, type and line language stay.</span></li>
       </ol>
       <p class="rt-note"><b>Real and sample.</b> Every first screen, the explorer and every market detail read Seer&rsquo;s public APIs live, with a dated hourly snapshot as the fallback, labelled. The walkthrough under each first screen (Lattice DAO, proposal P-07, market #2841) is made up to show the full design and is labelled as sample data; its addresses all start with 0x5eed. Concept by Swift Bot Labs, not affiliated with Seer.</p>
     </div>
