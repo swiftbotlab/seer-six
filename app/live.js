@@ -280,11 +280,11 @@
     var st = el("span", { class: "s-state ap-live__state", data: { state: closed ? "pending" : "open" }, text: closed ? "Closed " + dayMon(cur.endTime * 1000) : "Open",
       attrs: { title: closed ? qn + " closed on " + dayMon(cur.endTime * 1000) + ": these are its closing prices, as on risk.seer.pm" : qn + " trades until " + dayMon(cur.endTime * 1000) } });
     var p2 = function (v) { return (Math.round(v * 10000) / 100).toFixed(2) + "%"; };
-    return shell("risk", opener(qn + " board: how likely is each of " + n + " DeFi assets to default?", 100, R.marketId.toLowerCase(),
+    return closedAt(closed ? cur.endTime : 0, shell("risk", opener(qn + " board: how likely is each of " + n + " DeFi assets to default?", 100, R.marketId.toLowerCase(),
       "Seer's Risk Pricing board for " + qn + " on risk.seer.pm: each asset's probability of default, and No to All"),
       rows2([["No to All", R.noToAll * 100, p2(R.noToAll)], ["Highest: " + top[0], top[1] * 100, p2(top[1])]]),
       snapFoot(at, "risk.seer.pm's public API", "Risk", "https://risk.seer.pm/", "Open Risk Pricing on risk.seer.pm"),
-      "Chance per year" + (closed ? " · " + qn + " closing prices" : ", as risk.seer.pm shows it"), st);
+      "Chance per year" + (closed ? " · " + qn + " closing prices" : ", as risk.seer.pm shows it"), st));
   }
   // Opportunity: the AI job board name, three linked markets on Gnosis (opportunity.seer.pm); its two leading names
   function oppCard() {
@@ -328,14 +328,22 @@
     var t = el("a", { href: "../futarchy/", text: "What happens to ETH if EIP-8363 is scheduled?", attrs: { title: "EIP-8363 on futarchy.seer.pm. Seer's markets API doesn't list this proposal, so it opens its page in this concept.", "aria-label": "EIP-8363: its Futarchy page in this concept" } });
     var st = el("span", { class: "s-state ap-live__state", data: { state: closed ? "pending" : "open" }, text: closed ? "Closed " + dayMon(FT_CLOSES * 1000) + " \u00b7 resolving" : "Trading until " + dayMon(FT_CLOSES * 1000),
       attrs: { title: closed ? "Trading closed " + dayMon(FT_CLOSES * 1000) + ", 00:00 UTC; the proposal is resolving" : "Trading ends " + dayMon(FT_CLOSES * 1000) + ", 00:00 UTC" } });
-    return shell("futarchy", t, rows2([["ETH if scheduled", 0, f2(y)], ["ETH if not", 0, f2(n)]], true),
+    return closedAt(closed ? FT_CLOSES : 0, shell("futarchy", t, rows2([["ETH if scheduled", 0, f2(y)], ["ETH if not", 0, f2(n)]], true),
       snapFoot(F.at, "api.futarchy.seer.pm (EIP-8363's two conditional pools)", "Futarchy", "https://futarchy.seer.pm/markets/0x0d78b95fca9f3e1b588271a330b0d6f731ec38aa", "Open EIP-8363 on futarchy.seer.pm"),
-      "In USDS · " + (atClose ? "impact at close " : closed ? "impact, last snapshot " : "impact (spot) ") + gt + ", " + rec, st);
+      "In USDS · " + (atClose ? "impact at close " : closed ? "impact, last snapshot " : "impact (spot) ") + gt + ", " + rec, st));
   }
+  // a card whose market has stopped trading carries its close time (s); the strip puts it after the open ones
+  function closedAt(t, c) { if (c && t) c.setAttribute("data-closed", String(t)); return c; }
   function ifCards() {
     var out = [];
     [deepCard, riskCard, oppCard, ftCard].forEach(function (f) { var c = null; try { c = f(); } catch (e) { c = null; } if (c) out.push(c); });
-    return out;
+    // open interfaces first, in this order; closed ones after them, the most recently closed first (Futarchy's 24 Oct close
+    // before Risk Pricing's Q3 board, closed 30 Sep), so a closed board never sits at the front of the strip
+    var ct = function (c) { return +(c.getAttribute("data-closed") || 0); };
+    return out.map(function (c, i) { return [c, i]; }).sort(function (a, b) {
+      var x = ct(a[0]), y = ct(b[0]);
+      return (!x !== !y) ? (x ? 1 : -1) : (x && y && x !== y) ? y - x : a[1] - b[1];
+    }).map(function (p) { return p[0]; });
   }
   function ifOf(m) {                                   // the strip's markets: our interface rule, as in explorer.js
     if (OPP_IDS[m.id]) return "opportunity";
