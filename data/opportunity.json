@@ -1,7 +1,7 @@
 {
  "app": "Opportunity Markets",
  "page": "https://swiftbotlab.github.io/seer-six/opportunity/",
- "fetchedAt": "2026-10-24T02:46:29Z",
+ "fetchedAt": "2026-10-24T03:49:53Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
