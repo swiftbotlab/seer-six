@@ -1,7 +1,7 @@
 {
  "app": "Deep",
  "page": "https://swiftbotlab.github.io/seer-six/deep/",
- "fetchedAt": "2026-10-25T03:48:13Z",
+ "fetchedAt": "2026-10-25T04:47:07Z",
  "mode": "hourly snapshot",
  "source": "https://deep.seer.pm/.netlify/functions/get-originality-r3-v3-markets-data",
  "note": "Seer Deep, Round 3 Originality on OP Mainnet: one scalar market per GitHub repo. repos are [repo, UP price, DOWN price, market]; UP (0-1) is the market's estimate of the share of original work. Highest UP first.",
@@ -10,13 +10,6 @@
  "collateral": "sUSDS",
  "status": "open",
  "repos": [
-  {
-   "repo": "arkworks-rs/algebra",
-   "up": 0.8864,
-   "down": 0.1765,
-   "market": "0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06",
-   "url": "https://app.seer.pm/markets/10/0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06"
-  },
   {
    "repo": "supranational/blst",
    "up": 0.8855,
@@ -60,6 +53,13 @@
    "url": "https://app.seer.pm/markets/10/0x49837e744bb14fab9b256785ab050352c3340aff"
   },
   {
+   "repo": "arkworks-rs/algebra",
+   "up": 0.8535,
+   "down": 0.1466,
+   "market": "0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06",
+   "url": "https://app.seer.pm/markets/10/0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06"
+  },
+  {
    "repo": "ethereum/eips",
    "up": 0.8531,
    "down": 0.1711,
@@ -72,13 +72,6 @@
    "down": 0.1807,
    "market": "0x6a8c24d317ca7edcc0c996d41950e0cf2e622e6c",
    "url": "https://app.seer.pm/markets/10/0x6a8c24d317ca7edcc0c996d41950e0cf2e622e6c"
-  },
-  {
-   "repo": "ethereum/py_ecc",
-   "up": 0.8447,
-   "down": 0.2143,
-   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
-   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
   },
   {
    "repo": "Consensys/gnark-crypto",
@@ -177,6 +170,20 @@
    "down": 0.2533,
    "market": "0x5ba02d2373096140102b6d552e62f9d0f7c7c39d",
    "url": "https://app.seer.pm/markets/10/0x5ba02d2373096140102b6d552e62f9d0f7c7c39d"
+  },
+  {
+   "repo": "paulmillr/noble-curves",
+   "up": 0.816,
+   "down": 0.2308,
+   "market": "0xf74142573cd11d76501dfd51d5512fc6b8ca7933",
+   "url": "https://app.seer.pm/markets/10/0xf74142573cd11d76501dfd51d5512fc6b8ca7933"
+  },
+  {
+   "repo": "ethereum/py_ecc",
+   "up": 0.8153,
+   "down": 0.228,
+   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
+   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
   },
   {
    "repo": "apeworx/ape",
@@ -422,13 +429,6 @@
    "down": 0.2407,
    "market": "0xddd9d1a6ace5dca0432719b05691bb2cc7e0b9dd",
    "url": "https://app.seer.pm/markets/10/0xddd9d1a6ace5dca0432719b05691bb2cc7e0b9dd"
-  },
-  {
-   "repo": "paulmillr/noble-curves",
-   "up": 0.7643,
-   "down": 0.2308,
-   "market": "0xf74142573cd11d76501dfd51d5512fc6b8ca7933",
-   "url": "https://app.seer.pm/markets/10/0xf74142573cd11d76501dfd51d5512fc6b8ca7933"
   },
   {
    "repo": "scaffold-eth/scaffold-eth-2",
