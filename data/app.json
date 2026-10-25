@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-25T10:44:55Z",
+ "fetchedAt": "2026-10-25T11:43:24Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,7 +22,7 @@
    "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
    "chain": 100,
    "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
-   "liq": 27604.42,
+   "liq": 27604.59,
    "outcomes": [
     [
      "Yashar",
@@ -106,7 +106,7 @@
    "id": "0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
    "chain": 100,
    "title": "Who will win the 2026 South Sudanese presidential election?",
-   "liq": 781.92,
+   "liq": 781.93,
    "outcomes": [
     [
      "Salva Kiir Mayardit",
@@ -170,7 +170,7 @@
    "id": "0x6e9664bb63fc353caefddb5c80f7b39bf90742fc",
    "chain": 100,
    "title": "Who will win the 2026 Guinea-Bissau presidential election?",
-   "liq": 503.4,
+   "liq": 503.41,
    "outcomes": [
     [
      "Fernando Dias da Costa",
@@ -216,7 +216,7 @@
    "risk": 1,
    "opportunity": 3,
    "app": 1754,
-   "at": 1792925095000
+   "at": 1792928604000
   },
   "markets": [
    {
@@ -247,9 +247,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 27604.42,
-    "volumeUSD": 6573.96,
-    "openInterestUSD": 8937.39,
+    "liquidityUSD": 27604.59,
+    "volumeUSD": 6574.0,
+    "openInterestUSD": 8937.45,
     "openingTs": 1784312694,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -333,9 +333,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7170.35,
-    "volumeUSD": 49728.22,
-    "openInterestUSD": 31100.3,
+    "liquidityUSD": 7170.39,
+    "volumeUSD": 49728.52,
+    "openInterestUSD": 31100.49,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -437,9 +437,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 1239.56,
+    "liquidityUSD": 1239.57,
     "volumeUSD": 8.17,
-    "openInterestUSD": 642.89,
+    "openInterestUSD": 642.9,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -566,9 +566,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1155.27,
+    "liquidityUSD": 1155.28,
     "volumeUSD": 381.92,
-    "openInterestUSD": 550.35,
+    "openInterestUSD": 550.36,
     "openingTs": 1782120028,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -695,9 +695,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1112.59,
+    "liquidityUSD": 1112.6,
     "volumeUSD": 88.73,
-    "openInterestUSD": 663.3,
+    "openInterestUSD": 663.31,
     "openingTs": 1782125983,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -781,9 +781,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.5,
+    "liquidityUSD": 1098.51,
     "volumeUSD": 1158.4,
-    "openInterestUSD": 783.7,
+    "openInterestUSD": 783.71,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -868,8 +868,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 1028.75,
-    "volumeUSD": 553.85,
-    "openInterestUSD": 1169.07,
+    "volumeUSD": 553.86,
+    "openInterestUSD": 1169.08,
     "openingTs": 1782120471,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -997,8 +997,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 818.65,
-    "volumeUSD": 698.64,
-    "openInterestUSD": 2009.38,
+    "volumeUSD": 698.65,
+    "openInterestUSD": 2009.4,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1082,7 +1082,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 781.92,
+    "liquidityUSD": 781.93,
     "volumeUSD": 107.86,
     "openInterestUSD": 322.19,
     "openingTs": 1784369698,
@@ -1271,8 +1271,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 564.49,
-    "volumeUSD": 2798.18,
-    "openInterestUSD": 2795.21,
+    "volumeUSD": 2798.2,
+    "openInterestUSD": 2795.23,
     "openingTs": 1798675200,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
