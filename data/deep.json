@@ -1,7 +1,7 @@
 {
  "app": "Deep",
  "page": "https://swiftbotlab.github.io/seer-six/deep/",
- "fetchedAt": "2026-10-26T16:57:50Z",
+ "fetchedAt": "2026-10-26T17:50:21Z",
  "mode": "hourly snapshot",
  "source": "https://deep.seer.pm/.netlify/functions/get-originality-r3-v3-markets-data",
  "note": "Seer Deep, Round 3 Originality on OP Mainnet: one scalar market per GitHub repo. repos are [repo, UP price, DOWN price, market]; UP (0-1) is the market's estimate of the share of original work. Highest UP first.",
@@ -473,13 +473,6 @@
    "url": "https://app.seer.pm/markets/10/0x4b8bda295e28375ed17abc8d1472e9cccadc93aa"
   },
   {
-   "repo": "dl-solarity/solidity-lib",
-   "up": 0.7414,
-   "down": 0.2848,
-   "market": "0x4b62af2f270b59ec49230d3a06b63752964a4311",
-   "url": "https://app.seer.pm/markets/10/0x4b62af2f270b59ec49230d3a06b63752964a4311"
-  },
-  {
    "repo": "flashbots/rbuilder",
    "up": 0.7412,
    "down": 0.282,
@@ -492,6 +485,13 @@
    "down": 0.2678,
    "market": "0x293a1858e689c117708e509770b283f281bbf6cb",
    "url": "https://app.seer.pm/markets/10/0x293a1858e689c117708e509770b283f281bbf6cb"
+  },
+  {
+   "repo": "dl-solarity/solidity-lib",
+   "up": 0.7402,
+   "down": 0.2897,
+   "market": "0x4b62af2f270b59ec49230d3a06b63752964a4311",
+   "url": "https://app.seer.pm/markets/10/0x4b62af2f270b59ec49230d3a06b63752964a4311"
   },
   {
    "repo": "ethereum/web3.py",

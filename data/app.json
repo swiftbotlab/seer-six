@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-26T16:57:37Z",
+ "fetchedAt": "2026-10-26T17:50:02Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -106,7 +106,7 @@
    "id": "0x2c04736e1698d13a554cca3558e7bfe9f5334a00",
    "chain": 100,
    "title": "Who will win the 2026 South Sudanese presidential election?",
-   "liq": 782.04,
+   "liq": 782.05,
    "outcomes": [
     [
      "Salva Kiir Mayardit",
@@ -216,7 +216,7 @@
    "risk": 1,
    "opportunity": 3,
    "app": 1760,
-   "at": 1793033857000
+   "at": 1793037002000
   },
   "markets": [
    {
@@ -290,9 +290,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 7585.71,
-    "volumeUSD": 11814.33,
-    "openInterestUSD": 7687.42,
+    "liquidityUSD": 7585.76,
+    "volumeUSD": 11814.41,
+    "openInterestUSD": 7687.48,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -333,9 +333,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7173.21,
-    "volumeUSD": 49740.56,
-    "openInterestUSD": 31105.11,
+    "liquidityUSD": 7173.26,
+    "volumeUSD": 49740.89,
+    "openInterestUSD": 31105.31,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -437,9 +437,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 1239.75,
+    "liquidityUSD": 1239.76,
     "volumeUSD": 8.17,
-    "openInterestUSD": 642.99,
+    "openInterestUSD": 643.0,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -739,7 +739,7 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 1099.75,
-    "volumeUSD": 686.41,
+    "volumeUSD": 686.42,
     "openInterestUSD": 1004.83,
     "openingTs": 1798805720,
     "finalizeTs": 33260976000,
@@ -781,9 +781,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1098.67,
+    "liquidityUSD": 1098.68,
     "volumeUSD": 1158.58,
-    "openInterestUSD": 783.82,
+    "openInterestUSD": 783.83,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -867,9 +867,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1028.91,
+    "liquidityUSD": 1028.92,
     "volumeUSD": 553.94,
-    "openInterestUSD": 1169.26,
+    "openInterestUSD": 1169.27,
     "openingTs": 1782120471,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1041,7 +1041,7 @@
     },
     "liquidityUSD": 802.61,
     "volumeUSD": 291.86,
-    "openInterestUSD": 1138.48,
+    "openInterestUSD": 1138.49,
     "openingTs": 1798827365,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1082,7 +1082,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 782.04,
+    "liquidityUSD": 782.05,
     "volumeUSD": 107.88,
     "openInterestUSD": 322.24,
     "openingTs": 1784369698,
