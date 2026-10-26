@@ -1,7 +1,7 @@
 {
  "app": "Homepage",
  "page": "https://swiftbotlab.github.io/seer-six/home/",
- "fetchedAt": "2026-10-26T13:31:52Z",
+ "fetchedAt": "2026-10-26T15:43:03Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -15,15 +15,15 @@
   "page": 1
  },
  "note": "The hero: the most liquid open, Kleros-verified categorical or multi-categorical market on Seer. outcomes are [answer, odds %]; invalid is Seer's price of Invalid when it reports one.",
- "openMarkets": 2139,
+ "openMarkets": 2142,
  "verifiedOpen": 72,
  "hero": {
   "id": "0x31cb54c49479243333594eb7343d31f6bd1ddfd3",
   "chain": 100,
   "title": "Which party or joint electoral list will win the most seats in Israeli Knesset election in 2026?",
   "tpl": "2",
-  "liq": 27642.13,
-  "vol": 6683.7,
+  "liq": 27635.2,
+  "vol": 6692.0,
   "outcomes": [
    [
     "Yashar",
@@ -31,7 +31,7 @@
    ],
    [
     "Likud",
-    31.9
+    31.8
    ],
    [
     "Together Alliance",
