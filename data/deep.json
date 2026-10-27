@@ -1,7 +1,7 @@
 {
  "app": "Deep",
  "page": "https://swiftbotlab.github.io/seer-six/deep/",
- "fetchedAt": "2026-10-27T10:51:56Z",
+ "fetchedAt": "2026-10-27T11:49:49Z",
  "mode": "hourly snapshot",
  "source": "https://deep.seer.pm/.netlify/functions/get-originality-r3-v3-markets-data",
  "note": "Seer Deep, Round 3 Originality on OP Mainnet: one scalar market per GitHub repo. repos are [repo, UP price, DOWN price, market]; UP (0-1) is the market's estimate of the share of original work. Highest UP first.",
@@ -34,7 +34,7 @@
   {
    "repo": "paulmillr/noble-curves",
    "up": 0.8666,
-   "down": 0.0927,
+   "down": 0.2823,
    "market": "0xf74142573cd11d76501dfd51d5512fc6b8ca7933",
    "url": "https://app.seer.pm/markets/10/0xf74142573cd11d76501dfd51d5512fc6b8ca7933"
   },
@@ -47,8 +47,8 @@
   },
   {
    "repo": "Consensys/gnark-crypto",
-   "up": 0.8466,
-   "down": 0.1721,
+   "up": 0.8443,
+   "down": 0.1855,
    "market": "0x9fc615e9a9e2066d3e8dda5c1c5280461489d808",
    "url": "https://app.seer.pm/markets/10/0x9fc615e9a9e2066d3e8dda5c1c5280461489d808"
   },
@@ -65,6 +65,20 @@
    "down": 0.176,
    "market": "0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06",
    "url": "https://app.seer.pm/markets/10/0xb52c7e58dc48250b6cb4fbe5ed251f617700bf06"
+  },
+  {
+   "repo": "supranational/blst",
+   "up": 0.8369,
+   "down": 0.1785,
+   "market": "0x74a00a7a338f0fa8ce7afedb27279a30cf24df85",
+   "url": "https://app.seer.pm/markets/10/0x74a00a7a338f0fa8ce7afedb27279a30cf24df85"
+  },
+  {
+   "repo": "flashbots/mev-boost",
+   "up": 0.8334,
+   "down": 0.1665,
+   "market": "0xc53217f3ca3371921076c4e7ea9457ea3b758317",
+   "url": "https://app.seer.pm/markets/10/0xc53217f3ca3371921076c4e7ea9457ea3b758317"
   },
   {
    "repo": "nethereum/nethereum",
@@ -109,18 +123,11 @@
    "url": "https://app.seer.pm/markets/10/0x38a9dc84c9f940262b548856c1869f992ee80ba4"
   },
   {
-   "repo": "herumi/mcl",
-   "up": 0.7992,
-   "down": 0.2008,
-   "market": "0xc7846582934c4c1d1156ddf44d988f6857b0f743",
-   "url": "https://app.seer.pm/markets/10/0xc7846582934c4c1d1156ddf44d988f6857b0f743"
-  },
-  {
-   "repo": "flashbots/mev-boost",
-   "up": 0.7925,
-   "down": 0.1281,
-   "market": "0xc53217f3ca3371921076c4e7ea9457ea3b758317",
-   "url": "https://app.seer.pm/markets/10/0xc53217f3ca3371921076c4e7ea9457ea3b758317"
+   "repo": "libp2p/libp2p",
+   "up": 0.7929,
+   "down": 0.207,
+   "market": "0xde89236ae23777bdf655344858c44fa581c470a3",
+   "url": "https://app.seer.pm/markets/10/0xde89236ae23777bdf655344858c44fa581c470a3"
   },
   {
    "repo": "chainsafe/lodestar",
@@ -128,20 +135,6 @@
    "down": 0.2209,
    "market": "0x7c3b8fa85d532f7ed1fd8f32054b0497541db623",
    "url": "https://app.seer.pm/markets/10/0x7c3b8fa85d532f7ed1fd8f32054b0497541db623"
-  },
-  {
-   "repo": "Certora/CertoraProver",
-   "up": 0.7901,
-   "down": 0.2227,
-   "market": "0x45dc37854a86f647cf45890f7167c0adc19814f2",
-   "url": "https://app.seer.pm/markets/10/0x45dc37854a86f647cf45890f7167c0adc19814f2"
-  },
-  {
-   "repo": "argotorg/hevm",
-   "up": 0.7892,
-   "down": 0.2235,
-   "market": "0xdfb022190820d74babd62379fe53b45f0ac1cc67",
-   "url": "https://app.seer.pm/markets/10/0xdfb022190820d74babd62379fe53b45f0ac1cc67"
   },
   {
    "repo": "intellij-solidity/intellij-solidity",
@@ -200,13 +193,6 @@
    "url": "https://app.seer.pm/markets/10/0x5285cd403845c358140c87f75488aec1aaf1a1f2"
   },
   {
-   "repo": "Vectorized/solady",
-   "up": 0.7738,
-   "down": 0.2478,
-   "market": "0x1e405c9bcf5038770efc4e5065cd216f93658b80",
-   "url": "https://app.seer.pm/markets/10/0x1e405c9bcf5038770efc4e5065cd216f93658b80"
-  },
-  {
    "repo": "Plonky3/Plonky3",
    "up": 0.7731,
    "down": 0.2375,
@@ -221,6 +207,13 @@
    "url": "https://app.seer.pm/markets/10/0x0d91d33dc1bbe47469f5aef3dc113ed706ebabcb"
   },
   {
+   "repo": "Vectorized/solady",
+   "up": 0.7708,
+   "down": 0.274,
+   "market": "0x1e405c9bcf5038770efc4e5065cd216f93658b80",
+   "url": "https://app.seer.pm/markets/10/0x1e405c9bcf5038770efc4e5065cd216f93658b80"
+  },
+  {
    "repo": "foundry-rs/foundry",
    "up": 0.7692,
    "down": 0.1757,
@@ -233,6 +226,13 @@
    "down": 0.2583,
    "market": "0x572f1f68c236460581ad720e1b262a604d92e703",
    "url": "https://app.seer.pm/markets/10/0x572f1f68c236460581ad720e1b262a604d92e703"
+  },
+  {
+   "repo": "herumi/mcl",
+   "up": 0.7664,
+   "down": 0.3984,
+   "market": "0xc7846582934c4c1d1156ddf44d988f6857b0f743",
+   "url": "https://app.seer.pm/markets/10/0xc7846582934c4c1d1156ddf44d988f6857b0f743"
   },
   {
    "repo": "nethermindeth/nethermind",
@@ -256,11 +256,32 @@
    "url": "https://app.seer.pm/markets/10/0x86b3b071bd6c383e4544b18353cde9ca203158ce"
   },
   {
+   "repo": "Certora/CertoraProver",
+   "up": 0.7582,
+   "down": 0.4657,
+   "market": "0x45dc37854a86f647cf45890f7167c0adc19814f2",
+   "url": "https://app.seer.pm/markets/10/0x45dc37854a86f647cf45890f7167c0adc19814f2"
+  },
+  {
    "repo": "a16z/helios",
    "up": 0.7572,
    "down": 0.2231,
    "market": "0x842cf887862213513895e1aa1714723009512932",
    "url": "https://app.seer.pm/markets/10/0x842cf887862213513895e1aa1714723009512932"
+  },
+  {
+   "repo": "argotorg/hevm",
+   "up": 0.757,
+   "down": 0.3775,
+   "market": "0xdfb022190820d74babd62379fe53b45f0ac1cc67",
+   "url": "https://app.seer.pm/markets/10/0xdfb022190820d74babd62379fe53b45f0ac1cc67"
+  },
+  {
+   "repo": "OffchainLabs/prysm",
+   "up": 0.7544,
+   "down": 0.2852,
+   "market": "0x1ac42dde2f605435771a0a4b6928b8c802388285",
+   "url": "https://app.seer.pm/markets/10/0x1ac42dde2f605435771a0a4b6928b8c802388285"
   },
   {
    "repo": "flashbots/mev-boost-relay",
@@ -282,13 +303,6 @@
    "down": 0.2495,
    "market": "0xe1e506f60e6caaa6521b65231a293053b39494cd",
    "url": "https://app.seer.pm/markets/10/0xe1e506f60e6caaa6521b65231a293053b39494cd"
-  },
-  {
-   "repo": "aestus-relay/mev-boost-relay",
-   "up": 0.7504,
-   "down": 0.2811,
-   "market": "0xd264f08e1871926d45f08ba8c19927ba909ed495",
-   "url": "https://app.seer.pm/markets/10/0xd264f08e1871926d45f08ba8c19927ba909ed495"
   },
   {
    "repo": "apeworx/ape",
@@ -319,25 +333,11 @@
    "url": "https://app.seer.pm/markets/10/0x87a54a3ad188dfea96aa128922351fdc12da80e3"
   },
   {
-   "repo": "libp2p/libp2p",
-   "up": 0.7414,
-   "down": 0.1659,
-   "market": "0xde89236ae23777bdf655344858c44fa581c470a3",
-   "url": "https://app.seer.pm/markets/10/0xde89236ae23777bdf655344858c44fa581c470a3"
-  },
-  {
    "repo": "a16z/halmos",
    "up": 0.7382,
    "down": 0.1643,
    "market": "0x293a1858e689c117708e509770b283f281bbf6cb",
    "url": "https://app.seer.pm/markets/10/0x293a1858e689c117708e509770b283f281bbf6cb"
-  },
-  {
-   "repo": "supranational/blst",
-   "up": 0.7359,
-   "down": 0.1112,
-   "market": "0x74a00a7a338f0fa8ce7afedb27279a30cf24df85",
-   "url": "https://app.seer.pm/markets/10/0x74a00a7a338f0fa8ce7afedb27279a30cf24df85"
   },
   {
    "repo": "0xMiden/miden-vm",
@@ -354,13 +354,6 @@
    "url": "https://app.seer.pm/markets/10/0x9ab54e515c12e14048b009a366a4845570c5ee6d"
   },
   {
-   "repo": "skalenetwork/libBLS",
-   "up": 0.7314,
-   "down": 0.2796,
-   "market": "0x5ba02d2373096140102b6d552e62f9d0f7c7c39d",
-   "url": "https://app.seer.pm/markets/10/0x5ba02d2373096140102b6d552e62f9d0f7c7c39d"
-  },
-  {
    "repo": "argotorg/fe",
    "up": 0.7311,
    "down": 0.2689,
@@ -368,25 +361,25 @@
    "url": "https://app.seer.pm/markets/10/0xb533d9b1becb3ee98820ee2342fbc9a062c296ca"
   },
   {
-   "repo": "wealdtech/ethdo",
-   "up": 0.7308,
-   "down": 0.2842,
-   "market": "0x1773e3a7d522e80903e9914a88c815e126fb0f81",
-   "url": "https://app.seer.pm/markets/10/0x1773e3a7d522e80903e9914a88c815e126fb0f81"
-  },
-  {
-   "repo": "DefiLlama/chainlist",
-   "up": 0.7307,
-   "down": 0.2867,
-   "market": "0x4b8bda295e28375ed17abc8d1472e9cccadc93aa",
-   "url": "https://app.seer.pm/markets/10/0x4b8bda295e28375ed17abc8d1472e9cccadc93aa"
+   "repo": "l2beat/l2beat",
+   "up": 0.729,
+   "down": 0.2356,
+   "market": "0x0954b44c816f034c6c30a0b049f0ceb6bda6100a",
+   "url": "https://app.seer.pm/markets/10/0x0954b44c816f034c6c30a0b049f0ceb6bda6100a"
   },
   {
    "repo": "dl-solarity/solidity-lib",
    "up": 0.7268,
-   "down": 0.2389,
+   "down": 0.4101,
    "market": "0x4b62af2f270b59ec49230d3a06b63752964a4311",
    "url": "https://app.seer.pm/markets/10/0x4b62af2f270b59ec49230d3a06b63752964a4311"
+  },
+  {
+   "repo": "wealdtech/ethdo",
+   "up": 0.7238,
+   "down": 0.3139,
+   "market": "0x1773e3a7d522e80903e9914a88c815e126fb0f81",
+   "url": "https://app.seer.pm/markets/10/0x1773e3a7d522e80903e9914a88c815e126fb0f81"
   },
   {
    "repo": "eth-infinitism/account-abstraction",
@@ -396,6 +389,13 @@
    "url": "https://app.seer.pm/markets/10/0xcb8ab4238ae037096e274486c4892d843e769dde"
   },
   {
+   "repo": "aestus-relay/mev-boost-relay",
+   "up": 0.7219,
+   "down": 0.9665,
+   "market": "0xd264f08e1871926d45f08ba8c19927ba909ed495",
+   "url": "https://app.seer.pm/markets/10/0xd264f08e1871926d45f08ba8c19927ba909ed495"
+  },
+  {
    "repo": "Commit-Boost/commit-boost-client",
    "up": 0.7215,
    "down": 0.2938,
@@ -403,25 +403,11 @@
    "url": "https://app.seer.pm/markets/10/0x93d2239a2ae25e0ed759b9caf246c3c555b55a2f"
   },
   {
-   "repo": "l2beat/l2beat",
-   "up": 0.7212,
-   "down": 0.2788,
-   "market": "0x0954b44c816f034c6c30a0b049f0ceb6bda6100a",
-   "url": "https://app.seer.pm/markets/10/0x0954b44c816f034c6c30a0b049f0ceb6bda6100a"
-  },
-  {
    "repo": "alloy-rs/alloy",
    "up": 0.7206,
    "down": 0.2794,
    "market": "0x107af2f9daacad63256adc9c54ddbd630b2b87d6",
    "url": "https://app.seer.pm/markets/10/0x107af2f9daacad63256adc9c54ddbd630b2b87d6"
-  },
-  {
-   "repo": "OffchainLabs/prysm",
-   "up": 0.7148,
-   "down": 0.2852,
-   "market": "0x1ac42dde2f605435771a0a4b6928b8c802388285",
-   "url": "https://app.seer.pm/markets/10/0x1ac42dde2f605435771a0a4b6928b8c802388285"
   },
   {
    "repo": "ethereum/execution-apis",
@@ -473,6 +459,13 @@
    "url": "https://app.seer.pm/markets/10/0x19eb4b247fe868df4ae6d94c118ca39b950a738d"
   },
   {
+   "repo": "skalenetwork/libBLS",
+   "up": 0.7077,
+   "down": 0.3954,
+   "market": "0x5ba02d2373096140102b6d552e62f9d0f7c7c39d",
+   "url": "https://app.seer.pm/markets/10/0x5ba02d2373096140102b6d552e62f9d0f7c7c39d"
+  },
+  {
    "repo": "risc0/risc0-ethereum",
    "up": 0.7068,
    "down": 0.1848,
@@ -485,6 +478,13 @@
    "down": 0.2936,
    "market": "0x5a56ecb388369c2a92b51ca1e08c32f233baf178",
    "url": "https://app.seer.pm/markets/10/0x5a56ecb388369c2a92b51ca1e08c32f233baf178"
+  },
+  {
+   "repo": "DefiLlama/chainlist",
+   "up": 0.7063,
+   "down": 0.3727,
+   "market": "0x4b8bda295e28375ed17abc8d1472e9cccadc93aa",
+   "url": "https://app.seer.pm/markets/10/0x4b8bda295e28375ed17abc8d1472e9cccadc93aa"
   },
   {
    "repo": "nomicfoundation/hardhat",
@@ -508,11 +508,11 @@
    "url": "https://app.seer.pm/markets/10/0xad30e4cc2f96e533a92cef4fcd9c57d4a4e5188c"
   },
   {
-   "repo": "Cyfrin/aderyn",
-   "up": 0.6953,
-   "down": 0.3049,
-   "market": "0x8717e0e2733acb24ac964667e2252bc118fb2249",
-   "url": "https://app.seer.pm/markets/10/0x8717e0e2733acb24ac964667e2252bc118fb2249"
+   "repo": "wighawag/hardhat-deploy",
+   "up": 0.7032,
+   "down": 0.322,
+   "market": "0xc8db7cdd4bc8006353dd09d87ecab65f84c620e5",
+   "url": "https://app.seer.pm/markets/10/0xc8db7cdd4bc8006353dd09d87ecab65f84c620e5"
   },
   {
    "repo": "shazow/whatsabi",
@@ -543,13 +543,6 @@
    "url": "https://app.seer.pm/markets/10/0x7942645c35fa3a7f84ff1c731c81087f375c1eaa"
   },
   {
-   "repo": "wighawag/hardhat-deploy",
-   "up": 0.687,
-   "down": 0.2789,
-   "market": "0xc8db7cdd4bc8006353dd09d87ecab65f84c620e5",
-   "url": "https://app.seer.pm/markets/10/0xc8db7cdd4bc8006353dd09d87ecab65f84c620e5"
-  },
-  {
    "repo": "flashbots/rbuilder",
    "up": 0.6844,
    "down": 0.3156,
@@ -562,6 +555,13 @@
    "down": 0.3208,
    "market": "0x6aa9ba4a89cc1f5d854b898ed34f4370a3857585",
    "url": "https://app.seer.pm/markets/10/0x6aa9ba4a89cc1f5d854b898ed34f4370a3857585"
+  },
+  {
+   "repo": "Cyfrin/aderyn",
+   "up": 0.6737,
+   "down": 0.4345,
+   "market": "0x8717e0e2733acb24ac964667e2252bc118fb2249",
+   "url": "https://app.seer.pm/markets/10/0x8717e0e2733acb24ac964667e2252bc118fb2249"
   },
   {
    "repo": "holiman/goevmlab",
@@ -600,8 +600,8 @@
   },
   {
    "repo": "taikoxyz/taiko-mono",
-   "up": 0.6407,
-   "down": 0.3593,
+   "up": 0.6466,
+   "down": 0.3289,
    "market": "0x6a6a3326d701d464034d141bece8c21a06b7854b",
    "url": "https://app.seer.pm/markets/10/0x6a6a3326d701d464034d141bece8c21a06b7854b"
   },
@@ -627,25 +627,18 @@
    "url": "https://app.seer.pm/markets/10/0x36b1a703d790770ef14b875d3a0d2e0ded6234c1"
   },
   {
-   "repo": "ethereum/js-ethereum-cryptography",
-   "up": 0.6036,
-   "down": 0.3964,
-   "market": "0x018a386a46949fbc8781b1254636b3a76e60a57c",
-   "url": "https://app.seer.pm/markets/10/0x018a386a46949fbc8781b1254636b3a76e60a57c"
-  },
-  {
    "repo": "dappnode/DAppNode",
-   "up": 0.5991,
-   "down": 0.36,
+   "up": 0.6101,
+   "down": 0.4185,
    "market": "0xdd8e32840a811d26aac9112f530490ee86d89bbc",
    "url": "https://app.seer.pm/markets/10/0xdd8e32840a811d26aac9112f530490ee86d89bbc"
   },
   {
-   "repo": "ChainSafe/bls",
-   "up": 0.5906,
-   "down": 0.4094,
-   "market": "0xf8d574d0a7dc92deb6ae61adae9ad1219aac2c73",
-   "url": "https://app.seer.pm/markets/10/0xf8d574d0a7dc92deb6ae61adae9ad1219aac2c73"
+   "repo": "ethereum/js-ethereum-cryptography",
+   "up": 0.5931,
+   "down": 0.4635,
+   "market": "0x018a386a46949fbc8781b1254636b3a76e60a57c",
+   "url": "https://app.seer.pm/markets/10/0x018a386a46949fbc8781b1254636b3a76e60a57c"
   },
   {
    "repo": "ethpandaops/ethereum-helm-charts",
@@ -669,6 +662,20 @@
    "url": "https://app.seer.pm/markets/10/0x72e12907d277199d7a44fde21d7dd981150b0f1a"
   },
   {
+   "repo": "ethstaker/eth-docker",
+   "up": 0.5676,
+   "down": 0.4704,
+   "market": "0x9525a58d53bc9d395ef56ec4c11e39370a88a304",
+   "url": "https://app.seer.pm/markets/10/0x9525a58d53bc9d395ef56ec4c11e39370a88a304"
+  },
+  {
+   "repo": "ChainSafe/bls",
+   "up": 0.5565,
+   "down": 0.4917,
+   "market": "0xf8d574d0a7dc92deb6ae61adae9ad1219aac2c73",
+   "url": "https://app.seer.pm/markets/10/0xf8d574d0a7dc92deb6ae61adae9ad1219aac2c73"
+  },
+  {
    "repo": "ethpandaops/ethereum-package",
    "up": 0.5545,
    "down": 0.2016,
@@ -676,25 +683,18 @@
    "url": "https://app.seer.pm/markets/10/0x08dafca21f736aec39d0a45adf779cb8e437a61e"
   },
   {
+   "repo": "smartcontracts/simple-optimism-node",
+   "up": 0.5347,
+   "down": 0.4749,
+   "market": "0x04f4d33c6aa72320a822bc0fcb32e097a45ae4f9",
+   "url": "https://app.seer.pm/markets/10/0x04f4d33c6aa72320a822bc0fcb32e097a45ae4f9"
+  },
+  {
    "repo": "succinctlabs/op-succinct",
    "up": 0.5263,
    "down": 0.2939,
    "market": "0x48eb0ebbb9284b0d8c51747da2fc4b9f342b401f",
    "url": "https://app.seer.pm/markets/10/0x48eb0ebbb9284b0d8c51747da2fc4b9f342b401f"
-  },
-  {
-   "repo": "smartcontracts/simple-optimism-node",
-   "up": 0.4928,
-   "down": 0.3916,
-   "market": "0x04f4d33c6aa72320a822bc0fcb32e097a45ae4f9",
-   "url": "https://app.seer.pm/markets/10/0x04f4d33c6aa72320a822bc0fcb32e097a45ae4f9"
-  },
-  {
-   "repo": "ethstaker/eth-docker",
-   "up": 0.4595,
-   "down": 0.3756,
-   "market": "0x9525a58d53bc9d395ef56ec4c11e39370a88a304",
-   "url": "https://app.seer.pm/markets/10/0x9525a58d53bc9d395ef56ec4c11e39370a88a304"
   }
  ]
 }
