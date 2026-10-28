@@ -1,6 +1,6 @@
 {
  "site": "https://swiftbotlab.github.io/seer-six/",
- "generatedAt": "2026-10-28T07:12:33Z",
+ "generatedAt": "2026-10-28T08:11:00Z",
  "generator": "tools/refresh.py (GitHub Actions, hourly)",
  "about": "Seer data behind each page of this concept, as JSON. mode 'hourly snapshot': read server side from Seer's public endpoints and validated; the pages also read the same endpoints live in the browser where Seer allows it. status 'kept': that hour's read failed validation, so the last good copy stays.",
  "sources": [
@@ -8,42 +8,42 @@
    "app": "app",
    "json": "data/app.json",
    "pageData": "assets/seer-snapshot.js",
-   "fetchedAt": "2026-10-28T07:12:33Z",
+   "fetchedAt": "2026-10-28T08:11:00Z",
    "status": "ok"
   },
   {
    "app": "opportunity",
    "json": "data/opportunity.json",
    "pageData": "opportunity/snapshot.js",
-   "fetchedAt": "2026-10-28T07:12:37Z",
+   "fetchedAt": "2026-10-28T08:11:05Z",
    "status": "ok"
   },
   {
    "app": "risk",
    "json": "data/risk.json",
    "pageData": "risk/snapshot.js",
-   "fetchedAt": "2026-10-28T07:12:38Z",
+   "fetchedAt": "2026-10-28T08:11:06Z",
    "status": "ok"
   },
   {
    "app": "futarchy",
    "json": "data/futarchy.json",
    "pageData": "futarchy/eip8363-data.js",
-   "fetchedAt": "2026-10-28T07:12:46Z",
+   "fetchedAt": "2026-10-28T08:11:10Z",
    "status": "ok"
   },
   {
    "app": "deep",
    "json": "data/deep.json",
    "pageData": "deep/round3.js",
-   "fetchedAt": "2026-10-28T07:12:56Z",
+   "fetchedAt": "2026-10-28T08:11:21Z",
    "status": "ok"
   },
   {
    "app": "home",
    "json": "data/home.json",
    "pageData": "home/hero-snapshot.js",
-   "fetchedAt": "2026-10-28T07:12:33Z",
+   "fetchedAt": "2026-10-28T08:11:00Z",
    "status": "ok"
   }
  ]
