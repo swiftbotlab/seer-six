@@ -1,7 +1,7 @@
 {
  "app": "App (market explorer)",
  "page": "https://swiftbotlab.github.io/seer-six/app/",
- "fetchedAt": "2026-10-28T15:05:27Z",
+ "fetchedAt": "2026-10-28T16:03:26Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -102,7 +102,7 @@
    "id": "0x67ea7fc200ff1c2a8817c1efd4b56cdd6ef0a060",
    "chain": 100,
    "title": "Will GTA 6 achieve the highest first-day unit sales of any GTA game?",
-   "liq": 734.33,
+   "liq": 734.34,
    "outcomes": [
     [
      "YES",
@@ -216,7 +216,7 @@
    "risk": 1,
    "opportunity": 3,
    "app": 1760,
-   "at": 1793199927000
+   "at": 1793203406000
   },
   "markets": [
    {
@@ -243,9 +243,9 @@
     "parentMarket": {
      "id": "0xe1793927eb763864967426fe7750ab0dc6f019f3"
     },
-    "liquidityUSD": 7587.54,
-    "volumeUSD": 11817.18,
-    "openInterestUSD": 7689.28,
+    "liquidityUSD": 7587.59,
+    "volumeUSD": 11817.26,
+    "openInterestUSD": 7689.33,
     "openingTs": 1743984000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -286,9 +286,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 7174.94,
-    "volumeUSD": 49752.56,
-    "openInterestUSD": 31112.62,
+    "liquidityUSD": 7174.97,
+    "volumeUSD": 49752.78,
+    "openInterestUSD": 31112.75,
     "openingTs": 1743984000,
     "finalizeTs": 1788718525,
     "hasAnswers": true,
@@ -347,9 +347,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 6782.02,
-    "volumeUSD": 1321.92,
-    "openInterestUSD": 3957.68,
+    "liquidityUSD": 6782.07,
+    "volumeUSD": 1321.93,
+    "openInterestUSD": 3957.71,
     "openingTs": 1744675200,
     "finalizeTs": 1770492740,
     "hasAnswers": true,
@@ -394,9 +394,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 2793.26,
+    "liquidityUSD": 2793.28,
     "volumeUSD": 90.99,
-    "openInterestUSD": 1200.74,
+    "openInterestUSD": 1200.75,
     "openingTs": 1775591213,
     "finalizeTs": 1776309880,
     "hasAnswers": true,
@@ -523,9 +523,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1170.28,
+    "liquidityUSD": 1170.29,
     "volumeUSD": 165.02,
-    "openInterestUSD": 428.15,
+    "openInterestUSD": 428.16,
     "openingTs": 1782125656,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -566,7 +566,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1153.6,
+    "liquidityUSD": 1153.61,
     "volumeUSD": 400.44,
     "openInterestUSD": 562.57,
     "openingTs": 1782120028,
@@ -652,9 +652,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1120.29,
+    "liquidityUSD": 1120.3,
     "volumeUSD": 726.87,
-    "openInterestUSD": 827.84,
+    "openInterestUSD": 827.85,
     "openingTs": 1798797061,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -783,7 +783,7 @@
     },
     "liquidityUSD": 1098.94,
     "volumeUSD": 1158.86,
-    "openInterestUSD": 784.01,
+    "openInterestUSD": 784.02,
     "openingTs": 1798815265,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -824,7 +824,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 1084.46,
+    "liquidityUSD": 1084.47,
     "volumeUSD": 13.88,
     "openInterestUSD": 509.98,
     "openingTs": 1783415432,
@@ -868,8 +868,8 @@
      "id": "0x0000000000000000000000000000000000000000"
     },
     "liquidityUSD": 994.21,
-    "volumeUSD": 593.76,
-    "openInterestUSD": 1384.39,
+    "volumeUSD": 593.77,
+    "openInterestUSD": 1384.4,
     "openingTs": 1782120471,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -998,7 +998,7 @@
     },
     "liquidityUSD": 818.97,
     "volumeUSD": 698.92,
-    "openInterestUSD": 2010.17,
+    "openInterestUSD": 2010.19,
     "openingTs": 1761660000,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1039,9 +1039,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 802.8,
+    "liquidityUSD": 802.81,
     "volumeUSD": 291.93,
-    "openInterestUSD": 1138.76,
+    "openInterestUSD": 1138.77,
     "openingTs": 1798827365,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1125,9 +1125,9 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 734.33,
+    "liquidityUSD": 734.34,
     "volumeUSD": 306.24,
-    "openInterestUSD": 938.22,
+    "openInterestUSD": 938.23,
     "openingTs": 1789032916,
     "finalizeTs": 33260976000,
     "hasAnswers": false,
@@ -1215,7 +1215,7 @@
     "parentMarket": {
      "id": "0x0000000000000000000000000000000000000000"
     },
-    "liquidityUSD": 592.13,
+    "liquidityUSD": 592.14,
     "volumeUSD": 192.97,
     "openInterestUSD": 388.45,
     "openingTs": 1798792360,
