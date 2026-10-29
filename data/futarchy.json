@@ -1,7 +1,7 @@
 {
  "app": "Futarchy",
  "page": "https://swiftbotlab.github.io/seer-six/futarchy/",
- "fetchedAt": "2026-10-29T15:13:03Z",
+ "fetchedAt": "2026-10-29T16:07:40Z",
  "mode": "hourly snapshot",
  "source": "https://api.futarchy.seer.pm/candles/graphql?chainId=1",
  "note": "EIP-8363 on futarchy.seer.pm (Ethereum): the two conditional pools, priced in the base token. yesHourly / noHourly are [unix hour, close] pairs since 8 Oct 2026 00:00 UTC; spot = the pools' current prices.",
@@ -12,8 +12,8 @@
   "no": "0x7a3b5f6592186c5d121ec4e48fc9e5d020a0b2df"
  },
  "spot": {
-  "yes": 2351.5278,
-  "no": 2351.5716
+  "yes": 2365.3707,
+  "no": 2365.3931
  },
  "yesHourly": [
   [
@@ -1530,7 +1530,7 @@
   ],
   [
    1793286000,
-   2351.53
+   2365.37
   ]
  ],
  "noHourly": [
@@ -3048,7 +3048,7 @@
   ],
   [
    1793286000,
-   2351.57
+   2365.39
   ]
  ]
 }
