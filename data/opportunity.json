@@ -1,7 +1,7 @@
 {
  "app": "Opportunity Markets",
  "page": "https://swiftbotlab.github.io/seer-six/opportunity/",
- "fetchedAt": "2026-10-29T09:06:34Z",
+ "fetchedAt": "2026-10-29T10:01:44Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -24,7 +24,7 @@
   "https://app.seer.pm/markets/100/0x144364db8edd6225248fe9d02f77ecc3ec0e4c4c"
  ],
  "liquidityUSD": 0.0,
- "volumeUSD": 8344.52,
+ "volumeUSD": 8344.58,
  "total": 235,
  "under1": 0,
  "rows": [
