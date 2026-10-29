@@ -1,7 +1,7 @@
 {
  "app": "Deep",
  "page": "https://swiftbotlab.github.io/seer-six/deep/",
- "fetchedAt": "2026-10-29T08:13:55Z",
+ "fetchedAt": "2026-10-29T09:06:48Z",
  "mode": "hourly snapshot",
  "source": "https://deep.seer.pm/.netlify/functions/get-originality-r3-v3-markets-data",
  "note": "Seer Deep, Round 3 Originality on OP Mainnet: one scalar market per GitHub repo. repos are [repo, UP price, DOWN price, market]; UP (0-1) is the market's estimate of the share of original work. Highest UP first.",
@@ -123,6 +123,13 @@
    "url": "https://app.seer.pm/markets/10/0xde4c752ed72f51de6d57085728a564a08866e97c"
   },
   {
+   "repo": "ethereum/py_ecc",
+   "up": 0.8216,
+   "down": 0.1481,
+   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
+   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
+  },
+  {
    "repo": "lambdaclass/lambdaworks",
    "up": 0.819,
    "down": 0.1912,
@@ -135,13 +142,6 @@
    "down": 0.1798,
    "market": "0x38a9dc84c9f940262b548856c1869f992ee80ba4",
    "url": "https://app.seer.pm/markets/10/0x38a9dc84c9f940262b548856c1869f992ee80ba4"
-  },
-  {
-   "repo": "ethereum/py_ecc",
-   "up": 0.816,
-   "down": 0.184,
-   "market": "0x5d6a571b0f663c33831e6f81dd3c3f554eca188b",
-   "url": "https://app.seer.pm/markets/10/0x5d6a571b0f663c33831e6f81dd3c3f554eca188b"
   },
   {
    "repo": "remix-project-org/remix-project",
