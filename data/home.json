@@ -1,7 +1,7 @@
 {
  "app": "Homepage",
  "page": "https://swiftbotlab.github.io/seer-six/home/",
- "fetchedAt": "2026-10-30T02:59:43Z",
+ "fetchedAt": "2026-10-30T03:59:19Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -22,7 +22,7 @@
   "chain": 100,
   "title": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
   "tpl": "2",
-  "liq": 1172.06,
+  "liq": 1172.07,
   "vol": 156.4,
   "outcomes": [
    [
