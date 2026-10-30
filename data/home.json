@@ -1,7 +1,7 @@
 {
  "app": "Homepage",
  "page": "https://swiftbotlab.github.io/seer-six/home/",
- "fetchedAt": "2026-10-30T22:50:14Z",
+ "fetchedAt": "2026-10-30T23:47:56Z",
  "mode": "hourly snapshot",
  "source": "https://app.seer.pm/.netlify/functions/markets-search",
  "request": {
@@ -15,14 +15,14 @@
   "page": 1
  },
  "note": "The hero: the most liquid open, Kleros-verified categorical or multi-categorical market on Seer. outcomes are [answer, odds %]; invalid is Seer's price of Invalid when it reports one.",
- "openMarkets": 2142,
+ "openMarkets": 2139,
  "verifiedOpen": 72,
  "hero": {
   "id": "0x022f8516fb5af0a6a86a37d48494ceb407298bc2",
   "chain": 100,
   "title": "Will Polymarket's API allow retrieval of fees paid data per individual positions by January 1st 2027?",
   "tpl": "2",
-  "liq": 1172.19,
+  "liq": 1172.2,
   "vol": 156.42,
   "outcomes": [
    [
